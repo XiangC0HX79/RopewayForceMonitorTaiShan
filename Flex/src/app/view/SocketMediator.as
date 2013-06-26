@@ -30,7 +30,7 @@ package app.view
 		private function onTimer(event:Event):void
 		{
 			var ropeway:RopewayVO = new RopewayVO;
-			ropeway.ropewayId = int(Math.random() * 20);		
+			ropeway.ropewayId = String(int(Math.random() * 20));		
 			ropeway.ropewayForce = int(Math.random() * 500);
 			ropeway.ropewayTemp = int(Math.random() * 50);
 			ropeway.ropewayTime = new Date;

@@ -15,6 +15,8 @@ package app.controller
 		{
 			var application:RopewayForceMonitor = note.getBody() as RopewayForceMonitor;
 			
+			facade.registerMediator(new AlertMediator);
+			
 			facade.registerMediator(new SocketMediator);
 			
 			facade.registerMediator(new ApplicationMediator(application));

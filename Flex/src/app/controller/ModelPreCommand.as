@@ -11,6 +11,7 @@ package app.controller
 	{
 		override public function execute(note:INotification):void
 		{
+			facade.registerProxy(new ConfigProxy);
 			facade.registerProxy(new RopewayProxy);
 		}
 	}

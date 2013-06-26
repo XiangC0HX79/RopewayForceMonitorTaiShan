@@ -1,5 +1,6 @@
 package app.controller
 {
+	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	
 	import org.puremvc.as3.interfaces.ICommand;
@@ -10,8 +11,8 @@ package app.controller
 	{
 		override public function execute(note:INotification):void
 		{
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			ropewayProxy.InitRopewayDict();
+			var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+			proxy.InitConfig();
 		}
 	}
 }

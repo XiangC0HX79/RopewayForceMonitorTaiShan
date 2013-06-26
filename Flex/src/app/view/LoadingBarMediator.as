@@ -1,6 +1,8 @@
 package app.view
 {	
 	import app.ApplicationFacade;
+	import app.model.RopewayProxy;
+	import app.model.vo.ConfigVO;
 	import app.view.components.LoadingBar;
 	
 	import flash.ui.ContextMenu;
@@ -30,7 +32,9 @@ package app.view
 				ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,
 				ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE,
 				
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,				
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
+				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
+						
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
@@ -48,8 +52,16 @@ package app.view
 					loadingBar.visible = true;
 					break;
 				
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					loadingBar.loadingInfo = "初始化：本地配置加载完成...";			
+					
+					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+					ropewayProxy.InitRopewayDict((notification.getBody() as ConfigVO).station);					
+					break;
+				
+				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	
 					loadingBar.loadingInfo = "初始化：索道信息加载完成...";		
+					sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:			

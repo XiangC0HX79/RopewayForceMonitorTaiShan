@@ -3,7 +3,9 @@ package app.model.vo
 	[Bindable]
 	public class RopewayVO
 	{
-		public var ropewayId:Number;
+		public var ropewayId:String;
+		
+		public var ropewayRFId:String;
 		
 		//抱索力
 		public var ropewayForce:Number;

@@ -22,12 +22,12 @@ package app.model
 			return data as Dictionary;
 		}
 		
-		public function InitRopewayDict():void
+		public function InitRopewayDict(station:String):void
 		{
 			for(var i:Number = 0;i<10000;i++)
 			{				
 				var r:RopewayVO = new RopewayVO;		
-				r.ropewayId = int(Math.random() * 20);		
+				r.ropewayId = String(int(Math.random() * 20));		
 				r.ropewayForce = int(Math.random() * 500);
 				r.ropewayTemp = int(Math.random() * 50);
 				r.ropewayTime = new Date;
@@ -36,8 +36,6 @@ package app.model
 			}
 			
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);
-			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
 		}
 		
 		public function AddRopeway(ropeway:RopewayVO):RopewayVO

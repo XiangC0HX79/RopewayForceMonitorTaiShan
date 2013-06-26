@@ -11,8 +11,7 @@ package app
 	{
 		public static const STARTUP:String 							= "startup";
 		
-		/**
-		 * 显示等待
+		/**显示等待
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -23,14 +22,73 @@ package app
 		 **/
 		public static const NOTIFY_MAIN_LOADING_SHOW:String 		= "MainLoadingShow";
 		
-		/**
-		 * 隐藏等待
+		/**隐藏等待
 		 **/
 		public static const NOTIFY_MAIN_LOADING_HIDE:String 		= "MainLoadingHide";
 		
+		/**提示信息
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>String</td><td>在 Alert 控件中显示的文本字符串。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>Function</td><td>按下 Alert 控件上的任意按钮时将调用的事件处理函数。传递给此处理函数的事件对象是 CloseEvent 的一个实例；此对象的 detail 属性包含 Alert.OK、Alert.CANCEL、Alert.YES 或 Alert.NO 值。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>uint</td><td>控件中放置的按钮。有效值为 Alert.OK、Alert.CANCEL、Alert.YES 和 Alert.NO。</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_ALERT_INFO:String				= "AlertInfo";
+				
+		/**提示警告
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>String</td><td>在 Alert 控件中显示的文本字符串。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>Function</td><td>按下 Alert 控件上的任意按钮时将调用的事件处理函数。传递给此处理函数的事件对象是 CloseEvent 的一个实例；此对象的 detail 属性包含 Alert.OK、Alert.CANCEL、Alert.YES 或 Alert.NO 值。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>uint</td><td>控件中放置的按钮。有效值为 Alert.OK、Alert.CANCEL、Alert.YES 和 Alert.NO。</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_ALERT_ALARM:String				= "AlertAlarm";
 		
-		/**
-		 * 索道信息初始化完成
+		/**提示错误
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>String</td><td>在 Alert 控件中显示的文本字符串。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>Function</td><td>按下 Alert 控件上的任意按钮时将调用的事件处理函数。传递给此处理函数的事件对象是 CloseEvent 的一个实例；此对象的 detail 属性包含 Alert.OK、Alert.CANCEL、Alert.YES 或 Alert.NO 值。</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>uint</td><td>控件中放置的按钮。有效值为 Alert.OK、Alert.CANCEL、Alert.YES 和 Alert.NO。</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_ALERT_ERROR:String				= "AlertError";
+		
+		/**配置信息初始化完成
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>ConfigVO</td><td>配置信息</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
+		
+		/**索道信息初始化完成
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -41,14 +99,12 @@ package app
 		 **/
 		public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
 				
-		/**
-		 * 程序初始化完成
+		/**程序初始化完成
 		 **/
 		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
 		
 		
-		/**
-		 * 抱索器实时信息
+		/**抱索器实时信息
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -60,13 +116,11 @@ package app
 		public static const NOTIFY_ROPEWAY_INFO_REALTIME:String 	= "RopewayInfoRealtime";
 		
 		
-		/**
-		 * 菜单-实时检测
+		/**菜单-实时检测
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";
 		
-		/**
-		 * 菜单-今日概览
+		/**菜单-今日概览
 		 **/
 		public static const NOTIFY_MENU_TODAY_OVERVIEW:String 		= "MenuTodayOverview";
 		

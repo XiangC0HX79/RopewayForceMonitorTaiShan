@@ -1,0 +1,9 @@
+<Config>
+	<WebServiceUrl>http://192.168.1.111/StructWebService/</WebServiceUrl>
+	<Stations>
+		<Station>桃花源上站</Station>
+		<Station>桃花源下站</Station>
+		<Station>中天门上站</Station>
+		<Station>中天门下站</Station>
+	</Stations>
+</Config>
