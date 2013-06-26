@@ -53,7 +53,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var timer:Timer = new Timer(1000);
+					var timer:Timer = new Timer(10000);
 					timer.addEventListener(TimerEvent.TIMER,onTimer);
 					timer.start();
 					break;

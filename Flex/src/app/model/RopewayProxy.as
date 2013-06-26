@@ -35,6 +35,8 @@ package app.model
 				r = AddRopeway(r);
 			}
 			
+			
+			
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);
 		}
 		
@@ -51,7 +53,33 @@ package app.model
 			r.ropewayTime = ropeway.ropewayTime;
 			r.ropewayHistory.push(ropeway);
 			
+			var TodayArr:Array = SetTodayarr(r.ropewayHistory);
+			TodayArr.sort(Array.NUMERIC);
+			r.todayMax = TodayArr[TodayArr.length - 1];
+			r.todayMin = TodayArr[0];
+			r.todayAve = GetAve(r.ropewayHistory);
+			
 			return r;
+		}
+		
+		private function SetTodayarr(arr:Array):Array
+		{
+			var finarr:Array = new Array();
+			for(var i:int = 0;i < arr.length;i++)
+			{
+				finarr.push(arr[i].ropewayForce);
+			}
+			return finarr;	
+		}
+		
+		private function GetAve(arr:Array):Number
+		{
+			var sum:int = 0;
+			for(var i:int = 0;i < arr.length;i++)
+			{
+				sum += arr[i].ropewayForce;
+			}
+			return sum/arr.length;
 		}
 	}
 }
