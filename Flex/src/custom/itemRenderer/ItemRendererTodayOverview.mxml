@@ -10,18 +10,58 @@
 		<![CDATA[
 			import app.model.vo.RopewayVO;
 			
+			import mx.formatters.DateFormatter;
+			
 			[Bindable]private var _ropeway:RopewayVO;
+			[Bindable]public var numtimes:int;
+			[Bindable]public var date:String;
 			
 			override public function set data(value:Object):void
 			{
 				super.data = value;
 				
 				_ropeway = value as RopewayVO;
+				
+				numtimes = _ropeway.ropewayHistory.length;
+				
+				date = formatDate(_ropeway.ropewayTime);
+			}
+			
+			private function formatDate(date:Date):String
+			{
+				var dateFormatter:DateFormatter = new DateFormatter();
+				dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
+				var nowData:String= dateFormatter.format(date); 
+				return nowData;
 			}
 		]]>
 	</fx:Script>
-	<s:VGroup>
-		<s:Label text="{_ropeway.ropewayId}"/>
-		<s:Label text="{_ropeway.ropewayForce}"/>		
+	<s:VGroup width="220" height="150">
+		<s:HGroup>
+			<s:Label text="抱索器编号：{_ropeway.ropewayId}"/>
+			<s:Label text="开合次数：{numtimes}"/>
+		</s:HGroup>
+		<s:Label text="{_ropeway.ropewayForce} KG"/>
+		<s:Label horizontalCenter="-10" text="{date}"/>
+		<s:HGroup>
+			<s:Label width="71"/>
+			<s:Label width="71" text="昨天"/>
+			<s:Label width="71" text="今天"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label width="71" text="最大值"/>
+			<s:Label width="71" text="{_ropeway.yesterdayMax}"/>
+			<s:Label width="71" text="{_ropeway.todayMax}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label width="71" text="平均值"/>
+			<s:Label width="71" text="{_ropeway.yesterdayAve}"/>
+			<s:Label width="71" text="{_ropeway.todayAve}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label width="71" text="最小值"/>
+			<s:Label width="71" text="{_ropeway.yesterdayMin}"/>
+			<s:Label width="71" text="{_ropeway.todayMin}"/>
+		</s:HGroup>
 	</s:VGroup>
 </s:ItemRenderer>

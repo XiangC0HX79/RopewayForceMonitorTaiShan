@@ -5,6 +5,8 @@ package app.view
 	import app.model.vo.RopewayVO;
 	import app.view.components.ContentTodayOverview;
 	
+	import custom.itemRenderer.ItemRendererTodayOverview;
+	
 	import mx.collections.ArrayCollection;
 	
 	import org.puremvc.as3.interfaces.IMediator;
