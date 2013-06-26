@@ -5,6 +5,8 @@ package app.model
 	
 	import flash.utils.Dictionary;
 	
+	import mx.formatters.DateFormatter;
+	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
@@ -55,23 +57,36 @@ package app.model
 			r.ropewayTime = ropeway.ropewayTime;
 			r.ropewayHistory.push(ropeway);
 			
-			var TodayArr:Array = SetTodayarr(r.ropewayHistory);
+			var TodayArr:Array = SetArr(r.ropewayHistory,"today");
 			TodayArr.sort(Array.NUMERIC);
 			r.todayMax = TodayArr[TodayArr.length - 1];
 			r.todayMin = TodayArr[0];
-			r.todayAve = GetAve(r.ropewayHistory);
+			r.todayAve = GetAve(TodayArr);
+			
+			/*var YesArr:Array = SetArr(r.ropewayHistory,"yesd");
+			YesArr.sort(Array.NUMERIC);
+			r.yesterdayMax = YesArr[YesArr.length - 1];
+			r.yesterdayMin = YesArr[0];
+			r.yesterdayAve = GetAve(YesArr);*/
 			
 			return r;
 		}
 		
-		private function SetTodayarr(arr:Array):Array
+		private function SetArr(arr:Array,type:String):Array
 		{
-			var finarr:Array = new Array();
+			var toarr:Array = new Array();
+			var yesarr:Array = new Array();
+			
+			/*var datenow:Date = new Date;*/
+			
 			for(var i:int = 0;i < arr.length;i++)
 			{
-				finarr.push(arr[i].ropewayForce);
+				//var date:Date = arr[i].ropewayTime;
+				
+				//if(date.date == datenow.date && date.month == datenow.month && date.fullYear == datenow.fullYear) 
+					toarr.push(arr[i].ropewayForce);
 			}
-			return finarr;	
+			return toarr;	
 		}
 		
 		private function GetAve(arr:Array):Number
@@ -79,9 +94,10 @@ package app.model
 			var sum:int = 0;
 			for(var i:int = 0;i < arr.length;i++)
 			{
-				sum += arr[i].ropewayForce;
+				sum += arr[i];
 			}
-			return sum/arr.length;
+			var str:String = (sum/arr.length).toFixed(0);
+			return Number(str);
 		}
 	}
 }
