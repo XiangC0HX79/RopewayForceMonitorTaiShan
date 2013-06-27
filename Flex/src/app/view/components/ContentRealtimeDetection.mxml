@@ -43,7 +43,6 @@
 					<mx:LineSeries yField="ropewayForce"/>
 				</mx:series>
 			</mx:LineChart>
-			
 		</s:Group>
 	</s:VGroup>
 </s:Group>
