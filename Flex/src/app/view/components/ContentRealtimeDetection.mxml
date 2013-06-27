@@ -112,18 +112,20 @@
 	<s:VGroup width="100%" height="100%">
 		<s:HGroup>
 			<s:Group width="300" height="200">
-				<s:Label left="5" top="5" text="抱索器编号：{ropeway.ropewayId}"/>
-				<s:Label right="5" top="5" text="开合次数：{numtimes}"/>
-				<s:Label horizontalCenter="-10" top="70" text="{ropeway.ropewayForce} KG"/>
-				<s:Label top="102" horizontalCenter="-10" text="{date}"/>
+				<s:Image source="assets/image/kuang2.png" width="100%" height="100%"/>
+				<s:Label left="41" top="17" text="抱索器编号：{ropeway.ropewayId}" fontWeight="bold"/>
+				<s:Label right="24" top="17" text="开合次数：{numtimes}" fontWeight="bold"/>
+				<s:Label horizontalCenter="54" top="86" text="{ropeway.ropewayForce} KG" fontSize="38" fontWeight="bold"/>
+				<s:Label top="148" horizontalCenter="54" text="{date}"/>
 			</s:Group>
 			<s:Group width="300" height="200">
-				<s:Label left="5" top="5" text="当前温度"/>
-				<s:Label horizontalCenter="-10" top="70" text="{ropeway.ropewayTemp} ℃"/>
-				<s:Label top="102" horizontalCenter="-10" text="{date}"/>
+				<s:Image source="assets/image/kuang3.png" width="100%" height="100%"/>
+				<s:Label left="48" top="17" text="当前温度" fontWeight="bold"/>
+				<s:Label horizontalCenter="52" top="86" text="{ropeway.ropewayTemp} ℃" fontSize="38" fontWeight="bold"/>
+				<s:Label top="148" horizontalCenter="54" text="{date}"/>
 			</s:Group>
 			<s:Group width="300" height="200">
-				
+				<s:Image source="assets/image/kuang4.png" width="100%" height="100%"/>
 			</s:Group>
 		</s:HGroup>
 		

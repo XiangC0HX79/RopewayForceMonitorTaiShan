@@ -36,32 +36,25 @@
 			}
 		]]>
 	</fx:Script>
-	<s:VGroup width="220" height="150">
-		<s:HGroup>
-			<s:Label text="抱索器编号：{_ropeway.ropewayId}"/>
-			<s:Label text="开合次数：{numtimes}"/>
-		</s:HGroup>
-		<s:Label text="{_ropeway.ropewayForce} KG"/>
-		<s:Label horizontalCenter="-10" text="{date}"/>
-		<s:HGroup>
-			<s:Label width="71"/>
-			<s:Label width="71" text="昨天"/>
-			<s:Label width="71" text="今天"/>
-		</s:HGroup>
-		<s:HGroup>
-			<s:Label width="71" text="最大值"/>
-			<s:Label width="71" text="{_ropeway.yesterdayMax}"/>
-			<s:Label width="71" text="{_ropeway.todayMax}"/>
-		</s:HGroup>
-		<s:HGroup>
-			<s:Label width="71" text="平均值"/>
-			<s:Label width="71" text="{_ropeway.yesterdayAve}"/>
-			<s:Label width="71" text="{_ropeway.todayAve}"/>
-		</s:HGroup>
-		<s:HGroup>
-			<s:Label width="71" text="最小值"/>
-			<s:Label width="71" text="{_ropeway.yesterdayMin}"/>
-			<s:Label width="71" text="{_ropeway.todayMin}"/>
-		</s:HGroup>
-	</s:VGroup>
+	
+	<s:Group width="220" height="160">
+		<s:Image source="assets/image/kuang.png" width="100%" height="100%"/>
+			<s:Label x="14" y="10" color="#FFFFFF" fontWeight="bold"
+					 text="抱索器编号：{_ropeway.ropewayId}"/>
+			<s:Label x="131" y="10" color="#FFFFFF" fontWeight="bold" text="开合次数：{numtimes}"/>
+			<s:Label y="39" color="#FF0000" fontSize="20" fontWeight="bold"
+					 horizontalCenter="0" text="{_ropeway.ropewayForce} KG"/>
+			<s:Label y="67" fontSize="11" horizontalCenter="0" text="{date}"/>
+			<s:Label x="82" y="86" width="71" text="昨天"/>
+			<s:Label x="162" y="87" width="71" text="今天"/>
+			<s:Label x="11" y="107" width="71" text="最大值"/>
+			<s:Label x="82" y="106" width="71" text="{_ropeway.yesterdayMax}"/>
+			<s:Label x="162" y="106" width="71" text="{_ropeway.todayMax}"/>
+			<s:Label x="11" y="125" width="71" text="平均值"/>
+			<s:Label x="82" y="124" width="71" text="{_ropeway.yesterdayAve}"/>
+			<s:Label x="162" y="124" width="71" text="{_ropeway.todayAve}"/>
+			<s:Label x="11" y="144" width="71" text="最小值"/>
+			<s:Label x="82" y="143" width="71" text="{_ropeway.yesterdayMin}"/>
+			<s:Label x="162" y="143" width="71" text="{_ropeway.todayMin}"/>
+	</s:Group>
 </s:ItemRenderer>
