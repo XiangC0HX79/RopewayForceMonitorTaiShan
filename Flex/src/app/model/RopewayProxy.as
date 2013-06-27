@@ -10,7 +10,7 @@ package app.model
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class RopewayProxy extends Proxy implements IProxy
+	public class RopewayProxy extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayProxy";
 		
@@ -25,6 +25,18 @@ package app.model
 		}
 		
 		public function InitRopewayDict(station:String):void
+		{
+			for(var i:Number = 0;i<200;i++)
+			{				
+				var r:RopewayVO = new RopewayVO;		
+				r.ropewayId = String(i);	
+				ropewayDict[r.ropewayId] = r;
+			}
+			
+			InitRopewayHistory(station);
+		}
+		
+		private function InitRopewayHistory(station:String):void
 		{
 			for(var i:Number = 0;i<10000;i++)
 			{				
@@ -60,7 +72,7 @@ package app.model
 		{
 			if(!ropewayDict[ropeway.ropewayId])
 			{							
-				ropewayDict[ropeway.ropewayId] = ropeway;
+				return null;
 			}
 			
 			var r:RopewayVO = ropewayDict[ropeway.ropewayId] as RopewayVO;				
@@ -78,47 +90,7 @@ package app.model
 			
 			r.ropewayHistory.push(ropeway);
 			
-			//var TodayArr:Array = SetTodayarr(r.ropewayHistory);
-			//TodayArr.sort(Array.NUMERIC);
-			//r.todayMax = TodayArr[TodayArr.length - 1];
-			//r.todayMin = TodayArr[0];
-			//r.todayAve = GetAve(r.ropewayHistory);
-			
-			/*var YesArr:Array = SetArr(r.ropewayHistory,"yesd");
-			YesArr.sort(Array.NUMERIC);
-			r.yesterdayMax = YesArr[YesArr.length - 1];
-			r.yesterdayMin = YesArr[0];
-			r.yesterdayAve = GetAve(YesArr);*/
-			
 			return r;
-		}
-		
-		private function SetArr(arr:Array,type:String):Array
-		{
-			var toarr:Array = new Array();
-			var yesarr:Array = new Array();
-			
-			/*var datenow:Date = new Date;*/
-			
-			for(var i:int = 0;i < arr.length;i++)
-			{
-				//var date:Date = arr[i].ropewayTime;
-				
-				//if(date.date == datenow.date && date.month == datenow.month && date.fullYear == datenow.fullYear) 
-					toarr.push(arr[i].ropewayForce);
-			}
-			return toarr;	
-		}
-		
-		private function GetAve(arr:Array):Number
-		{
-			var sum:int = 0;
-			for(var i:int = 0;i < arr.length;i++)
-			{
-				sum += arr[i];
-			}
-			var str:String = (sum/arr.length).toFixed(0);
-			return Number(str);
 		}
 	}
 }

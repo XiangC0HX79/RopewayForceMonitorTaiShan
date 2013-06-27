@@ -2,11 +2,17 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.RopewayProxy;
+	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayVO;
 	
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
 	import flash.net.Socket;
+	import flash.system.Security;
+	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -17,25 +23,86 @@ package app.view
 	{
 		public static const NAME:String = "SocketMediator";
 		
+		private var _errorCount:Number = 0;
+		
+		private var _config:ConfigVO;
+		
 		public function SocketMediator()
 		{
 			super(NAME, new Socket);			
+			
+			socket.addEventListener(Event.CONNECT,onConnect);				
+			socket.addEventListener(ProgressEvent.SOCKET_DATA,onSocketData);  			
+			socket.addEventListener(Event.CLOSE,onConnectError);		
+			socket.addEventListener(IOErrorEvent.IO_ERROR,onConnectError);			
+			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onConnectError);
+						
+			var timer:Timer = new Timer(30000);
+			timer.addEventListener(TimerEvent.TIMER,onTimer);
+			timer.start();
 		}
 		
 		protected function get socket():Socket
 		{
 			return viewComponent as Socket;
 		}
+				
+		private function connect():void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
+				
+			socket.connect(_config.serverIp,_config.serverPort);
+				
+			Security.loadPolicyFile("xmlsocket://" + _config.serverIp + ":" + _config.serverPort);
+			
+			_errorCount ++;
+			
+			trace("ErrorCount:" + _errorCount);
+		}
 		
-		private function onTimer(event:Event):void
+		private function onConnect( event:Event ):void 
+		{  													
+			_errorCount = 0;	
+			
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+		}  
+		
+		private function onConnectError(event:Event):void 
+		{  			
+			if(_errorCount > 5)
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！\n\"错误原因 ：" + event.type + "\"");
+			else
+				connect();
+		} 
+		
+		//接受数据		
+		private var bytesArray:ByteArray = new ByteArray;
+		private function onSocketData(event:ProgressEvent):void 
+		{  			
+			var target:Socket = event.target as Socket;
+			
+			while(target.bytesAvailable)			
+			{			
+				target.readBytes(bytesArray,bytesArray.length);
+				
+				//如出现Error: Error #2030: 遇到文件尾错误，请用：str=socket.readUTFBytes(socket.bytesAvailable);				
+			}
+			
+			decodeSocketData(bytesArray);
+			
+			bytesArray= new ByteArray;
+		}  
+		
+		private function decodeSocketData(socketData:ByteArray):void
 		{			
-			trace("Timer:" + (new Date).time);
+			var s:String = socketData.readUTFBytes(socketData.length);
+			var a:Array = s.split('|');
 			
 			var ropeway:RopewayVO = new RopewayVO;
-			ropeway.ropewayId = String(int(Math.random() * 20));		
-			ropeway.ropewayForce = int(Math.random() * 500);
-			ropeway.ropewayTemp = int(Math.random() * 50);
-			ropeway.ropewayTime = new Date;
+			ropeway.ropewayId = a[1];		
+			ropeway.ropewayForce = a[2];
+			ropeway.ropewayTemp = a[3];
+			ropeway.ropewayTime = a[0];
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);
@@ -43,9 +110,25 @@ package app.view
 			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,ropeway);
 		}
 		
+		private function onTimer(event:Event):void
+		{			
+			sendSocketData("KEEP");
+		}
+		
+		private function sendSocketData(socketData:String):void
+		{
+			if(socket.connected)
+			{				
+				socket.writeUTFBytes(socketData);				
+				socket.flush();
+			}
+		}
+		
 		override public function listNotificationInterests():Array
 		{
 			return [
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
+				
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
@@ -54,10 +137,12 @@ package app.view
 		{
 			switch(notification.getName())
 			{
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					_config = notification.getBody() as ConfigVO;
+					break;
+				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var timer:Timer = new Timer(10000);
-					timer.addEventListener(TimerEvent.TIMER,onTimer);
-					timer.start();
+					connect();
 					break;
 			}
 		}
