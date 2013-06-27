@@ -29,7 +29,7 @@
 			upIcon:Embed(source="assets/image/bn2.png");
 		}
 	</fx:Style>
-	<s:Button label="实时检测记录" styleName="myCustomButton1" width="100%" height="25%" buttonDown="dispatchEvent(new Event(REALTIME_DETECTION));"/>
+	<s:Button label="实时检测记录" skinClass="custom.skin.SkinButtonRealtimeDetection" width="100%" height="25%" buttonDown="dispatchEvent(new Event(REALTIME_DETECTION));"/>
 	<s:Button label="当天概览" styleName="myCustomButton2" width="100%" height="25%" buttonDown="dispatchEvent(new Event(TODAY_OVERVIEW));"/>
 	<s:Button label="分析查询" width="100%" height="25%"/>
 	<s:Button label="搜索器车厢设置" width="100%" height="25%"/>
