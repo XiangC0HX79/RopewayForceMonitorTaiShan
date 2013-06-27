@@ -27,7 +27,7 @@ package app.model
 			for(var i:Number = 0;i<10000;i++)
 			{				
 				var r:RopewayVO = new RopewayVO;		
-				r.ropewayId = String(int(Math.random() * 20));		
+				r.ropewayId = String(int(Math.random() * 100));		
 				r.ropewayForce = int(Math.random() * 500);
 				r.ropewayTemp = int(Math.random() * 50);
 				r.ropewayTime = new Date;
@@ -35,9 +35,23 @@ package app.model
 				r = AddRopeway(r);
 			}
 			
-			
-			
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);
+		}
+		
+		public function RefreshRopewayDict(station:String):void
+		{
+			/*for(var i:Number = 0;i<10000;i++)
+			{				
+				var r:RopewayVO = new RopewayVO;		
+				r.ropewayId = String(int(Math.random() * 100));		
+				r.ropewayForce = int(Math.random() * 500);
+				r.ropewayTemp = int(Math.random() * 50);
+				r.ropewayTime = new Date;
+				
+				r = AddRopeway(r);
+			}
+			
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);*/
 		}
 		
 		public function AddRopeway(ropeway:RopewayVO):RopewayVO
@@ -51,18 +65,27 @@ package app.model
 			r.ropewayForce = ropeway.ropewayForce;
 			r.ropewayTemp = ropeway.ropewayTemp;
 			r.ropewayTime = ropeway.ropewayTime;
+			if(!r.todayMin || (r.todayMin > ropeway.ropewayForce))
+				r.todayMin = ropeway.ropewayForce;
+			if(!r.todayMax || (r.todayMax< ropeway.ropewayForce))
+				r.todayMax = ropeway.ropewayForce;
+			if(!r.todayAve)
+				r.todayAve = ropeway.ropewayForce;
+			else
+				r.todayAve = (r.todayAve * r.ropewayHistory.length + ropeway.ropewayForce) / (r.ropewayHistory.length + 1);
+			
 			r.ropewayHistory.push(ropeway);
 			
-			var TodayArr:Array = SetTodayarr(r.ropewayHistory);
-			TodayArr.sort(Array.NUMERIC);
-			r.todayMax = TodayArr[TodayArr.length - 1];
-			r.todayMin = TodayArr[0];
-			r.todayAve = GetAve(r.ropewayHistory);
+			//var TodayArr:Array = SetTodayarr(r.ropewayHistory);
+			//TodayArr.sort(Array.NUMERIC);
+			//r.todayMax = TodayArr[TodayArr.length - 1];
+			//r.todayMin = TodayArr[0];
+			//r.todayAve = GetAve(r.ropewayHistory);
 			
 			return r;
 		}
 		
-		private function SetTodayarr(arr:Array):Array
+	/*	private function SetTodayarr(arr:Array):Array
 		{
 			var finarr:Array = new Array();
 			for(var i:int = 0;i < arr.length;i++)
@@ -80,6 +103,6 @@ package app.model
 				sum += arr[i].ropewayForce;
 			}
 			return sum/arr.length;
-		}
+		}*/
 	}
 }

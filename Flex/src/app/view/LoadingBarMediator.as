@@ -55,8 +55,11 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					loadingBar.loadingInfo = "初始化：本地配置加载完成...";			
 					
+					var config:ConfigVO = notification.getBody() as ConfigVO;
+					var s:String = config.station?config.station:config.stations[0];
+					
 					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					ropewayProxy.InitRopewayDict((notification.getBody() as ConfigVO).station);					
+					ropewayProxy.InitRopewayDict(s);					
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	

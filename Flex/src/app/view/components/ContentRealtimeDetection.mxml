@@ -2,17 +2,111 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 left="0" right="0" top="0" bottom="0">
+		 left="0" right="0" top="0" bottom="0" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lineStroke" color="0x0" weight="2"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import app.model.vo.RopewayVO;
 			
+			import mx.effects.AnimateProperty;
+			import mx.effects.Parallel;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			import spark.primitives.Line;
+			
 			[Bindable]public var ropeway:RopewayVO;
 			[Bindable]public var numtimes:int;
 			[Bindable]public var date:String;
+			
+			private var _arrLine:Array = new Array;
+			private var _arrAnima:Array = new Array;
+						
+			public function UpdateChart():void
+			{				
+				for(var i:Number = 0;i<_arrLine.length;i++)
+				{
+					var line:Line = _arrLine[i];
+					
+					var anima:AnimateProperty = _arrAnima[i * 4];
+					anima.fromValue = line.xFrom;
+					anima = _arrAnima[i * 4 + 1];
+					anima.fromValue = line.yFrom;
+					anima = _arrAnima[i * 4 + 2];
+					anima.fromValue = line.xTo;
+					anima = _arrAnima[i * 4 + 3];
+					anima.fromValue = line.yTo;
+				}
+				
+				var max:Number = ropeway.todayMax + 50;
+				var min:Number = ropeway.todayMin - 50;
+				var perw:Number = groupChart.width / ropeway.ropewayHistory.length;
+				var perh:Number = groupChart.height / (max - min);
+								
+				for(i = 1;i<ropeway.ropewayHistory.length;i++)
+				{
+					if(_arrLine.length < i)
+					{
+						line = new Line;
+						line.stroke = lineStroke;					
+						_arrLine.push(line);					
+						groupChart.addElement(line);
+						
+						anima = new AnimateProperty(line);
+						anima.property = "xFrom";
+						_arrAnima.push(anima);
+						
+						anima = new AnimateProperty(line);
+						anima.property = "yFrom";
+						_arrAnima.push(anima);
+						
+						anima = new AnimateProperty(line);
+						anima.property = "xTo";
+						_arrAnima.push(anima);
+						
+						anima = new AnimateProperty(line);
+						anima.property = "yTo";
+						_arrAnima.push(anima);
+					}
+					
+					var r:RopewayVO = ropeway.ropewayHistory[i - 1];
+					var x:Number = int(perw * (i - 1));
+					var y:Number = int(perh * (max - r.ropewayForce));
+					//line = _arrLine[i];
+					
+					anima = _arrAnima[(i - 1) * 4];
+					anima.toValue = x;
+					anima = _arrAnima[(i - 1) * 4 + 1];
+					anima.toValue = y;
+					
+					
+					r = ropeway.ropewayHistory[i];
+					x = int(perw * i);
+					y = int(perh * (max - r.ropewayForce));
+					
+					anima = _arrAnima[(i - 1) * 4 + 2];
+					anima.toValue = x;
+					anima = _arrAnima[(i - 1) * 4 + 3];
+					anima.toValue = y;
+				}
+				
+				var p:Parallel = new Parallel;
+				p.duration = 1000;
+				p.children = _arrAnima;
+				p.play();
+				
+				trace("Chart:" + (new Date).time);
+			}		
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				UpdateChart();
+			}
+			
 		]]>
 	</fx:Script>
 	<s:VGroup width="100%" height="100%">
@@ -32,16 +126,20 @@
 				
 			</s:Group>
 		</s:HGroup>
-		<s:Group width="900" height="100%">
-			<mx:LineChart id="linechart1" width="100%" height="100%">
+		
+		<!--<s:SpriteVisualElement id="spriteChart" width="900" height="0"/>-->
+		<s:Group id="groupChart" width="100%" height="100%">
+			
+		</s:Group>
+		<!--<s:Group width="900" height="100%">
+			<mx:LineChart id="linechart1" width="100%" height="100%" updateComplete="linechart1_updateCompleteHandler(event)">
 				<mx:verticalAxis>
 					<mx:LinearAxis maximum="{ropeway.todayMax + 50}" minimum="{ropeway.todayMin - 50}" interval="1"/>
 				</mx:verticalAxis>
 				<mx:series>
 					<mx:LineSeries yField="ropewayForce"/>
 				</mx:series>
-			</mx:LineChart>
-			
-		</s:Group>
+			</mx:LineChart>			
+		</s:Group>-->
 	</s:VGroup>
 </s:Group>

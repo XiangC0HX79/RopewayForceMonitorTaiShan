@@ -28,7 +28,9 @@ package app.view
 		}
 		
 		private function onTimer(event:Event):void
-		{
+		{			
+			trace("Timer:" + (new Date).time);
+			
 			var ropeway:RopewayVO = new RopewayVO;
 			ropeway.ropewayId = String(int(Math.random() * 20));		
 			ropeway.ropewayForce = int(Math.random() * 500);

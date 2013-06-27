@@ -25,8 +25,10 @@ package app.model
 			return data as ConfigVO;
 		}
 		
-		public function InitConfig():void
+		public function InitConfig(unit:String):void
 		{
+			config.station = unit;
+			
 			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));			
 			load.addEventListener(Event.COMPLETE,onLocaleConfigResult);
 			load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
@@ -50,9 +52,9 @@ package app.model
 			}
 			
 			config.stations = new Array;
-			for each(var s:String in xml.Stations)
+			for each(var s:String in xml.Stations.Station)
 				config.stations.push(s);
-			
+							
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);
 		}
 	}

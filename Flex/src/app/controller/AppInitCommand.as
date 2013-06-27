@@ -7,12 +7,17 @@ package app.controller
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
+	import spark.components.Application;
+	
 	public class AppInitCommand extends SimpleCommand implements ICommand
 	{
 		override public function execute(note:INotification):void
 		{
+			var application:Application = note.getBody() as Application;
+			
 			var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-			proxy.InitConfig();
+			
+			proxy.InitConfig(application.parameters.unit);
 		}
 	}
 }

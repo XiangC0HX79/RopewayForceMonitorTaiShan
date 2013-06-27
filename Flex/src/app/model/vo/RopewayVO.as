@@ -10,6 +10,9 @@ package app.model.vo
 		//抱索力
 		public var ropewayForce:Number;
 		
+		//单位
+		public var ropewayUnit:String;
+		
 		//温度
 		public var ropewayTemp:Number;
 		

@@ -36,12 +36,18 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:					
+				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
+					contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
+					contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
+					break;
+				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
 					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
 					contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
 					contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
-					contentRealtimeDetection.linechart1.dataProvider = contentRealtimeDetection.ropeway.ropewayHistory;
+					//contentRealtimeDetection.linechart1.dataProvider = contentRealtimeDetection.ropeway.ropewayHistory;
+					contentRealtimeDetection.UpdateChart();
 					break;
 			}
 		}

@@ -25,6 +25,8 @@ package app.controller
 				
 			facade.registerMediator(new MainMenuMediator(application.mainMenu));
 			
+			facade.registerMediator(new MainStationMediator(application.mainStation));
+			
 			facade.registerMediator(new ContentRealtimeDetectionMediator(new ContentRealtimeDetection));
 			
 			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));

@@ -1,6 +1,7 @@
 package app.view
 {	
 	import app.ApplicationFacade;
+	import app.model.vo.ConfigVO;
 	
 	import flash.events.Event;
 	import flash.utils.Timer;
@@ -36,7 +37,9 @@ package app.view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [,				
+			return [
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
+				
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
 				ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION,
@@ -48,6 +51,11 @@ package app.view
 		{			
 			switch(notification.getName())
 			{
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					var config:ConfigVO = notification.getBody() as ConfigVO;
+					application.currentState = config.station?"Single":"Normal";
+					break;
+				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 					changeContent(ContentRealtimeDetectionMediator.NAME);
 					break;

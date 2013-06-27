@@ -13,6 +13,7 @@ package app.controller
 		{
 			facade.registerProxy(new ConfigProxy);
 			facade.registerProxy(new RopewayProxy);
+			facade.registerProxy(new RopewayAlarmProxy);
 		}
 	}
 }
