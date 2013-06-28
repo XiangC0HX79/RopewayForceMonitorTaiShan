@@ -1,6 +1,7 @@
 package app.view
 {	
 	import app.ApplicationFacade;
+	import app.model.RopewayAlarmProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.view.components.LoadingBar;
@@ -59,7 +60,10 @@ package app.view
 					var s:String = config.station?config.station:config.stations[0];
 					
 					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					ropewayProxy.InitRopewayDict(s);					
+					ropewayProxy.InitRopewayDict(s);
+					
+					var ropewayAlarmProxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
+					ropewayAlarmProxy.InitAlarmArr(s);
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	

@@ -1,9 +1,12 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayAlarmProxy;
+	import app.model.vo.RopewayAlarmVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.ContentRealtimeDetection;
 	
+	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -48,6 +51,16 @@ package app.view
 					contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
 					//contentRealtimeDetection.linechart1.dataProvider = contentRealtimeDetection.ropeway.ropewayHistory;
 					contentRealtimeDetection.UpdateChart();
+					
+					var alarmPoxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
+					
+					var dp:ArrayCollection = new ArrayCollection;
+					for each(var ra:RopewayAlarmVO in alarmPoxy.arr)
+					{
+						dp.addItem(ra);
+					}
+					
+					contentRealtimeDetection.datagroup.dataProvider = dp;
 					break;
 			}
 		}

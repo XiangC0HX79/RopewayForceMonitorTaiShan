@@ -1,6 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayAlarmProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayVO;
 	
@@ -40,6 +41,9 @@ package app.view
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);
 			
+			var alarmProxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
+			alarmProxy.IsRopewayAlarm(ropeway);
+			
 			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,ropeway);
 		}
 		
@@ -55,7 +59,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var timer:Timer = new Timer(10000);
+					var timer:Timer = new Timer(5000);
 					timer.addEventListener(TimerEvent.TIMER,onTimer);
 					timer.start();
 					break;
