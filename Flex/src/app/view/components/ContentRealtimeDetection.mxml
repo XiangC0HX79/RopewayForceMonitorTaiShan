@@ -152,7 +152,7 @@
 				<s:Image source="assets/image/kuang2.png" width="100%" height="100%"/>
 				<s:Label left="41" top="17" text="抱索器编号：{ropeway.ropewayId}" fontWeight="bold"/>
 				<s:Label right="24" top="17" text="开合次数：{numtimes}" fontWeight="bold"/>
-				<s:Label horizontalCenter="54" top="86" text="{ropeway.ropewayForce} KG" fontSize="38" fontWeight="bold"/>
+				<s:Label horizontalCenter="54" top="86" text="{ropeway.ropewayForce} {ropeway.ropewayUnit}" fontSize="38" fontWeight="bold"/>
 				<s:Label top="148" horizontalCenter="54" text="{date}"/>
 			</s:Group>
 			<s:Group width="300" height="200">
@@ -163,6 +163,15 @@
 			</s:Group>
 			<s:Group width="300" height="200">
 				<s:Image source="assets/image/kuang4.png" width="100%" height="100%"/>
+				<s:Label left="48" top="17" text="报警情况" fontWeight="bold"/>
+				<s:Scroller x="18" y="53">
+					<s:DataGroup id="datagroup" width="246" top="45" height="136" itemRenderer="custom.itemRenderer.ItemRendererRealtimeDetection">
+						<s:layout>
+							<s:TileLayout columnAlign="justifyUsingWidth" 
+										  paddingTop="2" paddingBottom="2"/>
+						</s:layout>	
+					</s:DataGroup>
+				</s:Scroller>
 			</s:Group>
 		</s:HGroup>
 		

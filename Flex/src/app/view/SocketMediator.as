@@ -1,6 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayAlarmProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayVO;
@@ -49,7 +50,7 @@ package app.view
 				
 		private function connect():void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务�..");
 				
 			socket.connect(_config.serverIp,_config.serverPort);
 				
@@ -71,7 +72,7 @@ package app.view
 		{  			
 			if(_errorCount > 5)
 			{
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！\n\"错误原因 ：" + event.type + "\"");
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！\n\"错误原因 � + event.type + "\"");
 								
 				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
 			}
@@ -112,6 +113,9 @@ package app.view
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);
+			
+			var alarmProxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
+			alarmProxy.IsRopewayAlarm(ropeway);
 			
 			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,ropeway);
 		}

@@ -36,7 +36,7 @@ package app.model.vo
 		{
 			return _source.AlarmDatetime;
 		}
-		public function set alarmType(value:Date):void
+		public function set alarmDate(value:Date):void
 		{
 			_source.AlarmDatetime = value;
 		}

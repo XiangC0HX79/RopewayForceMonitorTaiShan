@@ -13,24 +13,8 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<fx:Style>
-		@namespace s "library://ns.adobe.com/flex/spark";
-		@namespace mx "library://ns.adobe.com/flex/mx";
-		.myCustomButton1 {
-			icon:Embed(source="assets/image/bn1.png");
-			downIcon:Embed(source="assets/image/bn1off.png");
-			overIcon:Embed(source="assets/image/bn1off.png");
-			upIcon:Embed(source="assets/image/bn1.png");
-		}
-		.myCustomButton2 {
-			icon:Embed(source="assets/image/bn2.png");
-			downIcon:Embed(source="assets/image/bn2off.png");
-			overIcon:Embed(source="assets/image/bn2off.png");
-			upIcon:Embed(source="assets/image/bn2.png");
-		}
-	</fx:Style>
 	<s:Button label="实时检测记录" skinClass="custom.skin.SkinButtonRealtimeDetection" width="100%" height="25%" buttonDown="dispatchEvent(new Event(REALTIME_DETECTION));"/>
-	<s:Button label="当天概览" styleName="myCustomButton2" width="100%" height="25%" buttonDown="dispatchEvent(new Event(TODAY_OVERVIEW));"/>
-	<s:Button label="分析查询" width="100%" height="25%"/>
-	<s:Button label="搜索器车厢设置" width="100%" height="25%"/>
+	<s:Button label="当天概览" skinClass="custom.skin.SkinButtonContentTodayOverview" width="100%" height="25%" buttonDown="dispatchEvent(new Event(TODAY_OVERVIEW));"/>
+	<s:Button label="分析查询" skinClass="custom.skin.SkinButtonMenuLater3" width="100%" height="25%"/>
+	<s:Button label="搜索器车厢设置" skinClass="custom.skin.SkinButtonMenuLater4" width="100%" height="25%"/>
 </s:VGroup>
