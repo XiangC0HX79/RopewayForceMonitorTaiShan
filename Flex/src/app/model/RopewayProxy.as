@@ -39,6 +39,8 @@ package app.model
 		
 		private function InitRopewayHistory(station:String):void
 		{
+			var now:Date = new Date;
+			
 			for(var i:Number = 0;i<10000;i++)
 			{			
 				var r:RopewayVO = new RopewayVO;		
@@ -47,9 +49,20 @@ package app.model
 				r.ropewayForce = 500 + int(Math.random() * 150);
 				r.ropewayUnit = "KG";
 				r.ropewayTemp = int(Math.random() * 50);
-				r.ropewayTime = new Date;
+				//r.ropewayTime = new Date;
 				
 				r = AddRopeway(r);
+			}
+			
+			for(i = 0;i<100;i++)
+			{								
+				var id:String = StringUtil.repeat("0",4 - i.toString().length) + i.toString();	
+				r = ropewayDict[id];
+				for(var j:Number = 0;j<r.ropewayHistory.length;j++)
+				{
+					var rh:RopewayVO = r.ropewayHistory[r.ropewayHistory.length - j - 1];
+					rh.ropewayTime = new Date(now.time - (5 * 1000) * j); 
+				}
 			}
 			
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);

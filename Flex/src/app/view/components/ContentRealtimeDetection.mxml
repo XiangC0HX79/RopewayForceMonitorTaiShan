@@ -5,7 +5,7 @@
 		 left="0" right="0" top="0" bottom="0" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:SolidColorStroke id="lineStroke" color="0x0" weight="2"/>
+		<s:SolidColorStroke id="lineStroke" color="red" weight="2"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -20,6 +20,10 @@
 			import spark.formatters.DateTimeFormatter;
 			import spark.primitives.Line;
 			
+			import flash.filters.BitmapFilterQuality;
+			
+			public static const TEM_MIN:Number = 60 * 1000;
+			
 			[Bindable]public var ropeway:RopewayVO;
 			[Bindable]public var numtimes:int;
 			[Bindable]public var date:String;
@@ -27,8 +31,8 @@
 			private var _arrLine:Array = new Array;
 			private var _arrAnima:Array = new Array;
 						
-			[Bindable]private var verticalAxis:ArrayCollection = new ArrayCollection;
-			[Bindable]private var horizontalAxis:ArrayCollection = new ArrayCollection;
+			//[Bindable]private var verticalAxis:ArrayCollection = new ArrayCollection;
+			//[Bindable]private var horizontalAxis:ArrayCollection = new ArrayCollection;
 						
 			public function UpdateChart():void
 			{				
@@ -56,7 +60,25 @@
 					max = ave + 125;
 				}
 				
-				verticalAxis.removeAll();
+				verticalAxis.minimum = min;
+				verticalAxis.maximum = max;
+				verticalAxis.interval = 50;
+								
+				var maxh:Number = (ropeway.ropewayHistory[ropeway.ropewayHistory.length - 1] as RopewayVO).ropewayTime.time;
+				var minh:Number = (ropeway.ropewayHistory[0] as RopewayVO).ropewayTime.time;
+				
+				minh = Math.floor( minh / TEM_MIN) * TEM_MIN;
+				maxh = Math.ceil( maxh / TEM_MIN) * TEM_MIN;
+				
+				horizontalAxis.maximum = new Date(maxh);
+				horizontalAxis.minimum = new Date(minh);
+				
+				//horizontalAxis.interval = 2;
+				horizontalAxis.labelUnits = "minutes";
+				
+				//horizontalAxis.interval = Math.ceil((maxh - minh) / (5 * TEM_MIN)) * TEM_MIN;
+				
+				/* verticalAxis.removeAll();
 				df = (max - min) / 5;
 				for(var i:Number = 5;i >=0;i--)
 					verticalAxis.addItem(String(i * df + min));
@@ -65,8 +87,9 @@
 				var dt:DateTimeFormatter = new DateTimeFormatter;
 				dt.dateTimePattern = "HH:MM:ss";
 				for(i = 0;i<5;i++)
-					horizontalAxis.addItem(dt.format(new Date));
+					horizontalAxis.addItem(dt.format(new Date)); */
 				
+				var i:Number;
 				for(i = 0;i<_arrLine.length;i++)
 				{
 					var line:Line = _arrLine[i];
@@ -175,8 +198,23 @@
 			</s:Group>
 		</s:HGroup>
 		
-		<s:Group width="100%" height="100%">			
-			<s:DataGroup mouseChildren="false" mouseEnabled="false"
+		<s:Group width="100%" height="100%">
+			<mx:LineChart left="20" right="20" bottom="20" top="20" dataProvider="{ropeway.ropewayHistory}">
+				<mx:verticalAxis>
+					<mx:LinearAxis id="verticalAxis"/>
+				</mx:verticalAxis>
+				<mx:horizontalAxis>
+					<mx:DateTimeAxis displayLocalTime="true" id="horizontalAxis"/>
+				</mx:horizontalAxis>
+				<mx:series>
+					<mx:LineSeries id="ser" yField="ropewayForce" xField="ropewayTime">
+						<mx:lineStroke>
+							<s:SolidColorStroke color="red"/>
+						</mx:lineStroke>
+					</mx:LineSeries>
+				</mx:series>
+			</mx:LineChart>			
+			<!--<s:DataGroup mouseChildren="false" mouseEnabled="false"
 						 left="0" right="100" top="20" bottom="20" 
 						 dataProvider="{verticalAxis}">
 				<s:layout>
@@ -206,9 +244,24 @@
 				</s:itemRenderer>
 			</s:DataGroup>
 			
-			<s:SpriteVisualElement id="chartBack" left="100" right="20" bottom="20" top="20"/>
+			<s:SpriteVisualElement id="chartBack" left="100" right="20" bottom="20" top="20"/>-->
 			
-			<s:Group id="groupChart" left="20" right="20" bottom="20" top="20"/>
+			<s:Group id="groupChart" left="20" right="20" bottom="20" top="20">
+				<s:filters>
+					<s:DropShadowFilter 
+						distance="4" 
+						angle="45" 
+						color="0" 
+						alpha="1" 
+						blurX="4" 
+						blurY="4" 
+						strength="1" 
+						quality="1" 
+						hideObject="false"
+						inner="false" 
+						knockout="false"/>
+				</s:filters>
+			</s:Group>
 		</s:Group>
 		<!--<s:Group width="900" height="100%">
 			<mx:LineChart id="linechart1" width="100%" height="100%" updateComplete="linechart1_updateCompleteHandler(event)">

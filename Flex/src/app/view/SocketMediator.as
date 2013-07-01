@@ -106,9 +106,9 @@ package app.view
 			
 			var ropeway:RopewayVO = new RopewayVO;
 			ropeway.ropewayId = a[1];		
-			ropeway.ropewayForce = Number(String(a[2]).substr(0,3));
-			ropeway.ropewayUnit = String(a[2]).substr(3,2);
-			ropeway.ropewayTemp = a[3];
+			ropeway.ropewayForce = Number(a[2]);
+			ropeway.ropewayUnit = a[3];
+			ropeway.ropewayTemp = a[4];
 			ropeway.ropewayTime = new Date(Date.parse(a[0]));
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
