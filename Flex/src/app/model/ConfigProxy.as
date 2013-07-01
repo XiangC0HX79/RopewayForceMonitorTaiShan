@@ -55,6 +55,9 @@ package app.model
 			for each(var s:String in xml.Stations.Station)
 				config.stations.push(s);
 							
+			config.serverIp = xml.ServerIp;
+			config.serverPort = int(xml.ServerPort);			
+				
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);
 		}
 	}

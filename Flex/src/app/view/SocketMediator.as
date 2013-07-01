@@ -70,7 +70,11 @@ package app.view
 		private function onConnectError(event:Event):void 
 		{  			
 			if(_errorCount > 5)
+			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！\n\"错误原因 ：" + event.type + "\"");
+								
+				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+			}
 			else
 				connect();
 		} 
@@ -95,14 +99,16 @@ package app.view
 		
 		private function decodeSocketData(socketData:ByteArray):void
 		{			
-			var s:String = socketData.readUTFBytes(socketData.length);
+			//var s:String = socketData.readMultiByte(socketData.length,"unicode");
+			var s:String = socketData.readMultiByte(socketData.length,"gb2312");
 			var a:Array = s.split('|');
 			
 			var ropeway:RopewayVO = new RopewayVO;
 			ropeway.ropewayId = a[1];		
-			ropeway.ropewayForce = a[2];
+			ropeway.ropewayForce = Number(String(a[2]).substr(0,3));
+			ropeway.ropewayUnit = String(a[2]).substr(3,2);
 			ropeway.ropewayTemp = a[3];
-			ropeway.ropewayTime = a[0];
+			ropeway.ropewayTime = new Date(Date.parse(a[0]));
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);

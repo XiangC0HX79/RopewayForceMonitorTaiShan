@@ -6,6 +6,7 @@ package app.model
 	import flash.utils.Dictionary;
 	
 	import mx.formatters.DateFormatter;
+	import mx.utils.StringUtil;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
@@ -26,10 +27,10 @@ package app.model
 		
 		public function InitRopewayDict(station:String):void
 		{
-			for(var i:Number = 0;i<200;i++)
+			for(var i:Number = 0;i<100;i++)
 			{				
-				var r:RopewayVO = new RopewayVO;		
-				r.ropewayId = String(i);	
+				var r:RopewayVO = new RopewayVO;					
+				r.ropewayId = StringUtil.repeat("0",4 - i.toString().length) + i.toString();	
 				ropewayDict[r.ropewayId] = r;
 			}
 			
@@ -39,10 +40,12 @@ package app.model
 		private function InitRopewayHistory(station:String):void
 		{
 			for(var i:Number = 0;i<10000;i++)
-			{				
+			{			
 				var r:RopewayVO = new RopewayVO;		
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.ropewayForce = int(Math.random() * 500);
+				var s:String = String(int(Math.random() * 100));					
+				r.ropewayId = StringUtil.repeat("0",4 - s.length) + s;
+				r.ropewayForce = 500 + int(Math.random() * 150);
+				r.ropewayUnit = "KG";
 				r.ropewayTemp = int(Math.random() * 50);
 				r.ropewayTime = new Date;
 				

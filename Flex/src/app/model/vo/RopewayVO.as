@@ -26,9 +26,29 @@ package app.model.vo
 		public var todayMin:Number;		
 		public var todayAve:Number;		
 		
-		public var yesterdayMax:Number;		
-		public var yesterdayMin:Number;		
-		public var yesterdayAve:Number;		
+		public function get yesterdayMax():Number	
+		{
+			return todayMax;
+		}
+		public function set yesterdayMax(value:Number):void	
+		{
+		}
+		
+		public function get yesterdayMin():Number	
+		{
+			return todayMin;
+		}
+		public function set yesterdayMin(value:Number):void	
+		{
+		}
+		
+		public function get yesterdayAve():Number	
+		{
+			return todayAve;
+		}
+		public function set yesterdayAve(value:Number):void	
+		{
+		}
 		
 		public function RopewayVO()
 		{
