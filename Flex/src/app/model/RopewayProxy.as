@@ -95,6 +95,7 @@ package app.model
 			r.ropewayForce = ropeway.ropewayForce;
 			r.ropewayTemp = ropeway.ropewayTemp;
 			r.ropewayTime = ropeway.ropewayTime;
+			r.ropewayUnit = ropeway.ropewayUnit;
 			if(!r.todayMin || (r.todayMin > ropeway.ropewayForce))
 				r.todayMin = ropeway.ropewayForce;
 			if(!r.todayMax || (r.todayMax< ropeway.ropewayForce))

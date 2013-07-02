@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 moveEffect="{mxMove}" 
+		 width="10" height="10" 
+		 mouseOut="group_mouseOutHandler(event)"
+		 mouseOver="group_mouseOverHandler(event)"
+		 creationComplete="group_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function group_creationCompleteHandler(event:FlexEvent):void
+			{				
+				img.graphics.beginFill(0xFF);
+				img.graphics.drawCircle(3,3,3);
+			}			
+			
+			protected function group_mouseOverHandler(event:MouseEvent):void
+			{
+				img.scaleX = 2;
+				img.scaleY = 2;
+			}
+			
+			protected function group_mouseOutHandler(event:MouseEvent):void
+			{
+				img.scaleX = 1;
+				img.scaleY = 1;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+		<mx:Move id="mxMove" duration="1000"/>	
+		<mx:Resize id="mxResize"/>
+	</fx:Declarations>
+	
+	<s:Image id="img" width="6" height="6" resizeEffect="Resize"/>
+	<s:Rect>
+		<s:fill>
+			<s:SolidColor alpha="0.01"/>
+		</s:fill>
+	</s:Rect>
+</s:Group>

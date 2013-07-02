@@ -5,91 +5,141 @@
 		 left="0" right="0" top="0" bottom="0" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:SolidColorStroke id="lineStroke" color="red" weight="2"/>
+		<s:SolidColorStroke id="lineStroke" color="0xE48701" weight="3"/>
+		<s:SolidColorStroke id="tickStroke" color="black" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="2"/>
+		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
+		<s:Parallel id="parallel" duration="1000"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import app.model.vo.RopewayVO;
+			
+			import custom.components.ChartImage;
+			
+			import flash.filters.BitmapFilterQuality;
 			
 			import mx.collections.ArrayCollection;
 			import mx.effects.AnimateProperty;
 			import mx.effects.Parallel;
 			import mx.events.FlexEvent;
 			import mx.events.ResizeEvent;
+			import mx.graphics.IStroke;
 			
 			import spark.formatters.DateTimeFormatter;
 			import spark.primitives.Line;
+			import spark.primitives.Rect;
 			
-			import flash.filters.BitmapFilterQuality;
-			
-			public static const TEM_MIN:Number = 60 * 1000;
+			public static const ONE_MIN:Number = 60 * 1000;
+			public static const TEM_MIN:Number = 10 * 60 * 1000;
 			
 			[Bindable]public var ropeway:RopewayVO;
 			[Bindable]public var numtimes:int;
 			[Bindable]public var date:String;
-			
+						
 			private var _arrLine:Array = new Array;
 			private var _arrAnima:Array = new Array;
+			private var _arrImage:Array = new Array;
 						
 			//[Bindable]private var verticalAxis:ArrayCollection = new ArrayCollection;
 			//[Bindable]private var horizontalAxis:ArrayCollection = new ArrayCollection;
 						
 			public function UpdateChart():void
-			{				
-				var max:int;
-				var min:int;
-				var ave:int;
-				
+			{								
 				var df:Number = ropeway.yesterdayMax - ropeway.yesterdayMin;
-				if(df < 3 * 10)
+				var ave:Number = (ropeway.yesterdayMax + ropeway.yesterdayMin) / 2;
+				if(df < 4 * 10)
 				{
-					ave = Math.floor(ropeway.yesterdayAve / 10) * 10 + 5;
-					min = ave - 25;
-					max = ave + 25;
+					verticalAxis.interval = 10;
+					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
+					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				}
-				else if(df < 3 * 20)
+				else if(df < 4 * 20)
 				{
-					ave = Math.floor(ropeway.yesterdayAve / 20) * 20 + 10;
-					min = ave - 50;
-					max = ave + 50;
+					verticalAxis.interval = 20;
+					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
+					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				}
-				else if(df < 3 * 50)
+				else if(df < 4 * 50)
 				{
-					ave = Math.floor(ropeway.yesterdayAve / 50) * 50 + 25;
-					min = ave - 125;
-					max = ave + 125;
+					verticalAxis.interval = 50;
+					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
+					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				}
-				
-				verticalAxis.minimum = min;
-				verticalAxis.maximum = max;
-				verticalAxis.interval = 50;
 								
 				var maxh:Number = (ropeway.ropewayHistory[ropeway.ropewayHistory.length - 1] as RopewayVO).ropewayTime.time;
 				var minh:Number = (ropeway.ropewayHistory[0] as RopewayVO).ropewayTime.time;
 				
-				minh = Math.floor( minh / TEM_MIN) * TEM_MIN;
-				maxh = Math.ceil( maxh / TEM_MIN) * TEM_MIN;
+				minh = Math.floor(minh / ONE_MIN) * ONE_MIN;
+				maxh = Math.round(maxh / ONE_MIN) * ONE_MIN + ONE_MIN;
 				
-				horizontalAxis.maximum = new Date(maxh);
+				//var interval:Number = Math.ceil((maxh - minh) / TEM_MIN);
+				//horizontalAxis.interval = interval;
+				
 				horizontalAxis.minimum = new Date(minh);
-				
-				//horizontalAxis.interval = 2;
-				horizontalAxis.labelUnits = "minutes";
-				
-				//horizontalAxis.interval = Math.ceil((maxh - minh) / (5 * TEM_MIN)) * TEM_MIN;
-				
-				/* verticalAxis.removeAll();
-				df = (max - min) / 5;
-				for(var i:Number = 5;i >=0;i--)
-					verticalAxis.addItem(String(i * df + min));
-				
-				horizontalAxis.removeAll();
-				var dt:DateTimeFormatter = new DateTimeFormatter;
-				dt.dateTimePattern = "HH:MM:ss";
-				for(i = 0;i<5;i++)
-					horizontalAxis.addItem(dt.format(new Date)); */
-				
+				horizontalAxis.maximum = new Date(maxh);
+										
+				if(_arrLine.length == 0)
+				{
+					var ptS:Point = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayMin);
+					ptS.x = 10;
+					
+					var ptE:Point = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayMin);
+					ptE.x = 770;
+					
+					addLine(ptS,ptE,yesStroke);
+					
+					ptS = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayMax);
+					ptS.x = 10;
+					
+					ptE = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayMax);
+					ptE.x = 770;
+					
+					addLine(ptS,ptE,yesStroke);
+										
+					ptS = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayAve);
+					ptS.x = 10;
+					
+					ptE = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayAve);
+					ptE.x = 770;
+					
+					addLine(ptS,ptE,yesStroke);
+				}
+								
 				var i:Number;
+				var n:Number = ropeway.ropewayHistory.length - (_arrLine.length - 3); 
+				if(n > 1)
+				{
+					for(i = ropeway.ropewayHistory.length - n;i<ropeway.ropewayHistory.length - 1;i++)
+					{						
+						addLine(
+							dataCanvas.dataToLocal(
+								ropeway.ropewayHistory[i].ropewayTime
+								,ropeway.ropewayHistory[i].ropewayForce
+							)
+							,
+							dataCanvas.dataToLocal(
+								ropeway.ropewayHistory[i+1].ropewayTime
+								,ropeway.ropewayHistory[i+1].ropewayForce
+							)
+							,lineStroke
+						);
+					}
+				}
+				else if(n < 1)
+				{					
+					for(i = 0;i < 1 - n;i++)
+					{					
+						_arrAnima.pop();
+						_arrAnima.pop();
+						_arrAnima.pop();
+						_arrAnima.pop();
+						
+						line = _arrLine.pop();
+						groupChart.removeElement(line);						
+					}
+				}
+				
 				for(i = 0;i<_arrLine.length;i++)
 				{
 					var line:Line = _arrLine[i];
@@ -102,64 +152,79 @@
 					anima.fromValue = line.xTo;
 					anima = _arrAnima[i * 4 + 3];
 					anima.fromValue = line.yTo;
-				}
-				
-				var perw:Number = groupChart.width / ropeway.ropewayHistory.length;
-				var perh:Number = groupChart.height / (max - min);
-								
-				for(i = 1;i<ropeway.ropewayHistory.length;i++)
-				{
-					if(_arrLine.length < i)
+					
+					if(i == 0)
 					{
-						line = new Line;
-						line.stroke = lineStroke;					
-						_arrLine.push(line);					
-						groupChart.addElement(line);
-						
-						anima = new AnimateProperty(line);
-						anima.property = "xFrom";
-						_arrAnima.push(anima);
-						
-						anima = new AnimateProperty(line);
-						anima.property = "yFrom";
-						_arrAnima.push(anima);
-						
-						anima = new AnimateProperty(line);
-						anima.property = "xTo";
-						_arrAnima.push(anima);
-						
-						anima = new AnimateProperty(line);
-						anima.property = "yTo";
-						_arrAnima.push(anima);
+						ptS = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayMin);
+						ptE = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayMin);
+					}
+					else if(i == 1)
+					{
+						ptS = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayMax);
+						ptE = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayMax);
+					}
+					else if(i == 2)
+					{
+						ptS = dataCanvas.dataToLocal(horizontalAxis.minimum,ropeway.yesterdayAve);
+						ptE = dataCanvas.dataToLocal(horizontalAxis.maximum,ropeway.yesterdayAve);
+					}
+					else
+					{
+						ptS = dataCanvas.dataToLocal(
+							ropeway.ropewayHistory[i-3].ropewayTime
+							,ropeway.ropewayHistory[i-3].ropewayForce
+						);						
+						ptE = dataCanvas.dataToLocal(
+							ropeway.ropewayHistory[i-2].ropewayTime
+							,ropeway.ropewayHistory[i-2].ropewayForce
+						);
 					}
 					
-					var r:RopewayVO = ropeway.ropewayHistory[i - 1];
-					var x:Number = int(perw * (i - 1));
-					var y:Number = int(perh * (max - r.ropewayForce));
-					//line = _arrLine[i];
-					
-					anima = _arrAnima[(i - 1) * 4];
-					anima.toValue = x;
-					anima = _arrAnima[(i - 1) * 4 + 1];
-					anima.toValue = y;
-					
-					
-					r = ropeway.ropewayHistory[i];
-					x = int(perw * i);
-					y = int(perh * (max - r.ropewayForce));
-					
-					anima = _arrAnima[(i - 1) * 4 + 2];
-					anima.toValue = x;
-					anima = _arrAnima[(i - 1) * 4 + 3];
-					anima.toValue = y;
+					setToValue(ptS,ptE,i);
 				}
 				
-				var p:Parallel = new Parallel;
-				p.duration = 1000;
-				p.children = _arrAnima;
-				p.play();
+				parallel.children = _arrAnima;
+				parallel.play();
 				
-				trace("Chart:" + (new Date).time);
+				
+				//添加点
+				n =  ropeway.ropewayHistory.length - _arrImage.length; 
+				
+				if(n > 0)
+				{
+					for(i = ropeway.ropewayHistory.length - n;i<ropeway.ropewayHistory.length;i++)
+					{			
+						var pt:Point = dataCanvas.dataToLocal(
+							ropeway.ropewayHistory[i].ropewayTime
+							,ropeway.ropewayHistory[i].ropewayForce
+						);
+						
+						var img:ChartImage = new ChartImage;
+						img.x = pt.x - 5;
+						img.y = pt.y - 5;
+						
+						groupChart.addElement(img);
+						_arrImage.push(img);
+					}
+				}
+				else if(n < 0)
+				{					
+					for(i = 0;i < -n;i++)
+					{					
+						groupChart.removeElement(_arrImage.pop());						
+					}
+				}
+				
+				for(i = 0;i<ropeway.ropewayHistory.length;i++)
+				{						
+					pt = dataCanvas.dataToLocal(
+						ropeway.ropewayHistory[i].ropewayTime
+						,ropeway.ropewayHistory[i].ropewayForce
+					);
+					
+					img = _arrImage[i];
+					img.move(pt.x - 5,pt.y - 5);
+				}
 			}		
 						
 			protected function creationCompleteHandler(event:FlexEvent):void
@@ -167,6 +232,50 @@
 				UpdateChart();
 			}
 			
+			private function addLine(ptS:Point,ptE:Point,lineStroke:IStroke):void
+			{								
+				var line:Line = new Line;
+				line.stroke = lineStroke;			
+									
+				line.xFrom = ptS.x;
+				line.yFrom = ptS.y;
+				
+				line.xTo = ptE.x;
+				line.yTo = ptE.y;
+				
+				_arrLine.push(line);		
+				groupChart.addElement(line);
+				
+				var anima:AnimateProperty = new AnimateProperty(line);
+				anima.property = "xFrom";
+				_arrAnima.push(anima);
+				
+				anima = new AnimateProperty(line);
+				anima.property = "yFrom";
+				_arrAnima.push(anima);
+				
+				anima = new AnimateProperty(line);
+				anima.property = "xTo";
+				_arrAnima.push(anima);
+				
+				anima = new AnimateProperty(line);
+				anima.property = "yTo";
+				_arrAnima.push(anima);
+			}
+			
+			private function setToValue(ptS:Point,ptE:Point,i:Number):void
+			{				
+				var anima:AnimateProperty = _arrAnima[i * 4];
+				if(i > 2)
+					anima.toValue = ptS.x;
+				anima = _arrAnima[i * 4 + 1];
+				anima.toValue = ptS.y;												
+				anima = _arrAnima[i * 4 + 2];
+				if(i > 2)
+					anima.toValue = ptE.x;
+				anima = _arrAnima[i * 4 + 3];
+				anima.toValue = ptE.y;
+			}
 		]]>
 	</fx:Script>
 	<s:VGroup width="100%" height="100%">
@@ -199,54 +308,46 @@
 		</s:HGroup>
 		
 		<s:Group width="100%" height="100%">
-			<mx:LineChart left="20" right="20" bottom="20" top="20" dataProvider="{ropeway.ropewayHistory}">
+			<mx:LineChart left="20" right="40" bottom="20" top="40">
+				<mx:backgroundElements>
+					<fx:Array>						
+						<mx:GridLines gridDirection="both" 
+									  horizontalStroke="{gridStroke}"
+									  verticalStroke="{gridStroke}"/>
+					</fx:Array>
+				</mx:backgroundElements>
+				
+				<mx:annotationElements>
+					<mx:CartesianDataCanvas id="dataCanvas" includeInRanges="true"/>
+				</mx:annotationElements>
+				
 				<mx:verticalAxis>
 					<mx:LinearAxis id="verticalAxis"/>
 				</mx:verticalAxis>
 				<mx:horizontalAxis>
-					<mx:DateTimeAxis displayLocalTime="true" id="horizontalAxis"/>
+					<mx:DateTimeAxis labelUnits="minutes"
+									 displayLocalTime="true" 
+									 id="horizontalAxis"/>
 				</mx:horizontalAxis>
+				
+				<mx:verticalAxisRenderers>					
+					<mx:AxisRenderer axis="{verticalAxis}" 
+									 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+									 minorTickPlacement="none"/>
+				</mx:verticalAxisRenderers>
+				
+				<mx:horizontalAxisRenderers>			
+					<mx:AxisRenderer axis="{horizontalAxis}" 
+									 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+									 minorTickPlacement="none"/>					
+				</mx:horizontalAxisRenderers>
+				
 				<mx:series>
-					<mx:LineSeries id="ser" yField="ropewayForce" xField="ropewayTime">
-						<mx:lineStroke>
-							<s:SolidColorStroke color="red"/>
-						</mx:lineStroke>
-					</mx:LineSeries>
+					<mx:LineSeries id="ser" yField="ropewayForce" xField="ropewayTime"/>
 				</mx:series>
-			</mx:LineChart>			
-			<!--<s:DataGroup mouseChildren="false" mouseEnabled="false"
-						 left="0" right="100" top="20" bottom="20" 
-						 dataProvider="{verticalAxis}">
-				<s:layout>
-					<s:VerticalLayout/>
-				</s:layout>
-				<s:itemRenderer>
-					<fx:Component>
-						<s:ItemRenderer height="100%">
-							<s:Label text="{data}"/>
-						</s:ItemRenderer>
-					</fx:Component>
-				</s:itemRenderer>
-			</s:DataGroup>
+			</mx:LineChart>		
 			
-			<s:DataGroup mouseChildren="false" mouseEnabled="false"
-						 left="120" right="20" bottom="0" height="20"
-						 dataProvider="{horizontalAxis}">
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-				<s:itemRenderer>
-					<fx:Component>
-						<s:ItemRenderer width="100%">
-							<s:Label text="{data}"/>
-						</s:ItemRenderer>
-					</fx:Component>
-				</s:itemRenderer>
-			</s:DataGroup>
-			
-			<s:SpriteVisualElement id="chartBack" left="100" right="20" bottom="20" top="20"/>-->
-			
-			<s:Group id="groupChart" left="20" right="20" bottom="20" top="20">
+			<s:Group id="groupChart" left="80" right="70" bottom="45" top="50">
 				<s:filters>
 					<s:DropShadowFilter 
 						distance="4" 
@@ -262,6 +363,11 @@
 						knockout="false"/>
 				</s:filters>
 			</s:Group>
+			
+			<s:Label left="10" top="20" text="抱索力（{ropeway.ropewayUnit}）"/>
+			<s:Label right="15" bottom="40" text="时间"/>
+			<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0"
+					 text="{ropeway.ropewayId}抱索力实时监控曲线"/>
 		</s:Group>
 		<!--<s:Group width="900" height="100%">
 			<mx:LineChart id="linechart1" width="100%" height="100%" updateComplete="linechart1_updateCompleteHandler(event)">
