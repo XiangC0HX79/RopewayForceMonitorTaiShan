@@ -5,6 +5,7 @@ package app.view
 	import app.model.RopewayNumAnaProxy;
 	import app.model.RopewayNumTotelAnaProxy;
 	import app.model.RopewayProxy;
+	import app.model.RopewayWarningAnaProxy;
 	import app.model.vo.RopewayDayAveVO;
 	import app.model.vo.RopewayForceVo;
 	import app.model.vo.RopewayNumAnaVO;
@@ -13,6 +14,7 @@ package app.view
 	import app.view.components.Anacomponents.ropewayForceAna;
 	import app.view.components.Anacomponents.ropewayNumAna;
 	import app.view.components.Anacomponents.ropewayNumTotelAna;
+	import app.view.components.Anacomponents.ropewayWarningAna;
 	import app.view.components.ContentAnalysis;
 	
 	import custom.itemRenderer.ItemRendererTodayOverview;
@@ -67,6 +69,7 @@ package app.view
 			contentAnalysis.RopewayForceAna.rbGroup3.addEventListener(Event.CHANGE,ChangeHandle,false,0);
 			contentAnalysis.RopewayNumAna.addEventListener(FlexEvent.UPDATE_COMPLETE,numUpdated);
 			contentAnalysis.RopewayNumTotelAna.addEventListener(FlexEvent.UPDATE_COMPLETE,TotelUpdated);
+			contentAnalysis.RopewayWarningAna.addEventListener(FlexEvent.UPDATE_COMPLETE,WarningUpdated);
 		}
 		
 		private function onForceSubmit(event:FlexEvent):void
@@ -514,6 +517,63 @@ package app.view
 			}
 			contentAnalysis.RopewayNumTotelAna.vs2.removeEventListener(FlexEvent.UPDATE_COMPLETE,totelenPushData);
 			num = 0;
+		}
+		
+		private function WarningUpdated(event:FlexEvent):void
+		{
+			if(contentAnalysis.TabN.selectedIndex == 3)
+			{
+				contentAnalysis.RopewayWarningAna.submitbn.addEventListener(FlexEvent.BUTTON_DOWN,onWarningAna);
+			}
+		}
+		
+		private function onWarningAna(event:FlexEvent):void
+		{
+			var fromDates:Array;
+			var fromDate:Date;
+			var toDates:Array;
+			var toDate:Date;
+			var obj:Object = new Object();
+			fromDates=contentAnalysis.RopewayWarningAna.dateFrom1.text.split("-");
+			fromDate=new Date(Number(fromDates[0]),Number(fromDates[1]),Number(fromDates[2]),Number(contentAnalysis.RopewayWarningAna.numericStepper1.value));
+			toDates=contentAnalysis.RopewayWarningAna.dateTo1.text.split("-");
+			toDate=new Date(Number(toDates[0]),Number(toDates[1]),Number(toDates[2]),Number(contentAnalysis.RopewayWarningAna.numericStepper2.value));
+			obj.FROMDATE = fromDate;
+			obj.TODATE = toDate;
+			if(contentAnalysis.RopewayWarningAna.ForceId.text == "")
+			{
+				Alert.show("请输入索道编号","提示");
+				return;
+			}
+			obj.ID = contentAnalysis.RopewayWarningAna.ForceId.text;
+			obj.STATION = "";
+			if(contentAnalysis.RopewayWarningAna.cb1.selected == true&&contentAnalysis.RopewayWarningAna.cb2.selected == true
+				&&contentAnalysis.RopewayWarningAna.cb3.selected == true&&contentAnalysis.RopewayWarningAna.cb4.selected == true)
+			{
+				
+			}
+			else if(contentAnalysis.RopewayWarningAna.cb1.selected == false&&contentAnalysis.RopewayWarningAna.cb2.selected == false
+				&&contentAnalysis.RopewayWarningAna.cb3.selected == false&&contentAnalysis.RopewayWarningAna.cb4.selected == false)
+			{
+				Alert.show("必须选择一个站","提示");
+				return;
+			}
+			else
+			{
+				if(contentAnalysis.RopewayWarningAna.cb1.selected == true)
+					obj.STATION += "," + contentAnalysis.RopewayWarningAna.cb1.label;
+				if(contentAnalysis.RopewayWarningAna.cb2.selected == true)
+					obj.STATION += "," +  contentAnalysis.RopewayWarningAna.cb2.label;
+				if(contentAnalysis.RopewayWarningAna.cb3.selected == true)
+					obj.STATION += "," +  contentAnalysis.RopewayWarningAna.cb3.label;
+				if(contentAnalysis.RopewayWarningAna.cb4.selected == true)
+					obj.STATION += "," +  contentAnalysis.RopewayWarningAna.cb4.label;
+			}
+			
+			var arr:ArrayCollection = new ArrayCollection();
+			var forceProxy:RopewayWarningAnaProxy = facade.retrieveProxy(RopewayWarningAnaProxy.NAME) as RopewayWarningAnaProxy;
+			arr = forceProxy.GetWarningInfo(obj);
+			contentAnalysis.RopewayWarningAna.datagrid.dataProvider = arr;
 		}
 	}
 }

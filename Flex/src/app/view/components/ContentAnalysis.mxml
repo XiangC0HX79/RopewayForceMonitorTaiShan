@@ -11,5 +11,6 @@
 		<components:ropewayForceAna id="RopewayForceAna" label="报索力"/>
 		<components:ropewayNumAna id="RopewayNumAna" label="开合次数"/>
 		<components:ropewayNumTotelAna id="RopewayNumTotelAna" label="总开合次数"/>
+		<components:ropewayWarningAna id="RopewayWarningAna" label="报警分析"/>
 	</mx:TabNavigator>
 </s:Group>
