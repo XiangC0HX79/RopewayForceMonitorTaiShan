@@ -109,7 +109,8 @@ package app.view
 			ropeway.ropewayForce = Number(String(a[2]).substr(0,3));
 			ropeway.ropewayUnit = String(a[2]).substr(3,2);
 			ropeway.ropewayTemp = a[3];
-			ropeway.ropewayTime = new Date(Date.parse(a[0]));
+			var sd:String = String(a[0]).replace(/-/g,"/");
+			ropeway.ropewayTime = new Date(Date.parse(sd));
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);

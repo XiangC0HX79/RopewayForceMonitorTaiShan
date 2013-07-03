@@ -27,11 +27,11 @@
 			private function formatDate(date:Date):String
 			{
 				var dateFormatter:DateFormatter = new DateFormatter();
-				dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
+				dateFormatter.formatString = "JJ:NN:SS";
 				var nowData:String= dateFormatter.format(date); 
 				return nowData;
 			}
 		]]>
 	</fx:Script>
-	<s:Label text="{date}抱索器{_ropewayAlarm.ropeCode}{_ropewayAlarm.alarmType}"/>
+	<s:Label text="{date}  {_ropewayAlarm.ropeCode}  {_ropewayAlarm.alarmType}"/>
 </s:ItemRenderer>

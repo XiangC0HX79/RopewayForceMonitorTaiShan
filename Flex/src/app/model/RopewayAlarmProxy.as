@@ -45,7 +45,7 @@ package app.model
 			{
 				obj.RoapCode = ropeway.ropewayId;
 				obj.AlarmDatetime = ropeway.ropewayTime;
-				obj.AlarmType = "超出前次范围";
+				obj.AlarmType = "超过前次值";
 				var ra:RopewayAlarmVO = new RopewayAlarmVO(obj);
 				arr.addItemAt(ra,0);
 			}
@@ -55,7 +55,7 @@ package app.model
 			{
 				obj.RoapCode = ropeway.ropewayId;
 				obj.AlarmDatetime = ropeway.ropewayTime;
-				obj.AlarmType = "超出平均范围";
+				obj.AlarmType = "超过昨日平均值";
 				var ra2:RopewayAlarmVO = new RopewayAlarmVO(obj);
 				arr.addItemAt(ra2,0);
 			}

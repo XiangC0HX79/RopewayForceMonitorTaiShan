@@ -14,6 +14,9 @@ package app.controller
 			facade.registerProxy(new ConfigProxy);
 			facade.registerProxy(new RopewayProxy);
 			facade.registerProxy(new RopewayAlarmProxy);
+			facade.registerProxy(new RopewayForceProxy);
+			facade.registerProxy(new RopewayNumAnaProxy);
+			facade.registerProxy(new RopewayNumTotelAnaProxy);
 		}
 	}
 }
