@@ -3,43 +3,40 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 moveEffect="{mxMove}" 
-		 width="10" height="10" 
+		 width="15" height="15" 
 		 mouseOut="group_mouseOutHandler(event)"
-		 mouseOver="group_mouseOverHandler(event)"
-		 creationComplete="group_creationCompleteHandler(event)">
+		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import mx.events.FlexEvent;
+			import app.model.vo.RopewayVO;
 			
-			protected function group_creationCompleteHandler(event:FlexEvent):void
-			{				
-				img.graphics.beginFill(0xFF);
-				img.graphics.drawCircle(3,3,3);
-			}			
+			[Bindable]public var ropeway:RopewayVO;
 			
 			protected function group_mouseOverHandler(event:MouseEvent):void
 			{
-				img.scaleX = 2;
-				img.scaleY = 2;
+				pt.width = 10;
+				pt.height = 10;
 			}
 			
 			protected function group_mouseOutHandler(event:MouseEvent):void
 			{
-				img.scaleX = 1;
-				img.scaleY = 1;
-			}
-			
+				pt.width = 5;
+				pt.height = 5;
+			}			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
 		<mx:Move id="mxMove" duration="1000"/>	
-		<mx:Resize id="mxResize"/>
 	</fx:Declarations>
-	
-	<s:Image id="img" width="6" height="6" resizeEffect="Resize"/>
-	<s:Rect>
+		
+	<s:Ellipse id="pt" width="5" height="5" verticalCenter="0" horizontalCenter="0">		
+		<s:fill>
+			<s:SolidColor color="blue"/>
+		</s:fill>
+	</s:Ellipse>
+	<s:Rect left="0" right="0" top="0" bottom="0">
 		<s:fill>
 			<s:SolidColor alpha="0.01"/>
 		</s:fill>

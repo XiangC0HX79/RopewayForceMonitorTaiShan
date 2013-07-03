@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="123" height="71">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.RopewayVO;
+			
+			[Bindable]public var ropeway:RopewayVO;		
+		]]>
+	</fx:Script>	
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:fill>
+			<s:SolidColor color="white"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="2"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">		
+		<s:HGroup>
+			<s:Label text="时　间："/>
+			<s:Label text="{df.format(ropeway.ropewayTime)}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="抱索力："/>
+			<s:Label text="{ropeway.ropewayForce} {ropeway.ropewayUnit}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="温　度："/>
+			<s:Label text="{ropeway.ropewayTemp} ℃"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Group>
