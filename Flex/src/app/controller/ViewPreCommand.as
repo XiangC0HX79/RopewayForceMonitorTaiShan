@@ -27,6 +27,10 @@ package app.controller
 			
 			facade.registerMediator(new MainStationMediator(application.mainStation));
 			
+			facade.registerMediator(new PanelRopewayForceMediator());
+			
+			facade.registerMediator(new ChartRealtimeDetectionMediator());
+			
 			facade.registerMediator(new ContentRealtimeDetectionMediator(new ContentRealtimeDetection));
 			
 			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));

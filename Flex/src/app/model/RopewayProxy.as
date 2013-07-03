@@ -41,7 +41,7 @@ package app.model
 		{
 			var now:Date = new Date;
 			
-			for(var i:Number = 0;i<10000;i++)
+			for(var i:Number = 0;i<5000;i++)
 			{			
 				var r:RopewayVO = new RopewayVO;		
 				var s:String = String(int(Math.random() * 100));					
@@ -61,7 +61,7 @@ package app.model
 				for(var j:Number = 0;j<r.ropewayHistory.length;j++)
 				{
 					var rh:RopewayVO = r.ropewayHistory[r.ropewayHistory.length - j - 1];
-					rh.ropewayTime = new Date(now.time - (5 * 1000) * j); 
+					rh.ropewayTime = new Date(now.time - (50 * 1000) * j); 
 				}
 			}
 			

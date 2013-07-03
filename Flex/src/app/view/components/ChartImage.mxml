@@ -2,8 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 moveEffect="{mxMove}" 
-		 width="15" height="15" 
+		 width="15" height="15" scaleX="0.1" scaleY="0.1"
 		 mouseOut="group_mouseOutHandler(event)"
 		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
@@ -27,8 +26,7 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
-		<mx:Move id="mxMove" duration="1000"/>	
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->	
 	</fx:Declarations>
 		
 	<s:Ellipse id="pt" width="5" height="5" verticalCenter="0" horizontalCenter="0">		

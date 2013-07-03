@@ -7,6 +7,7 @@ package app.view
 	import app.view.components.ContentRealtimeDetection;
 	
 	import mx.collections.ArrayCollection;
+	import mx.core.IVisualElement;
 	import mx.formatters.DateFormatter;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -20,6 +21,10 @@ package app.view
 		public function ContentRealtimeDetectionMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			
+			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayForceMediator.NAME).getViewComponent() as IVisualElement);
+			
+			contentRealtimeDetection.addElement(facade.retrieveMediator(ChartRealtimeDetectionMediator.NAME).getViewComponent() as IVisualElement);
 		}
 		
 		protected function get contentRealtimeDetection():ContentRealtimeDetection
@@ -41,36 +46,16 @@ package app.view
 			{
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
 					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
-					contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
-					contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
 					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
-					contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
-					contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
+					//contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
+					//contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
 					//contentRealtimeDetection.linechart1.dataProvider = contentRealtimeDetection.ropeway.ropewayHistory;
-					contentRealtimeDetection.UpdateChart();
-					
-					var alarmPoxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
-					
-					var dp:ArrayCollection = new ArrayCollection;
-					for each(var ra:RopewayAlarmVO in alarmPoxy.arr)
-					{
-						dp.addItem(ra);
-					}
-					
-					contentRealtimeDetection.datagroup.dataProvider = dp;
+					//contentRealtimeDetection.UpdateChart();
 					break;
 			}
-		}
-		
-		private function formatDate(date:Date):String
-		{
-			var dateFormatter:DateFormatter = new DateFormatter();
-			dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
-			var nowData:String= dateFormatter.format(date); 
-			return nowData;
 		}
 	}
 }

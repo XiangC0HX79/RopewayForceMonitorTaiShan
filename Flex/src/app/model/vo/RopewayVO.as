@@ -7,6 +7,8 @@ package app.model.vo
 		
 		public var ropewayRFId:String;
 		
+		public var ropewayCarId:String;
+		
 		//抱索力
 		public var ropewayForce:Number;
 		
@@ -22,6 +24,16 @@ package app.model.vo
 		//历史数据
 		public var ropewayHistory:Array;
 		
+		//开合次数
+		public function get ropewayOpenCount():Number
+		{
+			return ropewayHistory.length;
+		}
+		public function set ropewayOpenCount(value:Number):void
+		{
+			
+		}
+				
 		public var todayMax:Number;		
 		public var todayMin:Number;		
 		public var todayAve:Number;		

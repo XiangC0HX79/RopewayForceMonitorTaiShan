@@ -30,20 +30,17 @@
 						
 			private var facade:ApplicationFacade = ApplicationFacade.getInstance();
 			
-			protected function title_creationCompleteHandler(event:FlexEvent):void
-			{
-				var contextMenu:ContextMenu=new ContextMenu();
-				contextMenu.hideBuiltInItems(); 
-				
-				var contextMenuItem:ContextMenuItem= new ContextMenuItem("版本：1.0.0");			
-				contextMenu.customItems.push(contextMenuItem);
-				
-				event.currentTarget.contextMenu=contextMenu;
-			}			
+			
+			protected function title_doubleClickHandler(event:MouseEvent):void
+			{				
+				stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:Image width="1024" height="100" creationComplete="title_creationCompleteHandler(event)"/>
+	<s:Image width="1024" height="100" source="@Embed('assets/image/title.jpg')"
+			 doubleClickEnabled="true" doubleClick="title_doubleClickHandler(event)"/>
 	
 	<components:MainMenu id="mainMenu" top="100" bottom="0" width="100"/>
 	<components:MainStation id="mainStation" top="100" height="20" left="100" right="0"/>
