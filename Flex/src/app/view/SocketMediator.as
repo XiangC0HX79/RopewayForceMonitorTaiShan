@@ -50,7 +50,7 @@ package app.view
 				
 		private function connect():void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务�..");
 				
 			socket.connect(_config.serverIp,_config.serverPort);
 				
@@ -109,7 +109,8 @@ package app.view
 			ropeway.ropewayForce = Number(a[2]);
 			ropeway.ropewayUnit = a[3];
 			ropeway.ropewayTemp = a[4];
-			ropeway.ropewayTime = new Date(Date.parse(a[0]));
+			var sd:String = String(a[0]).replace(/-/g,"/");
+			ropeway.ropewayTime = new Date(Date.parse(sd));
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			ropeway = proxy.AddRopeway(ropeway);

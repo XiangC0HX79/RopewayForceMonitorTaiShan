@@ -43,7 +43,10 @@ package app.view
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
 				ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION,
-				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW
+				
+				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
+				
+				ApplicationFacade.NOTIFY_MENU_ANALYSIS
 			];
 		}
 		
@@ -66,6 +69,10 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
 					changeContent(ContentTodayOverviewMediator.NAME);
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:
+					changeContent(ContentAnalysisMediator.NAME);
 					break;
 			}
 		}		
