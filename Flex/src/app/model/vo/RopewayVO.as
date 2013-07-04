@@ -1,13 +1,53 @@
 package app.model.vo
 {
+	import mx.utils.ObjectProxy;
+
 	[Bindable]
 	public class RopewayVO
 	{
-		public var ropewayId:String;
+		/**
+		 * 抱索器编号
+		 * */
+		public function get ropewayId():String
+		{
+			return _source.RopeCode;
+		}
+		public function set ropewayId(value:String):void
+		{
+		}
 		
-		public var ropewayRFId:String;
+		/**
+		 * RFID编号
+		 * */
+		public function get ropewayRFId():String
+		{
+			return _source.RFIDCode;
+		}
+		public function set ropewayRFId(value:String):void
+		{
+		}
 		
-		public var ropewayCarId:String;
+		/**
+		 * 车厢编号
+		 * */
+		public function get ropewayCarId():String
+		{
+			return _source.CarriageCode;
+		}
+		public function set ropewayCarId(value:String):void
+		{
+		}
+		
+		/**
+		 * RFID电量
+		 * */
+		public function get ropewayRFIDEletric():Boolean
+		{
+			return (_source.RFIDDL != "1");
+		}
+		public function set ropewayRFIDEletric(value:Boolean):void
+		{
+		}
 		
 		//抱索力
 		public var ropewayForce:Number;
@@ -20,6 +60,50 @@ package app.model.vo
 		
 		//时间
 		public var ropewayTime:Date;
+		
+		/**
+		 * 所属索道
+		 **/
+		public function get ropeway():String
+		{
+			return _source.FromRopeWay;
+		}
+		public function set ropeway(value:String):void
+		{
+		}
+		
+		/**
+		 * 是否使用
+		 **/
+		public function get isUse():Boolean
+		{
+			return (_source.IsUse != "1");
+		}
+		public function set isUse(value:Boolean):void
+		{
+		}
+		
+		/**
+		 * 最后编辑日期
+		 **/
+		public function get lastUpdateTime():Date
+		{
+			return _source.lastUpdateDatetime;
+		}
+		public function set lastUpdateTime(value:Date):void
+		{
+		}
+				
+		/**
+		 * 最后编辑人
+		 **/
+		public function get lastUpdateUser():Date
+		{
+			return _source.lastUpdateUser;
+		}
+		public function set lastUpdateUser(value:Date):void
+		{
+		}
 		
 		//历史数据
 		public var ropewayHistory:Array;
@@ -62,9 +146,14 @@ package app.model.vo
 		{
 		}
 		
-		public function RopewayVO()
-		{
-			ropewayHistory = new Array;
+		private var _source:ObjectProxy;
+		
+		public function RopewayVO(source:ObjectProxy = null)
+		{						
+			if(source)
+				_source = source;
+			else
+				_source = new ObjectProxy;
 		}
 	}
 }

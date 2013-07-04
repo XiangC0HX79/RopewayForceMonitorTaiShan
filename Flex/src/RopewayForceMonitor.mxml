@@ -4,7 +4,9 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   creationComplete="facade.startup(this)" 
 			   preloader="custom.components.AppDownloadProgressBar"
-			   width="1024" height="768" xmlns:components="app.view.components.*">
+			   xmlns:components="app.view.components.*" 
+			   skinClass="custom.skin.SkinApplication"
+			   width="100%" height="100%">
 	
 	<s:states>
 		<s:State name="Normal"/>
@@ -22,6 +24,7 @@
 			font-family: '微软雅黑';
 		}
 	</fx:Style>
+	
 	<fx:Script>
 		<![CDATA[
 			import app.ApplicationFacade;
@@ -29,24 +32,23 @@
 			import mx.events.FlexEvent;
 						
 			private var facade:ApplicationFacade = ApplicationFacade.getInstance();
-			
-			
+						
 			protected function title_doubleClickHandler(event:MouseEvent):void
 			{				
 				stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
-			}
-			
+			}			
 		]]>
 	</fx:Script>
 	
-	<s:Image width="1024" height="100" source="@Embed('assets/image/title.jpg')"
+	<s:Image left="0" right="0" height="100" fillMode="scale"
+			 source="@Embed('assets/image/title.jpg',scaleGridTop='0',scaleGridLeft='500',scaleGridRight='1024',scaleGridBottom='100')"
 			 doubleClickEnabled="true" doubleClick="title_doubleClickHandler(event)"/>
 	
 	<components:MainMenu id="mainMenu" top="100" bottom="0" width="100"/>
-	<components:MainStation id="mainStation" top="100" height="20" left="100" right="0"/>
-	<s:Scroller top="120" bottom="0" left="100" right="0">
-		<s:Group id="mainContent"/>
-	</s:Scroller>
+	
+	<components:MainStation id="mainStation" top="100" height="30" left="100" right="0" includeIn="Normal"/>
+	
+	<s:Group id="mainContent" top="130" top.Single="100" bottom="0" left="100" right="0"/>
 		
 	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
 </s:Application>

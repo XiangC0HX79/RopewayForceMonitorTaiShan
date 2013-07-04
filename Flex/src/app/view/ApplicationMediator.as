@@ -17,6 +17,8 @@ package app.view
 	{
 		public static const NAME:String = "ApplicationMediator";
 		
+		private var _config:ConfigVO;
+		
 		public function ApplicationMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
@@ -55,23 +57,23 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;
-					application.currentState = config.station?"Single":"Normal";
+					_config = notification.getBody() as ConfigVO;
+					//application.currentState = _config.station?"Single":"Normal";
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					changeContent(ContentRealtimeDetectionMediator.NAME);
-					break;
-				
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
+					application.currentState = _config.station?"Single":"Normal";
 					changeContent(ContentRealtimeDetectionMediator.NAME);
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
+					application.currentState = _config.station?"Single":"Normal";
 					changeContent(ContentTodayOverviewMediator.NAME);
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:
+					application.currentState = "Single";
 					changeContent(ContentAnalysisMediator.NAME);
 					break;
 			}

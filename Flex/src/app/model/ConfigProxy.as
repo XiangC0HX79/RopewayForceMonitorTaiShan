@@ -56,7 +56,10 @@ package app.model
 				config.stations.push(s);
 							
 			config.serverIp = xml.ServerIp;
-			config.serverPort = int(xml.ServerPort);			
+			
+			config.serverPort = int(xml.ServerPort);	
+			
+			WebServiceProxy.BASE_URL = xml.WebServiceUrl;
 				
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);
 		}

@@ -5,7 +5,11 @@ package app.model
 	
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.ResultEvent;
+	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
 	
 	import org.puremvc.as3.interfaces.IProxy;
@@ -27,29 +31,33 @@ package app.model
 		
 		public function InitRopewayDict(station:String):void
 		{
-			for(var i:Number = 0;i<100;i++)
-			{				
-				var r:RopewayVO = new RopewayVO;					
-				r.ropewayId = StringUtil.repeat("0",4 - i.toString().length) + i.toString();	
+			var token:AsyncToken = send("RopeCarriageRela_GetLis",onRopeCarriageRela_GetLis,station);
+			token.station = station;
+		}
+		
+		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
+		{
+			for each(var i:ObjectProxy in event.result)
+			{
+				var r:RopewayVO = new RopewayVO(i);
 				ropewayDict[r.ropewayId] = r;
 			}
 			
-			InitRopewayHistory(station);
+			InitRopewayHistory(event.token.station);
 		}
 		
 		private function InitRopewayHistory(station:String):void
 		{
 			var now:Date = new Date;
 			
-			for(var i:Number = 0;i<5000;i++)
+			/*for(var i:Number = 0;i<5000;i++)
 			{			
-				var r:RopewayVO = new RopewayVO;		
+				var r:RopewayVO = new RopewayVO();		
 				var s:String = String(int(Math.random() * 100));					
 				r.ropewayId = StringUtil.repeat("0",4 - s.length) + s;
 				r.ropewayForce = 500 + int(Math.random() * 150);
 				r.ropewayUnit = "KG";
 				r.ropewayTemp = int(Math.random() * 50);
-				//r.ropewayTime = new Date;
 				
 				r = AddRopeway(r);
 			}
@@ -63,9 +71,9 @@ package app.model
 					var rh:RopewayVO = r.ropewayHistory[r.ropewayHistory.length - j - 1];
 					rh.ropewayTime = new Date(now.time - (50 * 1000) * j); 
 				}
-			}
+			}*/
 			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
 		}
 		
 		public function RefreshRopewayDict(station:String):void
