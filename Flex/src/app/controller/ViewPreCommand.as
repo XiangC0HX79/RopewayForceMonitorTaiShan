@@ -2,6 +2,7 @@ package app.controller
 {	
 	import app.view.*;
 	import app.view.components.ContentAnalysis;
+	import app.view.components.ContentManage;
 	import app.view.components.ContentRealtimeDetection;
 	import app.view.components.ContentTodayOverview;
 	
@@ -37,6 +38,8 @@ package app.controller
 			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));
 			
 			facade.registerMediator(new ContentAnalysisMediator(new ContentAnalysis));
+			
+			facade.registerMediator(new ContentManageMediator(new ContentManage));
 		}
 	}
 }

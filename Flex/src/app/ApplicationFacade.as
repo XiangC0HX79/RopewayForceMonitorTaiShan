@@ -126,6 +126,9 @@ package app
 		/**菜单-分析统计
 		 **/
 		public static const NOTIFY_MENU_ANALYSIS:String 		= "MenuAnalysis";
+		/**菜单-车厢设置
+		 **/
+		public static const NOTIFY_MENU_MANAGE:String 		= "MenuManage";
 		/**分析统计-索道力
 		 **/
 		public static const NOTIFY_ANALYSIS_Force:String 		= "MenuAnalysis";

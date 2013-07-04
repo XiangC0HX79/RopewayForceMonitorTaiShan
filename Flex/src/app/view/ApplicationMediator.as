@@ -46,7 +46,9 @@ package app.view
 				
 				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
 				
-				ApplicationFacade.NOTIFY_MENU_ANALYSIS
+				ApplicationFacade.NOTIFY_MENU_ANALYSIS,
+				
+				ApplicationFacade.NOTIFY_MENU_MANAGE
 			];
 		}
 		
@@ -73,6 +75,10 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:
 					changeContent(ContentAnalysisMediator.NAME);
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_MANAGE:
+					changeContent(ContentManageMediator.NAME);
 					break;
 			}
 		}		
