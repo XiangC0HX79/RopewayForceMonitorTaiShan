@@ -48,19 +48,7 @@ package app.model.vo
 		public function set ropewayRFIDEletric(value:Boolean):void
 		{
 		}
-		
-		//抱索力
-		public var ropewayForce:Number;
-		
-		//单位
-		public var ropewayUnit:String;
-		
-		//温度
-		public var ropewayTemp:Number;
-		
-		//时间
-		public var ropewayTime:Date;
-		
+				
 		/**
 		 * 所属索道
 		 **/
@@ -104,9 +92,29 @@ package app.model.vo
 		public function set lastUpdateUser(value:Date):void
 		{
 		}
+				
+		/**
+		 * 最新抱索力
+		 **/
+		public function get ropewayForce():RopewayForceVO	
+		{
+			return (ropewayHistory.length > 0)?ropewayHistory[ropewayHistory.length - 1]:null;
+		}
+		public function set ropewayUnit(value:String):void	
+		{
+		}
 		
-		//历史数据
-		public var ropewayHistory:Array;
+		//抱索力
+		//public var ropewayForce:Number;
+		
+		//单位
+		//public var ropewayUnit:String;
+		
+		//温度
+		//public var ropewayTemp:Number;
+		
+		//时间
+		//public var ropewayTime:Date;
 		
 		//开合次数
 		public function get ropewayOpenCount():Number
@@ -117,43 +125,103 @@ package app.model.vo
 		{
 			
 		}
-				
-		public var todayMax:Number;		
-		public var todayMin:Number;		
-		public var todayAve:Number;		
 		
+		/**
+		 * 今日最大值
+		 **/
+		public function get todayMax():Number	
+		{			
+			var n:Number = 0;
+			for each(var rf:RopewayForceVO in ropewayHistory)
+			{
+				if(n < rf.ropewayForce)
+					n = rf.ropewayForce;
+			}
+			return n;
+		}
+		public function set todayMax(value:Number):void	
+		{
+		}
+		
+		/**
+		 * 今日最小值
+		 **/
+		public function get todayMin():Number	
+		{			
+			var n:Number = Number.MAX_VALUE;
+			for each(var rf:RopewayForceVO in ropewayHistory)
+			{
+				if(n > rf.ropewayForce)
+					n = rf.ropewayForce;
+			}
+			return n;
+		}
+		public function set todayMin(value:Number):void	
+		{
+		}
+		
+		/**
+		 * 今日平均值
+		 **/
+		public function get todayAve():Number	
+		{			
+			var n:Number = 0;
+			for each(var rf:RopewayForceVO in ropewayHistory)
+			{
+				n += rf.ropewayForce;
+			}
+			
+			n = Math.round(n / ropewayHistory.length);
+			
+			return n;
+		}
+		public function set todayAve(value:Number):void	
+		{
+		}
+				
+		/**
+		 * 昨日最大值
+		 **/
 		public function get yesterdayMax():Number	
 		{
-			return todayMax;
+			return _source.MaxValue;
 		}
 		public function set yesterdayMax(value:Number):void	
 		{
 		}
 		
+		/**
+		 * 昨日最小值
+		 **/
 		public function get yesterdayMin():Number	
 		{
-			return todayMin;
+			return _source.MinValue;
 		}
 		public function set yesterdayMin(value:Number):void	
 		{
 		}
 		
+		/**
+		 * 昨日平均值
+		 **/
 		public function get yesterdayAve():Number	
 		{
-			return todayAve;
+			return _source.AverageValue;
 		}
 		public function set yesterdayAve(value:Number):void	
 		{
 		}
+				
+		/**
+		 * 抱索力列表
+		 **/
+		public var ropewayHistory:Array = new Array;
 		
 		private var _source:ObjectProxy;
 		
-		public function RopewayVO(source:ObjectProxy = null)
-		{						
-			if(source)
-				_source = source;
-			else
-				_source = new ObjectProxy;
+		public function RopewayVO(source:ObjectProxy)
+		{					
+			_source = source;
 		}
 	}
 }

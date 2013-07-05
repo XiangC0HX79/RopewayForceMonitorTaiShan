@@ -36,7 +36,7 @@ package app.model
 		
 		public function IsRopewayAlarm(ropeway:RopewayVO):void
 		{
-			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			/*var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			var r:RopewayVO = proxy.ropewayDict[ropeway.ropewayId] as RopewayVO;
 			var obj:Object = new Object();
 			if(!r.ropewayHistory[r.ropewayHistory.length-2].ropewayForce 
@@ -58,7 +58,7 @@ package app.model
 				obj.AlarmType = "超过昨日平均值";
 				var ra2:RopewayAlarmVO = new RopewayAlarmVO(obj);
 				arr.addItemAt(ra2,0);
-			}
+			}*/
 		}
 	}
 }

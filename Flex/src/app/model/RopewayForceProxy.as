@@ -2,7 +2,7 @@ package app.model
 {
 	import app.ApplicationFacade;
 	import app.model.vo.RopewayDayAveVO;
-	import app.model.vo.RopewayForceVo;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
 	import flash.utils.Dictionary;
@@ -32,13 +32,13 @@ package app.model
 			var arr:ArrayCollection = new ArrayCollection();
 			for(var i:int;i<=30;i++)
 			{
-				var r:RopewayForceVo = new RopewayForceVo();	
+			/*	var r:RopewayForceVO = new RopewayForceVO();	
 				r.ropewayId = String(int(Math.random() * 100));		
 				r.ropewayForce = int(Math.random() * 500);
 				r.ropewayTemp = int(Math.random() * 50);
 				r.ropewayTime = new Date;
 				r.ropewayStation = "桃花源"
-				arr.addItem(r);
+				arr.addItem(r);*/
 			}
 			return arr;
 		}

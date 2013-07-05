@@ -1,6 +1,7 @@
 package app.model
 {
 	import app.ApplicationFacade;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
 	import flash.utils.Dictionary;
@@ -29,51 +30,35 @@ package app.model
 			return data as Dictionary;
 		}
 		
-		public function InitRopewayDict(station:String):void
+		public function InitRopewayDict():void
 		{
-			var token:AsyncToken = send("RopeCarriageRela_GetLis",onRopeCarriageRela_GetLis,station);
-			token.station = station;
+			send("RopeDeteInfoToday_GetAllList",onRopeCarriageRela_GetLis);
 		}
 		
 		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
 		{
 			for each(var i:ObjectProxy in event.result)
 			{
-				var r:RopewayVO = new RopewayVO(i);
-				ropewayDict[r.ropewayId] = r;
+				var rw:RopewayVO = new RopewayVO(i);
+				ropewayDict[rw.ropewayId] = rw;
 			}
 			
-			InitRopewayHistory(event.token.station);
+			send("RopeDeteValueHis_GetAllList",onRopeDeteValueHis_GetList);
 		}
 		
-		private function InitRopewayHistory(station:String):void
+		private function onRopeDeteValueHis_GetList(event:ResultEvent):void
 		{
-			var now:Date = new Date;
-			
-			/*for(var i:Number = 0;i<5000;i++)
-			{			
-				var r:RopewayVO = new RopewayVO();		
-				var s:String = String(int(Math.random() * 100));					
-				r.ropewayId = StringUtil.repeat("0",4 - s.length) + s;
-				r.ropewayForce = 500 + int(Math.random() * 150);
-				r.ropewayUnit = "KG";
-				r.ropewayTemp = int(Math.random() * 50);
-				
-				r = AddRopeway(r);
+			for each(var i:ObjectProxy in event.result)
+			{
+				var rf:RopewayForceVO = new RopewayForceVO(i);
+				var rw:RopewayVO = ropewayDict[rf.ropewayId];
+				if(rw)
+				{
+					rw.ropewayHistory.push(rf);
+				}				
 			}
 			
-			for(i = 0;i<100;i++)
-			{								
-				var id:String = StringUtil.repeat("0",4 - i.toString().length) + i.toString();	
-				r = ropewayDict[id];
-				for(var j:Number = 0;j<r.ropewayHistory.length;j++)
-				{
-					var rh:RopewayVO = r.ropewayHistory[r.ropewayHistory.length - j - 1];
-					rh.ropewayTime = new Date(now.time - (50 * 1000) * j); 
-				}
-			}*/
-			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,rw);
 		}
 		
 		public function RefreshRopewayDict(station:String):void
@@ -92,14 +77,11 @@ package app.model
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);*/
 		}
 		
-		public function AddRopeway(ropeway:RopewayVO):RopewayVO
+		public function AddRopeway(ropewayForce:RopewayForceVO):void
 		{
-			if(!ropewayDict[ropeway.ropewayId])
-			{							
-				return null;
-			}
-			
-			var r:RopewayVO = ropewayDict[ropeway.ropewayId] as RopewayVO;				
+			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",onRopeDeteInfoToday_GetModel,ropewayForce.toString());
+			token.ropewayForce = ropewayForce;
+			/*var r:RopewayVO = ropewayDict[ropeway.ropewayId] as RopewayVO;				
 			r.ropewayForce = ropeway.ropewayForce;
 			r.ropewayTemp = ropeway.ropewayTemp;
 			r.ropewayTime = ropeway.ropewayTime;
@@ -115,7 +97,19 @@ package app.model
 			
 			r.ropewayHistory.push(ropeway);
 			
-			return r;
+			return r;*/
+		}
+		
+		private function onRopeDeteInfoToday_GetModel(event:ResultEvent):void
+		{
+			if(event.result)
+			{
+				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
+				ropewayDict[rw.ropewayId] = rw;				
+				rw.ropewayHistory.push(event.token.ropewayForce);
+				
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+			}
 		}
 	}
 }

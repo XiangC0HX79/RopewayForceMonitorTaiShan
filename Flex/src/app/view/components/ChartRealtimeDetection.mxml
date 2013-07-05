@@ -16,6 +16,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.RopewayForceVO;
 			import app.model.vo.RopewayVO;
 			
 			import spark.effects.Animate;
@@ -35,38 +36,101 @@
 			
 			[Bindable]public var ropeway:RopewayVO; 
 			
-			public function UpdateChart():void
-			{												
+			private function reCalXY():void
+			{
 				//重新计算图表XY轴取值范围与刻度
-				var df:Number = ropeway.yesterdayMax - ropeway.yesterdayMin;
-				var ave:Number = (ropeway.yesterdayMax + ropeway.yesterdayMin) / 2;
+				if(ropeway.yesterdayMax && ropeway.yesterdayMin)
+				{
+					var df:Number = ropeway.yesterdayMax - ropeway.yesterdayMin;
+					var ave:Number = (ropeway.yesterdayMax + ropeway.yesterdayMin) / 2;
+					
+					//昨天数值
+					lineMax.visible = true;
+					lineMin.visible = true;
+					lineAve.visible = true;
+					lbMax.visible = true;
+					lbMin.visible = true;
+					lbAve.visible = true;
+					
+					var moves:Array = new Array;
+					
+					var pt:Point = dataCanvas.dataToLocal(0,ropeway.yesterdayMax);				
+					var move:Move = new Move(lineMax);
+					move.yTo = pt.y;
+					moves.push(move);
+					
+					move = new Move(lbMax);
+					move.yTo = pt.y + 20;
+					moves.push(move);
+					
+					pt = dataCanvas.dataToLocal(0,ropeway.yesterdayAve);
+					move = new Move(lineAve);
+					move.yTo = pt.y;
+					moves.push(move);
+					
+					move = new Move(lbAve);
+					move.yTo = pt.y + 20;
+					moves.push(move);
+					
+					pt = dataCanvas.dataToLocal(0,ropeway.yesterdayMin);
+					move = new Move(lineMin);
+					move.yTo = pt.y;
+					moves.push(move);
+					
+					move = new Move(lbMin);
+					move.yTo = pt.y + 20;
+					moves.push(move);
+					
+					parallel.end();
+					parallel.children = moves;
+					parallel.play();
+				}
+				else
+				{
+					df = ropeway.todayMax - ropeway.todayMin;
+					ave = (ropeway.todayMax + ropeway.todayMin) / 2;
+					
+					lineMax.visible = false;
+					lineMin.visible = false;
+					lineAve.visible = false;
+					lbMax.visible = false;
+					lbMin.visible = false;
+					lbAve.visible = false;
+				}
+				
 				if(df < 4 * 10)
 				{
 					verticalAxis.interval = 10;
-					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
-					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				}
 				else if(df < 4 * 20)
 				{
 					verticalAxis.interval = 20;
-					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
-					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				}
 				else if(df < 4 * 50)
 				{
 					verticalAxis.interval = 50;
-					verticalAxis.minimum = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
-					verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
+				}
+				else if(df < 4 * 100)
+				{
+					verticalAxis.interval = 100;
 				}
 				else
 				{
-					verticalAxis.interval = NaN;
-					verticalAxis.minimum = ropeway.yesterdayMin - 50;
-					verticalAxis.minimum = ropeway.yesterdayMax + 50;
+					var maxh:Number = ropeway.yesterdayMin?(ropeway.yesterdayMin - 50):ropeway.todayMin;
+					var minh:Number = ropeway.yesterdayMax?(ropeway.yesterdayMax + 50):ropeway.todayMax;
+					
+					minh = Math.floor(minh / 200) * 200;
+					maxh = Math.ceil(maxh / 200) * 200;
+					
+					verticalAxis.interval = (maxh - minh) / 5;
 				}
 				
-				var maxh:Number = (ropeway.ropewayHistory[ropeway.ropewayHistory.length - 1] as RopewayVO).ropewayTime.time;
-				var minh:Number = (ropeway.ropewayHistory[0] as RopewayVO).ropewayTime.time;
+				minh = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
+				verticalAxis.minimum = (minh > 0)?minh:0;
+				verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
+				
+				maxh = (ropeway.ropewayHistory[ropeway.ropewayHistory.length - 1] as RopewayForceVO).ropewayTime.time;
+				minh = (ropeway.ropewayHistory[0] as RopewayForceVO).ropewayTime.time;
 				df = maxh - minh;
 				
 				if(df < 9 * ONE_MIN)
@@ -91,7 +155,7 @@
 					horizontalAxis.interval = 30;
 					
 					minh = Math.floor(minh / HALF_HOUR) * HALF_HOUR;
-					maxh = minh + 10.1 * HALF_HOUR;
+					maxh = minh + 10 * HALF_HOUR + 4 / groupChart.width * HALF_HOUR;
 				}
 				else if(df < 9 * ONE_HOUR)
 				{					
@@ -99,7 +163,7 @@
 					horizontalAxis.interval = 1;
 					
 					minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
-					maxh = minh + 10.1 * ONE_HOUR;
+					maxh = minh + 10 * ONE_HOUR + 4 / groupChart.width * ONE_HOUR;
 				}
 				else
 				{					
@@ -112,36 +176,14 @@
 				
 				horizontalAxis.minimum = new Date(minh);
 				horizontalAxis.maximum = new Date(maxh);
-					
-				//昨天数值
-				var moves:Array = new Array;
+			}
+			
+			public function UpdateChart():void
+			{								
+				if((!ropeway) || (ropeway.ropewayHistory.length == 0))
+					return;
 				
-				var pt:Point = dataCanvas.dataToLocal(0,ropeway.yesterdayMax);				
-				var move:Move = new Move(lineMax);
-				move.yTo = pt.y;
-				moves.push(move);
-				
-				move = new Move(lbMax);
-				move.yTo = pt.y + 20;
-				moves.push(move);
-				
-				pt = dataCanvas.dataToLocal(0,ropeway.yesterdayAve);
-				move = new Move(lineAve);
-				move.yTo = pt.y;
-				moves.push(move);
-				
-				move = new Move(lbAve);
-				move.yTo = pt.y + 20;
-				moves.push(move);
-				
-				pt = dataCanvas.dataToLocal(0,ropeway.yesterdayMin);
-				move = new Move(lineMin);
-				move.yTo = pt.y;
-				moves.push(move);
-				
-				move = new Move(lbMin);
-				move.yTo = pt.y + 20;
-				moves.push(move);
+				reCalXY();
 				
 				//添加折线\点
 				groupPoint.removeAllElements();
@@ -151,9 +193,9 @@
 				for(var i:Number = 0;i<ropeway.ropewayHistory.length;i++)
 				{
 					var img:ChartImage = new ChartImage;
-					img.ropeway = ropeway.ropewayHistory[i];
+					img.ropewayForce = ropeway.ropewayHistory[i];
 					
-					pt = dataCanvas.dataToLocal(img.ropeway.ropewayTime,img.ropeway.ropewayForce);
+					var pt:Point = dataCanvas.dataToLocal(img.ropewayForce.ropewayTime,img.ropewayForce.ropewayForce);
 					
 					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
 					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
@@ -173,7 +215,7 @@
 						var line:Line = new Line;
 						line.stroke = lineStroke;
 						
-						var r:RopewayVO = ropeway.ropewayHistory[i];
+						var r:RopewayForceVO = ropeway.ropewayHistory[i];
 						pt = dataCanvas.dataToLocal(r.ropewayTime,r.ropewayForce);
 						line.xFrom = pt.x;
 						line.yFrom = pt.y;
@@ -200,20 +242,72 @@
 				sequence.end();
 				sequence.children = animates;
 				sequence.play();
-				
-				parallel.end();
-				parallel.children = moves;
-				parallel.play();
+								
+				trace("E:" + (new Date).time);
 			}		
-						
+			
+			public function ContinueChart():void
+			{					
+				reCalXY();		
+				
+				var animates:Array = new Array;				
+				
+				var img:ChartImage = new ChartImage;
+				img.ropewayForce = ropeway.ropewayForce;
+				
+				var pt:Point = dataCanvas.dataToLocal(img.ropewayForce.ropewayTime,img.ropewayForce.ropewayForce);
+				
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				img.x = pt.x - img.width / 2;
+				img.y = pt.y - img.height / 2;
+				
+				groupPoint.addElement(img);
+				
+				var scale:Scale = new Scale(img);
+				scale.scaleXTo = 1;
+				scale.scaleYTo = 1;
+				scale.duration = 1000;					
+				animates.push(scale);
+				
+				var line:Line = new Line;
+				line.stroke = lineStroke;
+				
+				var r:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length - 2];
+				pt = dataCanvas.dataToLocal(r.ropewayTime,r.ropewayForce);
+				line.xFrom = pt.x;
+				line.yFrom = pt.y;
+				
+				line.xTo = pt.x;
+				line.yTo = pt.y;
+				
+				groupLine.addElement(line);
+				
+				r = ropeway.ropewayHistory[ropeway.ropewayHistory.length - 1];
+				pt = dataCanvas.dataToLocal(r.ropewayTime,r.ropewayForce);
+				
+				var motionPaths:Vector.<MotionPath> = new Vector.<MotionPath>;
+				motionPaths.push(new SimpleMotionPath("xTo",line.xFrom,pt.x));
+				motionPaths.push(new SimpleMotionPath("yTo",line.yFrom,pt.y));
+				
+				var animate:Animate = new Animate(line);
+				animate.motionPaths = motionPaths;
+				animate.duration = 2000;					
+				animates.push(animate);
+				
+				sequence.end();
+				sequence.children = animates;
+				sequence.play();
+			}
+			
 			private function onImageMouseOver(event:MouseEvent):void
 			{
 				var off:Number = 20;
 				
 				var img:ChartImage = event.currentTarget as ChartImage;				
-				chartTip.ropeway = img.ropeway;
+				chartTip.ropewayForce = img.ropewayForce;
 				
-				var pt:Point = dataCanvas.dataToLocal(chartTip.ropeway.ropewayTime,chartTip.ropeway.ropewayForce);
+				var pt:Point = dataCanvas.dataToLocal(chartTip.ropewayForce.ropewayTime,chartTip.ropewayForce.ropewayForce);
 				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
 				var lbrect:Rectangle = new Rectangle(pt.x - off - chartTip.width,pt.y + off,chartTip.width,chartTip.height);
 				var rbrect:Rectangle = new Rectangle(pt.x + off,pt.y + off,chartTip.width,chartTip.height);
@@ -300,17 +394,17 @@
 		</s:Group>
 	</s:Group>
 	
-	<s:Label left="10" top="20" text="抱索力（{ropeway.ropewayUnit}）"/>
+	<s:Label left="10" top="20" text="抱索力（{ropeway.ropewayForce.ropewayUnit}）"/>
 	<s:Label right="15" bottom="40" text="时间"/>
 	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0"
 			 text="{ropeway.ropewayId}抱索力实时监控曲线"/>
 	
-	<s:Label right="15" id="lbMax" text="昨日最大抱索力&#xd;{ropeway.yesterdayMax} {ropeway.ropewayUnit}" textAlign="center"
+	<s:Label right="15" id="lbMax" text="昨日最大抱索力&#xd;{ropeway.yesterdayMax} {ropeway.ropewayForce.ropewayUnit}" textAlign="center"
 			 verticalAlign="middle"/> 
 	
-	<s:Label right="15" id="lbMin" text="昨日最小抱索力&#xd;{ropeway.yesterdayMin} {ropeway.ropewayUnit}" textAlign="center"
+	<s:Label right="15" id="lbMin" text="昨日最小抱索力&#xd;{ropeway.yesterdayMin} {ropeway.ropewayForce.ropewayUnit}" textAlign="center"
 			 verticalAlign="middle"/> 
 	
-	<s:Label right="15" id="lbAve" text="昨日平均抱索力&#xd;{ropeway.yesterdayAve.toFixed()} {ropeway.ropewayUnit}" textAlign="center"
+	<s:Label right="15" id="lbAve" text="昨日平均抱索力&#xd;{ropeway.yesterdayAve.toFixed()} {ropeway.ropewayForce.ropewayUnit}" textAlign="center"
 			 verticalAlign="middle"/> 
 </s:Group>

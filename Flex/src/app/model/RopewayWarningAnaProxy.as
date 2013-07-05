@@ -2,7 +2,7 @@ package app.model
 {
 	import app.ApplicationFacade;
 	import app.model.vo.RopewayDayAveVO;
-	import app.model.vo.RopewayForceVo;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayWarningAnaVO;
 	
 	import flash.utils.Dictionary;

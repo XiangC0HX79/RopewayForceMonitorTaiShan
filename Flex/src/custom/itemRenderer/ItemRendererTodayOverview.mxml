@@ -24,7 +24,7 @@
 				
 				numtimes = _ropeway.ropewayHistory.length;
 				
-				date = formatDate(_ropeway.ropewayTime);
+				date = formatDate(_ropeway.ropewayForce.ropewayTime);
 			}
 			
 			private function formatDate(date:Date):String

@@ -7,9 +7,9 @@
 		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayVO;
+			import app.model.vo.RopewayForceVO;
 			
-			[Bindable]public var ropeway:RopewayVO;
+			[Bindable]public var ropewayForce:RopewayForceVO;
 			
 			protected function group_mouseOverHandler(event:MouseEvent):void
 			{

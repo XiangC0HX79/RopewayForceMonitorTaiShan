@@ -60,7 +60,7 @@ package app.view
 					var s:String = config.station?config.station:config.stations[0];
 					
 					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					ropewayProxy.InitRopewayDict(s);
+					ropewayProxy.InitRopewayDict();
 					
 					var ropewayAlarmProxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
 					ropewayAlarmProxy.InitAlarmArr(s);

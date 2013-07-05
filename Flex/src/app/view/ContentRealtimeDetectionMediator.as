@@ -50,10 +50,6 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
 					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
-					//contentRealtimeDetection.numtimes = contentRealtimeDetection.ropeway.ropewayHistory.length;
-					//contentRealtimeDetection.date = formatDate(contentRealtimeDetection.ropeway.ropewayTime);
-					//contentRealtimeDetection.linechart1.dataProvider = contentRealtimeDetection.ropeway.ropewayHistory;
-					//contentRealtimeDetection.UpdateChart();
 					break;
 			}
 		}

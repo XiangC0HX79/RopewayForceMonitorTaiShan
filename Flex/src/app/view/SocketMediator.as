@@ -4,6 +4,7 @@ package app.view
 	import app.model.RopewayAlarmProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
 	import flash.events.Event;
@@ -15,6 +16,8 @@ package app.view
 	import flash.system.Security;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
+	
+	import mx.utils.ObjectProxy;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -50,7 +53,7 @@ package app.view
 				
 		private function connect():void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务�..");
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务�..");
 				
 			socket.connect(_config.serverIp,_config.serverPort);
 				
@@ -100,25 +103,30 @@ package app.view
 		
 		private function decodeSocketData(socketData:ByteArray):void
 		{			
-			//var s:String = socketData.readMultiByte(socketData.length,"unicode");
 			var s:String = socketData.readMultiByte(socketData.length,"gb2312");
 			var a:Array = s.split('|');
 			
-			var ropeway:RopewayVO = new RopewayVO;
-			ropeway.ropewayId = a[1];		
-			ropeway.ropewayForce = Number(a[2]);
-			ropeway.ropewayUnit = a[3];
-			ropeway.ropewayTemp = a[4];
+			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));
+			rf.ropewayId = "T0001";//a[1];		
+			rf.ropewayForce = Number(a[2]);
+			rf.ropewayUnit = a[3];
+			rf.ropewayTemp = a[4];
 			var sd:String = String(a[0]).replace(/-/g,"/");
-			ropeway.ropewayTime = new Date(Date.parse(sd));
+			rf.ropewayTime = new Date(Date.parse(sd));
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			ropeway = proxy.AddRopeway(ropeway);
+			var rw:RopewayVO = proxy.ropewayDict[rf.ropewayId];
 			
-			var alarmProxy:RopewayAlarmProxy = facade.retrieveProxy(RopewayAlarmProxy.NAME) as RopewayAlarmProxy;
-			alarmProxy.IsRopewayAlarm(ropeway);
-			
-			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,ropeway);
+			if(rw)
+			{			
+				rw.ropewayHistory.push(rf);
+				
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+			}
+			else
+			{
+				proxy.AddRopeway(rf);
+			}
 		}
 		
 		private function onTimer(event:Event):void

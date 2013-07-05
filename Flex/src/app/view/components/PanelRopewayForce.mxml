@@ -27,7 +27,7 @@
 				var children:Array = new Array;
 				
 				var so:int = int(lbSingle.text);				
-				var sn:int = ropeway.ropewayForce;
+				var sn:int = ropeway.ropewayForce.ropewayForce;
 				
 				var motionPaths:Vector.<MotionPath> = new Vector.<MotionPath>;
 				motionPaths.push(new SimpleMotionPath("text",so,sn));
@@ -47,6 +47,6 @@
 	<s:Label left="41" top="17" text="抱索器编号：{ropeway.ropewayId}" fontWeight="bold"/>
 	<s:Label right="24" top="17" text="开合次数：{ropeway.ropewayOpenCount}" fontWeight="bold"/>
 	<s:Label id="lbSingle" horizontalCenter="54" top="86" text="0" fontSize="38" fontWeight="bold"/>
-	<s:Label right="10" top="86" fontSize="38" fontWeight="bold" text="{ropeway.ropewayUnit}"/>
-	<s:Label top="148" horizontalCenter="54" text="{df.format(ropeway.ropewayTime)}"/>
+	<s:Label right="10" top="86" fontSize="38" fontWeight="bold" text="{ropeway.ropewayForce.ropewayUnit}"/>
+	<s:Label top="148" horizontalCenter="54" text="{df.format(ropeway.ropewayForce.ropewayTime)}"/>
 </s:Group>

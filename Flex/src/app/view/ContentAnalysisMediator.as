@@ -7,7 +7,7 @@ package app.view
 	import app.model.RopewayProxy;
 	import app.model.RopewayWarningAnaProxy;
 	import app.model.vo.RopewayDayAveVO;
-	import app.model.vo.RopewayForceVo;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayNumAnaVO;
 	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
@@ -176,7 +176,7 @@ package app.view
 				{
 					if(contentAnalysis.RopewayForceAna.linechart1.dataProvider!=null)
 					{
-						for each(var r:RopewayForceVo in  contentAnalysis.RopewayForceAna.linechart1.dataProvider)
+						for each(var r:RopewayForceVO in  contentAnalysis.RopewayForceAna.linechart1.dataProvider)
 						arrC.addItem(r);
 						contentAnalysis.RopewayForceAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,PushData);
 						num = 1;
@@ -209,7 +209,7 @@ package app.view
 						}
 						else
 						{
-							for each(var r2:RopewayForceVo in  contentAnalysis.RopewayForceAna.datagrid1.dataProvider)
+							for each(var r2:RopewayForceVO in  contentAnalysis.RopewayForceAna.datagrid1.dataProvider)
 								arrC.addItem(r2);
 							contentAnalysis.RopewayForceAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,enPushData);
 							num = 1;
