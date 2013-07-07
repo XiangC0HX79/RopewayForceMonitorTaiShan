@@ -409,6 +409,7 @@ package app.view
 		{
 			if(contentAnalysis.TabN.selectedIndex == 2)
 			{
+				//contentAnalysis.RopewayNumTotelAna.legend.dataProvider = contentAnalysis.RopewayNumTotelAna.columnchart1;
 				contentAnalysis.RopewayNumTotelAna.submitbn.addEventListener(FlexEvent.BUTTON_DOWN,onTotelAna);
 				contentAnalysis.RopewayNumTotelAna.rbGroup3.addEventListener(Event.CHANGE,totelChangeHandle,false,0);
 			}
@@ -418,14 +419,6 @@ package app.view
 		{
 			var obj:Object = new Object();
 			obj.RESULTTYPE = contentAnalysis.RopewayNumTotelAna.vs2.selectedIndex;
-			if(contentAnalysis.RopewayNumTotelAna.vs2.selectedIndex == 0)
-			{
-				if(contentAnalysis.RopewayNumTotelAna.ForceId.text == "")
-				{
-					Alert.show("请输入索道编号","提示");
-					return;
-				}
-			}
 			obj.ID = contentAnalysis.RopewayNumTotelAna.ForceId.text;
 			obj.STATION = "";
 			if(contentAnalysis.RopewayNumTotelAna.cb1.selected == true&&contentAnalysis.RopewayNumTotelAna.cb2.selected == true
@@ -455,7 +448,7 @@ package app.view
 			var forceProxy:RopewayNumTotelAnaProxy = facade.retrieveProxy(RopewayNumTotelAnaProxy.NAME) as RopewayNumTotelAnaProxy;
 			arr = forceProxy.GetTotel(obj);
 			if(obj.RESULTTYPE == 0)
-				contentAnalysis.RopewayNumTotelAna.linechart1.dataProvider = arr;
+				contentAnalysis.RopewayNumTotelAna.columnchart1.dataProvider = arr;
 			else if(obj.RESULTTYPE == 1)
 			{
 				contentAnalysis.RopewayNumTotelAna.datagrid.dataProvider = arr;
@@ -468,9 +461,9 @@ package app.view
 			var ra:RadioButtonGroup = event.currentTarget as RadioButtonGroup;
 			if(ra.selectedValue.toString() == "明细查询") 
 			{
-				if(contentAnalysis.RopewayNumTotelAna.linechart1.dataProvider!=null)
+				if(contentAnalysis.RopewayNumTotelAna.columnchart1.dataProvider!=null)
 				{
-					for each(var rd:RopewayNumTotelAnaVO in  contentAnalysis.RopewayNumTotelAna.linechart1.dataProvider)
+					for each(var rd:Object in  contentAnalysis.RopewayNumTotelAna.columnchart1.dataProvider)
 					arrC.addItem(rd);
 					contentAnalysis.RopewayNumTotelAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,totelPushData);
 					num = 2;
@@ -480,18 +473,11 @@ package app.view
 			{
 				if(contentAnalysis.RopewayNumTotelAna.datagrid.dataProvider!=null)
 				{
-					if(contentAnalysis.RopewayNumTotelAna.ForceId.text == ""&&contentAnalysis.RopewayNumTotelAna.datagrid.dataProvider.length != 0)
-					{
-						num = 2
-						contentAnalysis.RopewayNumTotelAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,totelenPushData);
-					}
-					else
-					{
-						for each(var rd2:RopewayNumTotelAnaVO in  contentAnalysis.RopewayNumTotelAna.datagrid.dataProvider)
-						arrC.addItem(rd2);
-						contentAnalysis.RopewayNumTotelAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,totelenPushData);
-						num = 1;
-					}
+					
+					for each(var rd2:Object in  contentAnalysis.RopewayNumTotelAna.datagrid.dataProvider)
+					arrC.addItem(rd2);
+					contentAnalysis.RopewayNumTotelAna.vs2.addEventListener(FlexEvent.UPDATE_COMPLETE,totelenPushData);
+					num = 1;
 				}
 			}
 		}
@@ -508,13 +494,7 @@ package app.view
 		
 		private function totelenPushData(event:FlexEvent):void
 		{
-			if(num == 1)
-				contentAnalysis.RopewayNumTotelAna.linechart1.dataProvider = arrC;
-			if(num == 2)
-			{
-				contentAnalysis.RopewayNumTotelAna.linechart1.dataProvider = null;
-				Alert.show("必须输入索道编号","提示");
-			}
+			contentAnalysis.RopewayNumTotelAna.columnchart1.dataProvider = arrC;
 			contentAnalysis.RopewayNumTotelAna.vs2.removeEventListener(FlexEvent.UPDATE_COMPLETE,totelenPushData);
 			num = 0;
 		}
@@ -540,11 +520,6 @@ package app.view
 			toDate=new Date(Number(toDates[0]),Number(toDates[1]),Number(toDates[2]),Number(contentAnalysis.RopewayWarningAna.numericStepper2.value));
 			obj.FROMDATE = fromDate;
 			obj.TODATE = toDate;
-			if(contentAnalysis.RopewayWarningAna.ForceId.text == "")
-			{
-				Alert.show("请输入索道编号","提示");
-				return;
-			}
 			obj.ID = contentAnalysis.RopewayWarningAna.ForceId.text;
 			obj.STATION = "";
 			if(contentAnalysis.RopewayWarningAna.cb1.selected == true&&contentAnalysis.RopewayWarningAna.cb2.selected == true

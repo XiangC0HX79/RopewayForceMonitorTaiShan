@@ -19,6 +19,7 @@ package app.view
 			mainMenu.addEventListener(MainMenu.REALTIME_DETECTION,onRealtimeDetection);
 			mainMenu.addEventListener(MainMenu.TODAY_OVERVIEW,onTodayOverview);
 			mainMenu.addEventListener(MainMenu.ANALYSIS,onAnalysis);
+			mainMenu.addEventListener(MainMenu.MANAGE,onManage);
 		}
 		
 		protected function get mainMenu():MainMenu
@@ -39,6 +40,11 @@ package app.view
 		private function onAnalysis(event:Event):void
 		{
 			sendNotification(ApplicationFacade.NOTIFY_MENU_ANALYSIS);
+		}
+		
+		private function onManage(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MANAGE);
 		}
 	}
 }
