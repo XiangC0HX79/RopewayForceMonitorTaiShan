@@ -24,7 +24,7 @@
 				
 				numtimes = _ropeway.ropewayHistory.length;
 				
-				date = formatDate(_ropeway.ropewayForce.ropewayTime);
+				date = formatDate(_ropeway.lastRopewayForce.ropewayTime);
 			}
 			
 			private function formatDate(date:Date):String
@@ -43,7 +43,7 @@
 					 text="抱索器编号：{_ropeway.ropewayId}"/>
 			<s:Label x="131" y="10" color="#FFFFFF" fontWeight="bold" text="开合次数：{numtimes}"/>
 			<s:Label y="39" color="#FF0000" fontSize="20" fontWeight="bold"
-					 horizontalCenter="0" text="{_ropeway.ropewayForce} KG"/>
+					 horizontalCenter="0" text="{_ropeway.lastRopewayForce.ropewayForce} KG"/>
 			<s:Label y="67" fontSize="11" horizontalCenter="0" text="{date}"/>
 			<s:Label x="82" y="86" width="71" text="昨天"/>
 			<s:Label x="162" y="87" width="71" text="今天"/>

@@ -2,14 +2,39 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="15" height="15" scaleX="0.1" scaleY="0.1"
-		 mouseOut="group_mouseOutHandler(event)"
+		 width="15" height="15" scaleX="0.01" scaleY="0.01"
+		 mouseOut="group_mouseOutHandler(event)" 
+		 showEffect=""
 		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import app.model.vo.RopewayForceVO;
 			
-			[Bindable]public var ropewayForce:RopewayForceVO;
+			import mx.charts.chartClasses.CartesianDataCanvas;
+			
+			private var _ropewayForce:RopewayForceVO;
+			public function get ropewayForce():RopewayForceVO
+			{
+				return _ropewayForce;
+			}			
+			
+			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:RopewayForceVO = null):void
+			{				
+				if(ropewayForce)
+				{
+					_ropewayForce = ropewayForce;
+					
+					var pt:Point = dataCanvas.dataToLocal(_ropewayForce.ropewayTime,_ropewayForce.ropewayForce);					
+					this.x = pt.x - this.width / 2;
+					this.y = pt.y - this.height / 2;	
+				}
+				else
+				{
+					pt = dataCanvas.dataToLocal(_ropewayForce.ropewayTime,_ropewayForce.ropewayForce);
+					mv.xTo = pt.x - this.width / 2;
+					mv.yTo = pt.y - this.height / 2;	
+				}
+			}
 			
 			protected function group_mouseOverHandler(event:MouseEvent):void
 			{
@@ -26,7 +51,9 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->	
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->			
+		<s:Scale id="scale" target="{this}" scaleXFrom="0.01" scaleXTo="1" scaleYFrom="0.01" scaleYTo="1" duration="100"/>
+		<s:Move id="mv" target="{this}"/>
 	</fx:Declarations>
 		
 	<s:Ellipse id="pt" width="5" height="5" verticalCenter="0" horizontalCenter="0">		

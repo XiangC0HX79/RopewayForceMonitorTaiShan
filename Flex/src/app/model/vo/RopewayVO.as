@@ -96,11 +96,22 @@ package app.model.vo
 		/**
 		 * 最新抱索力
 		 **/
-		public function get ropewayForce():RopewayForceVO	
+		public function get lastRopewayForce():RopewayForceVO	
 		{
 			return (ropewayHistory.length > 0)?ropewayHistory[ropewayHistory.length - 1]:null;
 		}
-		public function set ropewayUnit(value:String):void	
+		public function set lastRopewayForce(value:RopewayForceVO):void	
+		{
+		}
+		
+		/**
+		 * 最老抱索力
+		 **/
+		public function get firstRopewayForce():RopewayForceVO	
+		{
+			return (ropewayHistory.length > 0)?ropewayHistory[0]:null;
+		}
+		public function set firstRopewayForce(value:RopewayForceVO):void	
 		{
 		}
 		

@@ -116,7 +116,7 @@ package app.view
 			
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			var rw:RopewayVO = proxy.ropewayDict[rf.ropewayId];
-			
+		
 			if(rw)
 			{			
 				rw.ropewayHistory.push(rf);

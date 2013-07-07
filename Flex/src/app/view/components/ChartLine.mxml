@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Line xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" stroke="{lineStroke}">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.RopewayForceVO;
+			
+			import mx.charts.chartClasses.CartesianDataCanvas;
+			
+			import spark.effects.animation.MotionPath;
+			import spark.effects.animation.SimpleMotionPath;
+			
+			private var _ropewayForceS:RopewayForceVO;
+			
+			private var _ropewayForceE:RopewayForceVO;
+			
+			public function SetValue(dataCanvas:CartesianDataCanvas,rws:RopewayForceVO = null,rwe:RopewayForceVO = null):void
+			{				
+				if(rws && rwe)
+				{
+					_ropewayForceS = rws;
+					_ropewayForceE = rwe;
+					
+					var ptS:Point = dataCanvas.dataToLocal(_ropewayForceS.ropewayTime,_ropewayForceS.ropewayForce);	
+					
+					var ptE:Point = dataCanvas.dataToLocal(_ropewayForceE.ropewayTime,_ropewayForceE.ropewayForce);	
+					
+					this.xFrom = ptS.x;
+					this.yFrom = ptS.y;
+					this.xTo = ptS.x;
+					this.yTo = ptS.y;
+					
+					var motionPaths:Vector.<MotionPath> = new Vector.<MotionPath>;
+					motionPaths.push(new SimpleMotionPath("xFrom",ptS.x,ptS.x));
+					motionPaths.push(new SimpleMotionPath("yFrom",ptS.y,ptS.y));
+					motionPaths.push(new SimpleMotionPath("xTo",ptS.x,ptE.x));
+					motionPaths.push(new SimpleMotionPath("yTo",ptS.y,ptE.y));
+					
+					animate.duration = 100;
+					animate.motionPaths = motionPaths;
+				}
+				else
+				{					
+					ptS = dataCanvas.dataToLocal(_ropewayForceS.ropewayTime,_ropewayForceS.ropewayForce);	
+					ptE = dataCanvas.dataToLocal(_ropewayForceE.ropewayTime,_ropewayForceE.ropewayForce);	
+					
+					motionPaths = new Vector.<MotionPath>;
+					motionPaths.push(new SimpleMotionPath("xFrom",this.xFrom,ptS.x));
+					motionPaths.push(new SimpleMotionPath("yFrom",this.yFrom,ptS.y));
+					motionPaths.push(new SimpleMotionPath("xTo",this.xTo,ptE.x));
+					motionPaths.push(new SimpleMotionPath("yTo",this.yTo,ptE.y));
+					
+					animate.duration = 500;
+					animate.motionPaths = motionPaths;
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lineStroke" color="0xE48701" weight="1"/>
+		<s:Animate id="animate" target="{this}"/>
+	</fx:Declarations>
+</s:Line>

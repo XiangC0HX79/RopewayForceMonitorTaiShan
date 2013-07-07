@@ -9,7 +9,7 @@ package app.view
 	import app.model.RopewayWarningAnaProxy;
 	import app.model.vo.RopewayBaseinfoVO;
 	import app.model.vo.RopewayDayAveVO;
-	import app.model.vo.RopewayForceVo;
+	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayNumAnaVO;
 	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;

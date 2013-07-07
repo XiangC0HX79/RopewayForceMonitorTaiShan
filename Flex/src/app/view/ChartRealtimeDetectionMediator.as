@@ -39,17 +39,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					var r:RopewayVO = notification.getBody() as RopewayVO;
-					if(r != chartRealtimeDetection.ropeway)
-					{
-						chartRealtimeDetection.ropeway = r;
-						chartRealtimeDetection.UpdateChart();
-					}
-					else
-					{
-						chartRealtimeDetection.ContinueChart();
-					}
-					//chartRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
+					chartRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
 					break;
 			}
 		}
