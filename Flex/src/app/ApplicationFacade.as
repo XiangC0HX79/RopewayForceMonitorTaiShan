@@ -11,7 +11,8 @@ package app
 	{
 		public static const STARTUP:String 							= "startup";
 		
-		/**显示等待
+		/**
+		 * 显示等待
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -22,11 +23,13 @@ package app
 		 **/
 		public static const NOTIFY_MAIN_LOADING_SHOW:String 		= "MainLoadingShow";
 		
-		/**隐藏等待
+		/**
+		 * 隐藏等待
 		 **/
 		public static const NOTIFY_MAIN_LOADING_HIDE:String 		= "MainLoadingHide";
 		
-		/**提示信息
+		/**
+		 * 提示信息
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -43,7 +46,8 @@ package app
 		 **/
 		public static const NOTIFY_ALERT_INFO:String				= "AlertInfo";
 				
-		/**提示警告
+		/**
+		 * 提示警告
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -60,7 +64,8 @@ package app
 		 **/
 		public static const NOTIFY_ALERT_ALARM:String				= "AlertAlarm";
 		
-		/**提示错误
+		/**
+		 * 提示错误
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -77,7 +82,8 @@ package app
 		 **/
 		public static const NOTIFY_ALERT_ERROR:String				= "AlertError";
 		
-		/**配置信息初始化完成
+		/**
+		 * 配置信息初始化完成
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -88,7 +94,8 @@ package app
 		 **/
 		public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
 		
-		/**索道信息初始化完成
+		/**
+		 * 索道信息初始化完成
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -99,12 +106,14 @@ package app
 		 **/
 		public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
 				
-		/**程序初始化完成
+		/**
+		 * 程序初始化完成
 		 **/
 		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
 		
 		
-		/**抱索器实时信息
+		/**
+		 * 抱索器实时信息
 		 * <p></p>
 		 * <table>
 		 * 	<th>参数类型</th><th>参数说明</th>
@@ -114,9 +123,14 @@ package app
 		 * </table>
 		 **/
 		public static const NOTIFY_ROPEWAY_INFO_REALTIME:String 	= "RopewayInfoRealtime";
+				
+		/**
+		 * 站点改变
+		 **/
+		public static const NOTIFY_MAIN_STATION_CHANGE:String 		= "MainGroupChange";
 		
-		
-		/**菜单-实时检测
+		/**
+		 * 菜单-实时检测
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";
 		

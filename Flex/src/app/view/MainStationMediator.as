@@ -24,7 +24,7 @@ package app.view
 		{
 			super(NAME, viewComponent);
 			
-			mainStation.addEventListener(Event.CHANGE,onChange);
+			mainStation.addEventListener(MainStation.GROUP_CHANGE,onGroupChange);
 		}
 		
 		protected function get mainStation():MainStation
@@ -32,10 +32,9 @@ package app.view
 			return viewComponent as MainStation;
 		}
 		
-		private function onChange(event:Event):void
-		{			
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			ropewayProxy.RefreshRopewayDict(String(mainStation.rbGroup.selectedValue));
+		private function onGroupChange(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,mainStation.config.station);
 		}
 		
 		override public function listNotificationInterests():Array
@@ -50,8 +49,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;
-					mainStation.dpStations = new ArrayCollection(config.stations);
+					mainStation.config = notification.getBody() as ConfigVO;
 					break;
 			}
 		}

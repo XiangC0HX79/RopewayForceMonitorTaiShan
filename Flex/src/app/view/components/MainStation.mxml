@@ -9,13 +9,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.ConfigVO;
+			
 			import custom.itemRenderer.ItemRendererMainStation;
 			
-			import mx.collections.ArrayCollection;
-			
 			import spark.events.RendererExistenceEvent;
-						
-			[Bindable]public var dpStations:ArrayCollection;
+			
+			public static const GROUP_CHANGE:String = "GroupChange";
+			
+			[Bindable]public var config:ConfigVO
 						
 			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
 			{
@@ -27,7 +29,11 @@
 			
 			protected function rbGroup_changeHandler(event:Event):void
 			{				
-				dispatchEvent(new Event(Event.CHANGE));
+				config.station = String(rbGroup.selectedValue);
+				
+				config.pin = false;
+				
+				dispatchEvent(new Event(GROUP_CHANGE));
 			}
 			
 		]]>
@@ -44,7 +50,7 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:DataGroup dataProvider="{dpStations}" color="0xFFFFFF" height="100%"
+	<s:DataGroup dataProvider="{config.stations}" color="0xFFFFFF" height="100%"
 				 rendererAdd="datagroup_rendererAddHandler(event)"
 				 itemRenderer="custom.itemRenderer.ItemRendererMainStation">
 		<s:layout>

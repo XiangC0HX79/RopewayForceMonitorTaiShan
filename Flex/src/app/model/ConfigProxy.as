@@ -8,6 +8,8 @@ package app.model
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
+	import mx.collections.ArrayCollection;
+	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
@@ -51,10 +53,12 @@ package app.model
 				return;
 			}
 			
-			config.stations = new Array;
+			config.stations = new ArrayCollection;
 			for each(var s:String in xml.Stations.Station)
-				config.stations.push(s);
+				config.stations.addItem(s);
 							
+			config.station = config.stations[0];
+					
 			config.serverIp = xml.ServerIp;
 			
 			config.serverPort = int(xml.ServerPort);	

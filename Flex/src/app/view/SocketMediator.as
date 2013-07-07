@@ -17,6 +17,10 @@ package app.view
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -121,11 +125,31 @@ package app.view
 			{			
 				rw.ropewayHistory.push(rf);
 				
-				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+				if(rw.ropewayStation == _config.station)
+					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 			}
 			else
 			{
-				proxy.AddRopeway(rf);
+				var token:AsyncToken = proxy.AddRopeway(rf);
+				token.ropewayForce = rf;
+				token.addResponder(new AsyncResponder(onAddRopewayResult,function(error:FaultEvent,token:Object = null):void{},token));
+			}
+		}
+		
+		private function onAddRopewayResult(event:ResultEvent,token:Object = null):void
+		{
+			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+						
+			if(event.result)
+			{
+				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
+				
+				proxy.ropewayDict[rw.ropewayId] = rw;
+				
+				rw.ropewayHistory.push(token.ropewayForce);
+				
+				if(rw.ropewayStation == _config.station)
+					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 			}
 		}
 		

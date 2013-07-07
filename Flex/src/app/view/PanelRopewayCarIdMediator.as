@@ -1,32 +1,35 @@
 package app.view
 {
 	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
+	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayVO;
-	import app.view.components.PanelRopewayForce;
+	import app.view.components.PanelRopewayCarId;
+	
+	import mx.binding.utils.BindingUtils;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelRopewayForceMediator extends Mediator implements IMediator
+	public class PanelRopewayCarIdMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelRopewayForceMediator";
+		public static const NAME:String = "PanelRopewayCarIdMediator";
 		
-		public function PanelRopewayForceMediator()
+		public function PanelRopewayCarIdMediator()
 		{
-			super(NAME, new PanelRopewayForce);
+			super(NAME, new PanelRopewayCarId);
 		}
 		
-		protected function get panelRopewayForce():PanelRopewayForce
+		protected function get panelRopewayCarId():PanelRopewayCarId
 		{
-			return viewComponent as PanelRopewayForce;
+			return viewComponent as PanelRopewayCarId;
 		}
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
 				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
 				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
 				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
@@ -37,24 +40,27 @@ package app.view
 		{
 			switch(notification.getName())
 			{
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					panelRopewayCarId.config = notification.getBody() as ConfigVO;
+					break;
+				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 					var rw:RopewayVO = notification.getBody() as RopewayVO;		
-					if(configProxy.config.pin)
+					if(panelRopewayCarId.config.pin)
 					{
-						if(panelRopewayForce.ropeway == rw)
-							panelRopewayForce.ropeway = rw;		
+						if(panelRopewayCarId.ropeway == rw)
+							panelRopewayCarId.ropeway = rw;		
 					}
 					else
 					{
-						panelRopewayForce.ropeway = rw;			
+						panelRopewayCarId.ropeway = rw;			
 					}
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
 					var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					panelRopewayForce.ropeway = proxy.getRopeway(String(notification.getBody()));
+					panelRopewayCarId.ropeway = proxy.getRopeway(String(notification.getBody()));
 					break;
 			}
 		}

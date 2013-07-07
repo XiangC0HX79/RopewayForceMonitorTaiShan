@@ -22,7 +22,10 @@ package app.view
 		{
 			super(NAME, viewComponent);
 			
+			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayCarIdMediator.NAME).getViewComponent() as IVisualElement);
 			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayForceMediator.NAME).getViewComponent() as IVisualElement);
+			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayTempMediator.NAME).getViewComponent() as IVisualElement);
+			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayAlarmMediator.NAME).getViewComponent() as IVisualElement);
 			
 			contentRealtimeDetection.addElement(facade.retrieveMediator(ChartRealtimeDetectionMediator.NAME).getViewComponent() as IVisualElement);
 		}
@@ -30,28 +33,6 @@ package app.view
 		protected function get contentRealtimeDetection():ContentRealtimeDetection
 		{
 			return viewComponent as ContentRealtimeDetection;
-		}
-		
-		override public function listNotificationInterests():Array
-		{
-			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
-			];
-		}
-		
-		override public function handleNotification(notification:INotification):void
-		{
-			switch(notification.getName())
-			{
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
-					break;
-				
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					contentRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
-					break;
-			}
 		}
 	}
 }

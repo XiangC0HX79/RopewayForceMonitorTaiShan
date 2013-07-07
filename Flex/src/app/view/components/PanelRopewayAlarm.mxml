@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="300" height="200">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]public var dataPro:ArrayCollection = new ArrayCollection;
+		]]>
+	</fx:Script>
+	
+	<s:Image source="assets/image/kuang2.png" width="100%" height="100%"/>
+	<s:Label text="报警情况" left="40" top="17" fontWeight="bold"/>
+	
+	<s:Scroller left="20" right="20" top="50" bottom="10">
+		<s:DataGroup width="100%" dataProvider="{dataPro}">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>	
+			<s:itemRenderer>
+				<fx:Component>
+					<s:ItemRenderer>
+						<s:Label text="{data}"/>						
+					</s:ItemRenderer>
+				</fx:Component>
+			</s:itemRenderer>
+		</s:DataGroup>
+	</s:Scroller>
+</s:Group>

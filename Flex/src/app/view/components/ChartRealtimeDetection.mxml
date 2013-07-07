@@ -47,21 +47,21 @@
 			}
 			public function set ropeway(value:RopewayVO):void
 			{
-				if(value == null)
-					return;
-								
-				if(
-					(this.initialized)
-					&& 
-					(value.firstRopewayForce)
-					)
+				if(value != null)
 				{
-					reCalcuXY(value);
-					
-					if(value == _ropeway)
-						continueChart(value);
-					else
-						refreshChart(value);
+					if(
+						(this.initialized)
+						&& 
+						(value.firstRopewayForce)
+						)
+					{
+						reCalcuXY(value);
+						
+						if(value == _ropeway)
+							continueChart(value);
+						else
+							refreshChart(value);
+					}
 				}
 				
 				_ropeway = value;

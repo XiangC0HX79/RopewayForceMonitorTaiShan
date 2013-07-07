@@ -8,7 +8,9 @@ package app.model
 	
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
+	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
@@ -61,55 +63,32 @@ package app.model
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,rw);
 		}
 		
-		public function RefreshRopewayDict(station:String):void
-		{
-			/*for(var i:Number = 0;i<10000;i++)
-			{				
-				var r:RopewayVO = new RopewayVO;		
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.ropewayForce = int(Math.random() * 500);
-				r.ropewayTemp = int(Math.random() * 50);
-				r.ropewayTime = new Date;
-				
-				r = AddRopeway(r);
-			}
-			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,r);*/
-		}
-		
-		public function AddRopeway(ropewayForce:RopewayForceVO):void
+		public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
 		{
 			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",onRopeDeteInfoToday_GetModel,ropewayForce.toString());
+			
 			token.ropewayForce = ropewayForce;
-			/*var r:RopewayVO = ropewayDict[ropeway.ropewayId] as RopewayVO;				
-			r.ropewayForce = ropeway.ropewayForce;
-			r.ropewayTemp = ropeway.ropewayTemp;
-			r.ropewayTime = ropeway.ropewayTime;
-			r.ropewayUnit = ropeway.ropewayUnit;
-			if(!r.todayMin || (r.todayMin > ropeway.ropewayForce))
-				r.todayMin = ropeway.ropewayForce;
-			if(!r.todayMax || (r.todayMax< ropeway.ropewayForce))
-				r.todayMax = ropeway.ropewayForce;
-			if(!r.todayAve)
-				r.todayAve = ropeway.ropewayForce;
-			else
-				r.todayAve = (r.todayAve * r.ropewayHistory.length + ropeway.ropewayForce) / (r.ropewayHistory.length + 1);
-			
-			r.ropewayHistory.push(ropeway);
-			
-			return r;*/
+						
+			return token;
 		}
 		
 		private function onRopeDeteInfoToday_GetModel(event:ResultEvent):void
 		{
-			if(event.result)
+		}
+		
+		public function getRopeway(station:String):RopewayVO
+		{
+			var rw:RopewayVO = null;
+			for each(var r:RopewayVO in ropewayDict)
 			{
-				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
-				ropewayDict[rw.ropewayId] = rw;				
-				rw.ropewayHistory.push(event.token.ropewayForce);
-				
-				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+				if(r.ropewayStation == station)
+				{
+					if(!rw || (r.lastRopewayForce.ropewayTime.time > rw.lastRopewayForce.ropewayTime.time))
+						rw = r;
+				}
 			}
+			
+			return rw;
 		}
 	}
 }

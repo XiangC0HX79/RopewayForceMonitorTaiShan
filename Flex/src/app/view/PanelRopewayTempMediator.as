@@ -4,24 +4,25 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayVO;
-	import app.view.components.PanelRopewayForce;
+	import app.view.components.PanelRopewayCarId;
+	import app.view.components.PanelRopewayTemp;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelRopewayForceMediator extends Mediator implements IMediator
+	public class PanelRopewayTempMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelRopewayForceMediator";
+		public static const NAME:String = "PanelRopewayTempMediator";
 		
-		public function PanelRopewayForceMediator()
+		public function PanelRopewayTempMediator()
 		{
-			super(NAME, new PanelRopewayForce);
+			super(NAME, new PanelRopewayTemp);
 		}
 		
-		protected function get panelRopewayForce():PanelRopewayForce
+		protected function get panelRopewayTemp():PanelRopewayTemp
 		{
-			return viewComponent as PanelRopewayForce;
+			return viewComponent as PanelRopewayTemp;
 		}
 		
 		override public function listNotificationInterests():Array
@@ -43,18 +44,18 @@ package app.view
 					var rw:RopewayVO = notification.getBody() as RopewayVO;		
 					if(configProxy.config.pin)
 					{
-						if(panelRopewayForce.ropeway == rw)
-							panelRopewayForce.ropeway = rw;		
+						if(panelRopewayTemp.ropeway == rw)
+							panelRopewayTemp.ropeway = rw;		
 					}
 					else
 					{
-						panelRopewayForce.ropeway = rw;			
+						panelRopewayTemp.ropeway = rw;			
 					}
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
 					var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					panelRopewayForce.ropeway = proxy.getRopeway(String(notification.getBody()));
+					panelRopewayTemp.ropeway = proxy.getRopeway(String(notification.getBody()));
 					break;
 			}
 		}

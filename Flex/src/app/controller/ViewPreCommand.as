@@ -29,7 +29,13 @@ package app.controller
 			
 			facade.registerMediator(new MainStationMediator(application.mainStation));
 			
+			facade.registerMediator(new PanelRopewayCarIdMediator());
+			
 			facade.registerMediator(new PanelRopewayForceMediator());
+			
+			facade.registerMediator(new PanelRopewayTempMediator());
+			
+			facade.registerMediator(new PanelRopewayAlarmMediator());
 			
 			facade.registerMediator(new ChartRealtimeDetectionMediator());
 			

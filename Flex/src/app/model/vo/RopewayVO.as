@@ -61,6 +61,17 @@ package app.model.vo
 		}
 		
 		/**
+		 * 所属索道站
+		 **/
+		public function get ropewayStation():String
+		{
+			return _source.FromRopeStation;
+		}
+		public function set ropewayStation(value:String):void
+		{
+		}
+		
+		/**
 		 * 是否使用
 		 **/
 		public function get isUse():Boolean
@@ -115,19 +126,9 @@ package app.model.vo
 		{
 		}
 		
-		//抱索力
-		//public var ropewayForce:Number;
-		
-		//单位
-		//public var ropewayUnit:String;
-		
-		//温度
-		//public var ropewayTemp:Number;
-		
-		//时间
-		//public var ropewayTime:Date;
-		
-		//开合次数
+		/**
+		 * 开合次数
+		 **/
 		public function get ropewayOpenCount():Number
 		{
 			return ropewayHistory.length;

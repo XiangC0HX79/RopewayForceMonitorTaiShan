@@ -2,6 +2,7 @@ package app.model
 {
 	import app.ApplicationFacade;
 	
+	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -27,15 +28,24 @@ package app.model
 			webService.loadWSDL(BASE_URL);
 			
 			var operation:Operation = webService.getOperation(name) as Operation;
-			operation.addEventListener(ResultEvent.RESULT,listener);
-			operation.addEventListener(FaultEvent.FAULT,onFault);
+			//operation.addEventListener(ResultEvent.RESULT,listener);
+			//operation.addEventListener(FaultEvent.FAULT,onFault);
 			operation.arguments = args;
 			operation.resultFormat = "object";
 			
-			return operation.send();
+			var token:AsyncToken = operation.send();
+			token.listener = listener;
+			token.addResponder(new AsyncResponder(onResult,onFault,token));
+			return token;
 		}
 		
-		private function onFault(event:FaultEvent):void
+		private function onResult(event:ResultEvent,token:AsyncToken = null):void
+		{	
+			var listener:Function = token.listener;
+			listener(event);
+		}	
+		
+		private function onFault(event:FaultEvent,token:AsyncToken = null):void
 		{	
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
 		}		

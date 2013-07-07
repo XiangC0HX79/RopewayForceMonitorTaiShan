@@ -1,6 +1,8 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewayProxy;
 	import app.model.vo.RopewayVO;
 	import app.view.components.ChartRealtimeDetection;
 	
@@ -26,7 +28,8 @@ package app.view
 		{
 			return [
 				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
+				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
 			];
 		}
 		
@@ -39,7 +42,22 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					chartRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
+					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					var rw:RopewayVO = notification.getBody() as RopewayVO;		
+					if(configProxy.config.pin)
+					{
+						if(chartRealtimeDetection.ropeway == rw)
+							chartRealtimeDetection.ropeway = rw;		
+					}
+					else
+					{
+						chartRealtimeDetection.ropeway = rw;			
+					}
+					break;
+				
+				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
+					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+					chartRealtimeDetection.ropeway = ropewayProxy.getRopeway(String(notification.getBody()));
 					break;
 			}
 		}

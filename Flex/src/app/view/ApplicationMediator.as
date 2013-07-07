@@ -65,12 +65,12 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
-					application.currentState = _config.station?"Single":"Normal";
+					//application.currentState = _config.station?"Single":"Normal";
 					changeContent(ContentRealtimeDetectionMediator.NAME);
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
-					application.currentState = _config.station?"Single":"Normal";
+					//application.currentState = _config.station?"Single":"Normal";
 					changeContent(ContentTodayOverviewMediator.NAME);
 					break;
 				
