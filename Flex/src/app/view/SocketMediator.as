@@ -111,7 +111,7 @@ package app.view
 			var a:Array = s.split('|');
 			
 			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));
-			rf.ropewayId = "T0001";//a[1];		
+			rf.ropewayId = "T000" + Math.ceil(Math.random() * 2); //a[1];		
 			rf.ropewayForce = Number(a[2]);
 			rf.ropewayUnit = a[3];
 			rf.ropewayTemp = a[4];
