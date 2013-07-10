@@ -48,7 +48,7 @@ package app.view
 						dp.addItem(r);
 					}
 					
-					contentTodayOverview.dataProvider = dp;
+					contentTodayOverview.colDp = dp;
 					break;
 			}
 		}

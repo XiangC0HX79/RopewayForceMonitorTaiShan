@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="300" height="200">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 skinClass="custom.skin.SkinPanelRealtimeDetection"
+		 width="100%" minWidth="250" height="170">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Parallel id="parallel">
@@ -31,35 +33,38 @@
 			{				
 				_ropeway = rw;
 				
-				if(!rw)
-					return;
-								
-				//lbTemp.text = rw.la;
-								
-				imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
-				imageAnimate.visible = true;
-				imageAnimate.includeInLayout = true;
-				
-				moveContent.xFrom = -content.width;
-				moveContent.xTo = 0;
-				
-				moveImage.xFrom = 0;
-				moveImage.xTo = content.width;
-				
-				parallel.play();
+				if(rw && (rw.ropewayOpenCount > 0))
+				{
+					imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
+					imageAnimate.visible = true;
+					imageAnimate.includeInLayout = true;
+					
+					moveContent.xFrom = -content.width;
+					moveContent.xTo = 0;
+					
+					moveImage.xFrom = 0;
+					moveImage.xTo = content.width;
+					
+					parallel.play();
+				}
 			}
 		]]>
 	</fx:Script>
 	
-	<s:Image source="assets/image/kuang2.png" width="100%" height="100%"/>
-	<s:Label text="当前温度" left="40" top="17" fontWeight="bold"/>
 	
-	<s:Group x="50" y="60" width="220" height="100" clipAndEnableScrolling="true">	
-		<s:Group id="content" width="220" height="100">
-			<s:Image source="@Embed('assets/image/panel_car.png')" verticalCenter="0"/>
-			<s:Label id="lbTemp" right="0" fontSize="38" fontWeight="bold" verticalCenter="0" text="25 ℃"/>		
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
+		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
+		<s:Label x="30" text="当前温度" fontWeight="bold" verticalCenter="0"/>
+	</s:SkinnableContainer>
+	
+	<s:Group width="220" height="100" clipAndEnableScrolling="true" horizontalCenter="0"
+			 verticalCenter="15" color="blue">	
+		
+		<s:Group id="content" width="100%" height="100%">
+			<s:Image source="@Embed('assets/image/panel_temp.png')" verticalCenter="0"/>
+			<s:Label id="lbTemp" right="30" fontSize="38" fontWeight="bold" verticalCenter="0" text="25 ℃"/>		
 		</s:Group>
 		
 		<s:Image id="imageAnimate" width="220" height="100" visible="false" includeInLayout="false"/>
 	</s:Group>
-</s:Group>
+</s:SkinnableContainer>

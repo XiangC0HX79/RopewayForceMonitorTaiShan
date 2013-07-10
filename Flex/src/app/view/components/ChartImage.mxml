@@ -24,6 +24,9 @@
 				{
 					_ropewayForce = ropewayForce;
 					
+					if(_ropewayForce.alarm > 0)
+						fillColor.color = 0xFF0000;
+					
 					var pt:Point = dataCanvas.dataToLocal(_ropewayForce.ropewayTime,_ropewayForce.ropewayForce);					
 					this.x = pt.x - this.width / 2;
 					this.y = pt.y - this.height / 2;	
@@ -58,7 +61,7 @@
 		
 	<s:Ellipse id="pt" width="5" height="5" verticalCenter="0" horizontalCenter="0">		
 		<s:fill>
-			<s:SolidColor color="blue"/>
+			<s:SolidColor id="fillColor" color="green"/>
 		</s:fill>
 	</s:Ellipse>
 	<s:Rect left="0" right="0" top="0" bottom="0">

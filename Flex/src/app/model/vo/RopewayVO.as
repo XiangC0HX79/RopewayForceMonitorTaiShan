@@ -112,7 +112,21 @@ package app.model.vo
 			return (ropewayHistory.length > 0)?ropewayHistory[ropewayHistory.length - 1]:null;
 		}
 		public function set lastRopewayForce(value:RopewayForceVO):void	
-		{
+		{			
+			if(this.yesterdayAve > 0)
+			{						
+				if(Math.abs(value.ropewayForce - this.yesterdayAve) > 50)
+					value.alarm |= 1;
+			}
+			
+			if(this.ropewayHistory.length > 0)
+			{						
+				var prerf:RopewayForceVO = this.ropewayHistory[this.ropewayHistory.length-1];
+				if(Math.abs(value.ropewayForce - prerf.ropewayForce) > 50)
+					value.alarm |= 2;
+			}
+			
+			this.ropewayHistory.push(value);
 		}
 		
 		/**
@@ -160,10 +174,10 @@ package app.model.vo
 		 **/
 		public function get todayMin():Number	
 		{			
-			var n:Number = Number.MAX_VALUE;
+			var n:Number = 0;
 			for each(var rf:RopewayForceVO in ropewayHistory)
 			{
-				if(n > rf.ropewayForce)
+				if((n==0) || (n > rf.ropewayForce))
 					n = rf.ropewayForce;
 			}
 			return n;
@@ -196,7 +210,8 @@ package app.model.vo
 		 **/
 		public function get yesterdayMax():Number	
 		{
-			return _source.MaxValue;
+			return 640;
+			//return _source.MaxValue;
 		}
 		public function set yesterdayMax(value:Number):void	
 		{
@@ -207,7 +222,8 @@ package app.model.vo
 		 **/
 		public function get yesterdayMin():Number	
 		{
-			return _source.MinValue;
+			return 500;
+			//return _source.MinValue;
 		}
 		public function set yesterdayMin(value:Number):void	
 		{
@@ -218,7 +234,8 @@ package app.model.vo
 		 **/
 		public function get yesterdayAve():Number	
 		{
-			return _source.AverageValue;
+			return 570;
+			//return _source.AverageValue;
 		}
 		public function set yesterdayAve(value:Number):void	
 		{

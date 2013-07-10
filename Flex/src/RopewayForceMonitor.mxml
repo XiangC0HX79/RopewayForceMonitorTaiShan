@@ -40,15 +40,22 @@
 		]]>
 	</fx:Script>
 	
-	<s:Image left="0" right="0" height="100" fillMode="scale"
-			 source="@Embed('assets/image/title.jpg',scaleGridTop='0',scaleGridLeft='500',scaleGridRight='1024',scaleGridBottom='100')"
-			 doubleClickEnabled="true" doubleClick="title_doubleClickHandler(event)"/>
+	<s:Image height="75" 
+			 doubleClick="title_doubleClickHandler(event)" 
+			 doubleClickEnabled="true" 
+			 scaleMode="stretch"
+			 source="assets/image/title.png"/>
+	<s:Image left="508" right="0" height="75" 
+			 doubleClick="title_doubleClickHandler(event)"
+			 doubleClickEnabled="true"  
+			 scaleMode="stretch"
+			 source="assets/image/title_back.png"/>
 	
-	<components:MainMenu id="mainMenu" top="100" bottom="0" width="100"/>
+	<components:MainMenu id="mainMenu" top="75" bottom="0" width="130"/>
 	
-	<components:MainStation id="mainStation" top="100" height="30" left="100" right="0" includeIn="Normal"/>
+	<components:MainStation id="mainStation" top="75" height="30" left="130" right="0" includeIn="Normal"/>
 	
-	<s:Group id="mainContent" top="130" top.Single="100" bottom="0" left="100" right="0"/>
+	<s:Group id="mainContent" top="105" top.Single="75" bottom="0" left="130" right="0"/>
 		
 	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
 </s:Application>

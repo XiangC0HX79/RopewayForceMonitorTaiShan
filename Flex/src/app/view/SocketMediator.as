@@ -123,7 +123,7 @@ package app.view
 		
 			if(rw)
 			{			
-				rw.ropewayHistory.push(rf);
+				rw.lastRopewayForce = rf;
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
@@ -146,7 +146,7 @@ package app.view
 				
 				proxy.ropewayDict[rw.ropewayId] = rw;
 				
-				rw.ropewayHistory.push(token.ropewayForce);
+				rw.lastRopewayForce = token.ropewayForce;
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);

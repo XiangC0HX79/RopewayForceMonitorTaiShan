@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 color="0xFFFFFF">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:RadioButtonGroup id="rbGroup" change="rbGroup_changeHandler(event)"/>		
@@ -17,7 +18,9 @@
 			
 			public static const GROUP_CHANGE:String = "GroupChange";
 			
-			[Bindable]public var config:ConfigVO
+			[Bindable]public var carCount:Number = 0;
+			
+			[Bindable]public var config:ConfigVO;
 						
 			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
 			{
@@ -50,11 +53,13 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:DataGroup dataProvider="{config.stations}" color="0xFFFFFF" height="100%"
+	<s:DataGroup dataProvider="{config.stations}" height="100%"
 				 rendererAdd="datagroup_rendererAddHandler(event)"
 				 itemRenderer="custom.itemRenderer.ItemRendererMainStation">
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="middle" paddingLeft="20" gap="60"/>
 		</s:layout>
 	</s:DataGroup>
+	
+	<s:Label height="100%" text="吊箱总数：{carCount}" verticalAlign="middle" right="30"/>
 </s:Group>

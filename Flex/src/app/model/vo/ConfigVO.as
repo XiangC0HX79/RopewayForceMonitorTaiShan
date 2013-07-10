@@ -5,6 +5,8 @@ package app.model.vo
 	[Bindable]
 	public class ConfigVO
 	{
+		public var user:String;
+		
 		public var station:String;
 		
 		public var stations:ArrayCollection;

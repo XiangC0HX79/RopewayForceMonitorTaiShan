@@ -52,7 +52,7 @@ package app.view
 						if(Math.abs(rw.lastRopewayForce.ropewayForce - prerf.ropewayForce) > 50)
 						{
 							var s:String = df.format(rw.lastRopewayForce.ropewayTime)
-								+ " " + rw.lastRopewayForce.ropewayId 
+								+ " " + rw.ropewayCarId 
 								+ " 超出前次抱索力50KG。";
 							
 							panelRopewayAlarm.dataPro.addItemAt(s,0);
@@ -64,7 +64,7 @@ package app.view
 						if(Math.abs(rw.lastRopewayForce.ropewayForce - rw.yesterdayAve) > 50)
 						{
 							s = df.format(rw.lastRopewayForce.ropewayTime)
-								+ " " + rw.lastRopewayForce.ropewayId 
+								+ " " + rw.ropewayCarId
 								+ " 超出昨日平均值50KG。";
 							
 							panelRopewayAlarm.dataPro.addItemAt(s,0);

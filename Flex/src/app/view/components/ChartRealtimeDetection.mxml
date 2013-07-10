@@ -8,7 +8,7 @@
 		 creationComplete="container_creationCompleteHandler(event)">	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:SolidColorStroke id="tickStroke" color="black" weight="2"/>
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
 		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
 		<s:Sequence id="sequence"/>
@@ -47,7 +47,7 @@
 			}
 			public function set ropeway(value:RopewayVO):void
 			{
-				if(value != null)
+				if(value && (value.ropewayOpenCount > 0))
 				{
 					if(
 						(this.initialized)
@@ -63,6 +63,18 @@
 							refreshChart(value);
 					}
 				}
+				else
+				{					
+					groupPoint.removeAllElements();
+					groupLine.removeAllElements();
+					
+					lineMax.visible = false;
+					lineMin.visible = false;
+					lineAve.visible = false;
+					lbMax.visible = false;
+					lbMin.visible = false;
+					lbAve.visible = false;
+				}
 				
 				_ropeway = value;
 			}
@@ -74,7 +86,89 @@
 				{
 					var df:Number = rw.yesterdayMax - rw.yesterdayMin;
 					var ave:Number = (rw.yesterdayMax + rw.yesterdayMin) / 2;
+				}
+				else
+				{
+					df = rw.todayMax - rw.todayMin;
+					ave = (rw.todayMax + rw.todayMin) / 2;
+				}
+				
+				if(df < 4 * 10)
+				{
+					verticalAxis.interval = 10;
+				}
+				else if(df < 4 * 20)
+				{
+					verticalAxis.interval = 20;
+				}
+				else if(df < 4 * 50)
+				{
+					verticalAxis.interval = 50;
+				}
+				else if(df < 4 * 100)
+				{
+					verticalAxis.interval = 100;
+				}
+				else
+				{
+					var maxh:Number = rw.yesterdayMin?(rw.yesterdayMin - 50):rw.todayMin;
+					var minh:Number = rw.yesterdayMax?(rw.yesterdayMax + 50):rw.todayMax;
 					
+					minh = Math.floor(minh / 200) * 200;
+					maxh = Math.ceil(maxh / 200) * 200;
+					
+					verticalAxis.interval = (maxh - minh) / 5;
+				}
+				
+				minh = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
+				verticalAxis.minimum = (minh > 0)?minh:0;
+				verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
+				
+				minh = rw.firstRopewayForce.ropewayTime.time;	
+				maxh = rw.lastRopewayForce.ropewayTime.time;			
+				df = maxh - minh;
+				
+				minh = Math.floor(minh / ONE_MIN) * ONE_MIN;
+				if(df == 0)
+				{
+					horizontalAxis.labelUnits = "minutes";
+					horizontalAxis.interval = 1;
+					
+					maxh = minh + 10 * ONE_MIN + Math.round(4 / groupChart.width * ONE_MIN);
+										
+					horizontalAxis.minimum = new Date(minh);
+					horizontalAxis.maximum = new Date(maxh);
+				}
+				else
+				{					
+					var hdf:Number = horizontalAxis.maximum.time - horizontalAxis.minimum.time;	
+					if(df > hdf * 0.9)
+					{
+						hdf = Math.ceil(hdf * 1.2);
+						
+						if(hdf < 7 * ONE_HOUR)
+						{					
+							horizontalAxis.labelUnits = "minutes";
+							horizontalAxis.interval = Math.ceil((hdf / 10) / ONE_MIN);
+							
+							maxh = minh + hdf + Math.round(4 / groupChart.width * hdf);
+						}
+						else
+						{
+							horizontalAxis.labelUnits = "hours";
+							horizontalAxis.interval = 1;
+							
+							minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
+							maxh = Math.ceil(maxh / ONE_HOUR) * ONE_HOUR;
+						}
+												
+						horizontalAxis.minimum = new Date(minh);
+						horizontalAxis.maximum = new Date(maxh);
+					}
+				}
+				
+				if(rw.yesterdayMax && rw.yesterdayMin)
+				{					
 					//昨天数值
 					lineMax.visible = true;
 					lineMin.visible = true;
@@ -118,9 +212,6 @@
 				}
 				else
 				{
-					df = rw.todayMax - rw.todayMin;
-					ave = (rw.todayMax + rw.todayMin) / 2;
-					
 					lineMax.visible = false;
 					lineMin.visible = false;
 					lineAve.visible = false;
@@ -128,85 +219,6 @@
 					lbMin.visible = false;
 					lbAve.visible = false;
 				}
-				
-				if(df < 4 * 10)
-				{
-					verticalAxis.interval = 10;
-				}
-				else if(df < 4 * 20)
-				{
-					verticalAxis.interval = 20;
-				}
-				else if(df < 4 * 50)
-				{
-					verticalAxis.interval = 50;
-				}
-				else if(df < 4 * 100)
-				{
-					verticalAxis.interval = 100;
-				}
-				else
-				{
-					var maxh:Number = rw.yesterdayMin?(rw.yesterdayMin - 50):rw.todayMin;
-					var minh:Number = rw.yesterdayMax?(rw.yesterdayMax + 50):rw.todayMax;
-					
-					minh = Math.floor(minh / 200) * 200;
-					maxh = Math.ceil(maxh / 200) * 200;
-					
-					verticalAxis.interval = (maxh - minh) / 5;
-				}
-				
-				minh = Math.floor(ave / verticalAxis.interval) * verticalAxis.interval - 2 * verticalAxis.interval;
-				verticalAxis.minimum = (minh > 0)?minh:0;
-				verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
-				
-				maxh = rw.lastRopewayForce.ropewayTime.time;
-				minh = rw.firstRopewayForce.ropewayTime.time;
-				df = maxh - minh;
-				
-				if(df < 9 * ONE_MIN)
-				{					
-					horizontalAxis.labelUnits = "minutes";
-					horizontalAxis.interval = 1;
-					
-					minh = Math.floor(minh / ONE_MIN) * ONE_MIN;
-					maxh = minh + 10 * ONE_MIN + 4 / groupChart.width * ONE_MIN;
-				}
-				else if(df < 9 * TEN_MIN)
-				{					
-					horizontalAxis.labelUnits = "minutes";
-					horizontalAxis.interval = 10;
-					
-					minh = Math.floor(minh / TEN_MIN) * TEN_MIN;
-					maxh = minh + 10 * TEN_MIN + 4 / groupChart.width * TEN_MIN;
-				}
-				else if(df < 9 * HALF_HOUR)
-				{					
-					horizontalAxis.labelUnits = "minutes";
-					horizontalAxis.interval = 30;
-					
-					minh = Math.floor(minh / HALF_HOUR) * HALF_HOUR;
-					maxh = minh + 10 * HALF_HOUR + 4 / groupChart.width * HALF_HOUR;
-				}
-				else if(df < 9 * ONE_HOUR)
-				{					
-					horizontalAxis.labelUnits = "hours";
-					horizontalAxis.interval = 1;
-					
-					minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
-					maxh = minh + 10 * ONE_HOUR + 4 / groupChart.width * ONE_HOUR;
-				}
-				else
-				{					
-					horizontalAxis.labelUnits = "hours";
-					horizontalAxis.interval = 1;
-					
-					minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
-					maxh = Math.ceil(maxh / ONE_HOUR) * ONE_HOUR;
-				}
-				
-				horizontalAxis.minimum = new Date(minh);
-				horizontalAxis.maximum = new Date(maxh);
 			}
 			
 			private function refreshChart(rw:RopewayVO):void
@@ -218,10 +230,10 @@
 				var animates:Array = new Array;								
 				for(var i:Number = 0;i<rw.ropewayHistory.length;i++)
 				{
-					var img:ChartImage = new ChartImage;
-					
-					img.SetValue(dataCanvas,rw.ropewayHistory[i]);
-					
+					var img:ChartImage = new ChartImage;					
+					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+					img.SetValue(dataCanvas,rw.ropewayHistory[i]);					
 					groupPoint.addElement(img);		
 					
 					animates.push(img.scale);
@@ -248,7 +260,7 @@
 				var animates:Array = new Array;							
 				for(var i:Number = 0;i<groupPoint.numElements;i++)
 				{
-					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;						
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;	
 					img.SetValue(dataCanvas);
 					animates.push(img.mv);
 					
@@ -273,9 +285,12 @@
 				line.animate.duration = 500;
 				animates.push(line.animate);
 				
-				img = new ChartImage;
+				img = new ChartImage;		
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
 				img.SetValue(dataCanvas,_ropeway.lastRopewayForce);
 				groupPoint.addElement(img);		
+				
 				animates.push(img.scale);
 				
 				sequence.end();
@@ -396,6 +411,7 @@
 		</mx:verticalAxis>
 		<mx:horizontalAxis>
 			<mx:DateTimeAxis displayLocalTime="true" 
+							 alignLabelsToUnits="true"
 							 id="horizontalAxis"/>
 		</mx:horizontalAxis>
 		
@@ -417,9 +433,9 @@
 	</mx:LineChart>		
 	
 	<s:Group id="groupChart" left="80" right="70" bottom="45" top="50">	
-		<s:Line id="lineMax" stroke="{yesStroke}" width="100%"/>
-		<s:Line id="lineAve" stroke="{yesStroke}" width="100%"/>
-		<s:Line id="lineMin" stroke="{yesStroke}" width="100%"/>
+		<s:Line id="lineMax" stroke="{yesStroke}" width="100%" visible="false"/>
+		<s:Line id="lineAve" stroke="{yesStroke}" width="100%" visible="false"/>
+		<s:Line id="lineMin" stroke="{yesStroke}" width="100%" visible="false"/>
 		<s:Group id="groupLine" width="100%" height="100%"/>
 		<s:Group id="groupPoint" width="100%" height="100%"/>
 		<s:Group id="groupLabel" width="100%" height="100%">
@@ -429,7 +445,7 @@
 	
 	<s:Label left="10" top="20" text="抱索力（{_ropeway.lastRopewayForce.ropewayUnit}）"/>
 	<s:Label right="15" bottom="40" text="时间"/>
-	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0"
+	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
 			 text="{_ropeway.ropewayId}抱索力实时监控曲线"/>
 	
 	<s:Label right="15" id="lbMax" text="昨日最大抱索力&#xd;{_ropeway.yesterdayMax} {_ropeway.lastRopewayForce.ropewayUnit}" textAlign="center"

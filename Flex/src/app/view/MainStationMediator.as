@@ -4,6 +4,7 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.MainStation;
 	
 	import flash.events.Event;
@@ -33,14 +34,17 @@ package app.view
 		}
 		
 		private function onGroupChange(event:Event):void
-		{
+		{			
+			updateCarCount();
+			
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,mainStation.config.station);
 		}
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
 			];
 		}
 		
@@ -51,7 +55,17 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					mainStation.config = notification.getBody() as ConfigVO;
 					break;
+				
+				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:	
+					updateCarCount();
+					break;
 			}
+		}
+		
+		private function updateCarCount():void
+		{
+			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			mainStation.carCount = ropewayProxy.getRopewayCount(mainStation.config.station);
 		}
 	}
 }

@@ -66,9 +66,9 @@
     </s:states>
 		
 	<s:Image left="0" right="0" top="0" bottom="0"			 
-			 source="@Embed('assets/image/btn_realtime_detection_off.png')"
-			 source.over="@Embed('assets/image/btn_realtime_detection_on.png')"
-			 source.disabled="@Embed('assets/image/btn_realtime_detection_on.png')"/>
+			 source="@Embed('assets/image/btn_today_overview_off.png')"
+			 source.over="@Embed('assets/image/btn_today_overview_on.png')"
+			 source.disabled="@Embed('assets/image/btn_today_overview_on.png')"/>
 	
     <!-- layer 8: text -->
     <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->

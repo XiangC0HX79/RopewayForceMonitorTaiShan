@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
@@ -10,13 +10,39 @@
 			public static const TODAY_OVERVIEW:String = "TodayOverview";
 			public static const ANALYSIS:String = "Analysis";
 			public static const MANAGE:String = "Manage";
+			
+			protected function buttonBar_buttonDownHandler(event:FlexEvent,type:String):void
+			{
+				for(var i:Number = 0;i < buttonBar.numElements;i++)
+				{
+					var btn:Button = buttonBar.getElementAt(i) as Button;
+					btn.enabled = true;
+				}
+				
+				btn = event.currentTarget as Button;
+				btn.enabled = false;
+				
+				dispatchEvent(new Event(type));
+			}			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Button label="实时检测记录" skinClass="custom.skin.SkinButtonRealtimeDetection" width="100%" height="25%" buttonDown="dispatchEvent(new Event(REALTIME_DETECTION));"/>
-	<s:Button label="当天概览" skinClass="custom.skin.SkinButtonContentTodayOverview" width="100%" height="25%" buttonDown="dispatchEvent(new Event(TODAY_OVERVIEW));"/>
-	<s:Button label="分析查询" skinClass="custom.skin.SkinButtonMenuLater3" width="100%" height="25%" buttonDown="dispatchEvent(new Event(ANALYSIS));"/>
-	<s:Button label="搜索器车厢设置" skinClass="custom.skin.SkinButtonMenuLater4" width="100%" height="25%" buttonDown="dispatchEvent(new Event(MANAGE));"/>
-</s:VGroup>
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="#4173ad"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:VGroup id="buttonBar" gap="0">
+		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection" width="130" height="86" enabled="false"
+				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
+		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="130" height="86" 
+				  buttonDown="buttonBar_buttonDownHandler(event,TODAY_OVERVIEW)"/>
+		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="130" height="86" 
+				  buttonDown="buttonBar_buttonDownHandler(event,ANALYSIS)"/>
+		<s:Button skinClass="custom.skin.SkinButtonManager" width="130" height="86" 
+				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
+	</s:VGroup>
+</s:Group>

@@ -68,6 +68,14 @@ package app.model.vo
 			_source.DeteDate = value;
 		}
 		
+		/**
+		 * 报警类型
+		 * 0-正常
+		 * 1-平均值报警
+		 * 2-单次值报警
+		 **/
+		public var alarm:Number = 0;
+		
 		//所属报索站
 		//public var ropewayStation:String;
 		

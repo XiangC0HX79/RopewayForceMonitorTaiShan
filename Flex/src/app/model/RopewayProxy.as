@@ -75,7 +75,7 @@ package app.model
 		private function onRopeDeteInfoToday_GetModel(event:ResultEvent):void
 		{
 		}
-		
+				
 		public function getRopeway(station:String):RopewayVO
 		{
 			var rw:RopewayVO = null;
@@ -83,12 +83,29 @@ package app.model
 			{
 				if(r.ropewayStation == station)
 				{
-					if(!rw || (r.lastRopewayForce.ropewayTime.time > rw.lastRopewayForce.ropewayTime.time))
+					if(!rw 
+						|| (rw.ropewayOpenCount == 0)
+						|| 
+						((r.ropewayOpenCount > 0) && (r.lastRopewayForce.ropewayTime.time > rw.lastRopewayForce.ropewayTime.time)))
 						rw = r;
 				}
 			}
 			
 			return rw;
+		}
+		
+		public function getRopewayCount(station:String):Number
+		{
+			var count:Number = 0;
+			for each(var r:RopewayVO in ropewayDict)
+			{
+				if(r.ropewayStation == station)
+				{
+					count++;
+				}
+			}
+			
+			return count;
 		}
 	}
 }

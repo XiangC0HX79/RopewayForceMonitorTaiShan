@@ -4,6 +4,7 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -13,8 +14,13 @@
 			import mx.formatters.DateFormatter;
 			
 			[Bindable]private var _ropeway:RopewayVO;
-			[Bindable]public var numtimes:int;
-			[Bindable]public var date:String;
+			
+			[Bindable]private var _color:int;
+			
+			[Bindable]private var _numtimes:int;
+			[Bindable]private var _todayAve:int;
+			[Bindable]private var _todayMax:int;
+			[Bindable]private var _todayMin:int;
 			
 			override public function set data(value:Object):void
 			{
@@ -22,40 +28,78 @@
 				
 				_ropeway = value as RopewayVO;
 				
-				numtimes = _ropeway.ropewayHistory.length;
+				_numtimes = _ropeway.ropewayHistory.length;
+				_todayAve = _ropeway.todayAve;
+				_todayMax = _ropeway.todayMax;
+				_todayMin = _ropeway.todayMin;
 				
-				if(_ropeway.lastRopewayForce)
-					date = formatDate(_ropeway.lastRopewayForce.ropewayTime);
-			}
-			
-			private function formatDate(date:Date):String
-			{
-				var dateFormatter:DateFormatter = new DateFormatter();
-				dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
-				var nowData:String= dateFormatter.format(date); 
-				return nowData;
+				_color = ((_numtimes) && (_ropeway.lastRopewayForce.alarm > 0))?0xFF0000:0x02C462;
 			}
 		]]>
 	</fx:Script>
-	
-	<s:Group width="220" height="160">
-		<s:Image source="assets/image/kuang.png" width="100%" height="100%"/>
-			<s:Label x="14" y="10" color="#FFFFFF" fontWeight="bold"
-					 text="抱索器编号：{_ropeway.ropewayId}"/>
-			<s:Label x="131" y="10" color="#FFFFFF" fontWeight="bold" text="开合次数：{numtimes}"/>
-			<s:Label y="39" color="#FF0000" fontSize="20" fontWeight="bold"
-					 horizontalCenter="0" text="{_ropeway.lastRopewayForce.ropewayForce} KG"/>
-			<s:Label y="67" fontSize="11" horizontalCenter="0" text="{date}"/>
-			<s:Label x="82" y="86" width="71" text="昨天"/>
-			<s:Label x="162" y="87" width="71" text="今天"/>
-			<s:Label x="11" y="107" width="71" text="最大值"/>
-			<s:Label x="82" y="106" width="71" text="{_ropeway.yesterdayMax}"/>
-			<s:Label x="162" y="106" width="71" text="{_ropeway.todayMax}"/>
-			<s:Label x="11" y="125" width="71" text="平均值"/>
-			<s:Label x="82" y="124" width="71" text="{_ropeway.yesterdayAve}"/>
-			<s:Label x="162" y="124" width="71" text="{_ropeway.todayAve}"/>
-			<s:Label x="11" y="144" width="71" text="最小值"/>
-			<s:Label x="82" y="143" width="71" text="{_ropeway.yesterdayMin}"/>
-			<s:Label x="162" y="143" width="71" text="{_ropeway.todayMin}"/>
-	</s:Group>
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanelRealtimeDetection" width="100%" minWidth="240">	
+		<s:layout>
+			<s:VerticalLayout gap="0" horizontalAlign="center"/>
+		</s:layout>
+		<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
+			<s:Image x="15" source="assets/image/title_icon_item.jpg" verticalCenter="-2"/>
+			<s:Label x="35" text="{_ropeway.ropewayCarId}" fontWeight="bold" verticalCenter="0"/>
+			<s:Label right="20" text="开合次数：{_numtimes}" verticalCenter="0"/>
+		</s:SkinnableContainer>		
+				
+		<s:Label paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}"
+				 text="{_ropeway.lastRopewayForce.ropewayForce}{_ropeway.lastRopewayForce.ropewayUnit}"
+				 verticalAlign="middle"/>
+		
+		<s:Label paddingBottom="5" color="{_color}"
+				 text="{df.format(_ropeway.lastRopewayForce.ropewayTime)}"
+				 verticalAlign="middle"/>
+		
+		<s:HGroup width="100%" height="25" gap="0" fontWeight="bold" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="昨天"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="今天"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="最大值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMax}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayMax}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="平均值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayAve}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayAve}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="最小值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMin}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayMin}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+	</s:SkinnableContainer>
 </s:ItemRenderer>
