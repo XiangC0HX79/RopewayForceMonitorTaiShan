@@ -7,6 +7,8 @@ package app.view
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
+	import com.adobe.utils.DateUtil;
+	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
@@ -100,7 +102,12 @@ package app.view
 				//如出现Error: Error #2030: 遇到文件尾错误，请用：str=socket.readUTFBytes(socket.bytesAvailable);				
 			}
 			
-			decodeSocketData(bytesArray);
+			if(!_rec)
+			{
+				_rec = true;
+				
+				decodeSocketData(bytesArray);
+			}
 			
 			bytesArray= new ByteArray;
 		}  
@@ -153,8 +160,27 @@ package app.view
 			}
 		}
 		
+		private var _rec:Boolean = false;
+		
+		private var _oldTime:Date = new Date;
+		
 		private function onTimer(event:Event):void
 		{			
+			_rec = false;
+			
+			var now:Date = new Date;
+			
+			if(_oldTime.toLocaleDateString() != now.toLocaleDateString())
+			{
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+				for each(var r:RopewayVO in proxy.ropewayDict)
+				{
+					r.ropewayHistory = [];
+				}
+			}
+							
+			_oldTime = now;
+			
 			sendSocketData("KEEP");
 		}
 		

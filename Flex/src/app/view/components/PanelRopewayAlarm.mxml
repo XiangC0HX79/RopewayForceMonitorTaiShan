@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 skinClass="custom.skin.SkinPanelRealtimeDetection"
-		 width="100%" minWidth="250" height="170">
+		 width="100%" minWidth="350" height="170" creationComplete="initContainer(event)" xmlns:player="org.bytearray.gif.player.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -11,8 +11,18 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.bytearray.gif.player.GIFPlayer;
 			
 			[Bindable]public var dataPro:ArrayCollection = new ArrayCollection;
+			
+			protected function initContainer(event:FlexEvent):void
+			{
+				//var request:URLRequest = new URLRequest("assets/swf/panel_alarm.swf"); 
+				//gifPlayer.load(request); 
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -20,19 +30,11 @@
 		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
 		<s:Label x="30" text="报警情况" fontWeight="bold" verticalCenter="0"/>
 	</s:SkinnableContainer>
+		
+	<s:SWFLoader x="20" y="60" width="75" height="75" source="@Embed('assets/swf/panel_alarm.swf')"/>		
 	
-	<s:Scroller left="20" right="20" top="50" bottom="10">
-		<s:DataGroup width="100%" dataProvider="{dataPro}" color="red">
-			<s:layout>
-				<s:VerticalLayout/>
-			</s:layout>	
-			<s:itemRenderer>
-				<fx:Component>
-					<s:ItemRenderer>
-						<s:Label text="{data}"/>						
-					</s:ItemRenderer>
-				</fx:Component>
-			</s:itemRenderer>
-		</s:DataGroup>
-	</s:Scroller>
+	<s:List left="100" right="20" top="45" bottom="10" 
+			fontSize="14" color="red"
+			dataProvider="{dataPro}" 
+			borderVisible="false"/>
 </s:SkinnableContainer>

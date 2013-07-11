@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 skinClass="custom.skin.SkinPanelRealtimeDetection"
-		 width="100%" minWidth="250" height="170">
+		 width="340" height="170">
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -23,13 +23,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.ConfigVO;
 			import app.model.vo.RopewayVO;
 			
+			import mx.binding.utils.BindingUtils;
 			import mx.graphics.ImageSnapshot;
 			
 			[Bindable]private var _color:int;
 			
-			private var _ropeway:RopewayVO;
+			[Bindable]private var _ropeway:RopewayVO;
 			public function get ropeway():RopewayVO
 			{
 				return _ropeway;
@@ -42,7 +44,7 @@
 				{
 					_color = (rw.lastRopewayForce.alarm > 0)?0xFF0000:0x02C462;
 					
-					lbOpenCount.text = "开合次数：" + rw.ropewayOpenCount;
+					lbOpenCount.text = rw.ropewayOpenCount.toString() + "/2002";
 					
 					lbForce.text = rw.lastRopewayForce.ropewayForce.toString();
 					
@@ -73,27 +75,41 @@
 					lbTime.text = "";
 				}
 			}
+			
+			[Bindable]public var config:ConfigVO;
 		]]>
 	</fx:Script>
 	
+	<fx:Binding source="config.pin" destination="btnPin.selected" twoWay="true"/>
+	
 	<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
 		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
-		<s:Label x="30" text="抱索力" fontWeight="bold" verticalCenter="0"/>
+		<s:Label x="30" text="吊箱信息（{_ropeway.ropewayId}）" fontWeight="bold" verticalCenter="0"/>
+		<s:ToggleButton id="btnPin" right="20" width="20" height="20" buttonMode="true"
+						skinClass="custom.skin.SkinToggleButtonPin" verticalCenter="0"/>
 	</s:SkinnableContainer>
 	
-	<s:Group width="220" height="100" clipAndEnableScrolling="true" horizontalCenter="0"
-			 verticalCenter="15" color="{_color}">	
+	
+	<s:Group left="20" right="20" top="50" bottom="10" clipAndEnableScrolling="true" color="{_color}">	
 		
 		<s:Group id="content" width="100%" height="100%">
-			<s:Image source="@Embed('assets/image/panel_force.png')" verticalCenter="0"/>
-			<s:HGroup id="lbCarId" verticalCenter="0" right="0">
-				<s:Label id="lbForce" fontSize="38" fontWeight="bold"/>	
-				<s:Label id="lbUnit" fontSize="38" fontWeight="bold"/>	
+			
+			<s:Image source="assets/image/panel_car.png"/>	
+			
+			<s:Label id="lbOpenCount" fontSize="20" fontWeight="bold" top="0" right="0"/>
+			
+			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
+				<s:Label text="02"/>
+				<s:Spacer width="20"/>
+				<s:Label id="lbForce"/>
+				<s:Label id="lbUnit"/>
 			</s:HGroup>
-			<s:Label id="lbOpenCount" right="0" top="0" width="{lbCarId.width}" textAlign="center"/>
-			<s:Label id="lbTime" right="0" bottom="0" width="{lbCarId.width}" textAlign="center"/>
+			
+			<s:Image source="assets/image/panel_title_icon.png" bottom="0" left="0"/>
+			
+			<s:Label id="lbTime" fontSize="20" fontWeight="bold" bottom="0" right="0"/>	
 		</s:Group>
 		
-		<s:Image id="imageAnimate" width="220" height="100" visible="false" includeInLayout="false"/>
+		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>
 	</s:Group>
 </s:SkinnableContainer>

@@ -29,10 +29,6 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
-				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
 			];
 		}
 		

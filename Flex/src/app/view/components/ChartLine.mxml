@@ -32,8 +32,8 @@
 					this.yTo = ptS.y;
 					
 					var motionPaths:Vector.<MotionPath> = new Vector.<MotionPath>;
-					motionPaths.push(new SimpleMotionPath("xFrom",ptS.x,ptS.x));
-					motionPaths.push(new SimpleMotionPath("yFrom",ptS.y,ptS.y));
+					//motionPaths.push(new SimpleMotionPath("xFrom",ptS.x,ptS.x));
+					//motionPaths.push(new SimpleMotionPath("yFrom",ptS.y,ptS.y));
 					motionPaths.push(new SimpleMotionPath("xTo",ptS.x,ptE.x));
 					motionPaths.push(new SimpleMotionPath("yTo",ptS.y,ptE.y));
 					

@@ -6,6 +6,8 @@ package app.view
 	import app.model.vo.RopewayVO;
 	import app.view.components.ChartRealtimeDetection;
 	
+	import flash.events.Event;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -22,6 +24,17 @@ package app.view
 		protected function get chartRealtimeDetection():ChartRealtimeDetection
 		{
 			return viewComponent as ChartRealtimeDetection;
+		}
+		
+		private function onClear(event:Event):void
+		{
+			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			for each(var r:RopewayVO in ropewayProxy.ropewayDict)
+			{
+				r.ropewayHistory = new Array;
+			}
+			
+			chartRealtimeDetection.ropeway = null;
 		}
 		
 		override public function listNotificationInterests():Array

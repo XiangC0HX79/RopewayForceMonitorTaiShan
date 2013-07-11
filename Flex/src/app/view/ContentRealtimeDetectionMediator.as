@@ -22,7 +22,6 @@ package app.view
 		{
 			super(NAME, viewComponent);
 			
-			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayCarIdMediator.NAME).getViewComponent() as IVisualElement);
 			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayForceMediator.NAME).getViewComponent() as IVisualElement);
 			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayTempMediator.NAME).getViewComponent() as IVisualElement);
 			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayAlarmMediator.NAME).getViewComponent() as IVisualElement);

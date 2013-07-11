@@ -3,6 +3,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
+	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayForce;
 	
@@ -17,6 +18,9 @@ package app.view
 		public function PanelRopewayForceMediator()
 		{
 			super(NAME, new PanelRopewayForce);
+			
+			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+			panelRopewayForce.config = configProxy.config;
 		}
 		
 		protected function get panelRopewayForce():PanelRopewayForce
@@ -36,7 +40,7 @@ package app.view
 		override public function handleNotification(notification:INotification):void
 		{
 			switch(notification.getName())
-			{
+			{				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
