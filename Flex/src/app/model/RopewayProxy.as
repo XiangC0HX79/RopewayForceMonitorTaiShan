@@ -1,6 +1,7 @@
 package app.model
 {
 	import app.ApplicationFacade;
+	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
@@ -34,16 +35,43 @@ package app.model
 		
 		public function InitRopewayDict():void
 		{
-			send("RopeDeteInfoToday_GetAllList",onRopeCarriageRela_GetLis);
+			if(ConfigVO.debug)
+			{
+				var where:String = "";
+			}
+			else
+			{
+				where = "DATEDIFF(D,DeteDate,getDate()) = 0";
+			}
+			
+			send("RopeDeteInfoToday_GetList",onRopeCarriageRela_GetLis,where);
 		}
 		
 		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
 		{
-			for each(var i:ObjectProxy in event.result)
+			if(ConfigVO.debug)
 			{
-				var rw:RopewayVO = new RopewayVO(i);
-				ropewayDict[rw.ropewayId] = rw;
+				if(event.result.length > 0)
+				{
+					var rw:RopewayVO = new RopewayVO(event.result[0]);
+					
+					for(var i:int = 1;i<20;i++)
+					{
+						rw.ropewayId = (i < 10)?("0" + i):i.toString();
+						rw.ropewayCarId = rw.ropewayId;
+					}
+					
+					ropewayDict[rw.ropewayId] = rw;
+				}
 			}
+			else
+			{				
+				for each(var o:ObjectProxy in event.result)
+				{
+					rw = new RopewayVO(o);
+					ropewayDict[rw.ropewayId] = rw;
+				}
+			}			
 			
 			send("RopeDeteValueHis_GetAllList",onRopeDeteValueHis_GetList);
 		}
@@ -65,15 +93,11 @@ package app.model
 		
 		public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
 		{
-			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",onRopeDeteInfoToday_GetModel,ropewayForce.toString());
+			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",null,ropewayForce.toString());
 			
 			token.ropewayForce = ropewayForce;
 						
 			return token;
-		}
-		
-		private function onRopeDeteInfoToday_GetModel(event:ResultEvent):void
-		{
 		}
 				
 		public function getRopeway(station:String):RopewayVO
@@ -106,6 +130,15 @@ package app.model
 			}
 			
 			return count;
+		}
+		
+		public function getRopewayList(station:String):AsyncToken
+		{
+			var where:String = "";
+			if(station != "所有索道站")
+				where += "FromRopeStation = '" + station + "'";
+			
+			return send("RopeDeteInfoToday_GetList",null,where);
 		}
 	}
 }

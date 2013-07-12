@@ -14,6 +14,7 @@ package app.model.vo
 		}
 		public function set ropewayId(value:String):void
 		{
+			_source.RopeCode = value;
 		}
 		
 		/**
@@ -36,6 +37,7 @@ package app.model.vo
 		}
 		public function set ropewayCarId(value:String):void
 		{
+			_source.CarriageCode = value;
 		}
 		
 		/**

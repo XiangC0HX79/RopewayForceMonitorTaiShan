@@ -13,7 +13,7 @@ package app.view
 	import app.model.vo.RopewayNumAnaVO;
 	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
-	import app.view.components.Anacomponents.ropewayForceAna;
+	import app.view.components.PanelAnalysisForce;
 	import app.view.components.Anacomponents.ropewayNumAna;
 	import app.view.components.Anacomponents.ropewayNumTotelAna;
 	import app.view.components.Anacomponents.ropewayWarningAna;

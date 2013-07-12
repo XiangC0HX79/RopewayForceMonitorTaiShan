@@ -63,6 +63,8 @@ package app.model
 			
 			config.serverPort = int(xml.ServerPort);	
 			
+			ConfigVO.debug = Boolean(Number(xml.Debug));
+			
 			WebServiceProxy.BASE_URL = xml.WebServiceUrl;
 				
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);

@@ -5,10 +5,13 @@ package app.model
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
+	import com.adobe.utils.DateUtil;
+	
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
+	import mx.rpc.AsyncToken;
 	import mx.utils.StringUtil;
 	
 	import org.puremvc.as3.interfaces.IProxy;
@@ -17,7 +20,8 @@ package app.model
 	public class RopewayForceProxy extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayForceProxy";
-		public function RopewayForceProxy(proxyName:String=null, data:Object=null)
+		
+		public function RopewayForceProxy()
 		{
 			super(NAME, new Dictionary);
 		}
@@ -27,20 +31,19 @@ package app.model
 			return data as Dictionary;
 		}
 		
-		public function GetForce(obj:Object):ArrayCollection
+		public function GetForceHistory(dateS:Date,dateE:Date,station:String,ropewayId:String):AsyncToken
 		{
-			var arr:ArrayCollection = new ArrayCollection();
-			for(var i:int;i<=30;i++)
-			{
-			/*	var r:RopewayForceVO = new RopewayForceVO();	
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.ropewayForce = int(Math.random() * 500);
-				r.ropewayTemp = int(Math.random() * 50);
-				r.ropewayTime = new Date;
-				r.ropewayStation = "桃花源"
-				arr.addItem(r);*/
-			}
-			return arr;
+			var where:String = "";
+			where = "DeteDate >= '" + DateUtil.toW3CDTF(dateS) 
+				+ "' AND DeteDate <= '" + DateUtil.toW3CDTF(dateE) + "'";
+			
+			if(station != "所有索道站")
+				where = " AND FromRopeStation = '" + station + "'";
+			
+			if(ropewayId != "所有抱索器")
+				where = " AND RopeCode = '" + ropewayId + "'";
+			
+			return send("RopeDeteInfoToday_GetList",null,where);
 		}
 		
 		public function GetDayAve(obj:Object):ArrayCollection

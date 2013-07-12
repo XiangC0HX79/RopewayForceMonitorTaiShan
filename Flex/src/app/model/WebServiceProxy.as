@@ -4,6 +4,7 @@ package app.model
 	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.Responder;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.soap.Operation;
@@ -28,24 +29,18 @@ package app.model
 			webService.loadWSDL(BASE_URL);
 			
 			var operation:Operation = webService.getOperation(name) as Operation;
-			//operation.addEventListener(ResultEvent.RESULT,listener);
-			//operation.addEventListener(FaultEvent.FAULT,onFault);
 			operation.arguments = args;
 			operation.resultFormat = "object";
 			
 			var token:AsyncToken = operation.send();
-			token.listener = listener;
-			token.addResponder(new AsyncResponder(onResult,onFault,token));
-			return token;
+			if(listener != null)
+				token.addResponder(new Responder(listener,onFault));
+			else 
+				token.addResponder(new Responder(function(e:ResultEvent):void{},onFault));
+			return operation.send();
 		}
 		
-		private function onResult(event:ResultEvent,token:AsyncToken = null):void
-		{	
-			var listener:Function = token.listener;
-			listener(event);
-		}	
-		
-		private function onFault(event:FaultEvent,token:AsyncToken = null):void
+		private function onFault(event:FaultEvent):void
 		{	
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
 		}		

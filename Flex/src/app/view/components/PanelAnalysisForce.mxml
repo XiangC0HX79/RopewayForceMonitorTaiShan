@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" label="抱索力">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lineStoke" weight="1"/>
+		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
+		
+		<s:RadioButtonGroup id="rbGroup1" change="rbGroup1_changeHandler(event)"/>
+		<s:RadioButtonGroup id="rbGroup2"/>
+		<s:RadioButtonGroup id="rbGroup3" change="rbGroup3_changeHandler(event)"/>
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.DateUtil;
+			
+			import custom.itemRenderer.ItemRendererGroup;
+			
+			import mx.events.FlexEvent;
+			
+			import org.puremvc.as3.interfaces.IMediator;
+			import org.puremvc.as3.interfaces.INotification;
+			import org.puremvc.as3.patterns.mediator.Mediator;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.RendererExistenceEvent;
+			
+			public static var ONE_HOUR:Number = 60 * 60 * 1000;
+			
+			public static var QUERY:String = "Query";
+			
+			public static var STATION_CHANGE:String = "StaionChange";
+			
+			[Bindable]public var colStations:ArrayCollection;
+			
+			[Bindable]public var colRopewayId:ArrayCollection;
+			
+			[Bindable]public var colRopewayCarId:ArrayCollection;
+			
+			protected function datagroupStations_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:ItemRendererGroup = event.renderer as ItemRendererGroup;
+				renderer.rb.group = rbgStation;
+				
+				//renderer.addEventListener(MouseEvent.CLICK,onRendererClick);
+			}
+						
+			protected function rbgStation_changeHandler(event:Event):void
+			{
+				dispatchEvent(new Event(STATION_CHANGE));
+			}
+			
+			protected function onRendererClick(event:MouseEvent):void
+			{
+				var renderer:ItemRendererGroup = event.currentTarget as ItemRendererGroup;
+				renderer.data.selected = !renderer.data.selected;
+				
+				/* var selected:Boolean = true;
+				for each(var o:Object in colStations)
+				{
+					selected &&= o.selected;
+				}
+				checkStations.selected = selected; */
+				
+				dispatchEvent(new Event(STATION_CHANGE));
+			}
+			
+			/* protected function checkStations_changeHandler(event:Event):void
+			{
+				for each(var o:Object in colStations)
+				{
+					o.selected = checkStations.selected;
+				}
+				
+				dispatchEvent(new Event(STATION_CHANGE));
+			} */
+						
+			public function get dateS():Date
+			{				
+				if(comboTime.selectedIndex == 0)
+				{
+					return new Date(dateTime.selectedDate.time + numTimeS.value * ONE_HOUR);
+				}
+				else if(comboTime.selectedIndex == 1)
+				{
+					return dateDayS.selectedDate;
+				}
+				else if(comboTime.selectedIndex == 2)
+				{
+					return new Date(dateMonthS.selectedDate.fullYear,dateMonthS.selectedDate.month,1);
+				}
+				
+				return new Date;
+			}
+			
+			public function get dateE():Date
+			{				
+				if(comboTime.selectedIndex == 0)
+				{
+					return new Date(dateTime.selectedDate.time + (numTimeE.value + 1) * ONE_HOUR);
+				}
+				else if(comboTime.selectedIndex == 1)
+				{
+					return new Date(dateDayE.selectedDate.fullYear,dateDayE.selectedDate.month,dateDayE.selectedDate.date + 1);
+				}
+				else if(comboTime.selectedIndex == 2)
+				{
+					return new Date(dateMonthE.selectedDate.fullYear,dateMonthE.selectedDate.month + 1,1);
+				}
+				
+				return new Date;
+			}
+			
+			protected function rbGroup1_changeHandler(event:Event):void
+			{				
+				if(rbGroup1.selectedValue.toString() == "按时间段")
+				{
+					vs1.selectedIndex = 0;
+					lowtemp.visible = true;
+					hightemp.visible = true;
+					c1.visible = true;
+					c2.visible = true;
+					c3.visible = true;
+					if(rbGroup3.selectedValue.toString() == "明细查询")
+					{
+						vs2.selectedIndex = 1;
+					}
+				}
+				else if(rbGroup1.selectedValue.toString() == "按天")
+				{
+					vs1.selectedIndex = 1;
+					lowtemp.text ="";
+					lowtemp.visible = false;
+					hightemp.text ="";
+					hightemp.visible = false;
+					c1.visible = false;
+					c2.visible = false;
+					c3.visible = false;
+					if(rbGroup3.selectedValue.toString() == "明细查询")
+						vs2.selectedIndex = 2;
+				}	
+				else
+				{
+					vs1.selectedIndex = 2;
+					lowtemp.text ="";
+					lowtemp.enabled = false;
+					hightemp.text ="";
+					hightemp.enabled = false;
+					if(rbGroup3.selectedValue.toString() == "明细查询")
+						vs2.selectedIndex = 2;
+				}
+			}
+			
+			protected function rbGroup3_changeHandler(event:Event):void
+			{				
+				if(rbGroup3.selectedValue.toString() == "图形分析")
+				{
+					vs2.selectedIndex = 0;
+				}
+				else
+				{
+					if(rbGroup1.selectedValue.toString() == "按时间段")
+						vs2.selectedIndex = 1;
+					else
+						vs2.selectedIndex = 2;
+				}
+			}
+			
+			private function labelRefund(item:Object, column:GridColumn):String
+			{
+				return item.ropewayForce + item.ropewayUnit;
+			}			
+			
+			protected function listCarId_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120" paddingBottom="2" paddingLeft="2" paddingRight="2"
+			  paddingTop="2">		
+		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="120">
+			<s:VGroup height="100%" horizontalAlign="center" width="100%">					
+				<s:Button label="统计" icon="@Embed('assets/image/btn_find.png')" 
+						  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
+				<s:Button label="重置" icon="@Embed('assets/image/btn_back.png')" width="100%"/>
+				<s:ButtonBar width="100%">
+					<s:ArrayCollection>
+						<fx:String>图形</fx:String>
+						<fx:String>表格</fx:String>
+					</s:ArrayCollection>
+				</s:ButtonBar>
+			</s:VGroup>
+			<s:Line width="100%" stroke="{lineStoke}"/>
+			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
+				<s:Label text="操作" fontWeight="bold"/>
+			</s:HGroup>
+		</s:SkinnableContainer>	
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%">
+			<s:RadioButton label="所有索道站" selected="true" group="{rbgStation}" x="5"/>
+			<s:DataGroup width="220" height="100%" dataProvider="{colStations}"
+						 itemRenderer="custom.itemRenderer.ItemRendererGroup" 
+						 rendererAdd="datagroupStations_rendererAddHandler(event)">
+				<s:layout>
+					<s:TileLayout/>
+				</s:layout>
+			</s:DataGroup>
+			<s:Line width="100%" stroke="{lineStoke}"/>
+			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
+			<!--	<s:CheckBox id="checkStations" selected="true" 
+							change="checkStations_changeHandler(event)"/>-->
+				<s:Label text="索道站" fontWeight="bold"/>
+			</s:HGroup>
+		</s:SkinnableContainer>	
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="180">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="类型："/>
+				<s:DropDownList id="comboTime" requireSelection="true"
+								width="100%">
+					<s:ArrayCollection>
+						<fx:String>按时间</fx:String>
+						<fx:String>按天</fx:String>
+						<fx:String>按月</fx:String>
+					</s:ArrayCollection>
+				</s:DropDownList>				
+			</s:HGroup>			
+			
+			<mx:ViewStack selectedIndex="{comboTime.selectedIndex}" width="100%" creationPolicy="all">
+				<s:NavigatorContent width="100%">	
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="日期："/>
+						<mx:DateField id="dateTime" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+					</s:HGroup>
+					
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="时间："/>
+						<s:NumericStepper id="numTimeS" width="50" minimum="4" maximum="22"/>
+						<s:Label text=" - "/>
+						<s:NumericStepper id="numTimeE" width="50" minimum="4" maximum="22"/>
+					</s:HGroup>
+				</s:NavigatorContent>
+				<s:NavigatorContent width="100%">
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="开始日期："/>
+						<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+					</s:HGroup>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="结束日期："/>
+						<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+					</s:HGroup>
+				</s:NavigatorContent>
+				<s:NavigatorContent width="100%">
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="开始月份："/>
+						<mx:DateField id="dateMonthS" width="100%" formatString="YYYY-MM" selectedDate="{new Date}"
+									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+					</s:HGroup>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="结束月份："/>
+						<mx:DateField id="dateMonthE" width="100%" formatString="YYYY-MM" selectedDate="{new Date}"
+									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+					</s:HGroup>
+				</s:NavigatorContent>
+			</mx:ViewStack>
+			
+			<s:Line width="100%" stroke="{lineStoke}"/>
+			
+			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
+				<s:Label text="统计时间" fontWeight="bold"/>
+			</s:HGroup>
+		</s:SkinnableContainer>	
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="200">
+			<s:VGroup height="100%" horizontalAlign="center" width="100%">	
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="　吊箱编号："/>
+					<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopewayCarId}"
+									width="100%" change="{listRopewayId.selectedIndex = listCarId.selectedIndex}"/>
+				</s:HGroup>	
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="抱索器编号："/>
+					<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopewayId}"
+									width="100%" change="{listCarId.selectedIndex = listRopewayId.selectedIndex}"/>
+				</s:HGroup>	
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="温度："/>
+					<s:NumericStepper width="35" minimum="4" maximum="22"/>
+					<s:Label text=" ℃ - "/>
+					<s:NumericStepper width="35" minimum="4" maximum="22"/>
+					<s:Label text="℃"/>
+				</s:HGroup>	
+			</s:VGroup>
+			<s:Line width="100%" stroke="{lineStoke}"/>
+			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
+				<s:Label text="统计条件" fontWeight="bold"/>
+			</s:HGroup>
+		</s:SkinnableContainer>	
+	</s:HGroup>
+	
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text="统计类型：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:RadioButton groupName="rbGroup1" label="按时间段" selected="true"/>
+			<s:RadioButton groupName="rbGroup1" label="按天"/>
+			<s:RadioButton groupName="rbGroup1" label="按月"/>
+		</s:HGroup>
+		<s:Label text="统计时段：" fontWeight="bold"/>
+		<mx:ViewStack id="vs1" width="100%">
+			<s:NavigatorContent>
+				<s:HGroup verticalAlign="middle">
+					<mx:DateField width="110" id="dateFrom1" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM-DD"/>
+					<s:NumericStepper id="numericStepper1" width="50" minimum="0" maximum="23"/>
+					<s:Label text="至" fontSize="12"/>
+					<s:NumericStepper id="numericStepper2" width="50" minimum="0" maximum="23"/>
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:HGroup verticalAlign="middle">
+					<mx:DateField width="110" id="dateFrom2" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM-DD"/>
+					<s:Label text="至" fontSize="12"/>
+					<mx:DateField width="110" id="dateTo2" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM-DD"/>
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:HGroup verticalAlign="middle">
+					<mx:DateField width="110" id="dateFrom3" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM"/>
+					<s:Label text="至" fontSize="12"/>
+					<mx:DateField width="110" id="dateTo3" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM"/>
+				</s:HGroup>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+		<s:Label text="报索器编号：" fontWeight="bold"/>
+		<s:TextInput id="ForceId"/>
+	</s:SkinnableContainer>				
+	<!--<s:Spacer width="20"/>-->
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>	
+		<s:Label id="c1" text="温度范围：" fontWeight="bold"/>
+		<s:TextInput width="50" id="lowtemp"/>	
+		<s:Label id="c2" text="至" fontWeight="bold"/>
+		<s:TextInput width="50" id="hightemp"/>
+		<s:Label id="c3" text="℃" fontWeight="bold"/>
+		<s:Label text="索道站：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:CheckBox id="cb1" label="桃花源上站" selected="true"/>
+			<s:CheckBox id="cb2" label="桃花源下站" selected="true"/>
+			<s:CheckBox id="cb3" label="中天门上站" selected="true"/>
+			<s:CheckBox id="cb4" label="中天门上站" selected="true"/>
+		</s:HGroup>
+		<s:Label text="结果类型：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:RadioButton groupName="rbGroup3" label="图形分析" selected="true"/>
+			<s:RadioButton groupName="rbGroup3" label="明细查询"/>
+		</s:HGroup>
+		<s:Label width="100%" visible="false"/>
+	</s:SkinnableContainer>	
+	<s:Group width="100%" height="100%">
+		<mx:ViewStack id="vs2" height="100%" width="100%">
+			<s:NavigatorContent>
+				<mx:LineChart id="linechart1" width="100%" height="100%">
+					<mx:verticalAxis>
+						<mx:LinearAxis/>
+					</mx:verticalAxis>
+					<mx:series>
+						<mx:LineSeries yField="ropewayForce"/>
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:DataGrid  id="datagrid1" width="100%" height="100%">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+							<s:GridColumn headerText="时间" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
+							<s:GridColumn headerText="报索力" labelFunction="labelRefund" width="100"/>		
+							<s:GridColumn headerText="温度" dataField="ropewayTemp" width="100"/>
+							<s:GridColumn headerText="所属索道站" dataField="ropewayStation"/>
+						</s:ArrayList>				
+					</s:columns>
+				</s:DataGrid>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:DataGrid  id="datagrid2" width="100%" height="100%">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+							<s:GridColumn headerText="日期" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
+							<s:GridColumn headerText="平均报索力" dataField="ropewayForce" width="100"/>	
+							<s:GridColumn headerText="所属索道站" dataField="ropewayStation"/>
+						</s:ArrayList>				
+					</s:columns>
+				</s:DataGrid>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:Group>
+</s:NavigatorContent>

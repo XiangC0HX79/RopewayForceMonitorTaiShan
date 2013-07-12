@@ -8,10 +8,13 @@ package app.view
 	import custom.itemRenderer.ItemRendererTodayOverview;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ISort;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
+	
+	import spark.collections.Sort;
 	
 	public class ContentTodayOverviewMediator extends Mediator implements IMediator
 	{
@@ -30,7 +33,8 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
 			];
 		}
 		
@@ -48,7 +52,19 @@ package app.view
 						dp.addItem(r);
 					}
 					
+					dp.source.sortOn("ropewayCarId",Array.NUMERIC);
+					
 					contentTodayOverview.colDp = dp;
+					break;
+				
+				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
+					var rw:RopewayVO = notification.getBody() as RopewayVO;
+					if(!contentTodayOverview.colDp.contains(rw))
+					{
+						contentTodayOverview.colDp.addItem(rw);
+					}
+					contentTodayOverview.colDp.source.sortOn("ropewayCarId",Array.NUMERIC);
+					contentTodayOverview.colDp.refresh();
 					break;
 			}
 		}

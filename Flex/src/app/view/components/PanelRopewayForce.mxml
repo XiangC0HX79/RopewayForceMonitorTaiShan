@@ -99,7 +99,7 @@
 			<s:Label id="lbOpenCount" fontSize="20" fontWeight="bold" top="0" right="0"/>
 			
 			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
-				<s:Label text="02"/>
+				<s:Label text="{_ropeway.ropewayCarId}"/>
 				<s:Spacer width="20"/>
 				<s:Label id="lbForce"/>
 				<s:Label id="lbUnit"/>

@@ -11,11 +11,11 @@ package app.view
 	import app.model.vo.RopewayNumAnaVO;
 	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
-	import app.view.components.Anacomponents.ropewayForceAna;
 	import app.view.components.Anacomponents.ropewayNumAna;
 	import app.view.components.Anacomponents.ropewayNumTotelAna;
 	import app.view.components.Anacomponents.ropewayWarningAna;
 	import app.view.components.ContentAnalysis;
+	import app.view.components.PanelAnalysisForce;
 	
 	import custom.itemRenderer.ItemRendererTodayOverview;
 	
@@ -30,6 +30,7 @@ package app.view
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
+	import spark.components.NavigatorContent;
 	import spark.components.RadioButton;
 	import spark.components.RadioButtonGroup;
 	
@@ -40,7 +41,8 @@ package app.view
 		public function ContentAnalysisMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
-			contentAnalysis.addEventListener(FlexEvent.CREATION_COMPLETE,onCreation)
+			
+			contentAnalysis.TabN.addChild(facade.retrieveMediator(PanelAnalysisForceMediator.NAME).getViewComponent() as NavigatorContent);
 		}
 		
 		protected function get contentAnalysis():ContentAnalysis
@@ -62,107 +64,7 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	
 			}
 		}
-		
-		private function onCreation(event:FlexEvent):void
-		{
-			contentAnalysis.RopewayForceAna.submitbn.addEventListener(FlexEvent.BUTTON_DOWN,onForceSubmit);
-			contentAnalysis.RopewayForceAna.rbGroup3.addEventListener(Event.CHANGE,ChangeHandle,false,0);
-			contentAnalysis.RopewayNumAna.addEventListener(FlexEvent.UPDATE_COMPLETE,numUpdated);
-			contentAnalysis.RopewayNumTotelAna.addEventListener(FlexEvent.UPDATE_COMPLETE,TotelUpdated);
-			contentAnalysis.RopewayWarningAna.addEventListener(FlexEvent.UPDATE_COMPLETE,WarningUpdated);
-		}
-		
-		private function onForceSubmit(event:FlexEvent):void
-		{
-			var fromDates:Array;
-			var fromDate:Date;
-			var toDates:Array;
-			var toDate:Date;
-			var obj:Object = new Object();
-			obj.TYPE = contentAnalysis.RopewayForceAna.vs1.selectedIndex;
-			if(obj.TYPE == 0)
-			{
-				fromDates=contentAnalysis.RopewayForceAna.dateFrom1.text.split("-");
-				fromDate=new Date(Number(fromDates[0]),Number(fromDates[1]),Number(fromDates[2]),Number(contentAnalysis.RopewayForceAna.numericStepper1.value));
-				toDates=contentAnalysis.RopewayForceAna.dateFrom1.text.split("-");
-				toDate=new Date(Number(toDates[0]),Number(toDates[1]),Number(toDates[2]),Number(contentAnalysis.RopewayForceAna.numericStepper2.value));
-			}
-			else if(obj.TYPE == 1)
-			{
-				fromDates=contentAnalysis.RopewayForceAna.dateFrom2.text.split("-");
-				fromDate=new Date(Number(fromDates[0]),Number(fromDates[1]),Number(fromDates[2]),0);
-				toDates=contentAnalysis.RopewayForceAna.dateTo2.text.split("-");
-				toDate=new Date(Number(toDates[0]),Number(toDates[1]),Number(toDates[2]),0);
-			}
-			else
-			{
-				fromDates=contentAnalysis.RopewayForceAna.dateFrom3.text.split("-");
-				fromDate=new Date(Number(fromDates[0]),Number(fromDates[1]),1,0);
-				toDates=contentAnalysis.RopewayForceAna.dateTo3.text.split("-");
-				toDate=new Date(Number(toDates[0]),Number(toDates[1]),1,0);
-			}
-			if(fromDate.time>=toDate.time || fromDates.length < 2 || toDates.length < 2)
-			{
-				Alert.show("选择时间错误","提示");
-				return;
-			}
-			obj.RESULTTYPE = contentAnalysis.RopewayForceAna.vs2.selectedIndex;
-			obj.FROMDATE = fromDate;
-			obj.TODATE = toDate;
-			if(contentAnalysis.RopewayForceAna.vs2.selectedIndex == 0)
-			{
-				if(contentAnalysis.RopewayForceAna.ForceId.text == "")
-				{
-					Alert.show("请输入索道编号","提示");
-					return;
-				}
-			}
-			obj.ID = contentAnalysis.RopewayForceAna.ForceId.text;
-			obj.LOWTEMP = contentAnalysis.RopewayForceAna.lowtemp.text;
-			obj.HIGHTEMP = contentAnalysis.RopewayForceAna.hightemp.text;
-			obj.STATION = "";
-			if(contentAnalysis.RopewayForceAna.cb1.selected == true&&contentAnalysis.RopewayForceAna.cb2.selected == true
-				&&contentAnalysis.RopewayForceAna.cb3.selected == true&&contentAnalysis.RopewayForceAna.cb4.selected == true)
-			{
 				
-			}
-			else if(contentAnalysis.RopewayForceAna.cb1.selected == false&&contentAnalysis.RopewayForceAna.cb2.selected == false
-				&&contentAnalysis.RopewayForceAna.cb3.selected == false&&contentAnalysis.RopewayForceAna.cb4.selected == false)
-			{
-				Alert.show("必须选择一个站","提示");
-				return;
-			}
-			else
-			{
-				if(contentAnalysis.RopewayForceAna.cb1.selected == true)
-					obj.STATION += "," + contentAnalysis.RopewayForceAna.cb1.label;
-				if(contentAnalysis.RopewayForceAna.cb2.selected == true)
-					obj.STATION += "," +  contentAnalysis.RopewayForceAna.cb2.label;
-				if(contentAnalysis.RopewayForceAna.cb3.selected == true)
-					obj.STATION += "," +  contentAnalysis.RopewayForceAna.cb3.label;
-				if(contentAnalysis.RopewayForceAna.cb4.selected == true)
-					obj.STATION += "," +  contentAnalysis.RopewayForceAna.cb4.label;
-			}
-			
-			var arr:ArrayCollection = new ArrayCollection();
-			var forceProxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			if(obj.TYPE == 0)
-				arr = forceProxy.GetForce(obj);
-			else if(obj.TYPE == 1)
-				arr = forceProxy.GetDayAve(obj);
-			else if(obj.TYPE == 2)
-				arr = forceProxy.GetMonthAve(obj);
-			if(obj.RESULTTYPE == 0)
-				contentAnalysis.RopewayForceAna.linechart1.dataProvider = arr;
-			else if(obj.RESULTTYPE == 1)
-			{
-				contentAnalysis.RopewayForceAna.datagrid1.dataProvider = arr;
-			}
-			else
-				contentAnalysis.RopewayForceAna.datagrid2.dataProvider = arr;
-				
-		}
-		
 		private var arrC:ArrayCollection
 		private var num:int
 		private function ChangeHandle(event:Event):void

@@ -16,5 +16,7 @@ package app.model.vo
 		public var serverPort:int;
 		
 		public var pin:Boolean = false;
+		
+		public static var debug:Boolean = true;
 	}
 }

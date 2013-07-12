@@ -43,13 +43,15 @@
 		</s:layout>
 		<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
 			<s:Image x="15" source="assets/image/title_icon_item.jpg" verticalCenter="-2"/>
-			<s:Label x="35" text="{_ropeway.ropewayCarId}" fontWeight="bold" verticalCenter="0"/>
+			<s:Label x="35" text="{_ropeway.ropewayId}" fontWeight="bold" verticalCenter="0"/>
 			<s:Label right="20" text="开合次数：{_numtimes}" verticalCenter="0"/>
 		</s:SkinnableContainer>		
-				
-		<s:Label paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}"
-				 text="{_ropeway.lastRopewayForce.ropewayForce}{_ropeway.lastRopewayForce.ropewayUnit}"
-				 verticalAlign="middle"/>
+		
+		<s:HGroup paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}">
+			<s:Label text="{_ropeway.ropewayCarId}"/>
+			
+			<s:Label text="{_ropeway.lastRopewayForce.ropewayForce}{_ropeway.lastRopewayForce.ropewayUnit}"/>			
+		</s:HGroup>
 		
 		<s:Label paddingBottom="5" color="{_color}"
 				 text="{df.format(_ropeway.lastRopewayForce.ropewayTime)}"

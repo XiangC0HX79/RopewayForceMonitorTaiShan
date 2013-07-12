@@ -21,6 +21,7 @@ package app.view
 	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.Responder;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
@@ -104,7 +105,8 @@ package app.view
 			
 			if(!_rec)
 			{
-				_rec = true;
+				//if(!ConfigVO.debug)
+				//	_rec = true;
 				
 				decodeSocketData(bytesArray);
 			}
@@ -118,7 +120,16 @@ package app.view
 			var a:Array = s.split('|');
 			
 			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));
-			rf.ropewayId = "T000" + Math.ceil(Math.random() * 2); //a[1];		
+			if(ConfigVO.debug)
+			{
+				var i:int = Math.ceil(Math.random() * 19);
+				rf.ropewayId = (i < 10)?("0" + i):i.toString(); 
+			}
+			else
+			{
+				rf.ropewayId =  a[1];		
+			}
+			
 			rf.ropewayForce = Number(a[2]);
 			rf.ropewayUnit = a[3];
 			rf.ropewayTemp = a[4];
@@ -139,21 +150,29 @@ package app.view
 			{
 				var token:AsyncToken = proxy.AddRopeway(rf);
 				token.ropewayForce = rf;
-				token.addResponder(new AsyncResponder(onAddRopewayResult,function(error:FaultEvent,token:Object = null):void{},token));
+				token.addResponder(new Responder(onAddRopewayResult,function(falut:FaultEvent):void{}));
 			}
 		}
 		
-		private function onAddRopewayResult(event:ResultEvent,token:Object = null):void
+		private function onAddRopewayResult(event:ResultEvent):void
 		{
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 						
 			if(event.result)
 			{
+				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
+				
 				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
 				
+				if(ConfigVO.debug)
+				{
+					rw.ropewayId = rf.ropewayId;
+					rw.ropewayCarId = rf.ropewayId;
+				}
+								
 				proxy.ropewayDict[rw.ropewayId] = rw;
 				
-				rw.lastRopewayForce = token.ropewayForce;
+				rw.lastRopewayForce = rf;
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);

@@ -19,6 +19,18 @@ package app.model.vo
 		{
 			_source.RopeCode = value;
 		}
+		
+		/**
+		 * 吊箱编号
+		 * */
+		public function get ropewayCarId():String
+		{
+			return _source.CarriageCode;
+		}
+		public function set ropewayCarId(value:String):void
+		{
+			_source.CarriageCode = value;
+		}
 				
 		/**
 		 * 抱索力

@@ -5,7 +5,7 @@
 		 xmlns:components="app.view.components.*"
 		 width="100%" height="100%" 
 		 resize="dataCanvas_resizeHandler(event)" 
-		 creationComplete="container_creationCompleteHandler(event)">	
+		 creationComplete="container_creationCompleteHandler(event)" fontSize="12">	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
