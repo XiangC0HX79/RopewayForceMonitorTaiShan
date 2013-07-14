@@ -661,6 +661,58 @@ package com.adobe.utils
 			return sb;
 		}
 		
+		public static function toLocaleW3CDTF(d:Date,includeMilliseconds:Boolean=false):String
+		{
+			var date:Number = d.getDate();
+			var month:Number = d.getMonth();
+			var hours:Number = d.getHours();
+			var minutes:Number = d.getMinutes();
+			var seconds:Number = d.getSeconds();
+			var milliseconds:Number = d.getMilliseconds();
+			var sb:String = new String();
+			
+			sb += d.getFullYear();
+			sb += "-";
+			
+			//thanks to "dom" who sent in a fix for the line below
+			if (month + 1 < 10)
+			{
+				sb += "0";
+			}
+			sb += month + 1;
+			sb += "-";
+			if (date < 10)
+			{
+				sb += "0";
+			}
+			sb += date;
+			sb += "T";
+			if (hours < 10)
+			{
+				sb += "0";
+			}
+			sb += hours;
+			sb += ":";
+			if (minutes < 10)
+			{
+				sb += "0";
+			}
+			sb += minutes;
+			sb += ":";
+			if (seconds < 10)
+			{
+				sb += "0";
+			}
+			sb += seconds;
+			if (includeMilliseconds && milliseconds > 0)
+			{
+				sb += ".";
+				sb += milliseconds;
+			}
+			
+			return sb;
+		}
+		
 		/**
 		 * Converts a date into just after midnight.
 		 */

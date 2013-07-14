@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" label="实时抱索力">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" label="总开合次数">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
@@ -60,13 +60,13 @@
 			}
 						
 			public function get dateS():Date
-			{				
-				return new Date(dateTime.selectedDate.time + numTimeS.value * ONE_HOUR);
+			{		
+				return dateDayS.selectedDate;
 			}
 			
 			public function get dateE():Date
-			{				
-				return new Date(dateTime.selectedDate.time + (numTimeE.value + 1) * ONE_HOUR);
+			{		
+				return new Date(dateDayE.selectedDate.fullYear,dateDayE.selectedDate.month,dateDayE.selectedDate.date + 1);
 			}
 			
 			private function labelForce(item:Object, column:GridColumn):String
@@ -79,44 +79,13 @@
 				var rf:RopewayForceVO = hitData.item as RopewayForceVO;
 				return "时间：" + dateF.format(rf.ropewayTime) + "\n" + "抱索力：" + rf.ropewayForce + " " + rf.ropewayUnit; 
 			}
-
-			protected function btnBar_changingHandler(event:IndexChangeEvent):void
-			{
-				if((listCarId.selectedIndex == 0) && (event.newIndex == 0))
-				{
-					event.preventDefault();
-					
-					dispatchEvent(new Event(SELECT_ONE));
-				}
-			}
-			
-			protected function listCarId_changeHandler(event:IndexChangeEvent):void
-			{
-				if(listCarId.selectedIndex == 0)
-					btnBar.selectedIndex = 1;
-				
-				listRopewayId.selectedIndex = listCarId.selectedIndex;
-			}
-			
-			protected function listRopewayId_changeHandler(event:IndexChangeEvent):void
-			{
-				if(listCarId.selectedIndex == 0)
-					btnBar.selectedIndex = 1;
-				
-				listCarId.selectedIndex = listRopewayId.selectedIndex;
-			}
 			
 			protected function btnReset_buttonDownHandler(event:FlexEvent):void
 			{
 				btnBar.selectedIndex = 1;
 				rbgStation.selectedValue = "所有索道站";
-				dateTime.selectedDate = new Date;
-				numTimeS.value = 6;
-				numTimeE.value=(new Date).getHours();
-				listCarId.selectedIndex = 0;
-				listRopewayId.selectedIndex = 0;
-				numTempMin.text = "";
-				numTempMax.text = "";
+				dateDayS.selectedDate = new Date;
+				dateDayE.selectedDate = new Date;
 				colRopewayHis.source = [];
 			}
 			
@@ -134,7 +103,7 @@
 				<s:Button label="统计" icon="@Embed('assets/image/btn_find.png')" 
 						  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
 				<s:Button label="重置" icon="@Embed('assets/image/btn_back.png')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-				<s:ButtonBar width="100%" id="btnBar" changing="btnBar_changingHandler(event)" selectedIndex="1">
+				<s:ButtonBar width="100%" id="btnBar" selectedIndex="0">
 					<s:ArrayCollection>
 						<fx:String>图形</fx:String>
 						<fx:String>表格</fx:String>
@@ -164,20 +133,19 @@
 			</s:HGroup>
 		</s:SkinnableContainer>	
 		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="180">
-			<s:VGroup height="100%" width="100%">					
+		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="180">	
+			<s:VGroup height="100%" width="100%">				
 				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="日期："/>
-					<mx:DateField id="dateTime" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}" 
+					<s:Label text="开始日期："/>
+					<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
 								  dayNames="['日','一','二','三','四','五','六']"
 								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
 				</s:HGroup>
-				
 				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="时间："/>
-					<s:NumericStepper id="numTimeS" width="50" minimum="4" maximum="22" value="6"/>
-					<s:Label text=" - "/>
-					<s:NumericStepper id="numTimeE" width="50" minimum="4" maximum="22" value="{(new Date).getHours()}"/>
+					<s:Label text="结束日期："/>
+					<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+								  dayNames="['日','一','二','三','四','五','六']"
+								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
 				</s:HGroup>
 			</s:VGroup>
 			
@@ -185,32 +153,6 @@
 			
 			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
 				<s:Label text="统计时间" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
-		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="220">
-			<s:VGroup height="100%" horizontalAlign="center" width="100%">	
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="　吊箱编号："/>
-					<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopewayCarId}"
-									width="100%" change="listCarId_changeHandler(event)"/>
-				</s:HGroup>	
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="抱索器编号："/>
-					<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopewayId}"
-									width="100%" change="listRopewayId_changeHandler(event)"/>
-				</s:HGroup>	
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="温度："/>
-					<s:TextInput id="numTempMin" width="50"/>
-					<s:Label text=" ℃ - "/>
-					<s:TextInput id="numTempMax" width="50"/>
-					<s:Label text="℃"/>
-				</s:HGroup>	
-			</s:VGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="统计条件" fontWeight="bold"/>
 			</s:HGroup>
 		</s:SkinnableContainer>	
 	</s:HGroup>

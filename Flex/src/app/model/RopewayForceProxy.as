@@ -12,6 +12,8 @@ package app.model
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.events.ResultEvent;
+	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
 	
 	import org.puremvc.as3.interfaces.IProxy;
@@ -23,57 +25,43 @@ package app.model
 		
 		public function RopewayForceProxy()
 		{
-			super(NAME, new Dictionary);
+			super(NAME, new ArrayCollection);
 		}
 		
-		public function get ropewayDict():Dictionary
+		public function get col():ArrayCollection
 		{
-			return data as Dictionary;
+			return data as ArrayCollection;
 		}
 		
-		public function GetForceHistory(dateS:Date,dateE:Date,station:String,ropewayId:String):AsyncToken
+		public function GetForceHistory(dateS:Date,dateE:Date,station:String,ropewayId:String,tempMin:String,tempMax:String):AsyncToken
 		{
 			var where:String = "";
-			where = "DeteDate >= '" + DateUtil.toW3CDTF(dateS) 
-				+ "' AND DeteDate <= '" + DateUtil.toW3CDTF(dateE) + "'";
+			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
+				+ "' AND DeteDate <= '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
 			
 			if(station != "所有索道站")
-				where = " AND FromRopeStation = '" + station + "'";
+				where += " AND FromRopeStation = '" + station + "'";
 			
 			if(ropewayId != "所有抱索器")
-				where = " AND RopeCode = '" + ropewayId + "'";
+				where += " AND RopeCode = '" + ropewayId + "'";
 			
-			return send("RopeDeteInfoToday_GetList",null,where);
+			if(tempMin != "")
+				where += " AND Temperature >= " + Number(tempMin);
+			
+			if(tempMax != "")
+				where += " AND Temperature <= " + Number(tempMax);
+			
+			return send("RopeDeteValueHis_GetList",onGetForceHistory,where);
 		}
 		
-		public function GetDayAve(obj:Object):ArrayCollection
-		{
-			var arr:ArrayCollection = new ArrayCollection();
-			for(var i:int;i<=30;i++)
+		private function onGetForceHistory(event:ResultEvent):void
+		{			
+			var arr:Array = [];
+			for each(var o:ObjectProxy in event.result)
 			{
-				var r:RopewayDayAveVO = new RopewayDayAveVO();	
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.ropewayForce = int(Math.random() * 500);
-				r.ropewayTime = new Date;
-				r.ropewayStation = "桃花源"
-				arr.addItem(r);
+				arr.push(new RopewayForceVO(o));
 			}
-			return arr;
-		}
-		
-		public function GetMonthAve(obj:Object):ArrayCollection
-		{
-			var arr:ArrayCollection = new ArrayCollection();
-			for(var i:int;i<=30;i++)
-			{
-				var r:RopewayDayAveVO = new RopewayDayAveVO();	
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.ropewayForce = int(Math.random() * 500);
-				r.ropewayTime = new Date;
-				r.ropewayStation = "桃花源"
-				arr.addItem(r);
-			}
-			return arr;
+			this.col.source = arr;
 		}
 	}
 }

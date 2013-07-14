@@ -8,9 +8,5 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>	
 	<mx:TabNavigator id="TabN" width="100%" height="100%" fontFamily="微软雅黑">
-		<components1:PanelAnalysisForce id="RopewayForceAna" label="报索力"/>
-		<components:ropewayNumAna id="RopewayNumAna" label="开合次数"/>
-		<components:ropewayNumTotelAna id="RopewayNumTotelAna" label="总开合次数"/>
-		<components:ropewayWarningAna id="RopewayWarningAna" label="报警分析"/>
 	</mx:TabNavigator>
 </s:Group>

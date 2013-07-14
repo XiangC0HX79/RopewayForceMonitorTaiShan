@@ -73,7 +73,7 @@ package app.model
 				}
 			}			
 			
-			send("RopeDeteValueHis_GetAllList",onRopeDeteValueHis_GetList);
+			send("RopeDeteValueHis_GetList",onRopeDeteValueHis_GetList,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
 		}
 		
 		private function onRopeDeteValueHis_GetList(event:ResultEvent):void

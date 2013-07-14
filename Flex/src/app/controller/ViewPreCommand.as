@@ -43,7 +43,15 @@ package app.controller
 			
 			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));
 			
-			facade.registerMediator(new PanelAnalysisForceMediator);			
+			facade.registerMediator(new PanelAnalysisForceMediator);		
+			
+			facade.registerMediator(new PanelAnalysisForceAverageMediator);		
+			
+			facade.registerMediator(new PanelAnalysisOpenCountMediator);	
+			
+			facade.registerMediator(new PanelAnalysisOpenCountTotalMediator);	
+			
+			facade.registerMediator(new PanelAnalysisAlarmMediator);			
 			
 			facade.registerMediator(new ContentAnalysisMediator(new ContentAnalysis));
 			

@@ -66,7 +66,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:			
-					loadingBar.visible = false;
+					//loadingBar.visible = false;
 					break;
 			}
 		}

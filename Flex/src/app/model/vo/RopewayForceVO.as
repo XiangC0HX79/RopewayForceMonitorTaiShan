@@ -87,9 +87,18 @@ package app.model.vo
 		 * 2-单次值报警
 		 **/
 		public var alarm:Number = 0;
-		
-		//所属报索站
-		//public var ropewayStation:String;
+				
+		/**
+		 * 所属索道站
+		 **/
+		public function get fromRopeStation():String	
+		{
+			return _source.FromRopeStation;
+		}
+		public function set fromRopeStation(value:String):void	
+		{
+			_source.FromRopeStation = value;
+		}
 		
 		private var _source:ObjectProxy;
 		

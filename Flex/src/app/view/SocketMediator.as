@@ -21,7 +21,6 @@ package app.view
 	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
-	import mx.rpc.Responder;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
@@ -60,7 +59,7 @@ package app.view
 				
 		private function connect():void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务�..");
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
 				
 			socket.connect(_config.serverIp,_config.serverPort);
 				
@@ -150,11 +149,11 @@ package app.view
 			{
 				var token:AsyncToken = proxy.AddRopeway(rf);
 				token.ropewayForce = rf;
-				token.addResponder(new Responder(onAddRopewayResult,function(falut:FaultEvent):void{}));
+				token.addResponder(new AsyncResponder(onAddRopewayResult,null));
 			}
 		}
 		
-		private function onAddRopewayResult(event:ResultEvent):void
+		private function onAddRopewayResult(event:ResultEvent,t:Object):void
 		{
 			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 						
