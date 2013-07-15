@@ -1,7 +1,6 @@
 package app.model
 {
 	import app.ApplicationFacade;
-	import app.model.vo.RopewayDayAveVO;
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
@@ -37,7 +36,7 @@ package app.model
 		{
 			var where:String = "";
 			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
-				+ "' AND DeteDate <= '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
+				+ "' AND DeteDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
 			
 			if(station != "所有索道站")
 				where += " AND FromRopeStation = '" + station + "'";

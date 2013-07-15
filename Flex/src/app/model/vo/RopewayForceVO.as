@@ -100,6 +100,18 @@ package app.model.vo
 			_source.FromRopeStation = value;
 		}
 		
+		/**
+		 * 所属索道
+		 **/
+		public function get fromRopeWay():String	
+		{
+			return _source.FromRopeWay;
+		}
+		public function set fromRopeWay(value:String):void	
+		{
+			_source.FromRopeWay = value;
+		}
+		
 		private var _source:ObjectProxy;
 		
 		public function RopewayForceVO(source:ObjectProxy)

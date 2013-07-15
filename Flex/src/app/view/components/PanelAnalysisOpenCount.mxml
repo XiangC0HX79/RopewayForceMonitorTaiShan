@@ -11,12 +11,12 @@
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
 		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
 		
-		<s:DateTimeFormatter id="dateF" dateTimePattern="HH:mm:ss"/>
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.RopewaySwitchFreqVO;
 			
 			import com.adobe.utils.DateUtil;
 			
@@ -46,7 +46,7 @@
 			
 			[Bindable]public var colRopewayCarId:ArrayCollection;
 			
-			[Bindable]public var colRopewayHis:ArrayCollection;
+			[Bindable]public var colSwitchFreq:ArrayCollection;
 			
 			protected function datagroupStations_rendererAddHandler(event:RendererExistenceEvent):void
 			{
@@ -94,8 +94,8 @@
 			
 			private function dataTipFunction(hitData:HitData):String
 			{
-				var rf:RopewayForceVO = hitData.item as RopewayForceVO;
-				return "时间：" + dateF.format(rf.ropewayTime) + "\n" + "抱索力：" + rf.ropewayForce + " " + rf.ropewayUnit; 
+				var rs:RopewaySwitchFreqVO = hitData.item as RopewaySwitchFreqVO;
+				return "时间：" + dateF.format(rs.ropewayTime) + "\n" + "开合次数：" + rs.switchFreq; 
 			}
 
 			protected function btnBar_changingHandler(event:IndexChangeEvent):void
@@ -129,13 +129,29 @@
 				btnBar.selectedIndex = 1;
 				rbgStation.selectedValue = "所有索道站";
 				comboTime.selectedIndex = 0;
+				dateF.dateTimePattern = "yyyy-MM-dd";
+				horizontalAxis.dataUnits = "days";
 				dateDayS.selectedDate = new Date;
 				dateDayE.selectedDate = new Date;
 				dateMonthS.selectedDate = new Date;
 				dateMonthE.selectedDate = new Date;
 				listCarId.selectedIndex = 0;
 				listRopewayId.selectedIndex = 0;
-				colRopewayHis.source = [];
+				colSwitchFreq.source = [];
+			}
+			
+			protected function comboTime_changeHandler(event:IndexChangeEvent):void
+			{
+				if(comboTime.selectedIndex == 0)
+				{
+					dateF.dateTimePattern = "yyyy-MM-dd";
+					horizontalAxis.dataUnits = "days";
+				}
+				else
+				{
+					dateF.dateTimePattern = "yyyy-MM";
+					horizontalAxis.dataUnits = "months";
+				}
 			}
 			
 		]]>
@@ -186,7 +202,7 @@
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="类　　型："/>
 				<s:DropDownList id="comboTime" requireSelection="true"
-								width="100%">
+								width="100%" change="comboTime_changeHandler(event)">
 					<s:ArrayCollection>
 						<fx:String>按天</fx:String>
 						<fx:String>按月</fx:String>
@@ -259,9 +275,9 @@
 	</s:HGroup>
 	
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" paddingBottom="20" paddingLeft="20"
-				  paddingRight="20" paddingTop="20">
+				  paddingRight="20" paddingTop="20" creationPolicy="all">
 		<s:NavigatorContent>
-			<mx:LineChart width="100%" height="100%" showDataTips="true" dataTipFunction="dataTipFunction" dataProvider="{colRopewayHis}">
+			<mx:ColumnChart width="100%" height="100%" showDataTips="true" dataTipFunction="dataTipFunction" dataProvider="{colSwitchFreq}">
 				<mx:backgroundElements>
 					<fx:Array>						
 						<mx:GridLines gridDirection="both" 
@@ -275,7 +291,7 @@
 				</mx:verticalAxis>
 				
 				<mx:horizontalAxis>
-					<mx:DateTimeAxis displayLocalTime="true" labelUnits="minutes"
+					<mx:DateTimeAxis displayLocalTime="true"
 									 alignLabelsToUnits="true"
 									 id="horizontalAxis"/>
 				</mx:horizontalAxis>
@@ -293,20 +309,20 @@
 				</mx:horizontalAxisRenderers>
 				
 				<mx:series>
-					<mx:LineSeries yField="ropewayForce" xField="ropewayTime" sortOnXField="true"/>
+					<mx:ColumnSeries labelField="switchFreq" labelPosition="inside" yField="switchFreq" xField="ropewayTime" sortOnXField="true"/>
 				</mx:series>
-			</mx:LineChart>
+			</mx:ColumnChart>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
-			<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}">
+			<s:DataGrid width="100%" height="100%" dataProvider="{colSwitchFreq}">
 				<s:columns>
 					<s:ArrayList>
 						<s:GridColumn headerText="吊箱编号" dataField="ropewayId" width="100"/>
 						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 						<s:GridColumn headerText="时间" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
-						<s:GridColumn headerText="报索力" labelFunction="labelForce" width="100"/>		
-						<s:GridColumn headerText="温度" dataField="ropewayTemp" width="100"/>
-						<s:GridColumn headerText="所属索道站" dataField="rromRopeStation"/>
+						<s:GridColumn headerText="开合次数" dataField="switchFreq" width="100"/>		
+						<s:GridColumn headerText="所属索道站" dataField="rromRopeStation"/>	
+						<s:GridColumn headerText="所属索道" dataField="fromRopeWay"/>
 					</s:ArrayList>				
 				</s:columns>
 			</s:DataGrid>

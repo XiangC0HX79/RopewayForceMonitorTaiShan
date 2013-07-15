@@ -25,6 +25,8 @@ package app.view
 	{
 		public static const NAME:String = "PanelAnalysisForceAverageMediator";
 		
+		private var ropewayForceAverageProxy:RopewayForceAverageProxy;
+		
 		public function PanelAnalysisForceAverageMediator()
 		{
 			super(NAME, new PanelAnalysisForceAverage);
@@ -32,6 +34,9 @@ package app.view
 			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.QUERY,onQuery);
 			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.STATION_CHANGE,onStationChange);
 			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.SELECT_ONE,onSelectOne);
+			
+			ropewayForceAverageProxy = facade.retrieveProxy(RopewayForceAverageProxy.NAME) as RopewayForceAverageProxy;
+			panelAnalysisForceAverage.colRopewayHis = ropewayForceAverageProxy.col;
 		}
 		
 		protected function get panelAnalysisForceAverage():PanelAnalysisForceAverage
@@ -68,23 +73,13 @@ package app.view
 				return;
 			}
 			
-			var proxy:RopewayForceAverageProxy = facade.retrieveProxy(RopewayForceAverageProxy.NAME) as RopewayForceAverageProxy;
-			proxy.GetForceAveCol(
+			ropewayForceAverageProxy.GetForceAveCol(
 				panelAnalysisForceAverage.dateS
 				,panelAnalysisForceAverage.dateE
 				,String(panelAnalysisForceAverage.rbgStation.selectedValue)
 				,String(panelAnalysisForceAverage.listRopewayId.selectedItem)
+				,panelAnalysisForceAverage.comboTime.selectedIndex
 				);
-		}
-		
-		private function onGetForceHistory(event:ResultEvent,t:Object):void
-		{
-			var arr:Array = [];
-			for each(var o:ObjectProxy in event.result)
-			{
-				arr.push(new RopewayForceVO(o));
-			}
-			panelAnalysisForceAverage.colRopewayHis = new ArrayCollection(arr);
 		}
 		
 		private function onSelectOne(event:Event):void

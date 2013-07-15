@@ -11,18 +11,19 @@
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
 		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
 		
-		<s:DateTimeFormatter id="dateF" dateTimePattern="HH:mm:ss"/>
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.RopewayForceAverageVO;
 			
 			import com.adobe.utils.DateUtil;
 			
 			import custom.itemRenderer.ItemRendererGroup;
 			
 			import mx.charts.HitData;
+			import mx.charts.series.items.LineSeriesItem;
 			import mx.events.FlexEvent;
 			
 			import org.puremvc.as3.interfaces.IMediator;
@@ -94,8 +95,18 @@
 			
 			private function dataTipFunction(hitData:HitData):String
 			{
-				var rf:RopewayForceVO = hitData.item as RopewayForceVO;
-				return "时间：" + dateF.format(rf.ropewayTime) + "\n" + "抱索力：" + rf.ropewayForce + " " + rf.ropewayUnit; 
+				var element:LineSeries =  hitData.element as LineSeries;
+				var item:LineSeriesItem = hitData.chartItem as LineSeriesItem;
+				var r:String = "时间：" + dateF.format(item.xValue);
+				
+				if(element.yField == "maxValue")
+					return r + "\n" + "最大抱索力：" + item.yValue;
+				else if(element.yField == "averageValue")
+					return r + "\n" + "平均抱索力：" + item.yValue;
+				else if(element.yField == "minValue")
+					return r + "\n" + "最小抱索力：" + item.yValue;
+				else 
+					return "";
 			}
 
 			protected function btnBar_changingHandler(event:IndexChangeEvent):void
@@ -129,6 +140,8 @@
 				btnBar.selectedIndex = 1;
 				rbgStation.selectedValue = "所有索道站";
 				comboTime.selectedIndex = 0;
+				dateF.dateTimePattern = "yyyy-MM-dd";
+				horizontalAxis.dataUnits = "days";
 				dateDayS.selectedDate = new Date;
 				dateDayE.selectedDate = new Date;
 				dateMonthS.selectedDate = new Date;
@@ -136,6 +149,20 @@
 				listCarId.selectedIndex = 0;
 				listRopewayId.selectedIndex = 0;
 				colRopewayHis.source = [];
+			}
+			
+			protected function comboTime_changeHandler(event:IndexChangeEvent):void
+			{
+				if(comboTime.selectedIndex == 0)
+				{
+					dateF.dateTimePattern = "yyyy-MM-dd";
+					horizontalAxis.dataUnits = "days";
+				}
+				else
+				{
+					dateF.dateTimePattern = "yyyy-MM";
+					horizontalAxis.dataUnits = "months";
+				}
 			}
 			
 		]]>
@@ -185,7 +212,8 @@
 		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="180">
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="类　　型："/>
-				<s:DropDownList id="comboTime" requireSelection="true"
+				<s:DropDownList id="comboTime" requireSelection="true" 
+								change="comboTime_changeHandler(event)"
 								width="100%">
 					<s:ArrayCollection>
 						<fx:String>按天</fx:String>
@@ -260,7 +288,7 @@
 	</s:HGroup>
 	
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" paddingBottom="20" paddingLeft="20"
-				  paddingRight="20" paddingTop="20">
+				  paddingRight="20" paddingTop="20" creationPolicy="all">
 		<s:NavigatorContent>
 			<mx:LineChart width="100%" height="100%" showDataTips="true" dataTipFunction="dataTipFunction" dataProvider="{colRopewayHis}">
 				<mx:backgroundElements>
@@ -276,7 +304,7 @@
 				</mx:verticalAxis>
 				
 				<mx:horizontalAxis>
-					<mx:DateTimeAxis displayLocalTime="true" labelUnits="minutes"
+					<mx:DateTimeAxis displayLocalTime="true" dataUnits="{}"
 									 alignLabelsToUnits="true"
 									 id="horizontalAxis"/>
 				</mx:horizontalAxis>
@@ -294,7 +322,9 @@
 				</mx:horizontalAxisRenderers>
 				
 				<mx:series>
-					<mx:LineSeries yField="ropewayForce" xField="ropewayTime" sortOnXField="true"/>
+					<mx:LineSeries yField="averageValue" xField="ropewayTime" sortOnXField="true"/>
+					<mx:LineSeries yField="minValue" xField="ropewayTime" sortOnXField="true"/>
+					<mx:LineSeries yField="maxValue" xField="ropewayTime" sortOnXField="true"/>
 				</mx:series>
 			</mx:LineChart>
 		</s:NavigatorContent>
@@ -302,13 +332,13 @@
 			<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}">
 				<s:columns>
 					<s:ArrayList>
-						<s:GridColumn headerText="吊箱编号" dataField="ropewayId" width="100"/>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>
 						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 						<s:GridColumn headerText="时间" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
-						<s:GridColumn headerText="平均报索力" labelFunction="labelForce" width="100"/>		
-						<s:GridColumn headerText="最小报索力" labelFunction="labelForce" width="100"/>		
-						<s:GridColumn headerText="最大报索力" labelFunction="labelForce" width="100"/>	
-						<s:GridColumn headerText="所属索道站" dataField="rromRopeStation"/>
+						<s:GridColumn headerText="平均报索力" dataField="averageValue" width="100"/>		
+						<s:GridColumn headerText="最小报索力" dataField="minValue" width="100"/>		
+						<s:GridColumn headerText="最大报索力" dataField="maxValue" width="100"/>	
+						<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
 					</s:ArrayList>				
 				</s:columns>
 			</s:DataGrid>

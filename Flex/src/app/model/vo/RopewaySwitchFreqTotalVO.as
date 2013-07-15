@@ -3,7 +3,7 @@ package app.model.vo
 	import mx.utils.ObjectProxy;
 
 	[Bindable]
-	public class RopewayForceAverageVO
+	public class RopewaySwitchFreqTotalVO
 	{
 		/**
 		 * 抱索器编号
@@ -30,51 +30,15 @@ package app.model.vo
 		}
 		
 		/**
-		 * 时间
+		 * 开合总数
 		 **/
-		public function get ropewayTime():String	
+		public function get switchFreqTotal():Number	
 		{
-			return _source.RecordDate;
+			return _source.SwitchFreqTotal;
 		}
-		public function set ropewayTime(value:String):void	
+		public function set switchFreqTotal(value:Number):void	
 		{
-			_source.RecordDate = value;
-		}
-		
-		/**
-		 * 平均值
-		 **/
-		public function get averageValue():Number	
-		{
-			return _source.AverageValue;
-		}
-		public function set averageValue(value:Number):void	
-		{
-			_source.AverageValue = value;
-		}
-		
-		/**
-		 * 最小值
-		 **/
-		public function get minValue():Number	
-		{
-			return _source.MinValue;
-		}
-		public function set minValue(value:Number):void	
-		{
-			_source.MinValue = value;
-		}
-		
-		/**
-		 * 最大值
-		 **/
-		public function get maxValue():Number	
-		{
-			return _source.MaxValue;
-		}
-		public function set maxValue(value:Number):void	
-		{
-			_source.MaxValue = value;
+			_source.SwitchFreqTotal = value;
 		}
 		
 		/**
@@ -103,7 +67,7 @@ package app.model.vo
 		
 		private var _source:ObjectProxy;
 		
-		public function RopewayForceAverageVO(source:ObjectProxy)
+		public function RopewaySwitchFreqTotalVO(source:ObjectProxy)
 		{
 			_source = source;			
 		}

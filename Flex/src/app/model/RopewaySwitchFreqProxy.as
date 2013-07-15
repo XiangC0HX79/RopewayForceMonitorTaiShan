@@ -1,6 +1,6 @@
 package app.model
 {
-	import app.model.vo.RopewayForceAverageVO;
+	import app.model.vo.RopewaySwitchFreqVO;
 	
 	import com.adobe.utils.DateUtil;
 	
@@ -10,23 +10,22 @@ package app.model
 	import mx.utils.ObjectProxy;
 	
 	import org.puremvc.as3.interfaces.IProxy;
-	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class RopewayForceAverageProxy extends WebServiceProxy implements IProxy
+	public class RopewaySwitchFreqProxy extends WebServiceProxy implements IProxy
 	{
-		public static const NAME:String = "RopewayForceAverageProxy";
+		public static const NAME:String = "RopewaySwitchFreqProxy";
 		
-		public function RopewayForceAverageProxy()
+		public function RopewaySwitchFreqProxy()
 		{
 			super(NAME, new ArrayCollection);
 		}
 		
-		public function get col():ArrayCollection
+		public function get colSwitchFreq():ArrayCollection
 		{
 			return data as ArrayCollection;
 		}
 		
-		public function GetForceAveCol(dateS:Date,dateE:Date,station:String,ropewayId:String,type:Number):AsyncToken
+		public function GetSwitchFreqCol(dateS:Date,dateE:Date,station:String,ropewayId:String,type:Number):AsyncToken
 		{
 			var where:String = "";
 			where = "RecordDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
@@ -40,11 +39,11 @@ package app.model
 			
 			if(type == 0)
 			{
-				return send("RopeDete_RopeDeteValueAverageDay_GetList",onGetForceAveCol,where);
+				return send("RopeDete_RopeSwitchFreqDay_GetList",onGetSwitchFreqCol,where);
 			}
 			else if(type == 1)
 			{
-				return send("RopeDete_RopeDeteValueAverageMonth_GetList",onGetForceAveCol,where);
+				return send("RopeDete_RopeSwitchFreqMonth_GetList",onGetSwitchFreqCol,where);
 			}
 			else
 			{
@@ -52,14 +51,14 @@ package app.model
 			}
 		}
 		
-		private function onGetForceAveCol(event:ResultEvent):void
+		private function onGetSwitchFreqCol(event:ResultEvent):void
 		{			
 			var arr:Array = [];
 			for each(var o:ObjectProxy in event.result)
 			{
-				arr.push(new RopewayForceAverageVO(o));
+				arr.push(new RopewaySwitchFreqVO(o));
 			}
-			this.col.source = arr;
+			this.colSwitchFreq.source = arr;
 		}
 	}
 }

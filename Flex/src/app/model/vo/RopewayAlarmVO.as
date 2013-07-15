@@ -10,11 +10,11 @@ package app.model.vo
 		 **/
 		public function get ropeCode():String
 		{
-			return _source.RoapCode;
+			return _source.RopeCode;
 		}
 		public function set ropeCode(value:String):void
 		{
-			_source.RoapCode = value;
+			_source.RopeCode = value;
 		}
 		
 		/**
@@ -22,11 +22,11 @@ package app.model.vo
 		 **/
 		public function get carId():String
 		{
-			return _source.CarId;
+			return _source.CarriageCode;
 		}
 		public function set carId(value:String):void
 		{
-			_source.CarId = value;
+			_source.CarriageCode = value;
 		}
 		
 		/**
@@ -63,6 +63,30 @@ package app.model.vo
 		public function set alarmDesc(value:String):void
 		{
 			_source.AlarmDesc = value;
+		}
+		
+		/**
+		 * 所属索道站
+		 **/
+		public function get fromRopeStation():String	
+		{
+			return _source.FromRopeStation;
+		}
+		public function set fromRopeStation(value:String):void	
+		{
+			_source.FromRopeStation = value;
+		}
+		
+		/**
+		 * 所属索道
+		 **/
+		public function get fromRopeWay():String	
+		{
+			return _source.FromRopeWay;
+		}
+		public function set fromRopeWay(value:String):void	
+		{
+			_source.FromRopeWay = value;
 		}
 		
 		public function RopewayAlarmVO(value:*)

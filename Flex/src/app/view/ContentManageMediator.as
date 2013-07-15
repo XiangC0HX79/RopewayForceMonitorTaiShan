@@ -3,14 +3,9 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.RopewayBaseinfoProxy;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayNumAnaProxy;
-	import app.model.RopewayNumTotelAnaProxy;
 	import app.model.RopewayProxy;
-	import app.model.RopewayWarningAnaProxy;
 	import app.model.vo.RopewayBaseinfoVO;
-	import app.model.vo.RopewayDayAveVO;
 	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayNumAnaVO;
 	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelAnalysisForce;

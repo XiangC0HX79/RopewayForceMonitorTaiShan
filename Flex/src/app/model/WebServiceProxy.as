@@ -33,11 +33,11 @@ package app.model
 			operation.resultFormat = "object";
 			
 			var token:AsyncToken = operation.send();
-			token.addResponder(new AsyncResponder(onResult,null,listener));
+			token.addResponder(new AsyncResponder(onResult,function (event:FaultEvent,t:Object):void{},listener));
 			
 			return token;
 		}
-		
+				
 		private function onFault(event:FaultEvent):void
 		{	
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
