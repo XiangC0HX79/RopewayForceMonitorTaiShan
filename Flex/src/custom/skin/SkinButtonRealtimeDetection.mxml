@@ -66,16 +66,13 @@
     </s:states>
 		
 	<s:Image left="0" right="0" top="0" bottom="0"			 
-			 source="@Embed('assets/image/btn_realtime_detection_off.png')"
-			 source.over="@Embed('assets/image/btn_realtime_detection_on.png')"
-			 source.disabled="@Embed('assets/image/btn_realtime_detection_on.png')"/>
+			 source="@Embed('assets/image/btn_realtime_detection.png')"/>
 	
     <!-- layer 8: text -->
     <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
     <s:Label id="labelDisplay" bottom="10" maxDisplayedLines="1" textAlign="center"
 			 horizontalCenter="0"
-			 fontWeight="bold" fontSize="15" color="0xffffff"
-			 >
+			 fontWeight="bold" fontSize="15" color="0xffffff">
     </s:Label>
     
 </s:SparkButtonSkin>

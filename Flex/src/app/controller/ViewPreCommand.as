@@ -28,9 +28,7 @@ package app.controller
 			facade.registerMediator(new MainMenuMediator(application.mainMenu));
 			
 			facade.registerMediator(new MainStationMediator(application.mainStation));
-			
-			facade.registerMediator(new PanelRopewayCarIdMediator);
-			
+						
 			facade.registerMediator(new PanelRopewayForceMediator);
 			
 			facade.registerMediator(new PanelRopewayTempMediator);

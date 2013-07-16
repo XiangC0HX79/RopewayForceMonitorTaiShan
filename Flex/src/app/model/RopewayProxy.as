@@ -55,7 +55,7 @@ package app.model
 				{
 					var rw:RopewayVO = new RopewayVO(event.result[0]);
 					
-					for(var i:int = 1;i<20;i++)
+					for(var i:int = 1;i<=2;i++)
 					{
 						rw.ropewayId = (i < 10)?("0" + i):i.toString();
 						rw.ropewayCarId = rw.ropewayId;

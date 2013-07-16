@@ -4,7 +4,6 @@ package app.view
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayAlarm;
-	import app.view.components.PanelRopewayCarId;
 	
 	import mx.collections.ArrayCollection;
 	

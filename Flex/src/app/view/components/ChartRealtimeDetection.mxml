@@ -126,47 +126,59 @@
 				verticalAxis.maximum = verticalAxis.minimum + 5 * verticalAxis.interval;
 				
 				minh = rw.firstRopewayForce.ropewayTime.time;	
-				maxh = rw.lastRopewayForce.ropewayTime.time;			
+				minh = Math.floor(minh / ONE_MIN) * ONE_MIN;
+				
+				maxh = rw.lastRopewayForce.ropewayTime.time;	
+				maxh = Math.floor(maxh / ONE_MIN) * ONE_MIN + ONE_MIN;		
+				
 				df = maxh - minh;
 				
-				minh = Math.floor(minh / ONE_MIN) * ONE_MIN;
-				if(df == 0)
-				{
+				if(df <= TEN_MIN)
+				{					
 					horizontalAxis.labelUnits = "minutes";
 					horizontalAxis.interval = 1;
 					
-					maxh = minh + 10 * ONE_MIN + Math.round(4 / groupChart.width * ONE_MIN);
-										
-					horizontalAxis.minimum = new Date(minh);
-					horizontalAxis.maximum = new Date(maxh);
+					maxh = minh + TEN_MIN + Math.round(4 / groupChart.width * TEN_MIN);
+				}
+				else if(df <= 10 * TEN_MIN)
+				{
+					var intervar:Number = Math.ceil(df / TEN_MIN);
+					
+					horizontalAxis.labelUnits = "minutes";
+					horizontalAxis.interval = intervar;
+					
+					maxh = minh + intervar * TEN_MIN + Math.round(4 / groupChart.width * intervar * TEN_MIN);
+					
+				}
+				else if(df <= 10 * TEN_MIN)
+				{
+					intervar = Math.ceil(df / TEN_MIN);
+					
+					horizontalAxis.labelUnits = "minutes";
+					horizontalAxis.interval = intervar;
+					
+					maxh = minh + intervar * TEN_MIN + Math.round(4 / groupChart.width * intervar * TEN_MIN);					
+				}
+				else if(df <= 10 * HALF_HOUR)
+				{
+					intervar = Math.ceil(df / HALF_HOUR);
+					
+					horizontalAxis.labelUnits = "minutes";
+					horizontalAxis.interval = 30;
+					
+					maxh = minh + intervar * HALF_HOUR + Math.round(4 / groupChart.width * intervar * HALF_HOUR);					
 				}
 				else
-				{					
-					var hdf:Number = horizontalAxis.maximum.time - horizontalAxis.minimum.time;	
-					if(df > hdf * 0.9)
-					{
-						hdf = Math.ceil(hdf * 1.2);
-						
-						if(hdf < 7 * ONE_HOUR)
-						{					
-							horizontalAxis.labelUnits = "minutes";
-							horizontalAxis.interval = Math.ceil((hdf / 10) / ONE_MIN);
-							
-							maxh = minh + hdf + Math.round(4 / groupChart.width * hdf);
-						}
-						else
-						{
-							horizontalAxis.labelUnits = "hours";
-							horizontalAxis.interval = 1;
-							
-							minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
-							maxh = Math.ceil(maxh / ONE_HOUR) * ONE_HOUR;
-						}
-												
-						horizontalAxis.minimum = new Date(minh);
-						horizontalAxis.maximum = new Date(maxh);
-					}
+				{
+					horizontalAxis.labelUnits = "hours";
+					horizontalAxis.interval = 1;
+					
+					minh = Math.floor(minh / ONE_HOUR) * ONE_HOUR;
+					maxh = Math.ceil(maxh / ONE_HOUR) * ONE_HOUR;
 				}
+				
+				horizontalAxis.minimum = new Date(minh);
+				horizontalAxis.maximum = new Date(maxh);
 				
 				if(rw.yesterdayMax && rw.yesterdayMin)
 				{					
@@ -403,6 +415,12 @@
 		]]>
 	</fx:Script>
 	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+		</s:stroke>
+	</s:Rect>	
+	
 	<mx:LineChart id="lineChart" left="20" right="40" bottom="20" top="40">
 		<mx:backgroundElements>
 			<fx:Array>						
@@ -449,10 +467,15 @@
 	<s:Label right="15" id="lbAve" text="昨日平均抱索力&#xd;{_ropeway.yesterdayAve.toFixed()} {_ropeway.lastRopewayForce.ropewayUnit}" textAlign="center"
 			 verticalAlign="middle"/> 
 	
-	<s:Group id="groupChart" left="80" right="70" bottom="45" top="50">	
-		<s:Line id="lineMax" stroke="{yesStroke}" width="100%" visible="false"/>
-		<s:Line id="lineAve" stroke="{yesStroke}" width="100%" visible="false"/>
-		<s:Line id="lineMin" stroke="{yesStroke}" width="100%" visible="false"/>
+	<s:Group id="groupChart" left="59" right="52" bottom="47" top="50">
+		<!--<s:Rect left="0" right="0" bottom="0" top="0">
+			<s:stroke>
+				<s:SolidColorStroke color="red"/>
+			</s:stroke>
+		</s:Rect>-->
+		<s:Line id="lineMax" stroke="{yesStroke}" left="10" right="10" visible="false"/>
+		<s:Line id="lineAve" stroke="{yesStroke}" left="10" right="10" visible="false"/>
+		<s:Line id="lineMin" stroke="{yesStroke}" left="10" right="10" visible="false"/>
 		<s:Group id="groupLine" width="100%" height="100%"/>
 		<s:Group id="groupPoint" width="100%" height="100%"/>
 		<s:Group id="groupLabel" width="100%" height="100%">

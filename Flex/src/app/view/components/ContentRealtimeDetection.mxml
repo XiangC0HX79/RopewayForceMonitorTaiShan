@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:components="app.view.components.*"
-		 width="100%" height="100%" paddingLeft="20" paddingRight="20">
+		 width="100%" height="100%">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>

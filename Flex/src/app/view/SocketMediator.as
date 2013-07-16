@@ -121,7 +121,7 @@ package app.view
 			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));
 			if(ConfigVO.debug)
 			{
-				var i:int = Math.ceil(Math.random() * 19);
+				var i:int = Math.ceil(Math.random() * 2);
 				rf.ropewayId = (i < 10)?("0" + i):i.toString(); 
 			}
 			else

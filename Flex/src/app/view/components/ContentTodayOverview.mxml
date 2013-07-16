@@ -18,7 +18,7 @@
 	<s:DataGroup left="0" right="0" dataProvider="{colDp}"
 				 itemRenderer="custom.itemRenderer.ItemRendererTodayOverview">
 		<s:layout>
-			<s:TileLayout paddingLeft="20" paddingRight="20" columnAlign="justifyUsingWidth"/>
+			<s:TileLayout columnAlign="justifyUsingWidth"/>
 		</s:layout>		
 	</s:DataGroup>
 </s:Scroller>

@@ -29,20 +29,20 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Rect left="0" right="0" top="0" bottom="0">
+	<!--<s:Rect left="0" right="0" top="0" bottom="0">
 		<s:fill>
 			<s:SolidColor color="#4173ad"/>
 		</s:fill>
-	</s:Rect>
+	</s:Rect>-->
 	
-	<s:VGroup id="buttonBar" gap="0">
-		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection" width="130" height="86" enabled="false"
+	<s:VGroup id="buttonBar" paddingTop="10" paddingBottom="10" gap="10" horizontalAlign="center" width="100%">
+		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
-		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="130" height="86" 
+		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,TODAY_OVERVIEW)"/>
-		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="130" height="86" 
+		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,ANALYSIS)"/>
-		<s:Button skinClass="custom.skin.SkinButtonManager" width="130" height="86" 
+		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
 	</s:VGroup>
 </s:Group>

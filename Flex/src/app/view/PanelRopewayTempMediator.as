@@ -4,7 +4,6 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayVO;
-	import app.view.components.PanelRopewayCarId;
 	import app.view.components.PanelRopewayTemp;
 	
 	import org.puremvc.as3.interfaces.IMediator;
