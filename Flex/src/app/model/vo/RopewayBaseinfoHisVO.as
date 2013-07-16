@@ -1,9 +1,9 @@
 package app.model.vo
 {
 	import mx.utils.ObjectProxy;
-
+	
 	[Bindable]
-	public class RopewayBaseinfoVO
+	public class RopewayBaseinfoHisVO
 	{
 		/**
 		 * 抱索器编号
@@ -42,18 +42,6 @@ package app.model.vo
 		}
 		
 		/**
-		 * 是否使用
-		 * */
-		public function get isUse():Boolean
-		{
-			return _source.IsUse == 0;
-		}
-		public function set isUse(value:Boolean):void
-		{
-			_source.IsUse = value?0:1;
-		}
-		
-		/**
 		 * 所属索道
 		 **/
 		public function get fromRopeWay():String	
@@ -65,15 +53,36 @@ package app.model.vo
 			_source.RopeWay = value;
 		}
 		
+		/**
+		 * 更新人
+		 **/
+		public function get updateUser():String	
+		{
+			return _source.UpdateUser;
+		}
+		public function set updateUser(value:String):void	
+		{
+			_source.UpdateUser = value;
+		}
+		
+		/**
+		 * 更新时间
+		 **/
+		public function get updateDatetime():Date	
+		{
+			return _source.UpdateDatetime;
+		}
+		public function set updateDatetime(value:Date):void	
+		{
+			_source.UpdateDatetime = value;
+		}
+		
 		
 		private var _source:ObjectProxy;
 		
-		public function RopewayBaseinfoVO(source:ObjectProxy = null)
+		public function RopewayBaseinfoHisVO(source:ObjectProxy)
 		{
-			if(source)
-				_source = source;	
-			else
-				_source = new ObjectProxy({});
+			_source = source;			
 		}
 	}
 }

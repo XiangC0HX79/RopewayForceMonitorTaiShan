@@ -20,6 +20,14 @@ package app.view
 		public function LoadingBarMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			
+			var contextMenu:ContextMenu=new ContextMenu();
+			contextMenu.hideBuiltInItems(); 
+			
+			var contextMenuItem:ContextMenuItem= new ContextMenuItem("版本：1.0.1");			
+			contextMenu.customItems.push(contextMenuItem);
+			
+			loadingBar.contextMenu=contextMenu;
 		}
 		
 		private function get loadingBar():LoadingBar

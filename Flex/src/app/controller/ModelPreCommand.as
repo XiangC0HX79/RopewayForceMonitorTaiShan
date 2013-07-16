@@ -18,9 +18,9 @@ package app.controller
 			facade.registerProxy(new RopewayForceAverageProxy);
 			facade.registerProxy(new RopewaySwitchFreqProxy);
 			facade.registerProxy(new RopewaySwitchFreqTotalProxy);
-			facade.registerProxy(new RopewayAlarmAnalysisProxy);
-			
-			facade.registerProxy(new RopewayBaseinfoProxy);
+			facade.registerProxy(new RopewayAlarmAnalysisProxy);			
+			facade.registerProxy(new RopewayBaseinfoProxy);			
+			facade.registerProxy(new RopewayBaseinfoHisProxy);
 		}
 	}
 }
