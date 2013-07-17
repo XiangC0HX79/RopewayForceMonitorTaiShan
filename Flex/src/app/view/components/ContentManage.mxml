@@ -3,41 +3,105 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 left="0" right="0" top="0" bottom="0">
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			public static const BASEINFO_NEW:String = "BaseInfoNew";	
+			public static const BASEINFO_EDIT:String = "BaseInfoEdit";	
+			public static const BASEINFO_DEL:String = "BaseInfoDel";	
+			
+			public static const ROPEWAY_CHANGE:String = "RopewayChange";	
+			
+			[Bindable]public var colBaseInfo:ArrayCollection;
+			
+			[Bindable]public var colBaseInfoHis:ArrayCollection;
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
-		<s:layout>
-			<s:HorizontalLayout verticalAlign="middle"/>
-		</s:layout>
-		<s:Label text="报索器编号：" fontWeight="bold"/>
-		<s:TextInput id="ForceId"/>
-		<s:Label text="车厢编号：" fontWeight="bold"/>
-		<s:TextInput id="CarId"/>
-		<s:Label text="RFID编号：" fontWeight="bold"/>
-		<s:TextInput id="RfId"/>
-		<s:Label text="所属索道：" fontWeight="bold"/>
-		<s:TextInput id="RopewayStation"/>
-	</s:SkinnableContainer>	
-	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
-		<s:layout>
-			<s:HorizontalLayout verticalAlign="middle"/>
-		</s:layout>
-		<s:Label width="100%" visible="false"/>
-		<s:Button id="addbn" width="100" label="新　　增" />
-		<s:Button id="editbn" width="100" label="编　　辑" />
-		<s:Button id="deletebn" width="100" label="删　　除" />
-	</s:SkinnableContainer>	
-	<s:Group width="100%" height="100%">
-		<s:DataGrid id="datagrid" width="100%" height="100%">
-			<s:columns>
-				<s:ArrayList>
-					<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="200"/>
-					<s:GridColumn headerText="车厢编号" dataField="carId" width="200"/>		
-					<s:GridColumn headerText="RFID编号" dataField="rfId" width="200"/>
-					<s:GridColumn headerText="所属索道" dataField="ropewayStation" width="200"/>
-				</s:ArrayList>				
-			</s:columns>
-		</s:DataGrid>
-	</s:Group>
+	
+	<s:HGroup width="100%">		
+		<s:SkinnableContainer backgroundColor="0xFFFFFF" backgroundAlpha="0">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle"/>
+			</s:layout>
+			<s:Label text="所属索道：" fontWeight="bold"/>
+			<s:DropDownList id="listRopeway" change="dispatchEvent(new Event(ROPEWAY_CHANGE));" requireSelection="true">
+				<s:ArrayCollection>
+					<fx:String>桃花源索道</fx:String>
+					<fx:String>中天门索道</fx:String>
+				</s:ArrayCollection>
+			</s:DropDownList>
+			
+			<s:Label text="吊箱编号：" fontWeight="bold"/>
+			<s:TextInput id="textCarId" text="{gridRela.selectedItem.ropewayCarId}"/>
+			
+			<s:Label text="报索器编号：" fontWeight="bold"/>
+			<s:TextInput id="textId" text="{gridRela.selectedItem.ropewayId}"/>
+			
+			<s:Label text="RFID：" fontWeight="bold"/>
+			<s:TextInput id="textRfId" text="{gridRela.selectedItem.ropewayRFID}"/>
+			
+			<s:Button label="新增" buttonDown="dispatchEvent(new Event(BASEINFO_NEW))"/>
+			<s:Button label="编辑" buttonDown="dispatchEvent(new Event(BASEINFO_EDIT))"/>
+			<s:Button label="删除" buttonDown="dispatchEvent(new Event(BASEINFO_DEL))"/>
+		</s:SkinnableContainer>	
+	</s:HGroup>
+	
+	<s:HGroup width="100%" height="100%">	
+		<s:SkinnableContainer width="100%" height="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">	
+			<s:DataGrid id="gridRela" width="100%" height="100%" dataProvider="{colBaseInfo}">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>		
+						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+						<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
+						<s:GridColumn headerText="所属索道" dataField="fromRopeWay"/>
+						<s:GridColumn headerText="是否使用" dataField="isUse" width="80">
+							<s:itemRenderer>
+								<fx:Component>
+									<s:GridItemRenderer>										
+										<fx:Script>
+											<![CDATA[
+												protected function checkbox_changeHandler(event:Event):void
+												{
+													var cb:CheckBox = event.currentTarget as CheckBox;
+													data.isUse = cb.selected;
+													
+													dispatchEvent(new Event(ContentManage.BASEINFO_EDIT,true));
+												}
+											]]>
+										</fx:Script>
+										
+										<s:layout>
+											<s:HorizontalLayout horizontalAlign="center"/>
+										</s:layout>
+										
+										<s:CheckBox selected="{data.isUse}" label="" change="checkbox_changeHandler(event)"/>
+									</s:GridItemRenderer>
+								</fx:Component>
+							</s:itemRenderer>
+						</s:GridColumn>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:SkinnableContainer>	
+		
+		<s:SkinnableContainer width="100%" height="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">	
+			<s:DataGrid id="gridRelaHis" width="100%" height="100%" dataProvider="{colBaseInfoHis}">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="200"/>	
+						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="200"/>
+						<s:GridColumn headerText="RFID编号" dataField="rfId" width="200"/>
+						<s:GridColumn headerText="所属索道" dataField="ropewayStation" width="200"/>
+						<s:GridColumn headerText="更新人员" dataField="ropewayStation" width="200"/>
+						<s:GridColumn headerText="更新日期" dataField="ropewayStation" width="200"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:SkinnableContainer>	
+	</s:HGroup>
 </s:VGroup>

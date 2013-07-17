@@ -4,10 +4,9 @@ package app.model
 	import app.model.vo.RopewayBaseinfoVO;
 	import app.model.vo.RopewayForceVO;
 	
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
+	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
 	
 	import org.puremvc.as3.interfaces.IProxy;
@@ -16,44 +15,41 @@ package app.model
 	public class RopewayBaseinfoProxy extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayBaseinfoProxy";
-		public function RopewayBaseinfoProxy(proxyName:String=null, data:Object=null)
+		
+		public function RopewayBaseinfoProxy()
 		{
-			super(NAME, new Dictionary);
+			super(NAME, new ArrayCollection);
 		}
 		
-		public function get ropewayDict():Dictionary
+		public function get colBaseinfo():ArrayCollection
 		{
-			return data as Dictionary;
+			return data as ArrayCollection;
 		}
 		
-		public function update():ArrayCollection
-		{
-			var arr:ArrayCollection = new ArrayCollection();
-			for(var i:int;i<=5;i++)
-			{
-				var r:RopewayBaseinfoVO = new RopewayBaseinfoVO();	
-				r.ropewayId = String(int(Math.random() * 100));		
-				r.carId = String(int(Math.random() * 100));
-				r.rfId = String(int(Math.random() * 100));
-				r.ropewayStation = "桃花源"
-				arr.addItem(r);
-			}
-			return arr;
-		}
-		
-		public function adddata():void
+		public function GetBaseInfo(fromRopeWay:String):void
 		{
 			
 		}
 		
-		public function editdata():void
+		public function NewBaseInfo(fromRopeWay:String,ropewayId:String,ropewayCarId:String,ropewayRFID:String):void
 		{
+			var info:RopewayBaseinfoVO = new RopewayBaseinfoVO;
+			info.ropewayId = ropewayId;
+			info.ropewayCarId = ropewayCarId;
+			info.ropewayRFID = ropewayRFID;
+			info.fromRopeWay = fromRopeWay;
+			info.isUse = true;
 			
+			colBaseinfo.addItem(info);
 		}
 		
-		public function deletedata():void
+		public function EditBaseInfo(baseInfo:RopewayBaseinfoVO):void
 		{
-			
+		}
+		
+		public function DelBaseInfo(baseInfo:RopewayBaseinfoVO):void
+		{
+			colBaseinfo.removeItemAt(colBaseinfo.getItemIndex(baseInfo));
 		}
 	}
 }

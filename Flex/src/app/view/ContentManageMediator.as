@@ -1,16 +1,18 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayBaseinfoHisProxy;
 	import app.model.RopewayBaseinfoProxy;
 	import app.model.RopewayForceProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayBaseinfoVO;
 	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisForce;
 	import app.view.components.ContentAnalysis;
 	import app.view.components.ContentManage;
+	import app.view.components.PanelAnalysisForce;
+	
+	import com.adobe.utils.StringUtil;
 	
 	import custom.itemRenderer.ItemRendererTodayOverview;
 	
@@ -34,10 +36,25 @@ package app.view
 	public class ContentManageMediator extends Mediator implements IMediator
 	{
 		public static const NAME:String = "ContentManageMediator";
+		
+		private var _ropewayBaseinfoProxy:RopewayBaseinfoProxy;
+		private var _ropewayBaseinfoHisProxy:RopewayBaseinfoHisProxy;
+		
 		public function ContentManageMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
-			contentManage.addEventListener(FlexEvent.CREATION_COMPLETE,onCreation);
+			
+			contentManage.addEventListener(ContentManage.ROPEWAY_CHANGE,onRopewayChange);
+			
+			contentManage.addEventListener(ContentManage.BASEINFO_NEW,onBaseInfoNew);
+			contentManage.addEventListener(ContentManage.BASEINFO_EDIT,onBaseInfoEdit);
+			contentManage.addEventListener(ContentManage.BASEINFO_DEL,onBaseInfoDel);
+			
+			_ropewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
+			contentManage.colBaseInfo = _ropewayBaseinfoProxy.colBaseinfo;
+			
+			_ropewayBaseinfoHisProxy = facade.retrieveProxy(RopewayBaseinfoHisProxy.NAME) as RopewayBaseinfoHisProxy;
+			contentManage.colBaseInfoHis = _ropewayBaseinfoHisProxy.colBaseinfoHis;
 		}
 		
 		protected function get contentManage():ContentManage
@@ -45,95 +62,67 @@ package app.view
 			return viewComponent as ContentManage;
 		}
 		
-		private function onCreation(event:FlexEvent):void
+		private function onRopewayChange(event:Event):void
 		{
-			contentManage.addbn.addEventListener(FlexEvent.BUTTON_DOWN,onadd);
-			contentManage.editbn.addEventListener(FlexEvent.BUTTON_DOWN,onedit);
-			contentManage.deletebn.addEventListener(FlexEvent.BUTTON_DOWN,ondelete);
-			contentManage.datagrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE,onselect);
-			var arr:ArrayCollection = new ArrayCollection();
-			var forceProxy:RopewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
-			arr = forceProxy.update();
-			contentManage.datagrid.dataProvider = arr;
+			_ropewayBaseinfoProxy.GetBaseInfo(contentManage.listRopeway.selectedItem);
 		}
 		
-		private function onselect(event:GridSelectionEvent):void
+		private function onBaseInfoNew(event:Event):void
 		{
-			if(contentManage.datagrid.selectedItem != null)
+			var ropewayCarId:String = StringUtil.trim(contentManage.textCarId.text);
+			if(ropewayCarId == "")
 			{
-				contentManage.ForceId.text = contentManage.datagrid.selectedItem.ropewayId;
-				contentManage.CarId.text = contentManage.datagrid.selectedItem.carId;
-				contentManage.RfId.text = contentManage.datagrid.selectedItem.rfId;
-				contentManage.RopewayStation.text = contentManage.datagrid.selectedItem.ropewayStation;
-			}
-		}
-		
-		private function onadd(event:FlexEvent):void
-		{
-			if(contentManage.ForceId.text == ""||contentManage.CarId.text == ""
-				||contentManage.RfId.text == ""||contentManage.RopewayStation.text == "")
-			{
-				Alert.show("缺少必要信息","提示");
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请输入吊箱编号！");
 				return;
 			}
-			var arr:ArrayCollection = new ArrayCollection();
-			for each(var rb:RopewayBaseinfoVO in contentManage.datagrid.dataProvider)
-			{
-				arr.addItem(rb);
-			}
-			var rb2:RopewayBaseinfoVO = new RopewayBaseinfoVO;
-			rb2.ropewayId = contentManage.ForceId.text;
-			rb2.carId = contentManage.CarId.text;
-			rb2.rfId = contentManage.RfId.text;
-			rb2.ropewayStation = contentManage.RopewayStation.text;
-			arr.addItem(rb2);
-			contentManage.datagrid.dataProvider = arr;
-			var forceProxy:RopewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
-			forceProxy.adddata();
-		}
-		
-		private function onedit(event:FlexEvent):void
-		{
-			if(contentManage.datagrid.selectedItem == null)
-			{
-				Alert.show("请选择一个设备","提示");
-				return;
-			}
-			var arr:ArrayCollection = new ArrayCollection();
-			for each(var rb:RopewayBaseinfoVO in contentManage.datagrid.dataProvider)
-			{
-				arr.addItem(rb);
-			}
-			arr[contentManage.datagrid.selectedIndex].ropewayId = contentManage.ForceId.text;
-			arr[contentManage.datagrid.selectedIndex].carId = contentManage.CarId.text;
-			arr[contentManage.datagrid.selectedIndex].rfId = contentManage.RfId.text;
-			arr[contentManage.datagrid.selectedIndex].ropewayStation = contentManage.RopewayStation.text;
-			contentManage.datagrid.dataProvider = arr;
-			var forceProxy:RopewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
-			forceProxy.editdata();
-		}
-		
-		private function ondelete(event:FlexEvent):void
-		{
-			if(contentManage.datagrid.selectedItem == null)
-			{
-				Alert.show("请选择一个设备","提示");
-				return;
-			}
-			var arr:ArrayCollection = new ArrayCollection();
-			for each(var rb:RopewayBaseinfoVO in contentManage.datagrid.dataProvider)
-			{
-				arr.addItem(rb);
-			}
-			arr.removeItemAt(contentManage.datagrid.selectedIndex);
-			contentManage.datagrid.dataProvider = arr;
-			var forceProxy:RopewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
-			forceProxy.deletedata();
-		}
-		
-		private function onupdate():void
-		{
 			
+			var ropewayId:String = StringUtil.trim(contentManage.textId.text);
+			if(ropewayId == "")
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请输入抱索器编号！");
+				return;
+			}
+			
+			var ropewayRFID:String = StringUtil.trim(contentManage.textRfId.text);
+			if(ropewayRFID == "")
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请输入RFID编号！");
+				return;
+			}
+			
+			_ropewayBaseinfoProxy.NewBaseInfo(contentManage.listRopeway.selectedItem,ropewayId,ropewayCarId,ropewayRFID);
+		}
+		
+		private function onBaseInfoEdit(event:Event):void
+		{
+			event.stopPropagation();
+			
+			var info:RopewayBaseinfoVO = contentManage.gridRela.selectedItem as RopewayBaseinfoVO;
+			if(info)
+			{
+				info.ropewayCarId = StringUtil.trim(contentManage.textCarId.text);
+				info.ropewayId = StringUtil.trim(contentManage.textId.text);
+				info.ropewayRFID = StringUtil.trim(contentManage.textRfId.text);
+				
+				_ropewayBaseinfoProxy.EditBaseInfo(info);
+			}
+			else
+			{				
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请先选择吊箱！");
+			}
+		}
+		
+		private function onBaseInfoDel(event:Event):void
+		{
+			var info:RopewayBaseinfoVO = contentManage.gridRela.selectedItem as RopewayBaseinfoVO;
+			if(info)
+			{
+				_ropewayBaseinfoProxy.DelBaseInfo(info);
+			}
+			else
+			{				
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请先选择吊箱！");
+			}
 		}
 	}
 }

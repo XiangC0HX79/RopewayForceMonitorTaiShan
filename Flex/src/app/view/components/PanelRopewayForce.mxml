@@ -81,17 +81,15 @@
 	</fx:Script>
 	
 	<fx:Binding source="config.pin" destination="btnPin.selected" twoWay="true"/>
-	
-	<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
-		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
-		<s:Label x="30" text="吊箱信息（{_ropeway.ropewayId}）" fontWeight="bold" verticalCenter="0"/>
-		<s:ToggleButton id="btnPin" right="20" width="20" height="20" buttonMode="true"
-						skinClass="custom.skin.SkinToggleButtonPin" verticalCenter="0"/>
-	</s:SkinnableContainer>
-	
-	
-	<s:Group left="20" right="20" top="50" bottom="10" clipAndEnableScrolling="true" color="{_color}">	
 		
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="吊箱信息 - {_ropeway.ropewayId}" fontWeight="bold"/>
+		<s:Spacer width="100%"/>
+		<s:ToggleButton id="btnPin" width="20" height="20" buttonMode="true"
+						skinClass="custom.skin.SkinToggleButtonPin"/>		
+	</s:HGroup>
+	
+	<s:Group left="20" right="20" top="35" bottom="10" clipAndEnableScrolling="true" color="{_color}">			
 		<s:Group id="content" width="100%" height="100%">
 			
 			<s:Image source="assets/image/panel_car.png"/>	

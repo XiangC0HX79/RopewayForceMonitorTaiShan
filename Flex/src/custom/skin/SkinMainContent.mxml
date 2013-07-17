@@ -39,6 +39,19 @@
              */
             override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
             {
+                // Push backgroundColor and backgroundAlpha directly.
+                // Handle undefined backgroundColor by hiding the background object.
+                /* if (isNaN(getStyle("backgroundColor")))
+                {
+                    background.visible = false;
+                }
+                else
+                {
+                    background.visible = true;
+                    bgFill.color = getStyle("backgroundColor");
+                    bgFill.alpha = getStyle("backgroundAlpha");
+                } */
+                
                 super.updateDisplayList(unscaledWidth, unscaledHeight);
             }
         ]]>        
@@ -48,26 +61,19 @@
         <s:State name="normal" />
         <s:State name="disabled" />
     </s:states>
-	
-	<s:Rect left="0" right="0" height="24">
-		<s:fill>
-			<s:BitmapFill source="@Embed('assets/image/part_tbg.png')" fillMode="scale"/>
-		</s:fill>
-	</s:Rect>
-	
-    <s:Rect left="0" right="0" top="24" bottom="0">
+    
+    <!--- Defines the appearance of the SkinnableContainer class's background. -->
+    <s:Rect id="background" left="0" right="0" height="400">
         <s:fill>
-           <s:BitmapFill source="@Embed('assets/image/part_bg.png')" fillMode="scale"/>
+           <s:BitmapFill source="@Embed('assets/image/content_bg.png')" fillMode="repeat"/>
         </s:fill>
     </s:Rect>
 	
 	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
 		<s:stroke>
-			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+			<s:SolidColorStroke color="#499db9"/>
 		</s:stroke>
 	</s:Rect>
-	
-	<s:Image x="10" y="5" source="@Embed('assets/image/part_icon.png')"/>
 	
     <!--
         Note: setting the minimum size to 0 here so that changes to the host component's
@@ -75,7 +81,7 @@
         more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
     -->
     <!--- @copy spark.components.SkinnableContainer#contentGroup -->
-    <s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
+    <s:Group id="contentGroup" left="10" right="10" top="10" bottom="10" minWidth="0" minHeight="0">
     </s:Group>
 
 </s:Skin>

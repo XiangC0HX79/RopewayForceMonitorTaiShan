@@ -72,7 +72,7 @@
 	
 	<s:Rect id="border" left="-1" right="0" top="-1" bottom="0">
 		<s:stroke>
-			<s:SolidColorStroke weight="1" color="#a5ddff"/>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
 		</s:stroke>
 	</s:Rect>
 	

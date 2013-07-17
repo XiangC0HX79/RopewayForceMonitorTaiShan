@@ -134,18 +134,20 @@ package app
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";
 		
-		/**菜单-今日概览
+		/**
+		 * 菜单-今日概览
 		 **/
 		public static const NOTIFY_MENU_TODAY_OVERVIEW:String 		= "MenuTodayOverview";
-		/**菜单-分析统计
+		
+		/**
+		 * 菜单-分析统计
 		 **/
 		public static const NOTIFY_MENU_ANALYSIS:String 		= "MenuAnalysis";
-		/**菜单-车厢设置
+		
+		/**
+		 * 菜单-车厢设置
 		 **/
-		public static const NOTIFY_MENU_MANAGE:String 		= "MenuManage";
-		/**分析统计-索道力
-		 **/
-		public static const NOTIFY_ANALYSIS_Force:String 		= "MenuAnalysis";
+		public static const NOTIFY_MENU_MANAGE:String 			= "MenuManage";
 		
 		/**
 		 * Singleton ApplicationFacade Factory Method

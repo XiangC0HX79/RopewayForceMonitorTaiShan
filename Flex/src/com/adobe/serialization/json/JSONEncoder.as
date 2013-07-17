@@ -102,7 +102,7 @@ package com.adobe.serialization.json
 			else if ( value is Date )
 			{
 				// call the helper method to convert an object
-				return escapeString(DateUtil.toW3CDTF(value));
+				return escapeString(DateUtil.toLocaleW3CDTF(value));
 			}
 			else if ( value is Object && value != null )
 			{

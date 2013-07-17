@@ -4,7 +4,6 @@ package app.view
 	import app.model.RopewayForceProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayNumTotelAnaVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.ContentAnalysis;
 	import app.view.components.PanelAnalysisForce;

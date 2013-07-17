@@ -44,7 +44,16 @@ package app.view
 		{
 			return [
 				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
+				
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
+				
+				ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION,
+				
+				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
+				
+				ApplicationFacade.NOTIFY_MENU_ANALYSIS,
+				
+				ApplicationFacade.NOTIFY_MENU_MANAGE
 			];
 		}
 		
@@ -53,11 +62,32 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					mainStation.contentName = "实时检测记录";
 					mainStation.config = notification.getBody() as ConfigVO;
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:	
 					updateCarCount();
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
+					mainStation.contentName = "实时检测记录";
+					mainStation.gpStation.visible = true;
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:	
+					mainStation.contentName = "当天概览";
+					mainStation.gpStation.visible = true;
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:	
+					mainStation.contentName = "分析查询";
+					mainStation.gpStation.visible = false;
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_MANAGE:	
+					mainStation.contentName = "抱索器车厢设置";
+					mainStation.gpStation.visible = false;
 					break;
 			}
 		}

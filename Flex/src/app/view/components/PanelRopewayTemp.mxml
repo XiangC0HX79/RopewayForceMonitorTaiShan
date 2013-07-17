@@ -6,16 +6,6 @@
 		 height="170">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Parallel id="parallel">
-			<s:Move id="moveContent" target="{content}"/>				
-			<s:Move id="moveImage" target="{imageAnimate}"/>
-			<s:effectEnd>
-				<![CDATA[				
-				imageAnimate.visible = false;
-				imageAnimate.includeInLayout = false;
-				]]>
-			</s:effectEnd>
-		</s:Parallel>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -36,21 +26,13 @@
 		]]>
 	</fx:Script>
 	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="当前温度" fontWeight="bold"/>
+	</s:HGroup>
 	
-	<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
-		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
-		<s:Label x="30" text="当前温度" fontWeight="bold" verticalCenter="0"/>
-	</s:SkinnableContainer>
-	
-	<s:Group y="48" height="100" clipAndEnableScrolling="true" color="blue" textAlign="center">	
-		
-		<s:HGroup id="content" width="100%" height="100%" verticalAlign="middle"
-				  gap="10" paddingLeft="20" paddingRight="20">
-			<s:Image width="50" fillMode="clip" horizontalAlign="center"
-					 source="@Embed('assets/image/panel_temp.png')"/>
-			<s:Label id="lbTemp" fontSize="38" fontWeight="bold" text="25 ℃"/>		
-		</s:HGroup>
-		
-		<s:Image id="imageAnimate" width="220" height="100" visible="false" includeInLayout="false"/>
-	</s:Group>
+	<s:HGroup left="20" right="20" top="35" bottom="10" color="0x1b5aa2"
+			  horizontalAlign="center" verticalAlign="middle">	
+		<s:Image source="@Embed('assets/image/panel_temp.png')"/>
+		<s:Label id="lbTemp" fontSize="38" fontWeight="bold" text="25 ℃"/>	
+	</s:HGroup>
 </s:SkinnableContainer>
