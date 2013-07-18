@@ -122,19 +122,10 @@ package app.view
 			var s:String = socketData.readMultiByte(socketData.length,"gb2312");
 			var a:Array = s.split('|');
 			
-			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));
-			if(ConfigVO.debug)
-			{
-				var i:int = Math.ceil(Math.random() * 2);
-				rf.ropewayId = (i < 10)?("0" + i):i.toString(); 
-			}
-			else
-			{
-				rf.ropewayId =  a[1];		
-			}
-			
+			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));			
 			var sd:String = String(a[0]).replace(/-/g,"/");
 			rf.ropewayTime = new Date(Date.parse(sd));
+			rf.ropewayId =  a[1];	
 			rf.ropewayForce = Number(a[2]);
 			rf.ropewayUnit = a[3];
 			rf.ropewayTemp = a[4];
@@ -142,36 +133,18 @@ package app.view
 			rf.eletric = (a[6] == "0");
 			rf.fromRopeStation = a[7];
 			
-			var rw:RopewayVO = _ropewayProxy.GetRopeway(rf);
-		
-			if(rw)
-			{			
-				rw.lastRopewayForce = rf;
-				
-				if(rw.ropewayStation == _config.station)
-					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-			}
-			else
-			{
-				var token:AsyncToken = _ropewayProxy.AddRopeway(rf);
-				token.ropewayForce = rf;
-				token.addResponder(new AsyncResponder(onAddRopewayResult,function(e:FaultEvent,t:Object):void{}));
-			}
+			var rw:RopewayVO = _ropewayProxy.PushRopeway(rf);			
+			if(rw.ropewayStation == _config.station)
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 		}
 		
-		private function onAddRopewayResult(event:ResultEvent,t:Object):void
+	/*	private function onAddRopewayResult(event:ResultEvent,t:Object):void
 		{						
 			if(event.result)
 			{
 				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
 				
 				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
-				
-				if(ConfigVO.debug)
-				{
-					rw.ropewayId = rf.ropewayId;
-					rw.ropewayCarId = rf.ropewayId;
-				}
 				
 				rw.lastRopewayForce = rf;
 				
@@ -180,7 +153,7 @@ package app.view
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 			}
-		}
+		}*/
 		
 		private var _rec:Boolean = false;
 		

@@ -40,19 +40,19 @@
 			{			
 				_ropeway = rw;
 				
-				if(rw && (rw.ropewayOpenCount > 0))
+				if(rw)
 				{
-					_color = (rw.lastRopewayForce.alarm > 0)?0xFF0000:0x02C462;
+					_color = (rw.alarm > 0)?0xFF0000:0x02C462;
 					
-					lbOpenCount.text = rw.ropewayOpenCount + "/" + (rw.switchFreqTotal + rw.ropewayOpenCount);
+					lbOpenCount.text = rw.switchFreq + "/" + (rw.switchFreqTotal + rw.switchFreq);
 					
-					lbForce.text = rw.lastRopewayForce.ropewayForce.toString();
+					lbForce.text = String(rw.deteValue);
 					
-					lbUnit.text = rw.lastRopewayForce.ropewayUnit;
+					lbUnit.text = rw.valueUnit;
 					
-					lbTime.text = df.format(rw.lastRopewayForce.ropewayTime);
+					lbTime.text = df.format(rw.deteDate);
 					
-					imgEletrice.source = rw.lastRopewayForce.eletric?"assets/image/ele_green.png":"assets/image/ele_red.png";
+					imgEletrice.source = rw.ropewayRFIDEletric?"assets/image/ele_green.png":"assets/image/ele_red.png";
 									
 					imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
 					imageAnimate.visible = true;

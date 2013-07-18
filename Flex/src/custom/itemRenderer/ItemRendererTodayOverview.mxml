@@ -16,24 +16,13 @@
 			[Bindable]private var _ropeway:RopewayVO;
 			
 			[Bindable]private var _color:int;
-			
-			[Bindable]private var _numtimes:int;
-			[Bindable]private var _todayAve:int;
-			[Bindable]private var _todayMax:int;
-			[Bindable]private var _todayMin:int;
-			
+						
 			override public function set data(value:Object):void
 			{
 				super.data = value;
 				
-				_ropeway = value as RopewayVO;
-				
-				_numtimes = _ropeway.ropewayHistory.length;
-				_todayAve = _ropeway.todayAve;
-				_todayMax = _ropeway.todayMax;
-				_todayMin = _ropeway.todayMin;
-				
-				_color = ((_numtimes) && (_ropeway.lastRopewayForce.alarm > 0))?0xFF0000:0x02C462;
+				_ropeway = value as RopewayVO;				
+				_color = (_ropeway.alarm > 0)?0xFF0000:0x02C462;
 			}
 		]]>
 	</fx:Script>
@@ -45,17 +34,17 @@
 		<s:HGroup width="100%" paddingLeft="30" paddingRight="20" height="24" verticalAlign="middle" color="0x1b5aa2">
 			<s:Label text="{_ropeway.ropewayId}" fontWeight="bold"/>
 			<s:Spacer width="100%"/>
-			<s:Label text="开合次数：{_numtimes}"/>
+			<s:Label text="开合次数：{_ropeway.switchFreq}"/>
 		</s:HGroup>
 		
 		<s:HGroup paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}">
 			<s:Label text="{_ropeway.ropewayCarId}"/>
 			
-			<s:Label text="{_ropeway.lastRopewayForce.ropewayForce}{_ropeway.lastRopewayForce.ropewayUnit}"/>			
+			<s:Label text="{_ropeway.deteValue}{_ropeway.valueUnit}"/>			
 		</s:HGroup>
 		
 		<s:Label paddingBottom="5" color="{_color}"
-				 text="{df.format(_ropeway.lastRopewayForce.ropewayTime)}"
+				 text="{df.format(_ropeway.deteDate)}"
 				 verticalAlign="middle"/>
 		
 		<s:HGroup width="100%" height="25" gap="0" fontWeight="bold" color="0x1b5aa2">
@@ -77,7 +66,7 @@
 				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMax}"/>
 			</s:SkinnableContainer>
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
-				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayMax}"/>
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.maxValue}"/>
 			</s:SkinnableContainer>
 		</s:HGroup>
 		
@@ -89,7 +78,7 @@
 				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayAve}"/>
 			</s:SkinnableContainer>
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
-				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayAve}"/>
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.aveValue}"/>
 			</s:SkinnableContainer>
 		</s:HGroup>
 		
@@ -101,7 +90,7 @@
 				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMin}"/>
 			</s:SkinnableContainer>
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
-				<s:Label verticalCenter="0" horizontalCenter="0" text="{_todayMin}"/>
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.minValue}"/>
 			</s:SkinnableContainer>
 		</s:HGroup>
 	</s:SkinnableContainer>

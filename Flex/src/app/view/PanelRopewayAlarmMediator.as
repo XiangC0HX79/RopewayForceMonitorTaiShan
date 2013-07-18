@@ -53,7 +53,7 @@ package app.view
 					var df:DateTimeFormatter = new DateTimeFormatter();
 					df.dateTimePattern = "HH:mm:ss";
 					
-					if(rw.ropewayHistory.length > 1)
+					/*if(rw.ropewayHistory.length > 1)
 					{						
 						var prerf:RopewayForceVO = rw.ropewayHistory[rw.ropewayHistory.length-2];
 						if(Math.abs(rw.lastRopewayForce.ropewayForce - prerf.ropewayForce) > 50)
@@ -80,7 +80,7 @@ package app.view
 							
 							alarmShow();
 						}
-					}
+					}*/
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:

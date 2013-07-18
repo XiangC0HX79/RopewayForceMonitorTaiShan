@@ -10,6 +10,7 @@
 		
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" duration="500" repeatCount="20" target="{elli}" repeatBehavior="reverse"/>
 	</fx:Declarations>
 	
 	<fx:Style>
@@ -35,6 +36,12 @@
 			{				
 				stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
 			}			
+			
+			protected function button1_buttonDownHandler(event:FlexEvent):void
+			{
+				fade.play();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -45,6 +52,23 @@
 			 doubleClickEnabled="true"  
 			 scaleMode="stretch"
 			 source="{titleBack}"/>
+	
+	<s:Group width="75" height="100">
+		<s:Image id="imgAlarm" width="75" height="100" source="assets/image/panel_alarm.png"/>
+		<s:Ellipse left="-20" right="-20" top="-20" bottom="10" id="elli">
+			<s:fill>
+				<s:RadialGradient>
+					<s:entries>
+						<s:GradientEntry color="0xC5C551" ratio="0.00" alpha="1.0"/> 
+						<s:GradientEntry color="0xFEFE24" ratio="0.50" alpha="0.5"/>
+						<s:GradientEntry color="0xECEC21" ratio="1.00" alpha="0"/>
+					</s:entries>
+				</s:RadialGradient>
+			</s:fill>
+		</s:Ellipse>
+	</s:Group>
+	
+	<s:Button label="Test" x="200" buttonDown="button1_buttonDownHandler(event)"/>
 	
 	<components:MainMenu id="mainMenu" top="75" bottom="0" width="130"/>
 	

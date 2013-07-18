@@ -17,6 +17,6 @@ package app.model.vo
 		
 		public var pin:Boolean = false;
 		
-		public static var debug:Boolean = true;
+		//public static var debug:Boolean = true;
 	}
 }

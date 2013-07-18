@@ -102,8 +102,7 @@ package app.model.vo
 		{
 			_source.UpdateDatetime = value;
 		}
-		
-		
+				
 		private var _source:ObjectProxy;
 		
 		public function RopewayBaseinfoHisVO(source:ObjectProxy = null)

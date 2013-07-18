@@ -22,10 +22,15 @@
 			public function set ropeway(rw:RopewayVO):void
 			{				
 				_ropeway = rw;
-				if(_ropeway && _ropeway.lastRopewayForce)
+				if(_ropeway)
 				{
-					lbTemp.text = String(_ropeway.lastRopewayForce.ropewayTemp);
-					lbHumi.text = String(_ropeway.lastRopewayForce.ropewayHumidity);
+					lbTemp.text = String(_ropeway.temperature);
+					lbHumi.text = String(_ropeway.humidity);
+				}
+				else
+				{
+					lbTemp.text = "";
+					lbHumi.text = "";
 				}
 			}
 		]]>

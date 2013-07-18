@@ -54,29 +54,6 @@ package app.model.vo
 		}
 		
 		/**
-		 * 开合总数
-		 * */
-		public function get switchFreqTotal():Number
-		{
-			return isNaN(_source.SwitchFreqTotal)?0:_source.SwitchFreqTotal;
-		}
-		public function set switchFreqTotal(value:Number):void
-		{
-			_source.SwitchFreqTotal = value;
-		}
-			
-		/**
-		 * 所属索道
-		 **/
-		/*public function get ropeway():String
-		{
-			return _source.FromRopeWay;
-		}
-		public function set ropeway(value:String):void
-		{
-		}*/
-		
-		/**
 		 * 所属索道站
 		 **/
 		public function get ropewayStation():String
@@ -88,136 +65,152 @@ package app.model.vo
 		}
 		
 		/**
-		 * 是否使用
+		 * 所属索道
 		 **/
-		public function get isUse():Boolean
+		public function get fromRopeWay():String
 		{
-			return (_source.IsUse != "1");
+			return _source.FromRopeWay;
 		}
-		public function set isUse(value:Boolean):void
+		public function set fromRopeWay(value:String):void
 		{
 		}
 		
 		/**
-		 * 最后编辑日期
-		 **/
-		public function get lastUpdateTime():Date
+		 * 当前抱索力
+		 * */
+		public function get deteValue():Number
 		{
-			return _source.lastUpdateDatetime;
+			return _source.DeteValue;
 		}
-		public function set lastUpdateTime(value:Date):void
+		public function set deteValue(value:Number):void
 		{
-		}
-				
-		/**
-		 * 最后编辑人
-		 **/
-		public function get lastUpdateUser():Date
-		{
-			return _source.lastUpdateUser;
-		}
-		public function set lastUpdateUser(value:Date):void
-		{
-		}
-				
-		/**
-		 * 最新抱索力
-		 **/
-		public function get lastRopewayForce():RopewayForceVO	
-		{
-			return (ropewayHistory.length > 0)?ropewayHistory[ropewayHistory.length - 1]:null;
-		}
-		public function set lastRopewayForce(value:RopewayForceVO):void	
-		{			
-			if(this.yesterdayAve > 0)
-			{						
-				if(Math.abs(value.ropewayForce - this.yesterdayAve) > 50)
-					value.alarm |= 1;
-			}
-			
-			if(this.ropewayHistory.length > 0)
-			{						
-				var prerf:RopewayForceVO = this.ropewayHistory[this.ropewayHistory.length-1];
-				if(Math.abs(value.ropewayForce - prerf.ropewayForce) > 50)
-					value.alarm |= 2;
-			}
-			
-			this.ropewayHistory.push(value);
+			_source.DeteValue = value;
 		}
 		
 		/**
-		 * 最老抱索力
-		 **/
-		public function get firstRopewayForce():RopewayForceVO	
+		 * 当前单位
+		 * */
+		public function get valueUnit():String
 		{
-			return (ropewayHistory.length > 0)?ropewayHistory[0]:null;
+			return _source.ValueUnit;
 		}
-		public function set firstRopewayForce(value:RopewayForceVO):void	
+		public function set valueUnit(value:String):void
 		{
+			_source.ValueUnit = value;
+		}
+		
+		/**
+		 * 当前温度
+		 * */
+		public function get temperature():Number
+		{
+			return _source.Temperature;
+		}
+		public function set temperature(value:Number):void
+		{
+			_source.Temperature = value;
+		}
+		
+		/**
+		 * 当前湿度
+		 * */
+		public function get humidity():Number
+		{
+			return _source.Humidity;
+		}
+		public function set humidity(value:Number):void
+		{
+			_source.Humidity = value;
+		}
+		
+		/**
+		 * 报警类型
+		 * 0-正常
+		 * 1-平均值报警
+		 * 2-单次值报警
+		 * */
+		public var alarm:Number;
+		
+		/**
+		 * 监测时间
+		 * */
+		public function get deteDate():Date
+		{
+			return _source.DeteDate;
+		}
+		public function set deteDate(value:Date):void
+		{
+			_source.DeteDate = value;
+		}
+		
+		/**
+		 * 开合总数
+		 * */
+		public function get switchFreqTotal():Number
+		{
+			return isNaN(_source.SwitchFreqTotal)?0:_source.SwitchFreqTotal;
+		}
+		public function set switchFreqTotal(value:Number):void
+		{
+			_source.SwitchFreqTotal = value;
 		}
 		
 		/**
 		 * 开合次数
 		 **/
-		public function get ropewayOpenCount():Number
+		public function get switchFreq():Number
 		{
-			return ropewayHistory.length;
+			return _source.SwitchFreq;
 		}
-		public function set ropewayOpenCount(value:Number):void
+		public function set switchFreq(value:Number):void
 		{
-			
+			_source.SwitchFreq = value;
 		}
 		
 		/**
 		 * 今日最大值
 		 **/
-		public function get todayMax():Number	
-		{			
-			var n:Number = 0;
-			for each(var rf:RopewayForceVO in ropewayHistory)
-			{
-				if(n < rf.ropewayForce)
-					n = rf.ropewayForce;
-			}
-			return n;
-		}
-		public function set todayMax(value:Number):void	
+		public function get maxValue():Number
 		{
+			return _source.MaxValue;
+		}
+		public function set maxValue(value:Number):void
+		{
+			_source.MaxValue = value;
 		}
 		
 		/**
 		 * 今日最小值
 		 **/
-		public function get todayMin():Number	
-		{			
-			var n:Number = 0;
-			for each(var rf:RopewayForceVO in ropewayHistory)
-			{
-				if((n==0) || (n > rf.ropewayForce))
-					n = rf.ropewayForce;
-			}
-			return n;
-		}
-		public function set todayMin(value:Number):void	
+		public function get minValue():Number
 		{
+			return _source.MinValue;
+		}
+		public function set minValue(value:Number):void
+		{
+			_source.MinValue = value;
+		}
+		
+		/**
+		 * 今日合计值
+		 **/
+		public function get totalValue():Number
+		{
+			return _source.TotalValue;
+		}
+		public function set totalValue(value:Number):void
+		{
+			_source.TotalValue = value;
 		}
 		
 		/**
 		 * 今日平均值
 		 **/
-		public function get todayAve():Number	
+		public function get aveValue():Number	
 		{			
-			var n:Number = 0;
-			for each(var rf:RopewayForceVO in ropewayHistory)
-			{
-				n += rf.ropewayForce;
-			}
-			
-			n = Math.round(n / ropewayHistory.length);
-			
-			return n;
+			return Math.round(totalValue / switchFreq);
 		}
-		public function set todayAve(value:Number):void	
+		public function set aveValue(value:Number):void	
 		{
 		}
 				
@@ -226,7 +219,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayMax():Number	
 		{
-			return _source.MaxValue;
+			return _source.MaxValueY;
 		}
 		public function set yesterdayMax(value:Number):void	
 		{
@@ -237,7 +230,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayMin():Number	
 		{
-			return _source.MinValue;
+			return _source.MinValueY;
 		}
 		public function set yesterdayMin(value:Number):void	
 		{
@@ -248,7 +241,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayAve():Number	
 		{
-			return _source.AverageValue;
+			return _source.AverageValueY;
 		}
 		public function set yesterdayAve(value:Number):void	
 		{
@@ -257,13 +250,17 @@ package app.model.vo
 		/**
 		 * 抱索力列表
 		 **/
-		public var ropewayHistory:Array = new Array;
+		public var ropewayHistory:Array;
 		
 		private var _source:ObjectProxy;
 		
 		public function RopewayVO(source:ObjectProxy)
 		{					
 			_source = source;
+		}
+		
+		public function push(ropwayForce:RopewayForceVO):void
+		{
 		}
 	}
 }

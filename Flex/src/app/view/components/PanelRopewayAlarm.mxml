@@ -20,7 +20,9 @@
 		<s:Label text="报警情况" fontWeight="bold"/>
 	</s:HGroup>
 		
-	<s:SWFLoader x="20" width="75" height="100" source="assets/swf/panel_alarm.swf"
+	<s:SWFLoader maintainAspectRatio="false"
+				 x="20" width="75" height="100" 
+				 source="assets/swf/panel_alarm.swf"
 				 verticalCenter="15"/>
 	<s:Image id="imgAlarm" x="20" width="75" height="100" source="assets/image/panel_alarm.png"
 			 verticalCenter="15"/>

@@ -35,49 +35,22 @@ package app.model
 		
 		public function InitRopewayDict():void
 		{
-			if(ConfigVO.debug)
-			{
-				var where:String = "";
-			}
-			else
-			{
-				where = "DATEDIFF(D,DeteDate,getDate()) = 0";
-			}
-			
-			send("RopeDeteInfoToday_GetList",onRopeCarriageRela_GetLis,where);
+			send("RopeDeteInfoToday_GetList",onRopeCarriageRela_GetLis,"");
 		}
 		
 		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
 		{
 			var arr:Array = [];
-			if(ConfigVO.debug)
+			for each(var o:ObjectProxy in event.result)
 			{
-				if(event.result.length > 0)
-				{
-					var rw:RopewayVO = new RopewayVO(event.result[0]);
-					
-					for(var i:int = 1;i<=2;i++)
-					{
-						rw.ropewayId = (i < 10)?("0" + i):i.toString();
-						rw.ropewayCarId = rw.ropewayId;
-					}
-					
-					arr.push(rw);
-				}
+				var rw:RopewayVO = new RopewayVO(o);					
+				arr.push(rw);
 			}
-			else
-			{				
-				for each(var o:ObjectProxy in event.result)
-				{
-					rw = new RopewayVO(o);					
-					arr.push(rw);
-				}
-			}			
 			
 			colRopeway.source = arr;
 			
-			trace((new Date).time);
-			send("RopeDeteValueHis_GetList",onRopeDeteValueHis_GetList,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
+			//send("RopeDeteValueHis_GetList",onRopeDeteValueHis_GetList,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
 		}
 		
 		private function onRopeDeteValueHis_GetList(event:ResultEvent):void
@@ -85,22 +58,22 @@ package app.model
 			for each(var i:ObjectProxy in event.result)
 			{
 				var rf:RopewayForceVO = new RopewayForceVO(i);
-				var rw:RopewayVO = GetRopeway(rf);
-				if(rw)
-					rw.ropewayHistory.push(rf);
+				AddRopeway(rf);
 			}
-			
-			trace((new Date).time);
+						
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
 		}
 		
-		public function GetRopeway(ropewayForce:RopewayForceVO):RopewayVO
+		public function PushRopeway(ropewayForce:RopewayForceVO):RopewayVO
 		{
 			for each(var r:RopewayVO in colRopeway)
 			{
 				if((r.ropewayId == ropewayForce.ropewayId)
-					&& (r.ropewayStation == ropewayForce.fromRopeStation))					
+					&& (r.fromRopeWay == ropewayForce.fromRopeWay))	
+				{
+					r.push(ropewayForce);					
 					return r;
+				}
 			}
 			
 			return null;
@@ -111,9 +84,14 @@ package app.model
 			var rt:RopewayVO = null;
 			for each(var r:RopewayVO in colRopeway)
 			{
-				if(r.ropewayStation == station)	
+				if((r.ropewayStation == station)
+					&& (r.deteDate.toDateString() == (new Date).toDateString()))
 				{
 					if(!rt)
+					{
+						rt = r;
+					}
+					else if(rt.deteDate.time < r.deteDate.time)
 					{
 						rt = r;
 					}
@@ -135,13 +113,13 @@ package app.model
 		public function GetRopewayCount(station:String):Number
 		{
 			var count:Number = 0;
-			for each(var r:RopewayVO in colRopeway)
+			/*for each(var r:RopewayVO in colRopeway)
 			{
 				if(r.ropewayStation == station)
 				{
 					count++;
 				}
-			}
+			}*/
 			
 			return count;
 		}

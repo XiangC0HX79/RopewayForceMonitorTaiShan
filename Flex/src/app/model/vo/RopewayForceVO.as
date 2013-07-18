@@ -125,15 +125,37 @@ package app.model.vo
 		}
 		
 		/**
+		 * 索道站类型
+		 * 0 - 未知,1 - 驱动站,2-回转站
+		 **/
+		public function get fromRopeStationType():Number	
+		{
+			var s:String = String(_source.FromRopeStation);
+			if(s.length > 3)
+				s = s.substr(s.length - 4,3);
+			if(s == "驱动站")
+				return 1;
+			else if(s == "回转站")
+				return 2;
+			return 0;
+		}
+		public function set ropeStationType(value:Number):void	
+		{
+		}
+		
+		/**
 		 * 所属索道
 		 **/
 		public function get fromRopeWay():String	
 		{
-			return _source.FromRopeWay;
+			var s:String = String(_source.FromRopeStation);
+			if(s.length > 3)
+				s = s.substr(0,3) + "索道";
+			return s;
 		}
 		public function set fromRopeWay(value:String):void	
 		{
-			_source.FromRopeWay = value;
+			//_source.FromRopeWay = value;
 		}
 		
 		private var _source:ObjectProxy;

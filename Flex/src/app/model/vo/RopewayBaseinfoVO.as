@@ -2,6 +2,7 @@ package app.model.vo
 {
 	import com.adobe.serialization.json.JSON;
 	
+	import mx.collections.ArrayCollection;
 	import mx.utils.ObjectProxy;
 
 	[Bindable]
@@ -90,7 +91,7 @@ package app.model.vo
 		{
 			_source.RFIDDL = value?0:1;
 		}
-		
+				
 		/**
 		 * 备注
 		 **/

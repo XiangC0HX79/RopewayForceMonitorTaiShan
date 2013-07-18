@@ -68,8 +68,8 @@ package app.view
 					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 					ropewayProxy.InitRopewayDict();		
 					
-					var ropewayListProxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
-					ropewayListProxy.GetRopewayList();
+					//var ropewayListProxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+					//ropewayListProxy.GetRopewayList();
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	

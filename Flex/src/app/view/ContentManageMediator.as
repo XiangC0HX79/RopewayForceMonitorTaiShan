@@ -174,7 +174,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-					_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");					
+					//_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");					
 					break;
 			}
 		}
