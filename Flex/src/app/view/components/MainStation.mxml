@@ -71,6 +71,14 @@
 		
 		<s:Spacer width="60"/>
 		
-		<s:Label paddingTop="3" text="吊箱总数：{carCount}" verticalAlign="middle"/>
+		<s:Group height="100%">
+			<s:Rect top="5" bottom="5" left="0" right="0" radiusX="5" radiusY="5">
+				<s:fill>
+					<s:SolidColor color="white"/>
+				</s:fill>
+			</s:Rect> 
+			<s:Label color="black" fontWeight="bold" height="100%" text="吊箱总数：{carCount}" verticalAlign="middle"
+					 paddingTop="3" paddingLeft="5" paddingRight="5"/>
+		</s:Group>
 	</s:HGroup>
 </s:Group>

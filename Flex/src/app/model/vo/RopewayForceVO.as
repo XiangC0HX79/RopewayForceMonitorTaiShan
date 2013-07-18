@@ -7,7 +7,7 @@ package app.model.vo
 
 	[Bindable]
 	public class RopewayForceVO
-	{		
+	{				
 		/**
 		 * 抱索器编号
 		 * */
@@ -66,6 +66,30 @@ package app.model.vo
 		public function set ropewayTemp(value:Number):void	
 		{
 			_source.Temperature = value;
+		}
+		
+		/**
+		 * 湿度
+		 **/
+		public function get ropewayHumidity():Number	
+		{
+			return _source.Humidity;
+		}
+		public function set ropewayHumidity(value:Number):void	
+		{
+			_source.Humidity = value;
+		}
+		
+		/**
+		 * 电量
+		 **/
+		public function get eletric():Boolean
+		{
+			return (_source.DL == 0);
+		}
+		public function set eletric(value:Boolean):void	
+		{
+			_source.DL = value?0:1;
 		}
 		
 		/**

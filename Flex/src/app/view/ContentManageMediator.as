@@ -45,6 +45,7 @@ package app.view
 			super(NAME, viewComponent);
 			
 			contentManage.addEventListener(ContentManage.ROPEWAY_CHANGE,onRopewayChange);
+			contentManage.addEventListener(ContentManage.ROPEWAY_RELA_CHANGE,onRopewayRelaChange);
 			
 			contentManage.addEventListener(ContentManage.BASEINFO_NEW,onBaseInfoNew);
 			contentManage.addEventListener(ContentManage.BASEINFO_EDIT,onBaseInfoEdit);
@@ -65,6 +66,15 @@ package app.view
 		private function onRopewayChange(event:Event):void
 		{
 			_ropewayBaseinfoProxy.GetBaseInfo(contentManage.listRopeway.selectedItem);
+		}
+		
+		private function onRopewayRelaChange(event:Event):void
+		{
+			var info:RopewayBaseinfoVO = contentManage.gridRela.selectedItem as RopewayBaseinfoVO;
+			if(info)
+			{
+				_ropewayBaseinfoHisProxy.GetHistory(info);
+			}
 		}
 		
 		private function onBaseInfoNew(event:Event):void
@@ -90,7 +100,34 @@ package app.view
 				return;
 			}
 			
-			_ropewayBaseinfoProxy.NewBaseInfo(contentManage.listRopeway.selectedItem,ropewayId,ropewayCarId,ropewayRFID);
+			for each(var r:RopewayBaseinfoVO in contentManage.colBaseInfo)
+			{
+				if(r.ropewayCarId == ropewayCarId)
+				{
+					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"吊箱编号已存在！");
+					return;					
+				}
+				
+				if(r.ropewayId == ropewayId)
+				{
+					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"抱索器编号已存在！");
+					return;					
+				}
+				
+				if(r.ropewayRFID == ropewayRFID)
+				{
+					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"RFID编号已存在！");
+					return;					
+				}
+			}
+			
+			var info:RopewayBaseinfoVO = new RopewayBaseinfoVO;
+			info.ropewayId = ropewayId;
+			info.ropewayCarId = ropewayCarId;
+			info.ropewayRFID = ropewayRFID;
+			info.fromRopeWay = contentManage.listRopeway.selectedItem;
+			
+			_ropewayBaseinfoProxy.NewBaseInfo(info);
 		}
 		
 		private function onBaseInfoEdit(event:Event):void
@@ -104,7 +141,7 @@ package app.view
 				info.ropewayId = StringUtil.trim(contentManage.textId.text);
 				info.ropewayRFID = StringUtil.trim(contentManage.textRfId.text);
 				
-				_ropewayBaseinfoProxy.EditBaseInfo(info);
+				_ropewayBaseinfoProxy.UpdateBaseInfo(info);
 			}
 			else
 			{				
@@ -122,6 +159,23 @@ package app.view
 			else
 			{				
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请先选择吊箱！");
+			}
+		}
+		
+		override public function listNotificationInterests():Array
+		{
+			return [
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+			];
+		}
+		
+		override public function handleNotification(notification:INotification):void
+		{
+			switch(notification.getName())
+			{
+				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+					_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");					
+					break;
 			}
 		}
 	}

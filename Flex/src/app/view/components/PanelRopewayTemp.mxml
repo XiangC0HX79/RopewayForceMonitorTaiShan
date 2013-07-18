@@ -22,6 +22,11 @@
 			public function set ropeway(rw:RopewayVO):void
 			{				
 				_ropeway = rw;
+				if(_ropeway && _ropeway.lastRopewayForce)
+				{
+					lbTemp.text = String(_ropeway.lastRopewayForce.ropewayTemp);
+					lbHumi.text = String(_ropeway.lastRopewayForce.ropewayHumidity);
+				}
 			}
 		]]>
 	</fx:Script>
@@ -33,6 +38,13 @@
 	<s:HGroup left="20" right="20" top="35" bottom="10" color="0x1b5aa2"
 			  horizontalAlign="center" verticalAlign="middle">	
 		<s:Image source="@Embed('assets/image/panel_temp.png')"/>
-		<s:Label id="lbTemp" fontSize="38" fontWeight="bold" text="25 ℃"/>	
+		<s:VGroup width="64" horizontalAlign="center">
+			<s:Label id="lbTemp" fontSize="38" fontWeight="bold"/>	
+			<s:Label id="lbHumi" fontSize="38" fontWeight="bold"/>				
+		</s:VGroup>
+		<s:VGroup horizontalAlign="center">
+			<s:Label fontSize="38" fontWeight="bold" text="℃"/>	
+			<s:Label fontSize="38" fontWeight="bold" text="%"/>				
+		</s:VGroup>
 	</s:HGroup>
 </s:SkinnableContainer>

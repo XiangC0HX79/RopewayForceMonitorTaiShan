@@ -24,6 +24,8 @@ package app.model
 		
 		protected function send(name:String,listener:Function,...args):AsyncToken
 		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在读取数据，请稍后...");
+				
 			var webService:WebService = new WebService;
 			webService.loadWSDL(BASE_URL);
 			
@@ -40,11 +42,15 @@ package app.model
 				
 		private function onFault(event:FaultEvent):void
 		{	
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+			
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
 		}	
 		
 		private function onResult(event:ResultEvent,listener:Function):void
 		{	
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+			
 			if(listener != null)
 				listener(event);
 		}		

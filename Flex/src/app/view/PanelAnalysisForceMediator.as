@@ -2,6 +2,7 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.RopewayForceProxy;
+	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayForceVO;
@@ -44,23 +45,21 @@ package app.view
 		
 		private function onStationChange(event:Event):void
 		{
-			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			var token:AsyncToken = proxy.getRopewayList(String(panelAnalysisForce.rbgStation.selectedValue));
-			token.addResponder(new AsyncResponder(onGetRopewayList,null));
-		}
-		
-		private function onGetRopewayList(event:ResultEvent,t:Object):void
-		{
-			var arr1:Array = ["所有吊箱"];
-			var arr2:Array = ["所有抱索器"];
-			for each(var o:ObjectProxy in event.result)
+			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
+			
+			var arr:Array = [RopewayVO.ALL];
+			if(station != "所有索道站")
 			{
-				var rw:RopewayVO = new RopewayVO(o);
-				arr1.push(rw.ropewayCarId);
-				arr2.push(rw.ropewayId);
+				var proxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+				for each(var r:RopewayVO in proxy.colRopeway)
+				{
+					if(r.ropewayStation == station)
+					{
+						arr.push(r);
+					}
+				}
 			}
-			panelAnalysisForce.colRopewayCarId = new ArrayCollection(arr1);
-			panelAnalysisForce.colRopewayId = new ArrayCollection(arr2);
+			panelAnalysisForce.colRopeway.source = arr;
 		}
 		
 		private function onQuery(event:Event):void
@@ -119,10 +118,7 @@ package app.view
 					var config:ConfigVO = notification.getBody() as ConfigVO;					
 					panelAnalysisForce.colStations = config.stations;	
 					
-					var arr1:Array = ["所有吊箱"];
-					var arr2:Array = ["所有抱索器"];
-					panelAnalysisForce.colRopewayCarId = new ArrayCollection(arr1);
-					panelAnalysisForce.colRopewayId = new ArrayCollection(arr2);
+					panelAnalysisForce.colRopeway.source = [RopewayVO.ALL];
 					break;
 			}
 		}

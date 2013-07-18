@@ -5,6 +5,8 @@ package app.view
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayAlarm;
 	
+	import flash.utils.setTimeout;
+	
 	import mx.collections.ArrayCollection;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -25,6 +27,12 @@ package app.view
 		protected function get panelRopewayAlarm():PanelRopewayAlarm
 		{
 			return viewComponent as PanelRopewayAlarm;
+		}
+		
+		private function alarmShow():void
+		{
+			flash.utils.setTimeout(function():void{panelRopewayAlarm.imgAlarm.visible = true;},5000);
+			panelRopewayAlarm.imgAlarm.visible = false;
 		}
 		
 		override public function listNotificationInterests():Array
@@ -55,6 +63,8 @@ package app.view
 								+ " 超出前次抱索力50KG。";
 							
 							panelRopewayAlarm.dataPro.addItemAt(s,0);
+							
+							alarmShow();
 						}
 					}
 					
@@ -67,6 +77,8 @@ package app.view
 								+ " 超出昨日平均值50KG。";
 							
 							panelRopewayAlarm.dataPro.addItemAt(s,0);
+							
+							alarmShow();
 						}
 					}
 					break;

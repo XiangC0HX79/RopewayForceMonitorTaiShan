@@ -37,6 +37,8 @@ package app.view
 		
 		private var _config:ConfigVO;
 		
+		private var _ropewayProxy:RopewayProxy;
+		
 		public function SocketMediator()
 		{
 			super(NAME, new Socket);			
@@ -50,6 +52,8 @@ package app.view
 			var timer:Timer = new Timer(30000);
 			timer.addEventListener(TimerEvent.TIMER,onTimer);
 			timer.start();
+			
+			_ropewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 		}
 		
 		protected function get socket():Socket
@@ -129,14 +133,16 @@ package app.view
 				rf.ropewayId =  a[1];		
 			}
 			
+			var sd:String = String(a[0]).replace(/-/g,"/");
+			rf.ropewayTime = new Date(Date.parse(sd));
 			rf.ropewayForce = Number(a[2]);
 			rf.ropewayUnit = a[3];
 			rf.ropewayTemp = a[4];
-			var sd:String = String(a[0]).replace(/-/g,"/");
-			rf.ropewayTime = new Date(Date.parse(sd));
+			rf.ropewayHumidity = a[5];
+			rf.eletric = (a[6] == "0");
+			rf.fromRopeStation = a[7];
 			
-			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			var rw:RopewayVO = proxy.ropewayDict[rf.ropewayId];
+			var rw:RopewayVO = _ropewayProxy.GetRopeway(rf);
 		
 			if(rw)
 			{			
@@ -147,16 +153,14 @@ package app.view
 			}
 			else
 			{
-				var token:AsyncToken = proxy.AddRopeway(rf);
+				var token:AsyncToken = _ropewayProxy.AddRopeway(rf);
 				token.ropewayForce = rf;
-				token.addResponder(new AsyncResponder(onAddRopewayResult,null));
+				token.addResponder(new AsyncResponder(onAddRopewayResult,function(e:FaultEvent,t:Object):void{}));
 			}
 		}
 		
 		private function onAddRopewayResult(event:ResultEvent,t:Object):void
-		{
-			var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-						
+		{						
 			if(event.result)
 			{
 				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
@@ -168,10 +172,10 @@ package app.view
 					rw.ropewayId = rf.ropewayId;
 					rw.ropewayCarId = rf.ropewayId;
 				}
-								
-				proxy.ropewayDict[rw.ropewayId] = rw;
 				
 				rw.lastRopewayForce = rf;
+				
+				_ropewayProxy.colRopeway.addItem(rw);
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
@@ -190,8 +194,7 @@ package app.view
 			
 			if(_oldTime.toLocaleDateString() != now.toLocaleDateString())
 			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.ropewayDict)
+				for each(var r:RopewayVO in _ropewayProxy.colRopeway)
 				{
 					r.ropewayHistory = [];
 				}

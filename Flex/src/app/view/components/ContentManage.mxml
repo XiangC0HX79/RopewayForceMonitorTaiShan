@@ -5,6 +5,7 @@
 		 left="0" right="0" top="0" bottom="0">
 	<fx:Script>
 		<![CDATA[
+			import spark.events.GridSelectionEvent;
 			import spark.events.IndexChangeEvent;
 			
 			public static const BASEINFO_NEW:String = "BaseInfoNew";	
@@ -12,6 +13,8 @@
 			public static const BASEINFO_DEL:String = "BaseInfoDel";	
 			
 			public static const ROPEWAY_CHANGE:String = "RopewayChange";	
+			
+			public static const ROPEWAY_RELA_CHANGE:String = "RopewayRelaChange";	
 			
 			[Bindable]public var colBaseInfo:ArrayCollection;
 			
@@ -28,7 +31,8 @@
 				<s:HorizontalLayout verticalAlign="middle"/>
 			</s:layout>
 			<s:Label text="所属索道：" fontWeight="bold"/>
-			<s:DropDownList id="listRopeway" change="dispatchEvent(new Event(ROPEWAY_CHANGE));" requireSelection="true">
+			<s:DropDownList id="listRopeway" change="dispatchEvent(new Event(ROPEWAY_CHANGE));" 
+							requireSelection="true">
 				<s:ArrayCollection>
 					<fx:String>桃花源索道</fx:String>
 					<fx:String>中天门索道</fx:String>
@@ -52,7 +56,8 @@
 	
 	<s:HGroup width="100%" height="100%">	
 		<s:SkinnableContainer width="100%" height="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">	
-			<s:DataGrid id="gridRela" width="100%" height="100%" dataProvider="{colBaseInfo}">
+			<s:DataGrid id="gridRela" width="100%" height="100%" dataProvider="{colBaseInfo}" 
+						selectionChange="dispatchEvent(new Event(ROPEWAY_RELA_CHANGE))">
 				<s:columns>
 					<s:ArrayList>
 						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>		
@@ -95,10 +100,10 @@
 					<s:ArrayList>
 						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="200"/>	
 						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="200"/>
-						<s:GridColumn headerText="RFID编号" dataField="rfId" width="200"/>
-						<s:GridColumn headerText="所属索道" dataField="ropewayStation" width="200"/>
-						<s:GridColumn headerText="更新人员" dataField="ropewayStation" width="200"/>
-						<s:GridColumn headerText="更新日期" dataField="ropewayStation" width="200"/>
+						<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
+						<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="200"/>
+						<s:GridColumn headerText="更新人员" dataField="updateUser" width="200"/>
+						<s:GridColumn headerText="更新日期" dataField="updateDatetime" width="200"/>
 					</s:ArrayList>				
 				</s:columns>
 			</s:DataGrid>

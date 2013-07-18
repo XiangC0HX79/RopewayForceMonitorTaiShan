@@ -2,6 +2,7 @@ package app.view
 {	
 	import app.ApplicationFacade;
 	import app.model.RopewayAlarmProxy;
+	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.view.components.LoadingBar;
@@ -65,7 +66,10 @@ package app.view
 					loadingBar.loadingInfo = "初始化：本地配置加载完成...";			
 										
 					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					ropewayProxy.InitRopewayDict();
+					ropewayProxy.InitRopewayDict();		
+					
+					var ropewayListProxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+					ropewayListProxy.GetRopewayList();
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	

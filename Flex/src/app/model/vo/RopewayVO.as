@@ -5,6 +5,8 @@ package app.model.vo
 	[Bindable]
 	public class RopewayVO
 	{
+		public static const ALL:RopewayVO = new RopewayVO(new ObjectProxy({RopeCode:"所有抱索器",CarriageCode:"所有吊箱"}));
+		
 		/**
 		 * 抱索器编号
 		 * */
@@ -50,17 +52,29 @@ package app.model.vo
 		public function set ropewayRFIDEletric(value:Boolean):void
 		{
 		}
-				
+		
+		/**
+		 * 开合总数
+		 * */
+		public function get switchFreqTotal():Number
+		{
+			return isNaN(_source.SwitchFreqTotal)?0:_source.SwitchFreqTotal;
+		}
+		public function set switchFreqTotal(value:Number):void
+		{
+			_source.SwitchFreqTotal = value;
+		}
+			
 		/**
 		 * 所属索道
 		 **/
-		public function get ropeway():String
+		/*public function get ropeway():String
 		{
 			return _source.FromRopeWay;
 		}
 		public function set ropeway(value:String):void
 		{
-		}
+		}*/
 		
 		/**
 		 * 所属索道站
@@ -212,8 +226,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayMax():Number	
 		{
-			return 640;
-			//return _source.MaxValue;
+			return _source.MaxValue;
 		}
 		public function set yesterdayMax(value:Number):void	
 		{
@@ -224,8 +237,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayMin():Number	
 		{
-			return 500;
-			//return _source.MinValue;
+			return _source.MinValue;
 		}
 		public function set yesterdayMin(value:Number):void	
 		{
@@ -236,8 +248,7 @@ package app.model.vo
 		 **/
 		public function get yesterdayAve():Number	
 		{
-			return 570;
-			//return _source.AverageValue;
+			return _source.AverageValue;
 		}
 		public function set yesterdayAve(value:Number):void	
 		{

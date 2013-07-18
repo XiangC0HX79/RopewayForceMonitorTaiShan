@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 skinClass="custom.skin.SkinPanelRealtimeDetection"
-		 width="340" height="170">
+		 width="400" height="170">
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -44,13 +44,15 @@
 				{
 					_color = (rw.lastRopewayForce.alarm > 0)?0xFF0000:0x02C462;
 					
-					lbOpenCount.text = rw.ropewayOpenCount.toString() + "/2002";
+					lbOpenCount.text = rw.ropewayOpenCount + "/" + (rw.switchFreqTotal + rw.ropewayOpenCount);
 					
 					lbForce.text = rw.lastRopewayForce.ropewayForce.toString();
 					
 					lbUnit.text = rw.lastRopewayForce.ropewayUnit;
 					
 					lbTime.text = df.format(rw.lastRopewayForce.ropewayTime);
+					
+					imgEletrice.source = rw.lastRopewayForce.eletric?"assets/image/ele_green.png":"assets/image/ele_red.png";
 									
 					imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
 					imageAnimate.visible = true;
@@ -89,7 +91,7 @@
 						skinClass="custom.skin.SkinToggleButtonPin"/>		
 	</s:HGroup>
 	
-	<s:Group left="20" right="20" top="35" bottom="10" clipAndEnableScrolling="true" color="{_color}">			
+	<s:Group left="20" right="15" top="35" bottom="10" clipAndEnableScrolling="true" color="{_color}">			
 		<s:Group id="content" width="100%" height="100%">
 			
 			<s:Image source="assets/image/panel_car.png"/>	
@@ -98,12 +100,13 @@
 			
 			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
 				<s:Label text="{_ropeway.ropewayCarId}"/>
-				<s:Spacer width="20"/>
+				<s:Spacer width="10"/>
 				<s:Label id="lbForce"/>
 				<s:Label id="lbUnit"/>
 			</s:HGroup>
 			
-			<s:Image source="assets/image/panel_title_icon.png" bottom="0" left="0"/>
+			<s:Image id="imgEletrice" x="15" bottom="0" width="45" height="15" scaleMode="stretch"
+					 source="assets/image/ele_green.png"/>
 			
 			<s:Label id="lbTime" fontSize="20" fontWeight="bold" bottom="0" right="0"/>	
 		</s:Group>

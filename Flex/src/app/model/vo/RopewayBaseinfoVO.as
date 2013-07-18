@@ -1,10 +1,24 @@
 package app.model.vo
 {
+	import com.adobe.serialization.json.JSON;
+	
 	import mx.utils.ObjectProxy;
 
 	[Bindable]
 	public class RopewayBaseinfoVO
 	{
+		/**
+		 * 主键
+		 * */
+		public function get id():Number
+		{
+			return _source.Id;
+		}
+		public function set id(value:Number):void
+		{
+			_source.Id = value;
+		}
+		
 		/**
 		 * 抱索器编号
 		 * */
@@ -42,6 +56,18 @@ package app.model.vo
 		}
 		
 		/**
+		 * 所属索道
+		 **/
+		public function get fromRopeWay():String	
+		{
+			return _source.FromRopeWay;
+		}
+		public function set fromRopeWay(value:String):void	
+		{
+			_source.FromRopeWay = value;
+		}
+		
+		/**
 		 * 是否使用
 		 * */
 		public function get isUse():Boolean
@@ -54,18 +80,53 @@ package app.model.vo
 		}
 		
 		/**
-		 * 所属索道
+		 * RFID电量
 		 **/
-		public function get fromRopeWay():String	
+		public function get eletric():Boolean	
 		{
-			return _source.RopeWay;
+			return _source.RFIDDL == 0;
 		}
-		public function set fromRopeWay(value:String):void	
+		public function set eletric(value:Boolean):void	
 		{
-			_source.RopeWay = value;
+			_source.RFIDDL = value?0:1;
 		}
 		
+		/**
+		 * 备注
+		 **/
+		public function get memo():String	
+		{
+			return _source.Memo;
+		}
+		public function set memo(value:String):void	
+		{
+			_source.Memo = value;
+		}
 		
+		/**
+		 * 最后更新人
+		 **/
+		public function get lastUpdateUser():String	
+		{
+			return _source.lastUpdateUser;
+		}
+		public function set lastUpdateUser(value:String):void	
+		{
+			_source.lastUpdateUser = value;
+		}
+		
+		/**
+		 * 最后更新时间
+		 **/
+		public function get lastUpdateDatetime():Date	
+		{
+			return _source.lastUpdateDatetime;
+		}
+		public function set lastUpdateDatetime(value:Date):void	
+		{
+			_source.lastUpdateDatetime = value;
+		}
+				
 		private var _source:ObjectProxy;
 		
 		public function RopewayBaseinfoVO(source:ObjectProxy = null)
@@ -73,7 +134,19 @@ package app.model.vo
 			if(source)
 				_source = source;	
 			else
+			{
 				_source = new ObjectProxy({});
+				this.isUse = true;
+				this.eletric = true;
+				this.memo = "";
+				this.lastUpdateUser = "";
+				this.lastUpdateDatetime = new Date;
+			}
+		}
+		
+		public function toString():String
+		{
+			return JSON.encode(_source.valueOf());
 		}
 	}
 }

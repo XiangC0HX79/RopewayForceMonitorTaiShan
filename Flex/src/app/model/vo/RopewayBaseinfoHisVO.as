@@ -1,10 +1,24 @@
 package app.model.vo
 {
+	import com.adobe.serialization.json.JSON;
+	
 	import mx.utils.ObjectProxy;
 	
 	[Bindable]
 	public class RopewayBaseinfoHisVO
 	{
+		/**
+		 * 主键
+		 * */
+		public function get id():Number
+		{
+			return _source.Id;
+		}
+		public function set id(value:Number):void
+		{
+			_source.Id = value;
+		}
+		
 		/**
 		 * 抱索器编号
 		 * */
@@ -54,6 +68,18 @@ package app.model.vo
 		}
 		
 		/**
+		 * 备注
+		 **/
+		public function get memo():String	
+		{
+			return _source.Memo;
+		}
+		public function set memo(value:String):void	
+		{
+			_source.Memo = value;
+		}
+		
+		/**
 		 * 更新人
 		 **/
 		public function get updateUser():String	
@@ -80,9 +106,22 @@ package app.model.vo
 		
 		private var _source:ObjectProxy;
 		
-		public function RopewayBaseinfoHisVO(source:ObjectProxy)
+		public function RopewayBaseinfoHisVO(source:ObjectProxy = null)
 		{
-			_source = source;			
+			if(source)
+				_source = source;	
+			else
+			{
+				_source = new ObjectProxy({});
+				this.memo = "";
+				this.updateUser = "";
+				this.updateDatetime = new Date;
+			}
+		}
+		
+		public function toString():String
+		{
+			return JSON.encode(_source.valueOf());
 		}
 	}
 }

@@ -42,9 +42,7 @@
 			
 			[Bindable]public var colStations:ArrayCollection;
 			
-			[Bindable]public var colRopewayId:ArrayCollection;
-			
-			[Bindable]public var colRopewayCarId:ArrayCollection;
+			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
 			
 			[Bindable]public var colRopewayHis:ArrayCollection;
 			
@@ -192,12 +190,12 @@
 			<s:VGroup height="100%" horizontalAlign="center" width="100%">	
 				<s:HGroup verticalAlign="middle" width="100%">
 					<s:Label text="　吊箱编号："/>
-					<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopewayCarId}"
+					<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
 									width="100%" change="listCarId_changeHandler(event)"/>
 				</s:HGroup>	
 				<s:HGroup verticalAlign="middle" width="100%">
 					<s:Label text="抱索器编号："/>
-					<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopewayId}"
+					<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
 									width="100%" change="listRopewayId_changeHandler(event)"/>
 				</s:HGroup>	
 				<s:HGroup verticalAlign="middle" width="100%">

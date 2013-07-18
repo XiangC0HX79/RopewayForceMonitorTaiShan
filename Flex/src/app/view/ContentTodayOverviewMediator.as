@@ -47,7 +47,7 @@ package app.view
 					
 					var dp:ArrayCollection = new ArrayCollection;
 					
-					for each(var r:RopewayVO in proxy.ropewayDict)
+					for each(var r:RopewayVO in proxy.colRopeway)
 					{
 						dp.addItem(r);
 					}

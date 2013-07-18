@@ -6,6 +6,8 @@ package app.model
 	
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
 	import mx.utils.StringUtil;
 	
@@ -28,28 +30,81 @@ package app.model
 		
 		public function GetBaseInfo(fromRopeWay:String):void
 		{
+			var where:String = "FromRopeWay = '" + fromRopeWay + "'";
 			
+			send("RopeDete_RopeCarriageRela_GetList",onGetBaseInfo,where);
 		}
 		
-		public function NewBaseInfo(fromRopeWay:String,ropewayId:String,ropewayCarId:String,ropewayRFID:String):void
+		private function onGetBaseInfo(event:ResultEvent):void
 		{
-			var info:RopewayBaseinfoVO = new RopewayBaseinfoVO;
-			info.ropewayId = ropewayId;
-			info.ropewayCarId = ropewayCarId;
-			info.ropewayRFID = ropewayRFID;
-			info.fromRopeWay = fromRopeWay;
-			info.isUse = true;
-			
-			colBaseinfo.addItem(info);
+			var source:Array = [];
+			for each(var o:ObjectProxy in event.result)
+			{
+				source.push(new RopewayBaseinfoVO(o));
+			}
+			colBaseinfo.source = source;
 		}
 		
-		public function EditBaseInfo(baseInfo:RopewayBaseinfoVO):void
+		public function NewBaseInfo(baseInfo:RopewayBaseinfoVO):void
 		{
+			var token:AsyncToken = send("RopeDete_RopeCarriageRela_New",onNewBaseInfo,baseInfo.toString());
+			token.info = baseInfo;
+		}
+		
+		private function onNewBaseInfo(event:ResultEvent):void
+		{			
+			var info:RopewayBaseinfoVO = event.token.info;
+			
+			if(event.result > 0)
+			{
+				info.id = Number(event.result);
+				
+				colBaseinfo.addItem(info);
+				
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息添加成功。");
+			}
+			else
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息添加失败。");				
+			}
+		}
+		
+		public function UpdateBaseInfo(baseInfo:RopewayBaseinfoVO):void
+		{
+			var token:AsyncToken = send("RopeDete_RopeCarriageRela_Update",onUpdateBaseInfo,baseInfo.toString());
+			token.info = baseInfo;
+		}
+		
+		private function onUpdateBaseInfo(event:ResultEvent):void
+		{
+			var info:RopewayBaseinfoVO = event.token.info;
+			if(event.result)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息更新成功。");
+			}
+			else
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"吊箱'" + info.ropewayCarId + "'信息更新失败。");				
+			}
 		}
 		
 		public function DelBaseInfo(baseInfo:RopewayBaseinfoVO):void
 		{
-			colBaseinfo.removeItemAt(colBaseinfo.getItemIndex(baseInfo));
+			var token:AsyncToken = send("RopeDete_RopeCarriageRela_Delete",onDelBaseInfo,baseInfo.toString());
+			token.info = baseInfo;
+		}
+		
+		private function onDelBaseInfo(event:ResultEvent):void
+		{
+			var info:RopewayBaseinfoVO = event.token.info;
+			if(event.result)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息删除成功。");
+			}
+			else
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"吊箱'" + info.ropewayCarId + "'信息删除失败。");				
+			}
 		}
 	}
 }

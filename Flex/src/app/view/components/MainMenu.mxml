@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" minHeight="600">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -16,7 +16,8 @@
 				for(var i:Number = 0;i < buttonBar.numElements;i++)
 				{
 					var btn:Button = buttonBar.getElementAt(i) as Button;
-					btn.enabled = true;
+					if(btn)
+						btn.enabled = true;
 				}
 				
 				btn = event.currentTarget as Button;
@@ -35,13 +36,17 @@
 		</s:fill>
 	</s:Rect>-->
 	
-	<s:VGroup id="buttonBar" paddingTop="10" paddingBottom="10" gap="10" horizontalAlign="center" width="100%">
+	<s:VGroup id="buttonBar" paddingTop="10" paddingBottom="10" gap="0" 
+			  horizontalAlign="center" height="100%" width="100%">
 		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
+		<s:Spacer height="100%"/>
 		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,TODAY_OVERVIEW)"/>
+		<s:Spacer height="100%"/>
 		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,ANALYSIS)"/>
+		<s:Spacer height="100%"/>
 		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
 	</s:VGroup>

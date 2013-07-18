@@ -62,7 +62,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					mainStation.contentName = "实时检测记录";
+					mainStation.contentName = "实时监测";
 					mainStation.config = notification.getBody() as ConfigVO;
 					break;
 				
@@ -71,7 +71,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
-					mainStation.contentName = "实时检测记录";
+					mainStation.contentName = "实时监测";
 					mainStation.gpStation.visible = true;
 					break;
 				
@@ -86,7 +86,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_MANAGE:	
-					mainStation.contentName = "抱索器车厢设置";
+					mainStation.contentName = "参数设置";
 					mainStation.gpStation.visible = false;
 					break;
 			}
@@ -95,7 +95,7 @@ package app.view
 		private function updateCarCount():void
 		{
 			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			mainStation.carCount = ropewayProxy.getRopewayCount(mainStation.config.station);
+			mainStation.carCount = ropewayProxy.GetRopewayCount(mainStation.config.station);
 		}
 	}
 }

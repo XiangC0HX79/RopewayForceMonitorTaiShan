@@ -96,13 +96,6 @@ package app
 		
 		/**
 		 * 索道信息初始化完成
-		 * <p></p>
-		 * <table>
-		 * 	<th>参数类型</th><th>参数说明</th>
-		 * 	<tr>
-		 *    <td>RopewayVO</td><td>最后一个抱索器信息</td>
-		 * 	</tr>
-		 * </table>
 		 **/
 		public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
 				

@@ -54,7 +54,7 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
 					var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					panelRopewayTemp.ropeway = proxy.getRopeway(String(notification.getBody()));
+					panelRopewayTemp.ropeway = proxy.GetRopewayByStation(String(notification.getBody()));
 					break;
 			}
 		}

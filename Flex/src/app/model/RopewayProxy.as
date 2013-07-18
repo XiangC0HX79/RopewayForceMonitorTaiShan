@@ -25,12 +25,12 @@ package app.model
 		
 		public function RopewayProxy()
 		{
-			super(NAME, new Dictionary);
+			super(NAME, new ArrayCollection);
 		}
 		
-		public function get ropewayDict():Dictionary
+		public function get colRopeway():ArrayCollection
 		{
-			return data as Dictionary;
+			return data as ArrayCollection;
 		}
 		
 		public function InitRopewayDict():void
@@ -49,6 +49,7 @@ package app.model
 		
 		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
 		{
+			var arr:Array = [];
 			if(ConfigVO.debug)
 			{
 				if(event.result.length > 0)
@@ -61,18 +62,21 @@ package app.model
 						rw.ropewayCarId = rw.ropewayId;
 					}
 					
-					ropewayDict[rw.ropewayId] = rw;
+					arr.push(rw);
 				}
 			}
 			else
 			{				
 				for each(var o:ObjectProxy in event.result)
 				{
-					rw = new RopewayVO(o);
-					ropewayDict[rw.ropewayId] = rw;
+					rw = new RopewayVO(o);					
+					arr.push(rw);
 				}
 			}			
 			
+			colRopeway.source = arr;
+			
+			trace((new Date).time);
 			send("RopeDeteValueHis_GetList",onRopeDeteValueHis_GetList,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
 		}
 		
@@ -81,14 +85,42 @@ package app.model
 			for each(var i:ObjectProxy in event.result)
 			{
 				var rf:RopewayForceVO = new RopewayForceVO(i);
-				var rw:RopewayVO = ropewayDict[rf.ropewayId];
+				var rw:RopewayVO = GetRopeway(rf);
 				if(rw)
-				{
 					rw.ropewayHistory.push(rf);
-				}				
 			}
 			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,rw);
+			trace((new Date).time);
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
+		}
+		
+		public function GetRopeway(ropewayForce:RopewayForceVO):RopewayVO
+		{
+			for each(var r:RopewayVO in colRopeway)
+			{
+				if((r.ropewayId == ropewayForce.ropewayId)
+					&& (r.ropewayStation == ropewayForce.fromRopeStation))					
+					return r;
+			}
+			
+			return null;
+		}
+		
+		public function GetRopewayByStation(station:String):RopewayVO
+		{
+			var rt:RopewayVO = null;
+			for each(var r:RopewayVO in colRopeway)
+			{
+				if(r.ropewayStation == station)	
+				{
+					if(!rt)
+					{
+						rt = r;
+					}
+				}
+			}
+			
+			return rt;
 		}
 		
 		public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
@@ -100,28 +132,10 @@ package app.model
 			return token;
 		}
 				
-		public function getRopeway(station:String):RopewayVO
-		{
-			var rw:RopewayVO = null;
-			for each(var r:RopewayVO in ropewayDict)
-			{
-				if(r.ropewayStation == station)
-				{
-					if(!rw 
-						|| (rw.ropewayOpenCount == 0)
-						|| 
-						((r.ropewayOpenCount > 0) && (r.lastRopewayForce.ropewayTime.time > rw.lastRopewayForce.ropewayTime.time)))
-						rw = r;
-				}
-			}
-			
-			return rw;
-		}
-		
-		public function getRopewayCount(station:String):Number
+		public function GetRopewayCount(station:String):Number
 		{
 			var count:Number = 0;
-			for each(var r:RopewayVO in ropewayDict)
+			for each(var r:RopewayVO in colRopeway)
 			{
 				if(r.ropewayStation == station)
 				{
@@ -130,15 +144,6 @@ package app.model
 			}
 			
 			return count;
-		}
-		
-		public function getRopewayList(station:String):AsyncToken
-		{
-			var where:String = "";
-			if(station != "所有索道站")
-				where += "FromRopeStation = '" + station + "'";
-			
-			return send("RopeDeteInfoToday_GetList",null,where);
 		}
 	}
 }

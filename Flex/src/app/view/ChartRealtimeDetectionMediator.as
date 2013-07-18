@@ -16,9 +16,13 @@ package app.view
 	{
 		public static const NAME:String = "ChartRealtimeDetectionMediator";
 		
+		private var _ropewayProxy:RopewayProxy;
+		
 		public function ChartRealtimeDetectionMediator()
 		{
 			super(NAME, new ChartRealtimeDetection);
+			
+			_ropewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 		}
 		
 		protected function get chartRealtimeDetection():ChartRealtimeDetection
@@ -28,8 +32,7 @@ package app.view
 		
 		private function onClear(event:Event):void
 		{
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			for each(var r:RopewayVO in ropewayProxy.ropewayDict)
+			for each(var r:RopewayVO in _ropewayProxy.colRopeway)
 			{
 				r.ropewayHistory = new Array;
 			}
@@ -51,7 +54,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-					chartRealtimeDetection.ropeway = notification.getBody() as RopewayVO;
+					chartRealtimeDetection.ropeway = _ropewayProxy.GetRopewayByStation("桃花源驱动站");
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
@@ -69,8 +72,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
-					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					chartRealtimeDetection.ropeway = ropewayProxy.getRopeway(String(notification.getBody()));
+					chartRealtimeDetection.ropeway = _ropewayProxy.GetRopewayByStation(String(notification.getBody()));
 					break;
 			}
 		}
