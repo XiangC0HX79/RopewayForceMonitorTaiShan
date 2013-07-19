@@ -68,28 +68,6 @@
             useChromeColor = true;
             super.initializationComplete();
         }
- 
-        /**
-         * @private
-         */
-        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-        {
-            if (getStyle("borderVisible") == true)
-            {
-                border.visible = true;
-                scroller.minViewportInset = 1;
-            }
-            else
-            {
-                border.visible = false;
-                scroller.minViewportInset = 0;
-            }
-            
-            borderStroke.color = getStyle("borderColor");
-            borderStroke.alpha = getStyle("borderAlpha");
-            
-            super.updateDisplayList(unscaledWidth, unscaledHeight);
-        }
 		]]>
     </fx:Script>
     
@@ -126,14 +104,12 @@
         </fx:Component>
     </fx:Declarations>
 
-    <!-- border -->
-    <!--- @private -->
-    <s:Rect left="0" right="0" top="0" bottom="0" id="border" radiusX="5" radiusY="5">
+    <s:Rect left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5">
 		<s:filters>
 			<s:DropShadowFilter 
-				distance="4" 
+				distance="2" 
 				angle="45" 
-				color="0" 
+				color="0x63c3d6" 
 				alpha="1" 
 				blurX="4" 
 				blurY="4" 
@@ -144,17 +120,9 @@
 				knockout="false"/>
 		</s:filters>
         <s:stroke>
-            <!--- @private -->
-            <s:SolidColorStroke id="borderStroke" weight="1" color="0x1b5aa2"/>
+            <s:SolidColorStroke weight="1" color="0x1b5aa2"/>
         </s:stroke>
     </s:Rect>
-	
-	<s:Rect left="1" right="1" top="1" bottom="1" radiusX="4" radiusY="4">
-		<s:stroke>
-			<!--- @private -->
-			<s:SolidColorStroke weight="1" color="black"/>
-		</s:stroke>
-	</s:Rect>
 
     <!--- The Scroller component to add scroll bars to the list. -->
     <s:Scroller left="5" top="5" right="5" bottom="5" id="scroller" minViewportInset="1" hasFocusableChildren="false">

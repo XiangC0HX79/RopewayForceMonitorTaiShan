@@ -123,6 +123,11 @@ package app
 		public static const NOTIFY_MAIN_STATION_CHANGE:String 		= "MainGroupChange";
 		
 		/**
+		 * 分析表改变
+		 **/
+		public static const NOTIFY_MAIN_ANALYSIS_CHANGE:String 		= "MainGroupAnalysisChange";
+		
+		/**
 		 * 菜单-实时检测
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";

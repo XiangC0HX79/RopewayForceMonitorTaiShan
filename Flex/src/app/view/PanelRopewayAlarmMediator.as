@@ -1,6 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayForceAverageProxy;
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayAlarm;
@@ -31,8 +32,7 @@ package app.view
 		
 		private function alarmShow():void
 		{
-			flash.utils.setTimeout(function():void{panelRopewayAlarm.imgAlarm.visible = true;},5000);
-			panelRopewayAlarm.imgAlarm.visible = false;
+			panelRopewayAlarm.fade.play();
 		}
 		
 		override public function listNotificationInterests():Array
@@ -48,39 +48,35 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
+					//抱索力检测值 " + RealValue + " 比 "+AlarmType +" "+ compareValue + "  变化超过 " + stanrdValue
 					var rw:RopewayVO = notification.getBody() as RopewayVO;
 					
 					var df:DateTimeFormatter = new DateTimeFormatter();
 					df.dateTimePattern = "HH:mm:ss";
 					
-					/*if(rw.ropewayHistory.length > 1)
+					if(rw.alarm == 1)
 					{						
-						var prerf:RopewayForceVO = rw.ropewayHistory[rw.ropewayHistory.length-2];
-						if(Math.abs(rw.lastRopewayForce.ropewayForce - prerf.ropewayForce) > 50)
-						{
-							var s:String = df.format(rw.lastRopewayForce.ropewayTime)
-								+ " " + rw.ropewayCarId 
-								+ " 超出前次抱索力50KG。";
-							
-							panelRopewayAlarm.dataPro.addItemAt(s,0);
-							
-							alarmShow();
-						}
+						var s:String = rw.ropewayCarId + df.format(rw.deteDate)							
+							+ " 抱索力检测值" + rw.deteValue
+							+ "比平均值" + rw.yesterdayAve
+							+ "变化超过50。";
+						
+						panelRopewayAlarm.dataPro.addItemAt(s,0);
+						
+						alarmShow();
 					}
-					
-					if(rw.yesterdayAve > 0)
-					{						
-						if(Math.abs(rw.lastRopewayForce.ropewayForce - rw.yesterdayAve) > 50)
-						{
-							s = df.format(rw.lastRopewayForce.ropewayTime)
-								+ " " + rw.ropewayCarId
-								+ " 超出昨日平均值50KG。";
-							
-							panelRopewayAlarm.dataPro.addItemAt(s,0);
-							
-							alarmShow();
-						}
-					}*/
+					else if(rw.alarm == 2)
+					{			
+						var preForce:RopewayForceVO = rw.ropewayHistory[rw.ropewayHistory.length - 2];
+						s = rw.ropewayCarId + df.format(rw.deteDate)							
+							+ " 抱索力检测值" + rw.deteValue
+							+ "比前次值" + preForce.ropewayForce
+							+ "变化超过50。";
+						
+						panelRopewayAlarm.dataPro.addItemAt(s,0);
+						
+						alarmShow();						
+					}
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:

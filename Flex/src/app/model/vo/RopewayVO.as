@@ -208,10 +208,11 @@ package app.model.vo
 		 **/
 		public function get aveValue():Number	
 		{			
-			return Math.round(totalValue / switchFreq);
+			return _source.AveValue;
 		}
 		public function set aveValue(value:Number):void	
 		{
+			_source.AveValue = value;
 		}
 				
 		/**

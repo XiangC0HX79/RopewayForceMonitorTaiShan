@@ -60,9 +60,11 @@ package app.view
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					_config = notification.getBody() as ConfigVO;
+					
+					changeContent(ContentRealtimeDetectionMediator.NAME);
 					break;
 				
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+				//case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
 					changeContent(ContentRealtimeDetectionMediator.NAME);
 					break;

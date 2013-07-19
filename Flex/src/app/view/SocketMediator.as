@@ -133,7 +133,37 @@ package app.view
 			rf.eletric = (a[6] == "0");
 			rf.fromRopeStation = a[7];
 			
-			var rw:RopewayVO = _ropewayProxy.PushRopeway(rf);			
+			var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
+			if(rw)
+			{
+				if(rw.ropewayHistory)
+				{					
+					_ropewayProxy.PushRopewayForce(rw,rf);
+					
+					if(rw.ropewayStation == _config.station)
+						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+				}
+				else
+				{
+					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
+					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
+					token.ropeway = rw;
+					token.ropewayForce = rf;
+				}
+			}
+			else
+			{
+				
+			}
+		}
+		
+		private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
+		{			
+			var rw:RopewayVO = event.token.ropeway;
+			var rf:RopewayForceVO = event.token.ropewayForce;
+			
+			_ropewayProxy.PushRopewayForce(rw,rf);
+			
 			if(rw.ropewayStation == _config.station)
 				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 		}

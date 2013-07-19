@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx">
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				mouseChildren="false">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
@@ -21,8 +22,11 @@
 			{
 				super.data = value;
 				
-				_ropeway = value as RopewayVO;				
-				_color = (_ropeway.alarm > 0)?0xFF0000:0x02C462;
+				if(value)
+				{
+					_ropeway = value as RopewayVO;				
+					_color = (_ropeway.alarm > 0)?0xFF0000:0x02C462;
+				}
 			}
 		]]>
 	</fx:Script>

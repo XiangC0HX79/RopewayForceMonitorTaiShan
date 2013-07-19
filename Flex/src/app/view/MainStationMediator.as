@@ -26,6 +26,7 @@ package app.view
 			super(NAME, viewComponent);
 			
 			mainStation.addEventListener(MainStation.GROUP_CHANGE,onGroupChange);
+			mainStation.addEventListener(MainStation.GROUP_ANALYSIS_CHANGE,onGroupAnalysisChange);
 		}
 		
 		protected function get mainStation():MainStation
@@ -40,10 +41,17 @@ package app.view
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,mainStation.config.station);
 		}
 		
+		private function onGroupAnalysisChange(event:Event):void
+		{						
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE,mainStation.rbgAnalysis.selectedValue);
+		}
+		
 		override public function listNotificationInterests():Array
 		{
 			return [
 				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
 				
 				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
 				
@@ -66,27 +74,32 @@ package app.view
 					mainStation.config = notification.getBody() as ConfigVO;
 					break;
 				
+				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:	
 					updateCarCount();
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
 					mainStation.contentName = "实时监测";
+					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = true;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:	
 					mainStation.contentName = "当天概览";
+					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = true;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:	
 					mainStation.contentName = "分析查询";
+					mainStation.gpAnalysis.visible = true;
 					mainStation.gpStation.visible = false;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_MANAGE:	
 					mainStation.contentName = "参数设置";
+					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = false;
 					break;
 			}

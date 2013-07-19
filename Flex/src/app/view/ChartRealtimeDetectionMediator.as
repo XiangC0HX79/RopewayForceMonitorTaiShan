@@ -10,6 +10,11 @@ package app.view
 	import flash.events.Event;
 	import flash.geom.Point;
 	
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -43,10 +48,24 @@ package app.view
 			return viewComponent as ChartRealtimeDetection;
 		}
 		
+		private function onCreate(event:Event):void
+		{
+			if(chartRealtimeDetection.ropeway)
+			{
+				reCalcuXY();			
+				
+				chartRealtimeDetection.RefreshChart();
+			}
+		}
+		
 		private function onResize(event:Event):void			
 		{
 			if(chartRealtimeDetection.ropeway)
+			{
+				reCalcuXY();			
+				
 				chartRealtimeDetection.MoveChart();
+			}
 		}
 		
 		private function changeStation(station:String):void
@@ -55,9 +74,16 @@ package app.view
 			
 			if(chartRealtimeDetection.ropeway)
 			{
-				reCalcuXY();
-				
-				chartRealtimeDetection.RefreshChart();
+				if(chartRealtimeDetection.ropeway.ropewayHistory)
+				{
+					reCalcuXY();					
+					chartRealtimeDetection.RefreshChart();
+				}
+				else
+				{
+					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(chartRealtimeDetection.ropeway);
+					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
+				}
 			}
 			else
 			{				
@@ -71,6 +97,12 @@ package app.view
 				chartRealtimeDetection.lbMin.visible = false;
 				chartRealtimeDetection.lbAve.visible = false;
 			}
+		}
+		
+		private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
+		{			
+			reCalcuXY();					
+			chartRealtimeDetection.RefreshChart();
 		}
 		
 		private function reCalcuY():void
@@ -150,6 +182,7 @@ package app.view
 				max = Math.ceil(max / ONE_HOUR) * ONE_HOUR;
 			}
 			
+			chartRealtimeDetection.horizontalAxis.labelUnits = labelUnits;
 			chartRealtimeDetection.horizontalAxis.interval = interval;
 			chartRealtimeDetection.horizontalAxis.minimum = new Date(min);
 			chartRealtimeDetection.horizontalAxis.maximum = new Date(max);
@@ -221,11 +254,7 @@ package app.view
 			
 			drawYesterday();
 		}
-		
-		private function refreshChart():void
-		{			
-		}
-		
+				
 		override public function listNotificationInterests():Array
 		{
 			return [
@@ -239,14 +268,11 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-					changeStation("桃花源驱动站");
-					break;
-				
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
 					changeStation(String(notification.getBody()));
 					break;
-				
+					
+				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 					
@@ -260,6 +286,8 @@ package app.view
 					}
 					else if(!configProxy.config.pin)
 					{
+						chartRealtimeDetection.ropeway = rw;
+						
 						reCalcuXY();
 						
 						chartRealtimeDetection.RefreshChart();			

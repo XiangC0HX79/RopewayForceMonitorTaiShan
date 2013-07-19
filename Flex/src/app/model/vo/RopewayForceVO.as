@@ -139,7 +139,7 @@ package app.model.vo
 				return 2;
 			return 0;
 		}
-		public function set ropeStationType(value:Number):void	
+		public function set fromRopeStationType(value:Number):void	
 		{
 		}
 		

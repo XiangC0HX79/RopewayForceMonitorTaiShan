@@ -48,7 +48,8 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
+				ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE
 			];
 		}
 		
@@ -57,6 +58,14 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+					break;
+				
+				case ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE:
+					var s:String = String(notification.getBody());
+					if(s == "")
+					{
+						
+					}
 					break;
 			}
 		}

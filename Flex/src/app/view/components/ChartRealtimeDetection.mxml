@@ -4,7 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:components="app.view.components.*"
 		 width="100%" height="100%" 
-		 resize="dispatchEvent(new Event(CONTAINER_RESIZE))" 
+		 resize="dataCanvas_resizeHandler(event)" 
 		 creationComplete="dispatchEvent(new Event(CONTAINER_CREATE))" 
 		 fontSize="12">	
 	<fx:Declarations>
@@ -285,7 +285,22 @@
 		<s:Line id="lineAve" stroke="{yesStroke}" left="10" right="10" visible="false"/>
 		<s:Line id="lineMin" stroke="{yesStroke}" left="10" right="10" visible="false"/>-->
 		<s:Group id="groupLine" width="100%" height="100%"/>
-		<s:Group id="groupPoint" width="100%" height="100%"/>
+		<s:Group id="groupPoint" width="100%" height="100%">
+			<s:filters>
+				<s:DropShadowFilter 
+					distance="2" 
+					angle="45" 
+					color="0x0" 
+					alpha="1" 
+					blurX="4" 
+					blurY="4" 
+					strength="1" 
+					quality="1" 
+					hideObject="false"
+					inner="false" 
+					knockout="false"/>
+			</s:filters>
+		</s:Group>
 		<s:Group id="groupLabel" width="100%" height="100%">
 			<components:ChartTip id="chartTip" visible="false"/>
 		</s:Group>
@@ -296,5 +311,5 @@
 	<s:Label left="10" top="20" text="抱索力（{ropeway.valueUnit}）"/>
 	<s:Label right="15" bottom="40" text="时间"/>
 	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-			 text="{ropeway.ropewayCarId}抱索力实时监控曲线"/>
+			 text="{ropeway.ropewayCarId}抱索力实时监测曲线"/>
 </s:SkinnableContainer>

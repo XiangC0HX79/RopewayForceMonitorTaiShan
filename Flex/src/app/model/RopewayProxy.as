@@ -35,25 +35,34 @@ package app.model
 		
 		public function InitRopewayDict():void
 		{
-			send("RopeDeteInfoToday_GetList",onRopeCarriageRela_GetLis,"");
+			send("RopeDeteInfoToday_GetList",onInitRopewayDict,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
 		}
 		
-		private function onRopeCarriageRela_GetLis(event:ResultEvent):void
+		private function onInitRopewayDict(event:ResultEvent):void
 		{
 			var arr:Array = [];
 			for each(var o:ObjectProxy in event.result)
 			{
-				var rw:RopewayVO = new RopewayVO(o);					
+				var rw:RopewayVO = new RopewayVO(o);		
+				rw.aveValue = Math.round(rw.totalValue / rw.switchFreq);
 				arr.push(rw);
 			}
 			
 			colRopeway.source = arr;
 			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
-			//send("RopeDeteValueHis_GetList",onRopeDeteValueHis_GetList,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
+			rw = GetRopewayByStation("桃花源驱动站");
+			
+			var token:AsyncToken = LoadRopeWayForceHis(rw);
+			token.addResponder(new AsyncResponder(onInitRopewayComplete,function(fault:FaultEvent,t:Object):void{}));
+			token.ropeway = rw;
 		}
 		
-		private function onRopeDeteValueHis_GetList(event:ResultEvent):void
+		private function onInitRopewayComplete(event:ResultEvent,t:Object):void
+		{			
+			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,event.token.ropeway);
+		}
+		
+		/*private function onRopeDeteValueHis_GetList(event:ResultEvent):void
 		{
 			for each(var i:ObjectProxy in event.result)
 			{
@@ -62,21 +71,55 @@ package app.model
 			}
 						
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
-		}
+		}*/
 		
-		public function PushRopeway(ropewayForce:RopewayForceVO):RopewayVO
+		public function GetRopewayByForce(ropewayForce:RopewayForceVO):RopewayVO
 		{
 			for each(var r:RopewayVO in colRopeway)
 			{
 				if((r.ropewayId == ropewayForce.ropewayId)
-					&& (r.fromRopeWay == ropewayForce.fromRopeWay))	
-				{
-					r.push(ropewayForce);					
+					&& (r.ropewayStation == ropewayForce.fromRopeStation))	
+				{				
 					return r;
 				}
 			}
 			
 			return null;
+		}
+		
+		public function PushRopewayForce(ropeway:RopewayVO,ropewayForce:RopewayForceVO):void
+		{			
+			if(ropeway.ropewayHistory.length > 0)
+			{						
+				var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
+				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > 50)
+				{
+					ropewayForce.alarm = 2;
+					ropeway.alarm = 2;
+				}
+			}
+			
+			if(ropeway.yesterdayAve > 0)
+			{						
+				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > 50)
+				{
+					ropewayForce.alarm = 1;
+					ropeway.alarm = 1;
+				}
+			}
+			
+			ropeway.ropewayRFIDEletric = ropewayForce.eletric;
+			ropeway.deteValue = ropewayForce.ropewayForce;
+			ropeway.humidity = ropewayForce.ropewayHumidity;
+			ropeway.temperature = ropewayForce.ropewayTemp;
+			ropeway.deteDate = ropewayForce.ropewayTime;
+			ropeway.valueUnit = ropewayForce.ropewayUnit;
+			ropeway.switchFreq++;
+			ropeway.switchFreqTotal ++;
+			ropeway.totalValue += ropewayForce.ropewayForce;
+			ropeway.aveValue = Math.round(ropeway.totalValue / ropeway.switchFreq);
+			
+			ropeway.ropewayHistory.push(ropewayForce);
 		}
 		
 		public function GetRopewayByStation(station:String):RopewayVO
@@ -101,25 +144,46 @@ package app.model
 			return rt;
 		}
 		
-		public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
+		public function LoadRopeWayForceHis(ropeway:RopewayVO):AsyncToken
+		{
+			var where:String = "RopeCode = '" + ropeway.ropewayId + "' AND FromRopeStation = '" + ropeway.ropewayStation + "' AND DATEDIFF(D,DeteDate,GETDATE()) = 0";
+			
+			var token:AsyncToken = send("RopeDeteValueHis_GetList",onLoadRopeWayForceHis,where);
+			token.ropeway = ropeway;
+			return token;
+		}
+		
+		private function onLoadRopeWayForceHis(event:ResultEvent):void
+		{			
+			var ropeway:RopewayVO = event.token.ropeway;
+			ropeway.ropewayHistory = [];
+			
+			for each(var o:ObjectProxy in event.result)
+			{
+				var rf:RopewayForceVO = new RopewayForceVO(o);
+				ropeway.ropewayHistory.push(rf);
+			}
+		}
+		
+		/*public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
 		{
 			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",null,ropewayForce.toString());
 			
 			token.ropewayForce = ropewayForce;
 						
 			return token;
-		}
+		}*/
 				
 		public function GetRopewayCount(station:String):Number
 		{
 			var count:Number = 0;
-			/*for each(var r:RopewayVO in colRopeway)
+			for each(var r:RopewayVO in colRopeway)
 			{
 				if(r.ropewayStation == station)
 				{
 					count++;
 				}
-			}*/
+			}
 			
 			return count;
 		}
