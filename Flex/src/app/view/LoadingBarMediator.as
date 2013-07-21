@@ -2,7 +2,6 @@ package app.view
 {	
 	import app.ApplicationFacade;
 	import app.model.RopewayAlarmProxy;
-	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.view.components.LoadingBar;

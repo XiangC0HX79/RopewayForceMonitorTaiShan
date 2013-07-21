@@ -34,6 +34,8 @@ package app.model
 		
 		public function GetForceHistory(dateS:Date,dateE:Date,station:String,ropewayId:String,tempMin:String,tempMax:String):AsyncToken
 		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在统计数据...");
+			
 			var where:String = "";
 			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
 				+ "' AND DeteDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
@@ -61,6 +63,8 @@ package app.model
 				arr.push(new RopewayForceVO(o));
 			}
 			this.col.source = arr;
+			
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
 		}
 	}
 }

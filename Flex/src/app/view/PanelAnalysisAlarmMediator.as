@@ -1,8 +1,8 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
 	import app.model.RopewayAlarmAnalysisProxy;
-	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayVO;
@@ -49,7 +49,7 @@ package app.view
 			var arr:Array = [RopewayVO.ALL];
 			if(station != "所有索道站")
 			{
-				var proxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 				for each(var r:RopewayVO in proxy.colRopeway)
 				{
 					if(r.ropewayStation == station)
@@ -85,12 +85,29 @@ package app.view
 				,String(panelAnalysisAlarm.rbgStation.selectedValue)
 				,String(panelAnalysisAlarm.listRopewayId.selectedItem)
 			);;
-		}
+		}	
+		
+		private function changeStation(station:String):void
+		{
+			var arr:Array = [RopewayVO.ALL];
+			if(station != "所有索道站")
+			{
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+				for each(var r:RopewayVO in proxy.colRopeway)
+				{
+					if(r.ropewayStation == station)
+					{
+						arr.push(r);
+					}
+				}
+			}
+			panelAnalysisAlarm.colRopeway.source = arr;
+		}	
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
 		
@@ -98,11 +115,16 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;					
-					panelAnalysisAlarm.colStations = config.stations;	
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					
+					panelAnalysisAlarm.colStations = proxy.config.stations;	
 					
 					panelAnalysisAlarm.colRopeway.source = [RopewayVO.ALL];
+					
+					panelAnalysisAlarm.rbgStation.selectedValue = proxy.config.stations[0];
+					
+					changeStation(proxy.config.stations[0]);
 					break;
 			}
 		}

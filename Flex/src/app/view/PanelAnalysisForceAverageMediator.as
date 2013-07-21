@@ -1,8 +1,8 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
 	import app.model.RopewayForceAverageProxy;
-	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayForceVO;
@@ -52,7 +52,7 @@ package app.view
 			var arr:Array = [RopewayVO.ALL];
 			if(station != "所有索道站")
 			{
-				var proxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 				for each(var r:RopewayVO in proxy.colRopeway)
 				{
 					if(r.ropewayStation == station)
@@ -72,24 +72,43 @@ package app.view
 				return;
 			}
 			
+			panelAnalysisForceAverage.selectOne = (panelAnalysisForceAverage.listRopewayId.selectedItem.ropewayId != "所有抱索器");
+			
 			ropewayForceAverageProxy.GetForceAveCol(
 				panelAnalysisForceAverage.dateS
 				,panelAnalysisForceAverage.dateE
 				,String(panelAnalysisForceAverage.rbgStation.selectedValue)
-				,String(panelAnalysisForceAverage.listRopewayId.selectedItem)
+				,panelAnalysisForceAverage.listRopewayId.selectedItem.ropewayId
 				,panelAnalysisForceAverage.comboTime.selectedIndex
 				);
 		}
 		
 		private function onSelectOne(event:Event):void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号再切换至图形。");
-		}			
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号统计再切换至图形。");
+		}		
+		
+		private function changeStation(station:String):void
+		{
+			var arr:Array = [RopewayVO.ALL];
+			if(station != "所有索道站")
+			{
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+				for each(var r:RopewayVO in proxy.colRopeway)
+				{
+					if(r.ropewayStation == station)
+					{
+						arr.push(r);
+					}
+				}
+			}
+			panelAnalysisForceAverage.colRopeway.source = arr;
+		}	
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
 		
@@ -97,11 +116,16 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;					
-					panelAnalysisForceAverage.colStations = config.stations;	
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					
+					panelAnalysisForceAverage.colStations = proxy.config.stations;	
 					
 					panelAnalysisForceAverage.colRopeway.source = [RopewayVO.ALL];
+					
+					panelAnalysisForceAverage.rbgStation.selectedValue = proxy.config.stations[0];
+					
+					changeStation(proxy.config.stations[0]);
 					break;
 			}
 		}

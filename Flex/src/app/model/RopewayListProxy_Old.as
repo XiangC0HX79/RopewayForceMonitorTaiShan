@@ -9,11 +9,11 @@ package app.model
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	
-	public class RopewayListProxy extends WebServiceProxy implements IProxy
+	public class RopewayListProxy_Old extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayListProxy";
 		
-		public function RopewayListProxy()
+		public function RopewayListProxy_Old()
 		{
 			super(NAME, new ArrayCollection);
 		}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" label="报警信息">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" label="报警信息" xmlns:components="custom.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
@@ -86,7 +86,7 @@
 			
 			protected function btnReset_buttonDownHandler(event:FlexEvent):void
 			{
-				rbgStation.selectedValue = "所有索道站";
+				rbgStation.selectedValue = colStations[0];
 				dateDayS.selectedDate = new Date;
 				dateDayE.selectedDate = new Date;
 				listCarId.selectedIndex = 0;
@@ -101,22 +101,8 @@
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<s:HGroup id="panelHead" height="125" paddingBottom="2" paddingLeft="2" paddingRight="2"
-			  paddingTop="2">		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="120">
-			<s:VGroup height="100%" horizontalAlign="center" width="100%">					
-				<s:Button label="查询" icon="@Embed('assets/image/btn_find.png')" 
-						  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-				<s:Button label="重置" icon="@Embed('assets/image/btn_back.png')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-			</s:VGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="操作" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
-		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%">
-			<s:RadioButton label="所有索道站" selected="true" group="{rbgStation}" x="5"/>
+	<s:HGroup id="panelHead" height="120">		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" title="索道站">
 			<s:DataGroup width="220" height="100%" dataProvider="{colStations}"
 						 itemRenderer="custom.itemRenderer.ItemRendererGroup" 
 						 rendererAdd="datagroupStations_rendererAddHandler(event)">
@@ -124,62 +110,52 @@
 					<s:TileLayout/>
 				</s:layout>
 			</s:DataGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="索道站" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
+		</components:SkinnableTitleContainer>	
 		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="280">
-			<s:VGroup width="100%" height="100%">				
-				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="开始时间："/>
-					<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-								  dayNames="['日','一','二','三','四','五','六']"
-								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
-					<s:TextInput id="textHourS" width="30" restrict="0-9"/>
-					<s:Label text=":"/>
-					<s:TextInput id="textMinS" width="30" restrict="0-9"/>
-				</s:HGroup>
-				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="结束时间："/>
-					<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-								  dayNames="['日','一','二','三','四','五','六']"
-								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
-					<s:TextInput id="textHourE" width="30" restrict="0-9"/>
-					<s:Label text=":"/>
-					<s:TextInput id="textMinE" width="30" restrict="0-9"/>
-				</s:HGroup>
-			</s:VGroup>
-			
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="统计时间" fontWeight="bold"/>
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="280" title="查询时间">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="开始时间："/>
+				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+							  dayNames="['日','一','二','三','四','五','六']"
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<s:TextInput id="textHourS" width="30" restrict="0-9"/>
+				<s:Label text=":"/>
+				<s:TextInput id="textMinS" width="30" restrict="0-9"/>
 			</s:HGroup>
-		</s:SkinnableContainer>	
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="结束时间："/>
+				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+							  dayNames="['日','一','二','三','四','五','六']"
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<s:TextInput id="textHourE" width="30" restrict="0-9"/>
+				<s:Label text=":"/>
+				<s:TextInput id="textMinE" width="30" restrict="0-9"/>
+			</s:HGroup>
+		</components:SkinnableTitleContainer>	
 		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="220">
-			<s:VGroup height="100%" horizontalAlign="center" width="100%">	
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="　吊箱编号："/>
-					<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
-									width="100%" change="listCarId_changeHandler(event)"/>
-				</s:HGroup>	
-				<s:HGroup verticalAlign="middle" width="100%">
-					<s:Label text="抱索器编号："/>
-					<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
-									width="100%" change="listRopewayId_changeHandler(event)"/>
-				</s:HGroup>	
-			</s:VGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="统计条件" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="220" title="查询条件">
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="　吊箱编号："/>
+				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
+								width="100%" change="listCarId_changeHandler(event)"/>
+			</s:HGroup>	
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="抱索器编号："/>
+				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
+								width="100%" change="listRopewayId_changeHandler(event)"/>
+			</s:HGroup>	
+		</components:SkinnableTitleContainer>	
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="查询" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
+		</components:SkinnableTitleContainer>			
 	</s:HGroup>
 	
-	<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}">
+	<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}"
+				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]">
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn headerText="吊箱编号" dataField="carId" width="100"/>
@@ -187,7 +163,6 @@
 				<s:GridColumn headerText="报警时间" dataField="alarmDate" width="200" formatter="{dateF}"/>			
 				<s:GridColumn headerText="报警描述" dataField="alarmDesc" width="500"/>	
 				<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
-				<s:GridColumn headerText="所属索道" dataField="fromRopeWay"/>
 			</s:ArrayList>				
 		</s:columns>
 	</s:DataGrid>

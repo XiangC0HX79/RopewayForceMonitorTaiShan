@@ -27,6 +27,7 @@ package app.view
 			
 			mainStation.addEventListener(MainStation.GROUP_CHANGE,onGroupChange);
 			mainStation.addEventListener(MainStation.GROUP_ANALYSIS_CHANGE,onGroupAnalysisChange);
+			mainStation.addEventListener(MainStation.GROUP_MANAGER_CHANGE,onGroupMangerChange);
 		}
 		
 		protected function get mainStation():MainStation
@@ -43,7 +44,14 @@ package app.view
 		
 		private function onGroupAnalysisChange(event:Event):void
 		{						
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE,mainStation.rbgAnalysis.selectedValue);
+			var index:Number = mainStation.gpAnalysis.getElementIndex(mainStation.rbgAnalysis.selection);
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE,index);
+		}
+		
+		private function onGroupMangerChange(event:Event):void
+		{						
+			var index:Number = mainStation.gpManager.getElementIndex(mainStation.rbgManager.selection);
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_MANAGER_CHANGE,index);
 		}
 		
 		override public function listNotificationInterests():Array
@@ -83,24 +91,28 @@ package app.view
 					mainStation.contentName = "实时监测";
 					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = true;
+					mainStation.gpManager.visible = false;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:	
 					mainStation.contentName = "当天概览";
 					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = true;
+					mainStation.gpManager.visible = false;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:	
 					mainStation.contentName = "分析查询";
 					mainStation.gpAnalysis.visible = true;
 					mainStation.gpStation.visible = false;
+					mainStation.gpManager.visible = false;
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_MANAGE:	
 					mainStation.contentName = "参数设置";
 					mainStation.gpAnalysis.visible = false;
 					mainStation.gpStation.visible = false;
+					mainStation.gpManager.visible = true;
 					break;
 			}
 		}

@@ -109,8 +109,11 @@ package app.view
 		{			
 			var rw:RopewayVO = chartRealtimeDetection.ropeway;
 			
-			var max:Number = Math.max(rw.yesterdayMax,rw.maxValue);
-			var min:Number = Math.min(rw.yesterdayMin,rw.minValue);
+			if(!rw)
+				return;
+			
+			var max:Number = (rw.maxValue >0 )?Math.max(rw.yesterdayMax,rw.maxValue):rw.yesterdayMax;
+			var min:Number = (rw.minValue > 0)?Math.min(rw.yesterdayMin,rw.minValue):rw.yesterdayMin;
 				
 			var df:Number = max - min;
 			var ave:Number = (max + min) / 2;
@@ -149,6 +152,9 @@ package app.view
 		private function reCalcuX():void
 		{			
 			var rw:RopewayVO = chartRealtimeDetection.ropeway;
+			
+			if(!rw)
+				return;			
 			
 			var min:Number = rw.ropewayHistory[0].ropewayTime.time;	
 			min = Math.floor(min / ONE_MIN) * ONE_MIN;
@@ -192,7 +198,7 @@ package app.view
 		{
 			var rw:RopewayVO = chartRealtimeDetection.ropeway;
 			
-			if(rw.yesterdayMax && rw.yesterdayMin)
+			if(rw && rw.yesterdayMax && rw.yesterdayMin)
 			{					
 				//昨天数值
 				chartRealtimeDetection.lineMax.visible = true;
@@ -255,6 +261,20 @@ package app.view
 			drawYesterday();
 		}
 				
+		private function clearChart():void
+		{			
+			chartRealtimeDetection.groupPoint.removeAllElements();
+			chartRealtimeDetection.groupLine.removeAllElements();
+			
+				
+			chartRealtimeDetection.lineMax.visible = false;
+			chartRealtimeDetection.lineMin.visible = false;
+			chartRealtimeDetection.lineAve.visible = false;
+			chartRealtimeDetection.lbMax.visible = false;
+			chartRealtimeDetection.lbMin.visible = false;
+			chartRealtimeDetection.lbAve.visible = false;
+		}
+		
 		override public function listNotificationInterests():Array
 		{
 			return [
@@ -278,19 +298,26 @@ package app.view
 					
 					var rw:RopewayVO = notification.getBody() as RopewayVO;		
 					
-					if(chartRealtimeDetection.ropeway == rw)
-					{						
-						reCalcuXY();
-						
-						chartRealtimeDetection.ContinueChart();
-					}
-					else if(!configProxy.config.pin)
+					if(!rw)
 					{
-						chartRealtimeDetection.ropeway = rw;
-						
-						reCalcuXY();
-						
-						chartRealtimeDetection.RefreshChart();			
+						clearChart();
+					}
+					else
+					{
+						if(chartRealtimeDetection.ropeway == rw)
+						{						
+							reCalcuXY();
+							
+							chartRealtimeDetection.ContinueChart();
+						}
+						else if(!configProxy.config.pin)
+						{
+							chartRealtimeDetection.ropeway = rw;
+							
+							reCalcuXY();
+							
+							chartRealtimeDetection.RefreshChart();			
+						}
 					}
 					break;
 			}

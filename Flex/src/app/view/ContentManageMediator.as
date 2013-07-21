@@ -1,6 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
 	import app.model.RopewayBaseinfoHisProxy;
 	import app.model.RopewayBaseinfoProxy;
 	import app.model.RopewayForceProxy;
@@ -165,7 +166,9 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_MAIN_MANAGER_CHANGE
 			];
 		}
 		
@@ -173,8 +176,16 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-					//_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");					
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					
+					contentManage.colStations = proxy.config.stations;	
+					
+					_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");	
+					break;
+				
+				case ApplicationFacade.NOTIFY_MAIN_MANAGER_CHANGE:
+					contentManage.viewStatck.selectedIndex = Number(notification.getBody());
 					break;
 			}
 		}

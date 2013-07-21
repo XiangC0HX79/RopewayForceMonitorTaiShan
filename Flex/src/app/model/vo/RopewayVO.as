@@ -259,9 +259,5 @@ package app.model.vo
 		{					
 			_source = source;
 		}
-		
-		public function push(ropwayForce:RopewayForceVO):void
-		{
-		}
 	}
 }

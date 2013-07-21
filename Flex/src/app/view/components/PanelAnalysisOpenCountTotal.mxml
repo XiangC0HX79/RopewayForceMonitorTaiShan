@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" label="总开合次数">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" label="总开合次数" xmlns:components="custom.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
@@ -63,12 +63,19 @@
 			
 			protected function btnReset_buttonDownHandler(event:FlexEvent):void
 			{
-				btnBar.selectedIndex = 1;
-				rbgStation.selectedValue = "所有索道站";
-				dateDayS.selectedDate = new Date;
-				dateDayE.selectedDate = new Date;
+				btnBar.selectedIndex = 0;
+				rbgStation.selectedValue = colStations[0];
+				dateDayS.selectedDate = DateUtil.addDateTime('d',-1,new Date);
+				dateDayE.selectedDate = DateUtil.addDateTime('d',-1,new Date);
 				colRopeway.source = [];
 			}			
+			
+			private function dataTipFunction(hitData:HitData):String
+			{
+				var rs:RopewaySwitchFreqTotalVO = hitData.item as RopewaySwitchFreqTotalVO;
+				return "吊箱编号：" + rs.ropewayCarId + "\n" + "总开合次数：" + rs.switchFreqTotal; 
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -76,27 +83,8 @@
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<s:HGroup id="panelHead" height="125" paddingBottom="2" paddingLeft="2" paddingRight="2"
-			  paddingTop="2">		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="120">
-			<s:VGroup height="100%" horizontalAlign="center" width="100%">					
-				<s:Button label="统计" icon="@Embed('assets/image/btn_find.png')" 
-						  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-				<s:Button label="重置" icon="@Embed('assets/image/btn_back.png')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-				<s:ButtonBar width="100%" id="btnBar" selectedIndex="0">
-					<s:ArrayCollection>
-						<fx:String>图形</fx:String>
-						<fx:String>表格</fx:String>
-					</s:ArrayCollection>
-				</s:ButtonBar>
-			</s:VGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="操作" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
-		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%">
+	<s:HGroup id="panelHead" height="120">		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" title="索道站">
 			<s:DataGroup width="220" height="100%" dataProvider="{colStations}"
 						 itemRenderer="custom.itemRenderer.ItemRendererGroup" 
 						 rendererAdd="datagroupStations_rendererAddHandler(event)">
@@ -104,63 +92,91 @@
 					<s:TileLayout/>
 				</s:layout>
 			</s:DataGroup>
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:Label text="索道站" fontWeight="bold"/>
-			</s:HGroup>
-		</s:SkinnableContainer>	
+		</components:SkinnableTitleContainer>	
 		
-		<s:SkinnableContainer skinClass="custom.skin.SkinHeadPanel" height="100%" width="180">	
-			<s:VGroup height="100%" width="100%" enabled="{checkDatetime.selected}">				
-				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="开始日期："/>
-					<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-								  dayNames="['日','一','二','三','四','五','六']"
-								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
-				</s:HGroup>
-				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label text="结束日期："/>
-					<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-								  dayNames="['日','一','二','三','四','五','六']"
-								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
-				</s:HGroup>
-			</s:VGroup>
-			
-			<s:Line width="100%" stroke="{lineStoke}"/>
-			
-			<s:HGroup horizontalAlign="center" verticalAlign="middle" height="25" width="100%">
-				<s:CheckBox id="checkDatetime" selected="false"/>
-				<s:Label text="统计时间" fontWeight="bold"/>
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="200" title="统计时间">
+			<s:CheckBox id="checkDatetime" selected="false" label="选定时间"/>
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
+				<s:Label text="开始日期："/>
+				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"
+							  dayNames="['日','一','二','三','四','五','六']" height="21"
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
 			</s:HGroup>
-		</s:SkinnableContainer>	
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
+				<s:Label text="结束日期："/>
+				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"
+							  dayNames="['日','一','二','三','四','五','六']" height="21"
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+			</s:HGroup>
+		</components:SkinnableTitleContainer>	
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
+			<s:ButtonBar width="100%" id="btnBar" selectedIndex="0">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>	
 	</s:HGroup>
 	
-	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" paddingBottom="20" paddingLeft="20"
-				  paddingRight="20" paddingTop="20">
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%">
 		<s:NavigatorContent>
-			<mx:ColumnChart width="100%" height="100%" showDataTips="true" dataProvider="{colRopeway}">
-				<mx:verticalAxis>
-					<mx:LinearAxis id="verticalAxis"/>
-				</mx:verticalAxis>
+			<s:SkinnableContainer left="0" right="0" top="0" bottom="0">			
+				<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+					<s:stroke>
+						<s:SolidColorStroke weight="1" color="#63c3d6"/>
+					</s:stroke>
+				</s:Rect>	
 				
-				<mx:horizontalAxis>
-					<mx:CategoryAxis categoryField="ropewayCarId"/>
-				</mx:horizontalAxis>
-								
-				<mx:series>
-					<mx:ColumnSeries yField="switchFreqTotal"/>
-				</mx:series>
-			</mx:ColumnChart>
+				<mx:ColumnChart left="20" right="40" bottom="20" top="40" showDataTips="true"
+								dataTipFunction="dataTipFunction" dataProvider="{colRopeway}">
+					<mx:backgroundElements>
+						<fx:Array>						
+							<mx:GridLines gridDirection="both" 
+										  horizontalStroke="{gridStroke}"
+										  verticalStroke="{gridStroke}"/>
+						</fx:Array>
+					</mx:backgroundElements>
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis categoryField="ropewayCarId"/>
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxis>
+						<mx:LinearAxis id="verticalAxis"/>
+					</mx:verticalAxis>
+					
+					<mx:verticalAxisRenderers>					
+						<mx:AxisRenderer axis="{verticalAxis}" 
+										 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+										 minorTickPlacement="none"/>
+					</mx:verticalAxisRenderers>
+														
+					<mx:series>
+						<mx:ColumnSeries labelField="switchFreqTotal" labelPosition="inside" yField="switchFreqTotal" xField="ropewayCarId"/>
+					</mx:series>
+				</mx:ColumnChart>
+				
+				<s:Label left="10" top="20" text="开合次数"/>
+				<s:Label right="15" bottom="40" text="吊箱"/>
+				<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{rbgStation.selectedValue}总开合次数统计"/>
+			</s:SkinnableContainer>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
-			<s:DataGrid width="100%" height="100%" dataProvider="{colRopeway}">
+			<s:DataGrid width="100%" height="100%" dataProvider="{colRopeway}"
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
 				<s:columns>
 					<s:ArrayList>
 						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>
 						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
-						<s:GridColumn headerText="开合总数" dataField="switchFreqTotal" width="100"/>	
+						<s:GridColumn headerText="总开合次数" dataField="switchFreqTotal" width="100"/>	
 						<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
-						<s:GridColumn headerText="所属索道" dataField="fromRopeWay"/>
 					</s:ArrayList>				
 				</s:columns>
 			</s:DataGrid>

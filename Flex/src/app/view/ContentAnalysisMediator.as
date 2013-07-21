@@ -61,11 +61,8 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_MAIN_ANALYSIS_CHANGE:
-					var s:String = String(notification.getBody());
-					if(s == "")
-					{
-						
-					}
+					var index:Number = Number(notification.getBody());
+					contentAnalysis.TabN.selectedIndex = index;
 					break;
 			}
 		}

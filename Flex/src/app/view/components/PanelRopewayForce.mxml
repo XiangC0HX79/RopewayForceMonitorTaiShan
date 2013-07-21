@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 skinClass="custom.skin.SkinPanelRealtimeDetection"
-		 width="400" height="170">
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  width="400" height="170" skinClass="custom.skin.SkinPanelRealtimeDetection">
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -99,10 +98,11 @@
 			<s:Label id="lbOpenCount" fontSize="20" fontWeight="bold" top="0" right="0"/>
 			
 			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
-				<s:Label text="{_ropeway.ropewayCarId}"/>
+				<s:Label width="120" text="{_ropeway.ropewayCarId}" textAlign="center"
+						 verticalAlign="middle"/>
 				<s:Spacer width="10"/>
-				<s:Label id="lbForce"/>
-				<s:Label id="lbUnit"/>
+				<s:Label id="lbForce" text="260"/>
+				<s:Label id="lbUnit" text="KG"/>
 			</s:HGroup>
 			
 			<s:Image id="imgEletrice" x="15" bottom="0" width="45" height="15" scaleMode="stretch"

@@ -35,7 +35,7 @@ package app.model
 		
 		public function InitRopewayDict():void
 		{
-			send("RopeDeteInfoToday_GetList",onInitRopewayDict,"DATEDIFF(D,DeteDate,GETDATE()) = 0");
+			send("RopeDeteInfoToday_GetList",onInitRopewayDict,"");
 		}
 		
 		private function onInitRopewayDict(event:ResultEvent):void
@@ -52,9 +52,16 @@ package app.model
 			
 			rw = GetRopewayByStation("桃花源驱动站");
 			
-			var token:AsyncToken = LoadRopeWayForceHis(rw);
-			token.addResponder(new AsyncResponder(onInitRopewayComplete,function(fault:FaultEvent,t:Object):void{}));
-			token.ropeway = rw;
+			if(rw)
+			{
+				var token:AsyncToken = LoadRopeWayForceHis(rw);
+				token.addResponder(new AsyncResponder(onInitRopewayComplete,function(fault:FaultEvent,t:Object):void{}));
+				token.ropeway = rw;
+			}
+			else
+			{
+				sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);				
+			}
 		}
 		
 		private function onInitRopewayComplete(event:ResultEvent,t:Object):void
@@ -165,14 +172,10 @@ package app.model
 			}
 		}
 		
-		/*public function AddRopeway(ropewayForce:RopewayForceVO):AsyncToken
+		public function FindRopewayByForce(ropewayForce:RopewayForceVO):AsyncToken
 		{
-			var token:AsyncToken = send("RopeDeteInfoToday_GetModel",null,ropewayForce.toString());
-			
-			token.ropewayForce = ropewayForce;
-						
-			return token;
-		}*/
+			return send("RopeDeteInfoToday_GetModel",null,ropewayForce.toString());
+		}
 				
 		public function GetRopewayCount(station:String):Number
 		{

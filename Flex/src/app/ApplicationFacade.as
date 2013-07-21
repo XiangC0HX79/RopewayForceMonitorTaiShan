@@ -128,6 +128,11 @@ package app
 		public static const NOTIFY_MAIN_ANALYSIS_CHANGE:String 		= "MainGroupAnalysisChange";
 		
 		/**
+		 * 设置改变
+		 **/
+		public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
+		
+		/**
 		 * 菜单-实时检测
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";

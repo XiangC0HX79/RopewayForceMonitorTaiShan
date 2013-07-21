@@ -86,11 +86,16 @@ package app.view
 			
 			for each(var r:RopewayVO in _ropewayProxy.colRopeway)
 			{
-				if(r.ropewayStation == station)
+				if((r.ropewayStation == station) && (r.deteDate.toDateString() == (new Date).toDateString()))
 					contentTodayOverview.arrDp.push(r);
 			}
 			
 			contentTodayOverview.arrDp.sortOn("ropewayCarId");
+			
+			contentTodayOverview.pageIndex = 0;
+			
+			contentTodayOverview.colDp.source = contentTodayOverview.arrDp.slice(0
+				,Math.min(contentTodayOverview.arrDp.length,contentTodayOverview.pageSize));
 		}
 		
 		private function onItemCLick(event:Event):void
@@ -267,6 +272,8 @@ package app.view
 				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
 				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,
 				
+				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
+				
 				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
 			];
 		}
@@ -276,10 +283,8 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
-					changeStation(String(notification.getBody()));
-					break;
-				
 				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 					changeStation(configProxy.config.station);
 					break;

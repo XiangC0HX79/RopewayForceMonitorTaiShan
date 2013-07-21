@@ -11,5 +11,5 @@
 		<s:VerticalLayout paddingLeft="2" paddingRight="2"/>
 	</s:layout>
 	
-	<s:RadioButton id="rb" selected="false" label="{data}"/>
+	<s:RadioButton id="rb" selected="false" label="{data}" height="21"/>
 </s:ItemRenderer>

@@ -152,8 +152,10 @@ package app.view
 				}
 			}
 			else
-			{
-				
+			{				
+				token = _ropewayProxy.FindRopewayByForce(rf);
+				token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
+				token.ropewayForce = rf;
 			}
 		}
 		
@@ -166,6 +168,20 @@ package app.view
 			
 			if(rw.ropewayStation == _config.station)
 				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+		}
+		
+		private function onFindRopewayByForce(event:ResultEvent,t:Object):void
+		{			
+			var rf:RopewayForceVO = event.token.ropewayForce;
+			if(event.result)
+			{
+				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
+				
+				_ropewayProxy.PushRopewayForce(rw,rf);
+				
+				if(rw.ropewayStation == _config.station)
+					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+			}
 		}
 		
 	/*	private function onAddRopewayResult(event:ResultEvent,t:Object):void

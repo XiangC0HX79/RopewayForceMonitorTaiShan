@@ -1,8 +1,8 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayListProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayForceVO;
@@ -47,10 +47,15 @@ package app.view
 		{
 			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
 			
+			changeStation(station);
+		}
+		
+		private function changeStation(station:String):void
+		{
 			var arr:Array = [RopewayVO.ALL];
 			if(station != "所有索道站")
 			{
-				var proxy:RopewayListProxy = facade.retrieveProxy(RopewayListProxy.NAME) as RopewayListProxy;
+				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 				for each(var r:RopewayVO in proxy.colRopeway)
 				{
 					if(r.ropewayStation == station)
@@ -87,12 +92,14 @@ package app.view
 				}
 			}
 			
+			panelAnalysisForce.selectOne = (panelAnalysisForce.listRopewayId.selectedItem.ropewayId != "所有抱索器");
+			
 			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
 			var token:AsyncToken = proxy.GetForceHistory(
 				panelAnalysisForce.dateS
 				,panelAnalysisForce.dateE
 				,String(panelAnalysisForce.rbgStation.selectedValue)
-				,String(panelAnalysisForce.listRopewayId.selectedItem)
+				,panelAnalysisForce.listRopewayId.selectedItem.ropewayId
 				,panelAnalysisForce.numTempMin.text
 				,panelAnalysisForce.numTempMax.text
 				);;
@@ -100,13 +107,13 @@ package app.view
 		
 		private function onSelectOne(event:Event):void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号再切换至图形。");
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号进行统计再切换至图形。");
 		}			
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
 		
@@ -114,11 +121,16 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;					
-					panelAnalysisForce.colStations = config.stations;	
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					
+					panelAnalysisForce.colStations = proxy.config.stations;	
 					
 					panelAnalysisForce.colRopeway.source = [RopewayVO.ALL];
+					
+					panelAnalysisForce.rbgStation.selectedValue = proxy.config.stations[0];
+					
+					changeStation(proxy.config.stations[0]);
 					break;
 			}
 		}

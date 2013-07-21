@@ -749,5 +749,31 @@ package com.adobe.utils
 			nd.setTime(d.getTime() + offset);
 			return nd;
 		}
+		
+		/**
+		 * t - 类型,y-year,M-month,d-date,h-hour,m-minute,s-second,ms-millisecond
+		 */
+		public static function addDateTime(t:String,n:Number,d:Date):Date
+		{
+			switch(t)
+			{
+				case "y":
+					return new Date(d.fullYear + n,d.month,d.date,d.hours,d.minutes,d.seconds,d.milliseconds);
+				case "M":
+					return new Date(d.fullYear,d.month + n,d.date,d.hours,d.minutes,d.seconds,d.milliseconds);
+				case "d":
+					return new Date(d.fullYear,d.month,d.date + n,d.hours,d.minutes,d.seconds,d.milliseconds);
+				case "h":
+					return new Date(d.fullYear,d.month,d.date,d.hours + n,d.minutes,d.seconds,d.milliseconds);
+				case "m":
+					return new Date(d.fullYear,d.month,d.date,d.hours,d.minutes + n,d.seconds,d.milliseconds);
+				case "s":
+					return new Date(d.fullYear,d.month,d.date,d.hours,d.minutes,d.seconds + n,d.milliseconds);
+				case "ms":
+					return new Date(d.fullYear,d.month,d.date,d.hours,d.minutes,d.seconds,d.milliseconds + n);
+			}
+			
+			return d;
+		}
 	}
 }

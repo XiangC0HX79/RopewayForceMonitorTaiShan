@@ -6,6 +6,8 @@ package app.view
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayAlarm;
 	
+	import flash.media.Sound;
+	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
@@ -20,9 +22,14 @@ package app.view
 	{
 		public static const NAME:String = "PanelRopewayAlarmMediator";
 		
+		private var _soundPlay:Sound;
+		
 		public function PanelRopewayAlarmMediator()
 		{
 			super(NAME, new PanelRopewayAlarm);
+			
+			_soundPlay = new Sound;
+			_soundPlay.load(new URLRequest("assets/msg.mp3"));
 		}
 		
 		protected function get panelRopewayAlarm():PanelRopewayAlarm
@@ -56,8 +63,8 @@ package app.view
 					
 					if(rw.alarm == 1)
 					{						
-						var s:String = rw.ropewayCarId + df.format(rw.deteDate)							
-							+ " 抱索力检测值" + rw.deteValue
+						var s:String = df.format(rw.deteDate)							
+							+ " " + rw.ropewayCarId + " 抱索力检测值" + rw.deteValue
 							+ "比平均值" + rw.yesterdayAve
 							+ "变化超过50。";
 						
@@ -68,14 +75,19 @@ package app.view
 					else if(rw.alarm == 2)
 					{			
 						var preForce:RopewayForceVO = rw.ropewayHistory[rw.ropewayHistory.length - 2];
-						s = rw.ropewayCarId + df.format(rw.deteDate)							
-							+ " 抱索力检测值" + rw.deteValue
+						s = df.format(rw.deteDate)							
+							+ " " + rw.ropewayCarId + " 抱索力检测值" + rw.deteValue
 							+ "比前次值" + preForce.ropewayForce
 							+ "变化超过50。";
 						
 						panelRopewayAlarm.dataPro.addItemAt(s,0);
 						
 						alarmShow();						
+					}
+					
+					if((panelRopewayAlarm.voice) && (rw.alarm > 0))
+					{				
+						_soundPlay.play(0,5);
 					}
 					break;
 				

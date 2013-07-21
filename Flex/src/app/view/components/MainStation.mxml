@@ -7,6 +7,7 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:RadioButtonGroup id="rbGroup" change="rbGroup_changeHandler(event)"/>	
 		<s:RadioButtonGroup id="rbgAnalysis" change="dispatchEvent(new Event(GROUP_ANALYSIS_CHANGE))"/>		
+		<s:RadioButtonGroup id="rbgManager" change="dispatchEvent(new Event(GROUP_MANAGER_CHANGE))"/>		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -19,6 +20,7 @@
 			
 			public static const GROUP_CHANGE:String = "GroupChange";
 			public static const GROUP_ANALYSIS_CHANGE:String = "GroupAnalysisChange";
+			public static const GROUP_MANAGER_CHANGE:String = "GroupMangerChange";
 			
 			[Bindable]public var carCount:Number = 0;
 			
@@ -63,7 +65,7 @@
 	
 	
 	<s:HGroup id="gpStation" height="100%" right="0" verticalAlign="middle" paddingRight="30">	
-		<s:DataGroup dataProvider="{config.stations}" height="100%"
+		<s:DataGroup id="dgStation" dataProvider="{config.stations}" height="100%"
 					 rendererAdd="datagroup_rendererAddHandler(event)"
 					 itemRenderer="custom.itemRenderer.ItemRendererMainStation">
 			<s:layout>
@@ -90,5 +92,10 @@
 		<s:RadioButton label="开合次数" groupName="rbgAnalysis"/>
 		<s:RadioButton label="总开合次数" groupName="rbgAnalysis"/>
 		<s:RadioButton label="报警信息" groupName="rbgAnalysis"/>
+	</s:HGroup>
+	
+	<s:HGroup id="gpManager" height="100%" gap="30" right="0" verticalAlign="middle" paddingRight="60" visible="false">	
+		<s:RadioButton label="抱索器设置" groupName="rbgManager" selected="true"/>
+		<s:RadioButton label="抱索力校准" groupName="rbgManager"/>
 	</s:HGroup>
 </s:Group>
