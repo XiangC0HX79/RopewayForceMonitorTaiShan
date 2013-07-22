@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd hh:mm:ss"/>
+		<s:DateTimeFormatter id="dfDate" dateTimePattern="yyyy-MM-dd"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[			
+			import mx.collections.ArrayCollection;
+			
+			public static const AJUST:String = "Ajust";	
+			
+			public static const STATION_CHANGE:String = "StationChange";	
+						
+			[Bindable]public var colStations:ArrayCollection;
+						
+			[Bindable]public var colAjustmentHis:ArrayCollection;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>			
+	<s:HGroup width="100%" verticalAlign="middle">	
+		<s:Label text="索道站：" fontWeight="bold"/>
+		
+		<s:DropDownList id="listRopewayStation" change="dispatchEvent(new Event(STATION_CHANGE));" 
+						requireSelection="true" dataProvider="{colStations}" width="150"/>
+		
+		<s:Label text="时间：" fontWeight="bold"/>
+		
+		<mx:DateField id="dateField" selectedDate="{new Date}" formatString="YYYY-MM-DD"/>
+				
+		<s:Button label="校准吊索力" buttonDown="dispatchEvent(new Event(AJUST))"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Line stroke="{lStroke}" width="100%"/>
+		<s:Label text="吊索力校准历史（{colAjustmentHis.length}）" fontWeight="bold"/>
+		<s:Line stroke="{lStroke}" width="100%"/>
+	</s:HGroup>
+	
+	<s:DataGrid width="100%" height="100%" dataProvider="{colAjustmentHis}"
+				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn headerText="所属索道站" dataField="fromRopeStation" width="200"/>		
+				<s:GridColumn headerText="校准时间" dataField="checkDatetime" formatter="{dfDate}" width="100"/>
+				<s:GridColumn headerText="更新人" dataField="lastUpdateUser" width="100"/>
+				<s:GridColumn headerText="更新时间" dataField="lastUpdateDatetime" formatter="{df}" />
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+</s:NavigatorContent>

@@ -62,6 +62,8 @@ package app.model
 				colBaseinfo.addItem(info);
 				
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息添加成功。");
+				
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET);
 			}
 			else
 			{
@@ -81,6 +83,8 @@ package app.model
 			if(event.result)
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息更新成功。");
+				
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET);
 			}
 			else
 			{
@@ -99,7 +103,11 @@ package app.model
 			var info:RopewayBaseinfoVO = event.token.info;
 			if(event.result)
 			{
+				colBaseinfo.removeItemAt(colBaseinfo.getItemIndex(info));
+				
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"吊箱'" + info.ropewayCarId + "'信息删除成功。");
+				
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET);
 			}
 			else
 			{

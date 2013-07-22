@@ -45,20 +45,7 @@ package app.view
 		private function onStationChange(event:Event):void
 		{			
 			var station:String = String(panelAnalysisAlarm.rbgStation.selectedValue);
-			
-			var arr:Array = [RopewayVO.ALL];
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
-				{
-					if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
-			}
-			panelAnalysisAlarm.colRopeway.source = arr;
+			changeStation(station);
 		}
 		
 		private function onGetRopewayList(event:ResultEvent,t:Object):void
@@ -83,13 +70,13 @@ package app.view
 				panelAnalysisAlarm.dateS
 				,panelAnalysisAlarm.dateE
 				,String(panelAnalysisAlarm.rbgStation.selectedValue)
-				,String(panelAnalysisAlarm.listRopewayId.selectedItem)
+				,panelAnalysisAlarm.listRopewayId.selectedItem.ropewayId
 			);;
 		}	
 		
 		private function changeStation(station:String):void
 		{
-			var arr:Array = [RopewayVO.ALL];
+			var arr:Array = [];
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
@@ -101,6 +88,11 @@ package app.view
 					}
 				}
 			}
+			
+			arr.sortOn("ropewayCarId");
+			
+			arr.unshift(RopewayVO.ALL);
+			
 			panelAnalysisAlarm.colRopeway.source = arr;
 		}	
 		

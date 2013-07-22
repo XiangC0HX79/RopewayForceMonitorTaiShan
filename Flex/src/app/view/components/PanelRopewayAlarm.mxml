@@ -6,23 +6,54 @@
 		 width="100%" minWidth="350" height="170">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" duration="500" repeatCount="20" target="{elli}" repeatBehavior="reverse"/>
+		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" duration="500" repeatCount="26" target="{elli}" repeatBehavior="reverse"/>
+		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="hh:mm:ss"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
+			import app.model.vo.RopewayAlarmVO;
 			
-			[Bindable]public var dataPro:ArrayCollection = new ArrayCollection;	
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			
+			import spark.events.RendererExistenceEvent;
+			import spark.formatters.DateTimeFormatter;
+			
+			public static const VOICE_CHANGE:String = "VoiceChange";
+			
+			public static const ALARM_DEAL:String = "AlarmDeal";
+			
+			[Bindable]public var colAlarm:ArrayCollection;	
 			
 			[Bindable]public var voice:Boolean = true;
 			
 			protected function imgVoice_clickHandler(event:MouseEvent):void
 			{
 				voice = !voice;
+				
 				imgVoice.source = voice?"assets/image/voice_on.png":"assets/image/voice_off.png";
+				
+				dispatchEvent(new Event(VOICE_CHANGE));
+			}			
+			
+			private function listLabelFunction(item:RopewayAlarmVO):String
+			{
+				return dateTimeF.format(item.alarmDate) + " "
+					+ item.fromRopeStation + " "
+					+ item.carId + " " + item.alarmDesc;
 			}
 			
+			protected function listAlarm_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:IVisualElement = event.renderer;
+				renderer.addEventListener(MouseEvent.CLICK,onItemClick);
+			}
+			
+			private function onItemClick(event:Event):void
+			{
+				dispatchEvent(new Event(ALARM_DEAL));
+			}
 		]]>
 	</fx:Script>
 	
@@ -48,8 +79,9 @@
 	<s:Image id="imgVoice" x="46" y="131" width="24" height="24" source="assets/image/voice_on.png" buttonMode="true" 
 			 click="imgVoice_clickHandler(event)"/>
 	
-	<s:List left="100" right="20" top="35" bottom="10"
-			skinClass="custom.skin.SkinListAlarm"
-			dataProvider="{dataPro}"
+	<s:List id="listAlarm" left="100" right="20" top="35" bottom="10"
+			skinClass="custom.skin.SkinListAlarm" 
+			rendererAdd="listAlarm_rendererAddHandler(event)"
+			dataProvider="{colAlarm}" labelFunction="listLabelFunction"
 			fontSize="14" color="red"/>
 </s:SkinnableContainer>

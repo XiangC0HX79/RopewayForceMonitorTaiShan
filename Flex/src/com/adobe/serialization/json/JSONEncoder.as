@@ -37,6 +37,8 @@ package com.adobe.serialization.json
 	
 	import flash.utils.describeType;
 	
+	import mx.utils.ObjectProxy;
+	
 	public class JSONEncoder
 	{
 		
@@ -103,6 +105,11 @@ package com.adobe.serialization.json
 			{
 				// call the helper method to convert an object
 				return escapeString(DateUtil.toLocaleW3CDTF(value));
+			}
+			else if ( value is ObjectProxy && value != null )
+			{
+				// call the helper method to convert an object
+				return objectToString((value as ObjectProxy).valueOf());
 			}
 			else if ( value is Object && value != null )
 			{

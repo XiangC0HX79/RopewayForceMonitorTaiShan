@@ -53,7 +53,13 @@ package app.controller
 			
 			facade.registerMediator(new ContentAnalysisMediator(new ContentAnalysis));
 			
+			facade.registerMediator(new PanelManagerBaseInfoMediator);	
+			
+			facade.registerMediator(new PanelManagerAdjustMediator);			
+			
 			facade.registerMediator(new ContentManageMediator(new ContentManage));
+			
+			facade.registerMediator(new TitleWindowAlarmDealMediator);
 		}
 	}
 }

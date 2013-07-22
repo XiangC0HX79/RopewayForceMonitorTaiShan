@@ -49,19 +49,7 @@ package app.view
 		{
 			var station:String = String(panelAnalysisForceAverage.rbgStation.selectedValue);
 			
-			var arr:Array = [RopewayVO.ALL];
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
-				{
-					if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
-			}
-			panelAnalysisForceAverage.colRopeway.source = arr;
+			changeStation(station);
 		}
 		
 		private function onQuery(event:Event):void
@@ -90,7 +78,7 @@ package app.view
 		
 		private function changeStation(station:String):void
 		{
-			var arr:Array = [RopewayVO.ALL];
+			var arr:Array = [];
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
@@ -102,6 +90,11 @@ package app.view
 					}
 				}
 			}
+			
+			arr.sortOn("ropewayCarId");
+			
+			arr.unshift(RopewayVO.ALL);
+			
 			panelAnalysisForceAverage.colRopeway.source = arr;
 		}	
 		

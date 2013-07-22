@@ -61,7 +61,8 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;					
+					var config:ConfigVO = notification.getBody() as ConfigVO;	
+					
 					panelAnalysisOpenCountTotal.colStations = config.stations;	
 					
 					panelAnalysisOpenCountTotal.rbgStation.selectedValue = config.stations[0];

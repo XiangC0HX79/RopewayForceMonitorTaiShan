@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 skinClass="custom.skin.SkinPanelRealtimeDetection"
+		 width="100%" minWidth="250" height="170">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Parallel id="parallel">
+			<s:Move id="moveContent" target="{content}"/>				
+			<s:Move id="moveImage" target="{imageAnimate}"/>
+			<s:effectEnd>
+				<![CDATA[				
+				imageAnimate.visible = false;
+				imageAnimate.includeInLayout = false;
+				]]>
+			</s:effectEnd>
+		</s:Parallel>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.ConfigVO;
+			import app.model.vo.RopewayVO;
+			
+			import mx.graphics.ImageSnapshot;
+						
+			[Bindable]public var config:ConfigVO;
+			
+			[Bindable]private var _color:int;
+			
+			[Bindable]private var _ropeway:RopewayVO;
+			public function get ropeway():RopewayVO
+			{
+				return _ropeway;
+			}
+			public function set ropeway(rw:RopewayVO):void
+			{				
+				_ropeway = rw;
+				
+				if(rw && (rw.ropewayOpenCount > 0))
+				{
+					_color = (rw.lastRopewayForce.alarm > 0)?0xFF0000:0x02C462;
+					
+					lbRopewayId.text = "抱索器编号：" + rw.ropewayId;
+					
+					lbCarId.text = rw.ropewayCarId;
+									
+					imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
+					imageAnimate.visible = true;
+					imageAnimate.includeInLayout = true;
+					
+					moveContent.xFrom = -content.width;
+					moveContent.xTo = 0;
+					
+					moveImage.xFrom = 0;
+					moveImage.xTo = content.width;
+					
+					parallel.play();
+				}
+				else
+				{
+					lbRopewayId.text = "";					
+					lbCarId.text = "";					
+				}
+			}
+			
+			protected function togglebutton_changeHandler(event:Event):void
+			{
+				config.pin = btnPin.selected;
+			}			
+		]]>
+	</fx:Script>
+	
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanelTitleRealtimeDetection" width="100%" height="33">	
+		<s:Image x="15" source="assets/image/panel_title_icon.png" verticalCenter="-2"/>
+		<s:Label x="30" text="吊箱编号" fontWeight="bold" verticalCenter="0"/>
+		<s:ToggleButton id="btnPin" right="20" width="20" height="20" buttonMode="true"
+						change="togglebutton_changeHandler(event)" selected="{config.pin}"
+						skinClass="custom.skin.SkinToggleButtonPin" verticalCenter="0"/>
+	</s:SkinnableContainer>
+	
+	<s:Group width="220" height="100" clipAndEnableScrolling="true" horizontalCenter="0"
+			 verticalCenter="15" color="{_color}">	
+		
+		<s:Group id="content" width="100%" height="100%">
+			<s:Image source="@Embed('assets/image/panel_car.png')" verticalCenter="0"/>
+			<s:Label id="lbCarId" right="0" fontSize="38" fontWeight="bold" verticalCenter="0"/>	
+			<s:Label id="lbRopewayId" right="0" top="0" width="{lbCarId.width}" textAlign="center"/>	
+			<s:Label id="lbEletric" right="0" bottom="0" width="{lbCarId.width}" text="电量充足" textAlign="center"/>
+		</s:Group>
+		
+		<s:Image id="imageAnimate" width="220" height="100" visible="false" includeInLayout="false"/>
+	</s:Group>
+</s:SkinnableContainer>

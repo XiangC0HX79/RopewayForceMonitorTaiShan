@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="rbGroup2"/>
+		<s:RadioButtonGroup id="rbGroup3" change="rbGroup3_changeHandler(event)"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			public static const SUBMIT:String = "submit";
+			
+			protected function rbGroup3_changeHandler(event:Event):void
+			{				
+				if(rbGroup3.selectedValue.toString() == "图形分析")
+				{
+					vs2.selectedIndex = 0;
+				}
+				else
+				{
+					vs2.selectedIndex = 1;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text="报索器编号：" fontWeight="bold"/>
+		<s:TextInput id="ForceId"/>
+		<s:Label text="索道站：" visible="false" fontWeight="bold"/>
+		<s:HGroup visible="false">
+			<s:CheckBox id="cb1" label="桃花源上站" selected="true"/>
+			<s:CheckBox id="cb2" label="桃花源下站" selected="true"/>
+			<s:CheckBox id="cb3" label="中天门上站" selected="true"/>
+			<s:CheckBox id="cb4" label="中天门上站" selected="true"/>
+		</s:HGroup>
+		<s:Label text="结果类型：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:RadioButton groupName="rbGroup3" label="图形分析" selected="true"/>
+			<s:RadioButton groupName="rbGroup3" label="明细查询"/>
+		</s:HGroup>
+		<s:Label width="100%" visible="false"/>
+		<s:Button id="submitbn" width="100" label="统　　计" />
+	</s:SkinnableContainer>	
+	<s:Group width="100%" height="100%">
+		<mx:ViewStack id="vs2" height="100%" width="100%">
+			<s:NavigatorContent>
+				<s:VGroup width="100%" height="100%">
+					<mx:Legend id="legend" dataProvider="{columnchart1}" fontFamily="微软雅黑" fontSize="14" direction="horizontal"/>
+					<mx:ColumnChart id="columnchart1" width="100%" height="100%" type="clustered" showDataTips="true">
+						<mx:horizontalAxis>
+							<mx:CategoryAxis categoryField="ropewayId"/>
+						</mx:horizontalAxis>
+						<mx:series>
+							<mx:ColumnSeries xField="ropewayId"
+											 yField="STATION1" 
+											 displayName="桃花源上站" fontFamily="微软雅黑" fontSize="14"/>
+							<mx:ColumnSeries xField="ropewayId"
+											 yField="STATION2" 
+											 displayName="桃花源下站" fontFamily="微软雅黑" fontSize="14"/>
+							<mx:ColumnSeries xField="ropewayId"
+											 yField="STATION3" 
+											 displayName="中天门上站" fontFamily="微软雅黑" fontSize="14"/>
+							<mx:ColumnSeries xField="ropewayId"
+											 yField="STATION4" 
+											 displayName="中天门下站" fontFamily="微软雅黑" fontSize="14"/>
+						</mx:series>
+					</mx:ColumnChart>
+				</s:VGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:DataGrid  id="datagrid" width="100%" height="100%">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+							<s:GridColumn headerText="桃花源上站总开合次数" dataField="STATION1" width="200"/>		
+							<s:GridColumn headerText="桃花源下站总开合次数" dataField="STATION2" width="200"/>
+							<s:GridColumn headerText="中天门上站总开合次数" dataField="STATION3" width="200"/>
+							<s:GridColumn headerText="中天门上站总开合次数" dataField="STATION4" width="200"/>
+						</s:ArrayList>				
+					</s:columns>
+				</s:DataGrid>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:Group>
+</mx:VBox>

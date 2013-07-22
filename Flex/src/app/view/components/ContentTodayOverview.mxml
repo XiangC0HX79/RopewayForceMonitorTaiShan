@@ -53,7 +53,7 @@
 				dispatchEvent(new Event(ITEM_CLICK));
 			}
 						
-			protected function buttonUp_buttonDownHandler(event:FlexEvent):void
+			protected function buttonUp_buttonDownHandler(event:MouseEvent):void
 			{
 				if(pageIndex <= 0)
 					return;
@@ -66,7 +66,7 @@
 				
 			}
 			
-			protected function buttonDown_buttonDownHandler(event:FlexEvent):void
+			protected function buttonDown_buttonDownHandler(event:MouseEvent):void
 			{
 				if((pageIndex + 1) * pageSize >= arrDp.length)
 					return;
@@ -89,8 +89,8 @@
 	</s:DataGroup>
 		
 	<s:VGroup right="0" height="335" width="30" verticalAlign="middle">
-		<s:Button width="100%" label="上" buttonDown="buttonUp_buttonDownHandler(event)"/>
-		<s:Button width="100%" label="下" buttonDown="buttonDown_buttonDownHandler(event)"/>
+		<s:Image buttonMode="true" source="assets/image/btn_up.png" click="buttonUp_buttonDownHandler(event)"/>
+		<s:Image buttonMode="true" source="assets/image/btn_down.png" click="buttonDown_buttonDownHandler(event)"/>
 	</s:VGroup>
 	
 	<s:SkinnableContainer left="0" right="0" top="335" bottom="0">		

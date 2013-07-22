@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="rbGroup1" change="rbGroup1_changeHandler(event)"/>
+		<s:RadioButtonGroup id="rbGroup2"/>
+		<s:RadioButtonGroup id="rbGroup3" change="rbGroup3_changeHandler(event)"/>
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			public static const SUBMIT:String = "submit";
+			
+			protected function rbGroup1_changeHandler(event:Event):void
+			{				
+				if(rbGroup1.selectedValue.toString() == "按天")
+				{
+					vs1.selectedIndex = 0;
+				}
+				else
+				{
+					vs1.selectedIndex = 1;
+				}
+			}
+			
+			protected function rbGroup3_changeHandler(event:Event):void
+			{				
+				if(rbGroup3.selectedValue.toString() == "图形分析")
+				{
+					vs2.selectedIndex = 0;
+				}
+				else
+				{
+					vs2.selectedIndex = 1;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text="统计类型：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:RadioButton groupName="rbGroup1" label="按天" selected="true"/>
+			<s:RadioButton groupName="rbGroup1" label="按月"/>
+		</s:HGroup>
+		<s:Label text="统计时段：" fontWeight="bold"/>
+		<mx:ViewStack id="vs1" width="100%">
+			<s:NavigatorContent>
+				<s:HGroup verticalAlign="middle">
+					<mx:DateField width="110" id="dateFrom2" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM-DD"/>
+					<s:Label text="至" fontSize="12"/>
+					<mx:DateField width="110" id="dateTo2" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM-DD"/>
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:HGroup verticalAlign="middle">
+					<mx:DateField width="110" id="dateFrom3" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM"/>
+					<s:Label text="至" fontSize="12"/>
+					<mx:DateField width="110" id="dateTo3" 
+								  monthNames='["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]' formatString="YYYY-MM"/>
+				</s:HGroup>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+		<s:Label text="报索器编号：" fontWeight="bold"/>
+		<s:TextInput id="ForceId"/>
+	</s:SkinnableContainer>				
+	<!--<s:Spacer width="20"/>-->
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text="索道站：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:CheckBox id="cb1" label="桃花源上站" selected="true"/>
+			<s:CheckBox id="cb2" label="桃花源下站" selected="true"/>
+			<s:CheckBox id="cb3" label="中天门上站" selected="true"/>
+			<s:CheckBox id="cb4" label="中天门上站" selected="true"/>
+		</s:HGroup>
+		<s:Label text="结果类型：" fontWeight="bold"/>
+		<s:HGroup>
+			<s:RadioButton groupName="rbGroup3" label="图形分析" selected="true"/>
+			<s:RadioButton groupName="rbGroup3" label="明细查询"/>
+		</s:HGroup>
+		<s:Label width="100%" visible="false"/>
+		<s:Button id="submitbn" width="100" label="统　　计" />
+	</s:SkinnableContainer>	
+	<s:Group width="100%" height="100%">
+		<mx:ViewStack id="vs2" height="100%" width="100%">
+			<s:NavigatorContent>
+				<mx:LineChart id="linechart1" width="100%" height="100%">
+					<mx:verticalAxis>
+						<mx:LinearAxis/>
+					</mx:verticalAxis>
+					<mx:series>
+						<mx:LineSeries yField="ropewayNum"/>
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent>
+				<s:DataGrid  id="datagrid" width="100%" height="100%">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+							<s:GridColumn headerText="日期" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
+							<s:GridColumn headerText="开合次数" dataField="ropewayNum" width="100"/>		
+							<s:GridColumn headerText="所属索道站" dataField="ropewayStation" width="100"/>	
+						</s:ArrayList>				
+					</s:columns>
+				</s:DataGrid>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:Group>
+</mx:VBox>

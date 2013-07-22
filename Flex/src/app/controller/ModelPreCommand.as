@@ -13,6 +13,7 @@ package app.controller
 		{
 			facade.registerProxy(new ConfigProxy);
 			facade.registerProxy(new RopewayProxy);
+			facade.registerProxy(new RopewayAlarmDealProxy);
 			facade.registerProxy(new RopewayAlarmProxy);
 			facade.registerProxy(new RopewayForceProxy);
 			facade.registerProxy(new RopewayForceAverageProxy);
@@ -20,7 +21,8 @@ package app.controller
 			facade.registerProxy(new RopewaySwitchFreqTotalProxy);
 			facade.registerProxy(new RopewayAlarmAnalysisProxy);			
 			facade.registerProxy(new RopewayBaseinfoProxy);			
-			facade.registerProxy(new RopewayBaseinfoHisProxy);
+			facade.registerProxy(new RopewayBaseinfoHisProxy);	
+			facade.registerProxy(new RopeForceAjustProxy);
 		}
 	}
 }

@@ -13,6 +13,9 @@
 		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
 		
 		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>		
+		
+		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>
+		
 		<mx:WipeRight id="wipeShow" duration="1000"/>
 		
 		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
@@ -260,6 +263,16 @@
 			</s:SkinnableContainer>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Line stroke="{gapStroke}" width="100%"/>
+				<s:Label text="实时抱索力统计（{colRopewayHis.length}）" fontWeight="bold"/>
+				<s:Line stroke="{gapStroke}" width="100%"/>
+			</s:HGroup>
+			
 			<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}"
 						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 						alternatingRowColors="[#FFFFFF,#CFEDF7]">

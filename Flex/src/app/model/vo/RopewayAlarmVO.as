@@ -1,9 +1,21 @@
 package app.model.vo
 {
+	import com.adobe.serialization.json.JSON;
+
 	[Bindable]
 	public class RopewayAlarmVO
 	{
-		private var _source:*;
+		/**
+		 * 主键
+		 **/
+		public function get id():Number
+		{
+			return _source.Id;
+		}
+		public function set id(value:Number):void
+		{
+			_source.Id = value;
+		}
 		
 		/**
 		 * 抱索器编号
@@ -89,9 +101,64 @@ package app.model.vo
 			_source.FromRopeWay = value;
 		}
 		
+		/**
+		 * 处置人
+		 **/
+		public function get dealUser():String
+		{
+			return _source.DealUser;
+		}
+		public function set dealUser(value:String):void
+		{
+			_source.DealUser = value;
+		}
+				
+		/**
+		 * 处置时间
+		 **/
+		public function get dealDatetime():Date
+		{
+			return _source.DealDatetime;
+		}
+		public function set dealDatetime(value:Date):void
+		{
+			_source.DealDatetime = value;
+		}
+		
+		/**
+		 * 处置描述
+		 **/
+		public function get dealDesc():String
+		{
+			return _source.DealDesc;
+		}
+		public function set dealDesc(value:String):void
+		{
+			_source.DealDesc = value;
+		}
+		
+		/**
+		 * 备注
+		 **/
+		public function get memo():String
+		{
+			return _source.Memo;
+		}
+		public function set memo(value:String):void
+		{
+			_source.Memo = value;
+		}
+		
+		private var _source:*;		
+		
 		public function RopewayAlarmVO(value:*)
 		{
 			_source = value;
+		}
+		
+		public function toString():String
+		{
+			return JSON.encode(_source);
 		}
 	}
 }

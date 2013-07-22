@@ -5,6 +5,9 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
+		
+		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>
+		
 		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
 		
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
@@ -305,6 +308,16 @@
 			</s:SkinnableContainer>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Line stroke="{gapStroke}" width="100%"/>
+				<s:Label text="开合次数统计（{colSwitchFreq.length}）" fontWeight="bold"/>
+				<s:Line stroke="{gapStroke}" width="100%"/>
+			</s:HGroup>
+			
 			<s:DataGrid width="100%" height="100%" dataProvider="{colSwitchFreq}"
 						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 						alternatingRowColors="[#FFFFFF,#CFEDF7]">

@@ -103,8 +103,7 @@ package app
 		 * 程序初始化完成
 		 **/
 		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
-		
-		
+				
 		/**
 		 * 抱索器实时信息
 		 * <p></p>
@@ -116,7 +115,12 @@ package app
 		 * </table>
 		 **/
 		public static const NOTIFY_ROPEWAY_INFO_REALTIME:String 	= "RopewayInfoRealtime";
-				
+		
+		/**
+		 * 报警实时信息
+		 **/
+		public static const NOTIFY_ROPEWAY_ALARM_REALTIME:String 	= "RopewayAlarmRealtime";
+		
 		/**
 		 * 站点改变
 		 **/
@@ -151,6 +155,16 @@ package app
 		 * 菜单-车厢设置
 		 **/
 		public static const NOTIFY_MENU_MANAGE:String 			= "MenuManage";
+		
+		/**
+		 * 报警处置
+		 **/
+		public static const NOTIFY_ROPEWAY_ALARM_DEAL:String 	= "RopewayAlarmDeal";
+		
+		/**
+		 * 吊箱设置
+		 **/
+		public static const NOTIFY_ROPEWAY_INFO_SET:String 		= "RopewayInfoSet";
 		
 		/**
 		 * Singleton ApplicationFacade Factory Method

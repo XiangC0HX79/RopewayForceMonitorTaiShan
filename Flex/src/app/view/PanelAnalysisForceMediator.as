@@ -52,7 +52,7 @@ package app.view
 		
 		private function changeStation(station:String):void
 		{
-			var arr:Array = [RopewayVO.ALL];
+			var arr:Array = [];
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
@@ -64,6 +64,10 @@ package app.view
 					}
 				}
 			}
+			arr.sortOn("ropewayCarId");
+			
+			arr.unshift(RopewayVO.ALL);
+			
 			panelAnalysisForce.colRopeway.source = arr;
 		}
 		

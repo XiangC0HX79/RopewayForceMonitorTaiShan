@@ -119,43 +119,61 @@ package app.view
 		
 		private function decodeSocketData(socketData:ByteArray):void
 		{			
-			var s:String = socketData.readMultiByte(socketData.length,"gb2312");
-			var a:Array = s.split('|');
+			var d:String = socketData.readMultiByte(socketData.length,"gb2312");
 			
-			var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));			
-			var sd:String = String(a[0]).replace(/-/g,"/");
-			rf.ropewayTime = new Date(Date.parse(sd));
-			rf.ropewayId =  a[1];	
-			rf.ropewayForce = Number(a[2]);
-			rf.ropewayUnit = a[3];
-			rf.ropewayTemp = a[4];
-			rf.ropewayHumidity = a[5];
-			rf.eletric = (a[6] == "0");
-			rf.fromRopeStation = a[7];
+			trace(d);
 			
-			var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
-			if(rw)
-			{
-				if(rw.ropewayHistory)
-				{					
-					_ropewayProxy.PushRopewayForce(rw,rf);
-					
-					if(rw.ropewayStation == _config.station)
-						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+			var colS:Array = d.split("@");
+			
+			for each(var s:String in colS)
+			{				
+				if(s == "")
+					continue;
+				
+				if(s == "ALARM")
+				{
+					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
 				}
 				else
 				{
-					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
-					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
-					token.ropeway = rw;
-					token.ropewayForce = rf;
+					var a:Array = s.split('|');
+					
+					var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));			
+					var sd:String = String(a[0]).replace(/-/g,"/");
+					rf.ropewayTime = new Date(Date.parse(sd));
+					rf.ropewayId =  a[1];	
+					rf.ropewayForce = Number(a[2]);
+					rf.ropewayUnit = a[3];
+					rf.ropewayTemp = a[4];
+					rf.ropewayHumidity = a[5];
+					rf.eletric = (a[6] == "0");
+					rf.fromRopeStation = a[7];
+					
+					var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
+					if(rw)
+					{
+						if(rw.ropewayHistory)
+						{					
+							_ropewayProxy.PushRopewayForce(rw,rf);
+							
+							if(rw.ropewayStation == _config.station)
+								sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+						}
+						else
+						{
+							var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
+							token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
+							token.ropeway = rw;
+							token.ropewayForce = rf;
+						}
+					}
+					else
+					{				
+						token = _ropewayProxy.FindRopewayByForce(rf);
+						token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
+						token.ropewayForce = rf;
+					}
 				}
-			}
-			else
-			{				
-				token = _ropewayProxy.FindRopewayByForce(rf);
-				token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
-				token.ropewayForce = rf;
 			}
 		}
 		
@@ -238,7 +256,9 @@ package app.view
 			return [
 				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
 				
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET
 			];
 		}
 		
@@ -252,6 +272,10 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 					connect();
+					break;
+				
+				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET:
+					sendSocketData("RFID");
 					break;
 			}
 		}

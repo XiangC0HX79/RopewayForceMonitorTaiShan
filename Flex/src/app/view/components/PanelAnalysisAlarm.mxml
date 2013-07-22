@@ -4,6 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" label="报警信息" xmlns:components="custom.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>
+		
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
 		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
 		
@@ -16,6 +18,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.RopewayAlarmVO;
 			import app.model.vo.RopewayForceVO;
 			
 			import com.adobe.utils.DateUtil;
@@ -67,11 +70,21 @@
 			
 			public function get dateE():Date
 			{		
-				return new Date(dateDayE.selectedDate.fullYear
-					,dateDayE.selectedDate.month
-					,dateDayE.selectedDate.date
-					,Number(textHourE.text)
-					,Number(textMinE.text) + 1);
+				if((textHourE.text == "")
+					&& (textMinE.text == ""))
+				{					
+					return new Date(dateDayE.selectedDate.fullYear
+						,dateDayE.selectedDate.month
+						,dateDayE.selectedDate.date + 1);
+				}
+				else
+				{
+					return new Date(dateDayE.selectedDate.fullYear
+						,dateDayE.selectedDate.month
+						,dateDayE.selectedDate.date
+						,Number(textHourE.text)
+						,Number(textMinE.text) + 1);
+				}
 			}
 			
 			protected function listCarId_changeHandler(event:IndexChangeEvent):void
@@ -94,6 +107,13 @@
 				colRopewayHis.source = [];
 			}
 			
+			private function dealDateLabelFunction(alarm:RopewayAlarmVO,column:GridColumn):String
+			{
+				if(alarm.dealDatetime.time > 0)
+					return dateF.format(alarm.dealDatetime);
+				else
+					return "未处置";
+			}
 		]]>
 	</fx:Script>
 	
@@ -150,7 +170,13 @@
 			<s:Button label="查询" icon="@Embed('assets/image/btn_find.jpg')" 
 					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
 			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-		</components:SkinnableTitleContainer>			
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+		
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Line stroke="{lStroke}" width="100%"/>
+		<s:Label text="抱索力报警信息（{colRopewayHis.length}）" fontWeight="bold"/>
+		<s:Line stroke="{lStroke}" width="100%"/>
 	</s:HGroup>
 	
 	<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}"
@@ -161,8 +187,11 @@
 				<s:GridColumn headerText="吊箱编号" dataField="carId" width="100"/>
 				<s:GridColumn headerText="报索器编号" dataField="ropeCode" width="100"/>
 				<s:GridColumn headerText="报警时间" dataField="alarmDate" width="200" formatter="{dateF}"/>			
-				<s:GridColumn headerText="报警描述" dataField="alarmDesc" width="500"/>	
-				<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
+				<s:GridColumn headerText="报警描述" dataField="alarmDesc" width="200"/>	
+				<s:GridColumn headerText="所属索道站" dataField="fromRopeStation" width="100"/>
+				<s:GridColumn headerText="处置时间" dataField="dealDatetime" width="200" labelFunction="dealDateLabelFunction"/>
+				<s:GridColumn headerText="处置人" dataField="dealUser" width="100"/>
+				<s:GridColumn headerText="处置描述" dataField="dealDesc"/>
 			</s:ArrayList>				
 		</s:columns>
 	</s:DataGrid>

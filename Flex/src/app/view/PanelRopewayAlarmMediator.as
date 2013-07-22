@@ -1,16 +1,23 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.RopewayAlarmDealProxy;
 	import app.model.RopewayForceAverageProxy;
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelRopewayAlarm;
 	
+	import flash.events.Event;
 	import flash.media.Sound;
+	import flash.media.SoundChannel;
 	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -24,9 +31,19 @@ package app.view
 		
 		private var _soundPlay:Sound;
 		
+		private var _SoundChannel:SoundChannel;
+		
+		private var _ropewayAlarmDealProxy:RopewayAlarmDealProxy;
+		
 		public function PanelRopewayAlarmMediator()
 		{
 			super(NAME, new PanelRopewayAlarm);
+			
+			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.VOICE_CHANGE,onVoiceChange);
+			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.ALARM_DEAL,onAlarmDeal);
+			
+			_ropewayAlarmDealProxy = facade.retrieveProxy(RopewayAlarmDealProxy.NAME) as RopewayAlarmDealProxy;
+			panelRopewayAlarm.colAlarm = _ropewayAlarmDealProxy.colAlarmDeal;
 			
 			_soundPlay = new Sound;
 			_soundPlay.load(new URLRequest("assets/msg.mp3"));
@@ -37,16 +54,35 @@ package app.view
 			return viewComponent as PanelRopewayAlarm;
 		}
 		
-		private function alarmShow():void
+		private function onVoiceChange(event:Event):void
+		{			
+			if((!panelRopewayAlarm.voice) && (_SoundChannel))
+			{
+				_SoundChannel.stop();
+			}
+		}
+		
+		private function onAlarmDeal(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_DEAL,panelRopewayAlarm.listAlarm.selectedItem);
+		}
+		
+		private function onGetAlarmDealCol(event:ResultEvent,t:Object):void
 		{
 			panelRopewayAlarm.fade.play();
+			
+			if(panelRopewayAlarm.voice)
+			{
+				_SoundChannel = _soundPlay.play(0,5);
+			}
 		}
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
-				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME
 			];
 		}
 		
@@ -54,45 +90,13 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					//抱索力检测值 " + RealValue + " 比 "+AlarmType +" "+ compareValue + "  变化超过 " + stanrdValue
-					var rw:RopewayVO = notification.getBody() as RopewayVO;
-					
-					var df:DateTimeFormatter = new DateTimeFormatter();
-					df.dateTimePattern = "HH:mm:ss";
-					
-					if(rw.alarm == 1)
-					{						
-						var s:String = df.format(rw.deteDate)							
-							+ " " + rw.ropewayCarId + " 抱索力检测值" + rw.deteValue
-							+ "比平均值" + rw.yesterdayAve
-							+ "变化超过50。";
-						
-						panelRopewayAlarm.dataPro.addItemAt(s,0);
-						
-						alarmShow();
-					}
-					else if(rw.alarm == 2)
-					{			
-						var preForce:RopewayForceVO = rw.ropewayHistory[rw.ropewayHistory.length - 2];
-						s = df.format(rw.deteDate)							
-							+ " " + rw.ropewayCarId + " 抱索力检测值" + rw.deteValue
-							+ "比前次值" + preForce.ropewayForce
-							+ "变化超过50。";
-						
-						panelRopewayAlarm.dataPro.addItemAt(s,0);
-						
-						alarmShow();						
-					}
-					
-					if((panelRopewayAlarm.voice) && (rw.alarm > 0))
-					{				
-						_soundPlay.play(0,5);
-					}
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					_ropewayAlarmDealProxy.GetAlarmDealCol();
 					break;
 				
-				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
-					panelRopewayAlarm.dataPro.removeAll();
+				case ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME:
+					var token:AsyncToken = _ropewayAlarmDealProxy.GetAlarmDealCol();
+					token.addResponder(new AsyncResponder(onGetAlarmDealCol,function(e:FaultEvent,t:Object):void{}));
 					break;
 			}
 		}
