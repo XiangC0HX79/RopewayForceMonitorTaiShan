@@ -3,10 +3,10 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   skinClass="custom.skin.SkinTitleWindow"
-			   width="400" height="200">
+			  height="200">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->	
-		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="hh:mm:ss"/>		
+		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="HH:mm:ss"/>		
 	</fx:Declarations>
 	
 	<fx:Script>

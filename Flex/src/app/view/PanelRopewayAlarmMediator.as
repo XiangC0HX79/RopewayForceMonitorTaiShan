@@ -1,6 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
 	import app.model.RopewayAlarmDealProxy;
 	import app.model.RopewayForceAverageProxy;
 	import app.model.vo.RopewayForceVO;
@@ -82,20 +83,28 @@ package app.view
 			return [
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
+				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,
+				
 				ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME
 			];
 		}
 		
 		override public function handleNotification(notification:INotification):void
 		{
+			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+			
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					_ropewayAlarmDealProxy.GetAlarmDealCol();
+					_ropewayAlarmDealProxy.InitAlarmDealCol(configProxy.config.stations[0]);
+					break;				
+				
+				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
+					_ropewayAlarmDealProxy.InitAlarmDealCol(String(notification.getBody()));
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME:
-					var token:AsyncToken = _ropewayAlarmDealProxy.GetAlarmDealCol();
+					var token:AsyncToken = _ropewayAlarmDealProxy.GetAlarmDealCol(configProxy.config.station);
 					token.addResponder(new AsyncResponder(onGetAlarmDealCol,function(e:FaultEvent,t:Object):void{}));
 					break;
 			}

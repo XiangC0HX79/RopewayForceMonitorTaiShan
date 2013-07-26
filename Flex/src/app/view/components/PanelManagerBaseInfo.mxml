@@ -5,11 +5,13 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>		
-		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd hh:mm:ss"/>
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[			
+			import mx.collections.ArrayCollection;
+			
 			public static const BASEINFO_NEW:String = "BaseInfoNew";	
 			public static const BASEINFO_EDIT:String = "BaseInfoEdit";	
 			public static const BASEINFO_DEL:String = "BaseInfoDel";	
@@ -39,18 +41,18 @@
 			</s:ArrayCollection>
 		</s:DropDownList>
 		
-		<s:Label text="吊箱编号：" fontWeight="bold"/>
+		<!--<s:Label text="吊箱编号：" fontWeight="bold"/>
 		<s:TextInput id="textCarId" text="{gridRela.selectedItem.ropewayCarId}" width="100"/>
 		
 		<s:Label text="报索器编号：" fontWeight="bold"/>
 		<s:TextInput id="textId" text="{gridRela.selectedItem.ropewayId}" width="100"/>
 		
 		<s:Label text="RFID：" fontWeight="bold"/>
-		<s:TextInput id="textRfId" text="{gridRela.selectedItem.ropewayRFID}" width="100"/>
+		<s:TextInput id="textRfId" text="{gridRela.selectedItem.ropewayRFID}" width="100"/>-->
 		
 		<s:Button label="新增" buttonDown="dispatchEvent(new Event(BASEINFO_NEW))"/>
 		<s:Button label="编辑" buttonDown="dispatchEvent(new Event(BASEINFO_EDIT))"/>
-		<s:Button label="删除" buttonDown="dispatchEvent(new Event(BASEINFO_DEL))"/>
+		<s:Button id="lbUse" label="禁用" buttonDown="dispatchEvent(new Event(BASEINFO_DEL))"/>
 	</s:HGroup>
 	
 	<s:HGroup width="100%" verticalAlign="middle">
@@ -68,18 +70,16 @@
 				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>		
 				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
-				<s:GridColumn headerText="所属索道" dataField="fromRopeWay"/>
+				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="200"/>
+				<s:GridColumn headerText="备注" dataField="memo"/>
 				<s:GridColumn headerText="是否使用" dataField="isUse" width="80">
 					<s:itemRenderer>
 						<fx:Component>
-							<s:GridItemRenderer>										
+							<s:GridItemRenderer mouseChildren="false" click="checkbox_changeHandler(event)">										
 								<fx:Script>
 									<![CDATA[
 										protected function checkbox_changeHandler(event:Event):void
 										{
-											var cb:CheckBox = event.currentTarget as CheckBox;
-											data.isUse = cb.selected;
-											
 											dispatchEvent(new Event(PanelManagerBaseInfo.BASEINFO_USE,true));
 										}
 									]]>
@@ -89,7 +89,7 @@
 									<s:HorizontalLayout horizontalAlign="center"/>
 								</s:layout>
 								
-								<s:CheckBox selected="{data.isUse}" label="" change="checkbox_changeHandler(event)"/>
+								<s:CheckBox selected="{data.isUse}" label=""/>
 							</s:GridItemRenderer>
 						</fx:Component>
 					</s:itemRenderer>

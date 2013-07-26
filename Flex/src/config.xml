@@ -4,6 +4,7 @@
 	<WebServiceUrl>http://localhost:20867/FlexWebService.asmx?wsdl</WebServiceUrl>
 	<ServerIp>192.168.1.212</ServerIp>
 	<ServerPort>4321</ServerPort>
+	<AlarmValue>50</AlarmValue>
 	<Stations>
 		<Station>桃花源驱动站</Station>
 		<Station>桃花源回转站</Station>

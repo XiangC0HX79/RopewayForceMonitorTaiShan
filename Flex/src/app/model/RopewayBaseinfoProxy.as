@@ -30,6 +30,8 @@ package app.model
 		
 		public function GetBaseInfo(fromRopeWay:String):void
 		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在读取数据...");
+			
 			var where:String = "FromRopeWay = '" + fromRopeWay + "'";
 			
 			send("RopeDete_RopeCarriageRela_GetList",onGetBaseInfo,where);
@@ -43,6 +45,8 @@ package app.model
 				source.push(new RopewayBaseinfoVO(o));
 			}
 			colBaseinfo.source = source;
+			
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
 		}
 		
 		public function NewBaseInfo(baseInfo:RopewayBaseinfoVO):void
@@ -89,6 +93,24 @@ package app.model
 			else
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"吊箱'" + info.ropewayCarId + "'信息更新失败。");				
+			}
+		}
+				
+		public function UpdateBaseInfoUse(baseInfo:RopewayBaseinfoVO):void
+		{
+			var token:AsyncToken = send("RopeDete_RopeCarriageRela_Update",onUpdateBaseInfoUse,baseInfo.toString());
+			token.info = baseInfo;
+		}
+		
+		private function onUpdateBaseInfoUse(event:ResultEvent):void
+		{
+			if(event.result)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET);
+			}
+			else
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"吊箱变更可用信息失败。");				
 			}
 		}
 		

@@ -158,6 +158,13 @@ package app
 		
 		/**
 		 * 报警处置
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>RopewayAlarmVO</td><td>报警信息</td>
+		 * 	</tr>
+		 * </table>
 		 **/
 		public static const NOTIFY_ROPEWAY_ALARM_DEAL:String 	= "RopewayAlarmDeal";
 		
@@ -165,6 +172,30 @@ package app
 		 * 吊箱设置
 		 **/
 		public static const NOTIFY_ROPEWAY_INFO_SET:String 		= "RopewayInfoSet";
+		
+		/**
+		 * 新建抱索器
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>String</td><td>所属索道</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_ROPEWAY_BASEINFO_NEW:String 	= "RopewayBaseInfoNew";
+		
+		/**
+		 * 编辑抱索器
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>RopewayBaseInfoVO</td><td>抱索器基本信息</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_ROPEWAY_BASEINFO_EDIT:String 	= "RopewayBaseInfoEdit";
 		
 		/**
 		 * Singleton ApplicationFacade Factory Method

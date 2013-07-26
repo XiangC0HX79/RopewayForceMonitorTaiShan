@@ -23,6 +23,8 @@ package app.model
 	{
 		public static const NAME:String = "RopewayProxy";
 		
+		public static var alarmVal:Number = 50;
+		
 		public function RopewayProxy()
 		{
 			super(NAME, new ArrayCollection);
@@ -99,7 +101,7 @@ package app.model
 			if(ropeway.ropewayHistory.length > 0)
 			{						
 				var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
-				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > 50)
+				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > RopewayProxy.alarmVal)
 				{
 					ropewayForce.alarm = 2;
 					ropeway.alarm = 2;
@@ -108,7 +110,7 @@ package app.model
 			
 			if(ropeway.yesterdayAve > 0)
 			{						
-				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > 50)
+				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > RopewayProxy.alarmVal)
 				{
 					ropewayForce.alarm = 1;
 					ropeway.alarm = 1;
@@ -168,6 +170,26 @@ package app.model
 			for each(var o:ObjectProxy in event.result)
 			{
 				var rf:RopewayForceVO = new RopewayForceVO(o);
+				
+				if(ropeway.ropewayHistory.length > 0)
+				{						
+					var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
+					if(Math.abs(rf.ropewayForce - prerf.ropewayForce) > RopewayProxy.alarmVal)
+					{
+						rf.alarm = 2;
+						ropeway.alarm = 2;
+					}
+				}
+				
+				if(ropeway.yesterdayAve > 0)
+				{						
+					if(Math.abs(rf.ropewayForce - ropeway.yesterdayAve) > RopewayProxy.alarmVal)
+					{
+						rf.alarm = 1;
+						ropeway.alarm = 1;
+					}
+				}
+				
 				ropeway.ropewayHistory.push(rf);
 			}
 		}

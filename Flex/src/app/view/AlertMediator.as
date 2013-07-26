@@ -12,7 +12,7 @@ package app.view
 	{
 		public static const NAME:String = "AlertMediator";
 				
-		private static const ALERT_TITLE:String = "泰山索道抱索力实时监控系统";
+		private static const ALERT_TITLE:String = "提示信息";
 		
 		[Embed(source="assets/image/icon_error.png")]
 		private const ICON_ERROR:Class;

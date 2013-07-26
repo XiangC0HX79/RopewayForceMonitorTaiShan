@@ -7,7 +7,7 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" duration="500" repeatCount="26" target="{elli}" repeatBehavior="reverse"/>
-		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="hh:mm:ss"/>
+		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<fx:Script>

@@ -6,7 +6,7 @@ package app.model.vo
 	public class ConfigVO
 	{
 		public var user:String;
-		
+				
 		public var station:String;
 		
 		public var stations:ArrayCollection;

@@ -6,6 +6,7 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+		<s:DateTimeFormatter id="dateFormatAve" dateTimePattern="MM.dd"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -55,7 +56,7 @@
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
 			</s:SkinnableContainer>
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
-				<s:Label verticalCenter="0" horizontalCenter="0" text="昨天"/>
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{dateFormatAve.format(_ropeway.yesterdayDate)}"/>
 			</s:SkinnableContainer>
 			<s:SkinnableContainer height="100%" width="100%" skinClass="custom.skin.SkinPanelTodayOverview">
 				<s:Label verticalCenter="0" horizontalCenter="0" text="今天"/>

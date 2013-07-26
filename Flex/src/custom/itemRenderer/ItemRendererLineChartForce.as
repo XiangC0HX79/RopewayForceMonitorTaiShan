@@ -141,7 +141,10 @@ package custom.itemRenderer
 					break;
 			}*/
 												
-			fill = new SolidColor(0x02C462);
+			if(_data.item.alarm > 0)
+				fill = new SolidColor(0xFF0000);
+			else
+				fill = new SolidColor(0x02C462);
 			
 			rcFill.right = unscaledWidth;
 			rcFill.bottom = unscaledHeight;

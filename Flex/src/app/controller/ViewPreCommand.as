@@ -60,6 +60,8 @@ package app.controller
 			facade.registerMediator(new ContentManageMediator(new ContentManage));
 			
 			facade.registerMediator(new TitleWindowAlarmDealMediator);
+			
+			facade.registerMediator(new TitleWindowBaseInfoMediator);
 		}
 	}
 }

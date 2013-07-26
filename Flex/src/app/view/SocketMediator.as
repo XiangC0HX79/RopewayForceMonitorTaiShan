@@ -85,7 +85,7 @@ package app.view
 		{  			
 			if(_errorCount > 5)
 			{
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！\n\"错误原因:" + event.type + "\"");
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！按F5刷新页面开始重连服务器。\n\"错误原因:" + event.type + "\"");
 								
 				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
 			}
@@ -130,14 +130,15 @@ package app.view
 				if(s == "")
 					continue;
 				
-				if(s == "ALARM")
+				var a:Array = s.split('|');
+				
+				if(a[0] == "ALARM")
 				{
-					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
+					if(a[1] == _config.station)
+						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
 				}
 				else
-				{
-					var a:Array = s.split('|');
-					
+				{					
 					var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));			
 					var sd:String = String(a[0]).replace(/-/g,"/");
 					rf.ropewayTime = new Date(Date.parse(sd));

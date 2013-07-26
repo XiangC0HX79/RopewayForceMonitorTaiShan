@@ -30,6 +30,8 @@
 			
 			public static const ITEM_CLICK:String = "ItemClick";
 			
+			public static const CONTAINER_RESIZE:String = "ContainerResize";
+			
 			[Bindable]public var pageIndex:Number = 0;
 			
 			[Bindable]public var pageSize:Number = 0;
@@ -76,7 +78,7 @@
 				var a:Number = pageIndex * pageSize;
 				var b:Number = Math.min((pageIndex + 1) * pageSize,arrDp.length);
 				colDp.source = arrDp.slice(a,b);
-			}						
+			}					
 		]]>
 	</fx:Script>
 	<s:DataGroup id="dataGroup" left="0" right="30" height="335" dataProvider="{colDp}" 
@@ -93,13 +95,13 @@
 		<s:Image buttonMode="true" source="assets/image/btn_down.png" click="buttonDown_buttonDownHandler(event)"/>
 	</s:VGroup>
 	
-	<s:SkinnableContainer left="0" right="0" top="335" bottom="0">		
+	<s:SkinnableContainer left="0" right="0" top="335" bottom="0" fontSize="12">		
 		<s:Rect id="border" left="0" right="0" top="0" bottom="0">
 			<s:stroke>
 				<s:SolidColorStroke weight="1" color="#63c3d6"/>
 			</s:stroke>
 		</s:Rect>	
-		
+				
 		<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip"
 					  left="20" right="40" bottom="20" top="40" dataProvider="{ropeway.ropewayHistory}">
 			<mx:seriesFilters>
@@ -145,7 +147,38 @@
 				</mx:LineSeries>
 			</mx:series>
 		</mx:LineChart>		
+		
+		<s:Group id="groupChart" left="59" right="55" bottom="47" top="50">	
+			<!--<s:Rect left="0" right="0" top="0" bottom="0">
+				<s:stroke>
+					<s:SolidColorStroke weight="1" color="red"/>
+				</s:stroke>
+			</s:Rect>	-->
+			
+			<s:Rect id="lineMax" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineMin" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>		
+		</s:Group>
 				
+		<s:Label right="45" y="{lineMax.y + 35}" id="lbMax" text="{ropeway.yesterdayMax} {ropeway.valueUnit}" textAlign="center"
+				 verticalAlign="middle"/> 	
+		<s:Label right="45" y="{lineMin.y + 35}" id="lbMin" text="{ropeway.yesterdayMin} {ropeway.valueUnit}" textAlign="center"
+				 verticalAlign="middle"/> 	
+		<s:Label right="45" y="{lineAve.y + 35}" id="lbAve" text="{ropeway.yesterdayAve.toFixed()} {ropeway.valueUnit}" textAlign="center"
+				 verticalAlign="middle"/> 
+		
 		<s:Label left="10" top="20" text="抱索力（{ropeway.valueUnit}）"/>
 		<s:Label right="15" bottom="40" text="时间"/>
 		<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"

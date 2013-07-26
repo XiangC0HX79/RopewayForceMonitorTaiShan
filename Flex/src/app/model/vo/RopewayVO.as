@@ -214,7 +214,18 @@ package app.model.vo
 		{
 			_source.AveValue = value;
 		}
-				
+		
+		/**
+		 * 平均值记录时间
+		 **/
+		public function get yesterdayDate():Date	
+		{
+			return _source.RecordDate;
+		}
+		public function set yesterdayDate(value:Date):void	
+		{
+		}
+		
 		/**
 		 * 昨日最大值
 		 **/

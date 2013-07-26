@@ -34,6 +34,7 @@ package app.model
 			
 			var token:AsyncToken = operation.send();
 			token.addResponder(new AsyncResponder(onResult,function (event:FaultEvent,t:Object):void{},listener));
+			token.args = args;
 			
 			return token;
 		}

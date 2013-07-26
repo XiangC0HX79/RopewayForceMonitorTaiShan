@@ -25,7 +25,24 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function GetAlarmDealCol():AsyncToken
+		public function InitAlarmDealCol(station:String):AsyncToken
+		{
+			var where:String = "FromRopeStation = '" + station + "'";
+			where += " AND DealDatetime IS Null";
+			
+			return send("T_RopeDete_RopeAlarmRecord_GetList",onInitAlarmDealCol,where);
+		}
+		
+		private function onInitAlarmDealCol(event:ResultEvent):void
+		{
+			colAlarmDeal.removeAll();
+			for each(var o:* in event.result)
+			{
+				colAlarmDeal.addItemAt(new RopewayAlarmVO(o),0);
+			}
+		}
+		
+		public function GetAlarmDealCol(station:String):AsyncToken
 		{
 			if(colAlarmDeal.length == 0)
 			{
@@ -38,7 +55,8 @@ package app.model
 				date = alarm.alarmDate;
 			}
 			
-			var where:String = "AlarmDatetime > '" + DateUtil.toLocaleW3CDTF(date) + "'";
+			var where:String = "FromRopeStation = '" + station + "'";
+			where += " AND AlarmDatetime > '" + DateUtil.toLocaleW3CDTF(date) + "'";
 			where += " AND DealDatetime IS Null";
 			
 			return send("T_RopeDete_RopeAlarmRecord_GetList",onGetAlarmDealCol,where);

@@ -10,6 +10,8 @@ package app.view
 	import custom.itemRenderer.ItemRendererTodayOverview;
 	
 	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ISort;
@@ -78,6 +80,8 @@ package app.view
 			
 			contentTodayOverview.colDp.source = contentTodayOverview.arrDp.slice(0
 				,Math.min(contentTodayOverview.arrDp.length,contentTodayOverview.pageSize));
+			
+			flash.utils.setTimeout(drawYesterday,200);
 		}
 		
 		private function changeStation(station:String):void
@@ -203,7 +207,7 @@ package app.view
 		{
 			var rw:RopewayVO = contentTodayOverview.ropeway;
 			
-			/*if(rw.yesterdayMax && rw.yesterdayMin)
+			if(rw && rw.yesterdayMax && rw.yesterdayMin)
 			{					
 				//昨天数值
 				contentTodayOverview.lineMax.visible = true;
@@ -215,8 +219,19 @@ package app.view
 				
 				var moves:Array = new Array;
 				
-				var pt:Point = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayMax);				
-				var move:Move = new Move(contentTodayOverview.lineMax);
+				var pt:Point = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayMax);	
+				contentTodayOverview.lineMax.y = pt.y;
+				//contentTodayOverview.lbMax.y = pt.y + 20;
+				
+				pt = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayAve);
+				contentTodayOverview.lineAve.y = pt.y;
+				//contentTodayOverview.lbAve.y = pt.y + 20;
+				
+				pt = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayMin);
+				contentTodayOverview.lineMin.y = pt.y;
+				//contentTodayOverview.lbMin.y = pt.y + 20;
+				
+				/*var move:Move = new Move(contentTodayOverview.lineMax);
 				move.yTo = pt.y;
 				moves.push(move);
 				
@@ -224,7 +239,6 @@ package app.view
 				move.yTo = pt.y + 20;
 				moves.push(move);
 				
-				pt = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayAve);
 				move = new Move(contentTodayOverview.lineAve);
 				move.yTo = pt.y;
 				moves.push(move);
@@ -233,7 +247,6 @@ package app.view
 				move.yTo = pt.y + 20;
 				moves.push(move);
 				
-				pt = contentTodayOverview.dataCanvas.dataToLocal(0,rw.yesterdayMin);
 				move = new Move(contentTodayOverview.lineMin);
 				move.yTo = pt.y;
 				moves.push(move);
@@ -244,7 +257,7 @@ package app.view
 				
 				contentTodayOverview.parallel.end();
 				contentTodayOverview.parallel.children = moves;
-				contentTodayOverview.parallel.play();
+				contentTodayOverview.parallel.play();*/
 			}
 			else
 			{
@@ -254,7 +267,7 @@ package app.view
 				contentTodayOverview.lbMax.visible = false;
 				contentTodayOverview.lbMin.visible = false;
 				contentTodayOverview.lbAve.visible = false;
-			}*/
+			}
 		}
 		
 		private function reCalcuXY():void

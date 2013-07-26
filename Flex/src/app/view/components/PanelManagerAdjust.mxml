@@ -5,7 +5,7 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
 		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>
-		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd hh:mm:ss"/>
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 		<s:DateTimeFormatter id="dfDate" dateTimePattern="yyyy-MM-dd"/>
 	</fx:Declarations>
 	
@@ -36,12 +36,12 @@
 		
 		<mx:DateField id="dateField" selectedDate="{new Date}" formatString="YYYY-MM-DD"/>
 				
-		<s:Button label="校准吊索力" buttonDown="dispatchEvent(new Event(AJUST))"/>
+		<s:Button label="校准抱索力" buttonDown="dispatchEvent(new Event(AJUST))"/>
 	</s:HGroup>
 	
 	<s:HGroup width="100%" verticalAlign="middle">
 		<s:Line stroke="{lStroke}" width="100%"/>
-		<s:Label text="吊索力校准历史（{colAjustmentHis.length}）" fontWeight="bold"/>
+		<s:Label text="抱索力校准历史（{colAjustmentHis.length}）" fontWeight="bold"/>
 		<s:Line stroke="{lStroke}" width="100%"/>
 	</s:HGroup>
 	

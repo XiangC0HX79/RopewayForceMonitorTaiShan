@@ -27,9 +27,9 @@ package app.model
 			return data as ConfigVO;
 		}
 		
-		public function InitConfig(unit:String):void
+		public function InitConfig(station:String):void
 		{
-			config.station = unit;
+			config.station = station;
 			
 			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));			
 			load.addEventListener(Event.COMPLETE,onLocaleConfigResult);
@@ -53,10 +53,39 @@ package app.model
 				return;
 			}
 			
-			config.stations = new ArrayCollection;
+			var col:Array = [];
 			for each(var s:String in xml.Stations.Station)
-				config.stations.addItem(s);
-							
+			{
+				col.push(s);
+			}
+			
+			var index:Number = Number(config.station);
+			if(!isNaN(index))
+			{
+				if(index == 0)
+				{
+					config.stations = new ArrayCollection(col);
+				}
+				else if((index <= col.length) && (index > 0))
+				{
+					config.stations = new ArrayCollection([col[index - 1]]);
+				}
+				else
+				{
+					config.stations = new ArrayCollection(col[0]);
+				}
+			}
+			else
+			{
+				config.stations = new ArrayCollection(col[0]);
+			}
+			
+			var value:Number = Number(xml.AlarmValue);
+			if(!isNaN(value))
+			{
+				RopewayProxy.alarmVal = value;
+			}
+			
 			config.station = config.stations[0];
 					
 			config.serverIp = xml.ServerIp;

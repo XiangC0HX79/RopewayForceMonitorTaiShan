@@ -13,6 +13,7 @@
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
 		<s:Sequence id="sequence"/>
 		<s:Parallel id="parallel"/>
+		<s:DateTimeFormatter id="dateFormatAve" dateTimePattern="MM.dd"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -253,11 +254,11 @@
 		</mx:series>
 	</mx:LineChart>		
 		
-	<s:Label right="15" id="lbMax" text="昨日最大抱索力&#xd;{ropeway.yesterdayMax} {ropeway.valueUnit}" textAlign="center"
+	<s:Label right="15" id="lbMax" text="{dateFormatAve.format(ropeway.yesterdayDate)}最大抱索力&#xd;{ropeway.yesterdayMax} {ropeway.valueUnit}" textAlign="center"
 			 verticalAlign="middle"/> 	
-	<s:Label right="15" id="lbMin" text="昨日最小抱索力&#xd;{ropeway.yesterdayMin} {ropeway.valueUnit}" textAlign="center"
+	<s:Label right="15" id="lbMin" text="{dateFormatAve.format(ropeway.yesterdayDate)}最小抱索力&#xd;{ropeway.yesterdayMin} {ropeway.valueUnit}" textAlign="center"
 			 verticalAlign="middle"/> 	
-	<s:Label right="15" id="lbAve" text="昨日平均抱索力&#xd;{ropeway.yesterdayAve.toFixed()} {ropeway.valueUnit}" textAlign="center"
+	<s:Label right="15" id="lbAve" text="{dateFormatAve.format(ropeway.yesterdayDate)}平均抱索力&#xd;{ropeway.yesterdayAve.toFixed()} {ropeway.valueUnit}" textAlign="center"
 			 verticalAlign="middle"/> 
 	
 	<s:Group id="groupChart" left="59" right="52" bottom="47" top="50">

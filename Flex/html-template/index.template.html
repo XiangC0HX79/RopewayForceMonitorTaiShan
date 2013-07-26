@@ -28,21 +28,16 @@
         		            
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
-        	var Auth = "";
-        	var userid = "";
+        	var station = "";
         	
 	        var url = document.location.search;
 			var arr = url.split('&');
 			for(var i=0;i<arr.length;i++)
 			{
 				var ar = arr[i].split('=');
-				if(ar[0] == "Auth")
+				if((ar[0] == "?station") || (ar[0] == "station"))
 				{
-				   Auth = ar[1];
-				}
-				else if(ar[0] == "?userid")
-				{
-				   userid = ar[1];
+				   station = ar[1];
 				}
 			}
             // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
@@ -51,8 +46,7 @@
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
-            flashvars.userid = userid;
-            flashvars.Auth = Auth;
+            flashvars.station = station;
             var params = {};
             params.quality = "high";
             params.bgcolor = "${bgcolor}";
