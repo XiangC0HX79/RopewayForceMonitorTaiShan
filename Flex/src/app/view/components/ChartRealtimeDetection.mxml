@@ -164,9 +164,9 @@
 				var off:Number = 20;
 				
 				var img:ChartImage = event.currentTarget as ChartImage;				
-				chartTip.ropewayForce = img.ropewayForce;
+				chartTip.data = img.ropewayForce;
 				
-				var pt:Point = dataCanvas.dataToLocal(chartTip.ropewayForce.ropewayTime,chartTip.ropewayForce.ropewayForce);
+				var pt:Point = dataCanvas.dataToLocal(img.ropewayForce.ropewayTime,img.ropewayForce.ropewayForce);
 				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
 				var lbrect:Rectangle = new Rectangle(pt.x - off - chartTip.width,pt.y + off,chartTip.width,chartTip.height);
 				var rbrect:Rectangle = new Rectangle(pt.x + off,pt.y + off,chartTip.width,chartTip.height);
@@ -193,7 +193,7 @@
 					chartTip.x = rtrect.x;
 					chartTip.y = rtrect.y;
 				}
-				
+									
 				chartTip.visible = true;
 			}
 			

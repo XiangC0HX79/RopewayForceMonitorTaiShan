@@ -13,9 +13,11 @@
 		<![CDATA[
 			import app.model.vo.RopewayForceVO;
 			
-			[Bindable]public var ropewayForce:RopewayForceVO;	
+			[Bindable]private var _ropewayForce:RopewayForceVO;	
 			
 			[Bindable]private var _data:Object;	
+			
+			[Bindable]private var _alarmType:String;	
 			
 			public function get data():Object
 			{
@@ -29,10 +31,29 @@
 				
 				_data = value;
 					
-				ropewayForce = _data.item as RopewayForceVO;
+				if(_data is RopewayForceVO)
+					_ropewayForce = _data as RopewayForceVO;
+				else if(_data.item is RopewayForceVO)
+					_ropewayForce = _data.item as RopewayForceVO;
+				
+				this.currentState = (_ropewayForce.alarm > 0)?"alarm":"normal";
+				
+				if(_ropewayForce.alarm == 1)
+					_alarmType = "平均值";
+				else if(_ropewayForce.alarm == 2)
+					_alarmType = "前次值";
+				else if(_ropewayForce.alarm == 3)
+					_alarmType = "平均值/前次值";
+				else
+					_alarmType = "未知报警";
 			}
 		]]>
 	</fx:Script>	
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="alarm"/>
+	</s:states>
 	
 	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
 		<s:fill>
@@ -49,15 +70,15 @@
 	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">		
 		<s:HGroup>
 			<s:Label text="时　间："/>
-			<s:Label text="{df.format(ropewayForce.ropewayTime)}"/>
+			<s:Label text="{df.format(_ropewayForce.ropewayTime)}"/>
 		</s:HGroup>
 		<s:HGroup>
 			<s:Label text="抱索力："/>
-			<s:Label text="{ropewayForce.ropewayForce} {ropewayForce.ropewayUnit}"/>
+			<s:Label text="{_ropewayForce.ropewayForce} {_ropewayForce.ropewayUnit}"/>
 		</s:HGroup>
-		<!--<s:HGroup>
-			<s:Label text="温　度："/>
-			<s:Label text="{ropeway.ropewayTemp} ℃"/>
-		</s:HGroup>-->
+		<s:HGroup includeIn="alarm">
+			<s:Label text="报　警："/>
+			<s:Label text="{_alarmType}"/>
+		</s:HGroup>
 	</s:VGroup>
 </s:Group>

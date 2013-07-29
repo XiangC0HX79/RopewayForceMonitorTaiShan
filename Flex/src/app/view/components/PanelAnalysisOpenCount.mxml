@@ -249,15 +249,15 @@
 		</components:SkinnableTitleContainer>	
 		
 		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
-			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
-					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
 			<s:ButtonBar width="100%" id="btnBar" changing="btnBar_changingHandler(event)" selectedIndex="1">
 				<s:ArrayCollection>
 					<fx:String>图形</fx:String>
 					<fx:String>表格</fx:String>
 				</s:ArrayCollection>
 			</s:ButtonBar>
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
 		</components:SkinnableTitleContainer>	
 	</s:HGroup>
 	
@@ -323,7 +323,7 @@
 						alternatingRowColors="[#FFFFFF,#CFEDF7]">
 				<s:columns>
 					<s:ArrayList>
-						<s:GridColumn headerText="吊箱编号" dataField="ropewayId" width="100"/>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>
 						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 						<s:GridColumn headerText="时间" dataField="ropewayTime" width="100" formatter="{dateF}"/>			
 						<s:GridColumn headerText="开合次数" dataField="switchFreq" width="100"/>		

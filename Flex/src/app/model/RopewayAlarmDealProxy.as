@@ -25,20 +25,52 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function InitAlarmDealCol(station:String):AsyncToken
+		private var _initToken:AsyncToken;
+		public function InitAlarmDealCol(station:String):void
 		{
-			var where:String = "FromRopeStation = '" + station + "'";
-			where += " AND DealDatetime IS Null";
+			colAlarmDeal.removeAll();
 			
-			return send("T_RopeDete_RopeAlarmRecord_GetList",onInitAlarmDealCol,where);
+			var where:String = "FromRopeStation = '" + station + "'";
+			where += " AND DealDatetime IS Null AND DATEDIFF(d,AlarmDatetime,GETDATE()) = 0";
+			
+			var pageIndex:Number = 1;
+			var pageSize:Number = 20;
+			
+			_initToken = send("T_RopeDete_RopeAlarmRecord_GetList",onInitAlarmDealCol,where,pageIndex,pageSize);
+			_initToken.where = where;
+			_initToken.pageIndex = pageIndex;
+			_initToken.pageSize = pageSize;
 		}
 		
 		private function onInitAlarmDealCol(event:ResultEvent):void
-		{
-			colAlarmDeal.removeAll();
+		{			
+			if(_initToken != event.token)
+			{
+				trace("更换站点");
+				return;
+			}
+			
+			var len:int = event.result.length;
+			if(len <= 0)
+			{				
+				trace("查询结束");
+				return;
+			}
+			
+			var pageIndex:Number = event.token.pageIndex;
+			pageIndex++;
+			
+			var pageSize:Number = event.token.pageSize;
+			var where:String = event.token.where;
+			
+			_initToken = send("T_RopeDete_RopeAlarmRecord_GetList",onInitAlarmDealCol,where,pageIndex,pageSize);
+			_initToken.where = where;
+			_initToken.pageIndex = pageIndex;
+			_initToken.pageSize = pageSize;
+			
 			for each(var o:* in event.result)
 			{
-				colAlarmDeal.addItemAt(new RopewayAlarmVO(o),0);
+				colAlarmDeal.addItem(new RopewayAlarmVO(o));
 			}
 		}
 		

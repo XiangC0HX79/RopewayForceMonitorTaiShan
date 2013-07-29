@@ -7,6 +7,9 @@ package app.view
 	
 	import flash.events.Event;
 	
+	import mx.controls.Alert;
+	import mx.events.CloseEvent;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -35,7 +38,15 @@ package app.view
 		
 		private function onAjust(event:Event):void
 		{
-			_ropeForceAjustProxy.NewRopeForceAjust(panelManagerAdjust.listRopewayStation.selectedItem,panelManagerAdjust.dateField.selectedDate);
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,["请确认是否进行抱索力校准？",onAjustConfirm,Alert.YES | Alert.NO]);
+		}
+		
+		private function onAjustConfirm(event:CloseEvent):void
+		{
+			if(event.detail == Alert.YES)
+			{
+				_ropeForceAjustProxy.NewRopeForceAjust(panelManagerAdjust.listRopewayStation.selectedItem,panelManagerAdjust.dateField.selectedDate);
+			}
 		}
 		
 		private function onStationChange(event:Event):void

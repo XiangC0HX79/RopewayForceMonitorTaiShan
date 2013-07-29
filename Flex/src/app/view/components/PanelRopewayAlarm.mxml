@@ -19,6 +19,7 @@
 			
 			import spark.events.RendererExistenceEvent;
 			import spark.formatters.DateTimeFormatter;
+			import spark.skins.spark.DefaultItemRenderer;
 			
 			public static const VOICE_CHANGE:String = "VoiceChange";
 			
@@ -46,8 +47,9 @@
 			
 			protected function listAlarm_rendererAddHandler(event:RendererExistenceEvent):void
 			{
-				var renderer:IVisualElement = event.renderer;
-				renderer.addEventListener(MouseEvent.CLICK,onItemClick);
+				var renderer:DefaultItemRenderer = event.renderer as DefaultItemRenderer;
+				renderer.doubleClickEnabled = true;
+				renderer.addEventListener(MouseEvent.DOUBLE_CLICK,onItemClick);
 			}
 			
 			private function onItemClick(event:Event):void
@@ -80,7 +82,7 @@
 			 click="imgVoice_clickHandler(event)"/>
 	
 	<s:List id="listAlarm" left="100" right="20" top="35" bottom="10"
-			skinClass="custom.skin.SkinListAlarm" 
+			skinClass="custom.skin.SkinListAlarm"
 			rendererAdd="listAlarm_rendererAddHandler(event)"
 			dataProvider="{colAlarm}" labelFunction="listLabelFunction"
 			fontSize="14" color="red"/>

@@ -46,8 +46,17 @@ package app.model
 			for each(var o:ObjectProxy in event.result)
 			{
 				var rw:RopewayVO = new RopewayVO(o);		
-				rw.aveValue = Math.round(rw.totalValue / rw.switchFreq);
-				arr.push(rw);
+				
+				var callback:Function = function(item:RopewayVO, index:int, array:Array):Boolean
+				{
+					return (item.ropewayId != rw.ropewayId) || (item.ropewayStation != rw.ropewayStation);
+				};
+
+				if(arr.every(callback,null))
+				{
+					rw.aveValue = Math.round(rw.totalValue / rw.switchFreq);
+					arr.push(rw);
+				}
 			}
 			
 			colRopeway.source = arr;
@@ -98,13 +107,16 @@ package app.model
 		
 		public function PushRopewayForce(ropeway:RopewayVO,ropewayForce:RopewayForceVO):void
 		{			
+			ropewayForce.alarm = 0;
+			ropeway.alarm = 0;
+			
 			if(ropeway.ropewayHistory.length > 0)
 			{						
 				var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
 				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > RopewayProxy.alarmVal)
 				{
-					ropewayForce.alarm = 2;
-					ropeway.alarm = 2;
+					ropewayForce.alarm |= 2;
+					ropeway.alarm |= 2;
 				}
 			}
 			
@@ -112,8 +124,8 @@ package app.model
 			{						
 				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > RopewayProxy.alarmVal)
 				{
-					ropewayForce.alarm = 1;
-					ropeway.alarm = 1;
+					ropewayForce.alarm |= 1;
+					ropeway.alarm |= 1;
 				}
 			}
 			

@@ -1,7 +1,6 @@
 <Config>
-	<Debug>0</Debug>
 	<!--<WebServiceUrl>http://192.168.1.212:30000/FlexWebService.asmx?wsdl</WebServiceUrl>-->
-	<WebServiceUrl>http://localhost:20867/FlexWebService.asmx?wsdl</WebServiceUrl>
+	<WebServiceUrl>http://localhost:10715/FlexWebService.asmx?wsdl</WebServiceUrl>
 	<ServerIp>192.168.1.212</ServerIp>
 	<ServerPort>4321</ServerPort>
 	<AlarmValue>50</AlarmValue>
