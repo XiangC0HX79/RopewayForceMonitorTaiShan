@@ -42,6 +42,8 @@ package app.view
 			
 			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.VOICE_CHANGE,onVoiceChange);
 			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.ALARM_DEAL,onAlarmDeal);
+			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.ALARM_START,onAlarmStart);
+			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.ALARM_END,onAlarmEnd);
 			
 			_ropewayAlarmDealProxy = facade.retrieveProxy(RopewayAlarmDealProxy.NAME) as RopewayAlarmDealProxy;
 			panelRopewayAlarm.colAlarm = _ropewayAlarmDealProxy.colAlarmDeal;
@@ -57,10 +59,36 @@ package app.view
 		
 		private function onVoiceChange(event:Event):void
 		{			
-			if((!panelRopewayAlarm.voice) && (_SoundChannel))
+			if(!_SoundChannel)
+				return;
+			
+			if(!panelRopewayAlarm.fade.isPlaying)
+				return;
+			
+			if(panelRopewayAlarm.voice)
 			{
-				_SoundChannel.stop();
+				_SoundChannel = _soundPlay.play(0);
 			}
+			else
+			{
+				_SoundChannel.stop();				
+			}
+		}
+		
+		private function onAlarmStart(event:Event):void
+		{			
+			if(panelRopewayAlarm.voice)
+			{
+				_SoundChannel = _soundPlay.play(0);
+			}
+		}
+		
+		private function onAlarmEnd(event:Event):void
+		{
+			if(!_SoundChannel)
+				return;
+			
+			_SoundChannel.stop();
 		}
 		
 		private function onAlarmDeal(event:Event):void
@@ -71,11 +99,6 @@ package app.view
 		private function onGetAlarmDealCol(event:ResultEvent,t:Object):void
 		{
 			panelRopewayAlarm.fade.play();
-			
-			if(panelRopewayAlarm.voice)
-			{
-				_SoundChannel = _soundPlay.play(0,5);
-			}
 		}
 		
 		override public function listNotificationInterests():Array

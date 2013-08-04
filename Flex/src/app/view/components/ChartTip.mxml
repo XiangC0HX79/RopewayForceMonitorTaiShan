@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 implements="mx.core.IDataRenderer" 
-		 width="123" height="52">
+		 maxWidth="200" maxHeight="70">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
@@ -13,9 +13,13 @@
 		<![CDATA[
 			import app.model.vo.RopewayForceVO;
 			
-			[Bindable]private var _ropewayForce:RopewayForceVO;	
+			//[Bindable]private var _ropewayForce:RopewayForceVO;	
 			
 			[Bindable]private var _data:Object;	
+			
+			[Bindable]private var _ropewayTime:String;	
+			
+			[Bindable]private var _ropewayForce:String;	
 			
 			[Bindable]private var _alarmType:String;	
 			
@@ -32,20 +36,31 @@
 				_data = value;
 					
 				if(_data is RopewayForceVO)
-					_ropewayForce = _data as RopewayForceVO;
+				{
+					var rf:RopewayForceVO = _data as RopewayForceVO;
+				}
 				else if(_data.item is RopewayForceVO)
-					_ropewayForce = _data.item as RopewayForceVO;
+				{
+					rf = _data.item as RopewayForceVO;
+				}
 				
-				this.currentState = (_ropewayForce.alarm > 0)?"alarm":"normal";
-				
-				if(_ropewayForce.alarm == 1)
-					_alarmType = "平均值";
-				else if(_ropewayForce.alarm == 2)
-					_alarmType = "前次值";
-				else if(_ropewayForce.alarm == 3)
-					_alarmType = "平均值/前次值";
-				else
-					_alarmType = "未知报警";
+				if(rf)
+				{
+					_ropewayTime = df.format(rf.ropewayTime);
+					
+					_ropewayForce = rf.ropewayForce + " " + rf.ropewayUnit;
+					
+					this.currentState = (rf.alarm > 0)?"alarm":"normal";
+					
+					if(rf.alarm == 1)
+						_alarmType = "平均值";
+					else if(rf.alarm == 2)
+						_alarmType = "前次值";
+					else if(rf.alarm == 3)
+						_alarmType = "平均值/前次值";
+					else
+						_alarmType = "未知报警";
+				}
 			}
 		]]>
 	</fx:Script>	
@@ -70,11 +85,11 @@
 	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">		
 		<s:HGroup>
 			<s:Label text="时　间："/>
-			<s:Label text="{df.format(_ropewayForce.ropewayTime)}"/>
+			<s:Label text="{_ropewayTime}"/>
 		</s:HGroup>
 		<s:HGroup>
 			<s:Label text="抱索力："/>
-			<s:Label text="{_ropewayForce.ropewayForce} {_ropewayForce.ropewayUnit}"/>
+			<s:Label text="{_ropewayForce}"/>
 		</s:HGroup>
 		<s:HGroup includeIn="alarm">
 			<s:Label text="报　警："/>

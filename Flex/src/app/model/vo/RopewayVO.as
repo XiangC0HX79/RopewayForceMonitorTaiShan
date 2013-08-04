@@ -51,6 +51,7 @@ package app.model.vo
 		}
 		public function set ropewayRFIDEletric(value:Boolean):void
 		{
+			_source.RFIDDL = value?"0":"1";
 		}
 		
 		/**
@@ -62,6 +63,7 @@ package app.model.vo
 		}
 		public function set ropewayStation(value:String):void
 		{
+			_source.FromRopeStation = value;
 		}
 		
 		/**
@@ -73,6 +75,7 @@ package app.model.vo
 		}
 		public function set fromRopeWay(value:String):void
 		{
+			_source.FromRopeWay = value;
 		}
 		
 		/**

@@ -91,7 +91,7 @@ package app.model
 			where += " AND AlarmDatetime > '" + DateUtil.toLocaleW3CDTF(date) + "'";
 			where += " AND DealDatetime IS Null";
 			
-			return send("T_RopeDete_RopeAlarmRecord_GetList",onGetAlarmDealCol,where);
+			return send("T_RopeDete_RopeAlarmRecord_GetAllList",onGetAlarmDealCol,where);
 		}
 		
 		private function onGetAlarmDealCol(event:ResultEvent):void

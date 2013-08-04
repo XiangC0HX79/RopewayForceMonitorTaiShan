@@ -68,6 +68,7 @@
 			{
 				btnBar.selectedIndex = 0;
 				rbgStation.selectedValue = colStations[0];
+				checkDatetime.selected = false;
 				dateDayS.selectedDate = DateUtil.addDateTime('d',-1,new Date);
 				dateDayE.selectedDate = DateUtil.addDateTime('d',-1,new Date);
 				colRopeway.source = [];

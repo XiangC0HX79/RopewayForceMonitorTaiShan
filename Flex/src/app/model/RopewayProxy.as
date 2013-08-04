@@ -129,7 +129,6 @@ package app.model
 				}
 			}
 			
-			ropeway.ropewayRFIDEletric = ropewayForce.eletric;
 			ropeway.deteValue = ropewayForce.ropewayForce;
 			ropeway.humidity = ropewayForce.ropewayHumidity;
 			ropeway.temperature = ropewayForce.ropewayTemp;
@@ -182,14 +181,17 @@ package app.model
 			for each(var o:ObjectProxy in event.result)
 			{
 				var rf:RopewayForceVO = new RopewayForceVO(o);
+				PushRopewayForce(ropeway,rf);
+				/*rf.alarm = 0;
+				ropeway.alarm = 0;
 				
 				if(ropeway.ropewayHistory.length > 0)
 				{						
 					var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
 					if(Math.abs(rf.ropewayForce - prerf.ropewayForce) > RopewayProxy.alarmVal)
 					{
-						rf.alarm = 2;
-						ropeway.alarm = 2;
+						rf.alarm |= 2;
+						ropeway.alarm |= 2;
 					}
 				}
 				
@@ -197,20 +199,36 @@ package app.model
 				{						
 					if(Math.abs(rf.ropewayForce - ropeway.yesterdayAve) > RopewayProxy.alarmVal)
 					{
-						rf.alarm = 1;
-						ropeway.alarm = 1;
+						rf.alarm |= 1;
+						ropeway.alarm |= 1;
 					}
 				}
 				
-				ropeway.ropewayHistory.push(rf);
+				ropeway.ropewayHistory.push(rf);*/
 			}
 		}
 		
 		public function FindRopewayByForce(ropewayForce:RopewayForceVO):AsyncToken
 		{
-			return send("RopeDeteInfoToday_GetModel",null,ropewayForce.toString());
+			return send("RopeDeteInfoToday_GetModel",onFindRopewayByForce,ropewayForce.toString());
 		}
 				
+		private function onFindRopewayByForce(event:ResultEvent):void
+		{
+			if(event.result)
+			{
+				var ropeway:RopewayVO = new RopewayVO(event.result as ObjectProxy);
+				ropeway.ropewayHistory = [];
+				
+				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
+				PushRopewayForce(ropeway,rf);
+				
+				colRopeway.addItem(ropeway);
+				
+				event.token.ropeway = ropeway;
+			}
+		}
+		
 		public function GetRopewayCount(station:String):Number
 		{
 			var count:Number = 0;

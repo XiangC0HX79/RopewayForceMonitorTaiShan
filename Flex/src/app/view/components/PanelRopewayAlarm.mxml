@@ -6,7 +6,10 @@
 		 width="100%" minWidth="350" height="170">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" duration="500" repeatCount="26" target="{elli}" repeatBehavior="reverse"/>
+		<s:Fade id="fade" alphaFrom="0.2" alphaTo="1" 
+				effectStart="dispatchEvent(new Event(ALARM_START))"
+				effectEnd="dispatchEvent(new Event(ALARM_END))"
+				duration="500" repeatCount="26" target="{elli}" repeatBehavior="reverse"/>
 		<s:DateTimeFormatter id="dateTimeF" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
@@ -16,6 +19,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
+			import mx.events.EffectEvent;
 			
 			import spark.events.RendererExistenceEvent;
 			import spark.formatters.DateTimeFormatter;
@@ -24,6 +28,10 @@
 			public static const VOICE_CHANGE:String = "VoiceChange";
 			
 			public static const ALARM_DEAL:String = "AlarmDeal";
+			
+			public static const ALARM_START:String = "AlarmStart";
+			
+			public static const ALARM_END:String = "AlarmEnd";
 			
 			[Bindable]public var colAlarm:ArrayCollection;	
 			
@@ -55,7 +63,7 @@
 			private function onItemClick(event:Event):void
 			{
 				dispatchEvent(new Event(ALARM_DEAL));
-			}
+			}			
 		]]>
 	</fx:Script>
 	

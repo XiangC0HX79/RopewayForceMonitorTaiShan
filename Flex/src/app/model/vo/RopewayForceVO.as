@@ -83,14 +83,14 @@ package app.model.vo
 		/**
 		 * 电量
 		 **/
-		public function get eletric():Boolean
+		/*public function get eletric():Boolean
 		{
 			return (_source.DL == 0);
 		}
 		public function set eletric(value:Boolean):void	
 		{
 			_source.DL = value?0:1;
-		}
+		}*/
 		
 		/**
 		 * 时间

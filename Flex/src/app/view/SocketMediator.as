@@ -147,12 +147,15 @@ package app.view
 					rf.ropewayUnit = a[3];
 					rf.ropewayTemp = a[4];
 					rf.ropewayHumidity = a[5];
-					rf.eletric = (a[6] == "0");
 					rf.fromRopeStation = a[7];
+					
+					var eletric:Boolean = (a[6] == "0");
 					
 					var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
 					if(rw)
 					{
+						rw.ropewayRFIDEletric = eletric;
+						
 						if(rw.ropewayHistory)
 						{					
 							_ropewayProxy.PushRopewayForce(rw,rf);
@@ -173,6 +176,7 @@ package app.view
 						token = _ropewayProxy.FindRopewayByForce(rf);
 						token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
 						token.ropewayForce = rf;
+						token.eletric = eletric;
 					}
 				}
 			}
@@ -181,9 +185,9 @@ package app.view
 		private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
 		{			
 			var rw:RopewayVO = event.token.ropeway;
-			var rf:RopewayForceVO = event.token.ropewayForce;
+			//var rf:RopewayForceVO = event.token.ropewayForce;
 			
-			_ropewayProxy.PushRopewayForce(rw,rf);
+			//_ropewayProxy.PushRopewayForce(rw,rf);
 			
 			if(rw.ropewayStation == _config.station)
 				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
@@ -191,12 +195,12 @@ package app.view
 		
 		private function onFindRopewayByForce(event:ResultEvent,t:Object):void
 		{			
-			var rf:RopewayForceVO = event.token.ropewayForce;
+			//var rf:RopewayForceVO = event.token.ropewayForce;
 			if(event.result)
 			{
-				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
-				
-				_ropewayProxy.PushRopewayForce(rw,rf);
+				var rw:RopewayVO =  event.token.ropeway as RopewayVO;
+				rw.ropewayRFIDEletric = event.token.eletric;
+				//_ropewayProxy.PushRopewayForce(rw,rf);
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
