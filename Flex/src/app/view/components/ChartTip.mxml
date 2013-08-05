@@ -52,12 +52,12 @@
 					
 					this.currentState = (rf.alarm > 0)?"alarm":"normal";
 					
-					if(rf.alarm == 1)
+					if(rf.alarm | 4 == 4)
+						_alarmType = "低于400";
+					else if(rf.alarm | 1  == 1)
 						_alarmType = "平均值";
-					else if(rf.alarm == 2)
+					else if(rf.alarm | 2 == 2)
 						_alarmType = "前次值";
-					else if(rf.alarm == 3)
-						_alarmType = "平均值/前次值";
 					else
 						_alarmType = "未知报警";
 				}

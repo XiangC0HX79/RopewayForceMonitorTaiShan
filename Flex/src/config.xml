@@ -3,11 +3,22 @@
 	<!--<WebServiceUrl>http://localhost:10715/FlexWebService.asmx?wsdl</WebServiceUrl>-->
 	<ServerIp>192.168.1.212</ServerIp>
 	<ServerPort>4321</ServerPort>
-	<AlarmValue>50</AlarmValue>
 	<Stations>
-		<Station>桃花源驱动站</Station>
-		<Station>桃花源回转站</Station>
-		<Station>中天门驱动站</Station>
-		<Station>中天门回转站</Station>
+		<Station>
+			<SName>桃花源驱动站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
+		<Station>
+			<SName>桃花源回转站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
+		<Station>
+			<SName>中天门驱动站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
+		<Station>
+			<SName>中天门回转站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
 	</Stations>
 </Config>

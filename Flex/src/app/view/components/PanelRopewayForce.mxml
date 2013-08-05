@@ -43,7 +43,7 @@
 				{
 					_color = (rw.alarm > 0)?0xFF0000:0x02C462;
 					
-					lbOpenCount.text = rw.switchFreq + "/" + (rw.switchFreqTotal + rw.switchFreq);
+					//lbOpenCount.text = rw.switchFreq + "/" + (rw.switchFreqTotal + rw.switchFreq);
 					
 					lbForce.text = String(rw.deteValue);
 					
@@ -67,7 +67,7 @@
 				}
 				else
 				{					
-					lbOpenCount.text = "";
+					//lbOpenCount.text = "";
 					
 					lbForce.text = "";
 					
@@ -95,11 +95,11 @@
 			
 			<s:Image source="assets/image/panel_car.png"/>	
 			
-			<s:Label id="lbOpenCount" fontSize="20" fontWeight="bold" top="0" right="0"/>
+			<s:Label text="{_ropeway.switchFreq}/{_ropeway.switchFreqTotal}" fontSize="20" fontWeight="bold" top="0" right="0"/>
 			
 			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
 				<s:Label width="120" text="{_ropeway.ropewayCarId}" textAlign="center"
-						 verticalAlign="middle"/>
+						 verticalAlign="middle" color="0x1b5aa2"/>
 				<s:Spacer width="10"/>
 				<s:Label id="lbForce" text="260"/>
 				<s:Label id="lbUnit" text="KG"/>

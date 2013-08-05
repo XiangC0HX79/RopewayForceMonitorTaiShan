@@ -2,7 +2,7 @@
 <s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 label="实时抱索力" xmlns:components="custom.components.*">
+		 label="历史抱索力" xmlns:components="custom.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
@@ -23,8 +23,10 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.WebServiceProxy;
 			import app.model.vo.RopewayForceVO;
 			
+			import com.adobe.serialization.json.JSON;
 			import com.adobe.utils.DateUtil;
 			
 			import custom.itemRenderer.ItemRendererGroup;
@@ -33,6 +35,8 @@
 			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.events.FlexEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.codec.JPEGEncoder;
 			
 			import org.puremvc.as3.interfaces.IMediator;
 			import org.puremvc.as3.interfaces.INotification;
@@ -40,6 +44,7 @@
 			
 			import spark.events.IndexChangeEvent;
 			import spark.events.RendererExistenceEvent;
+			import spark.filters.ColorMatrixFilter;
 			
 			public static var ONE_HOUR:Number = 60 * 60 * 1000;
 			
@@ -48,6 +53,8 @@
 			public static var STATION_CHANGE:String = "StaionChange";
 			
 			public static var SELECT_ONE:String = "SelectOne";
+			
+			public static var EXPORT:String = "Export";
 			
 			[Bindable]public var colStations:ArrayCollection;
 			
@@ -70,15 +77,15 @@
 						
 			public function get dateS():Date
 			{				
-				return new Date(dateTime.selectedDate.time + timeS.time);
+				return new Date(dateTimeS.selectedDate.time + timeS.time);
 			}
 			
 			public function get dateE():Date
 			{				
 				if(timeE.time != 0)					
-					return new Date(dateTime.selectedDate.time +  timeE.time);
+					return new Date(dateTimeE.selectedDate.time +  timeE.time);
 				else	
-					return new Date(dateTime.selectedDate.fullYear,dateTime.selectedDate.month,dateTime.selectedDate.date + 1);
+					return new Date(dateTimeE.selectedDate.fullYear,dateTimeE.selectedDate.month,dateTimeE.selectedDate.date + 1);
 			}
 			
 			private function labelForce(item:Object, column:GridColumn):String
@@ -122,7 +129,8 @@
 			{
 				btnBar.selectedIndex = 1;
 				rbgStation.selectedValue = colStations[0];
-				dateTime.selectedDate = new Date;
+				dateTimeS.selectedDate = new Date;
+				dateTimeE.selectedDate = new Date;
 				timeS.formatTime = "";
 				timeE.formatTime = "";
 				listCarId.selectedIndex = 0;
@@ -149,21 +157,20 @@
 			</s:DataGroup>
 		</components:SkinnableTitleContainer>	
 		
-		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="200" title="统计时间">
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="280" title="统计时间">
 			<s:HGroup width="100%" verticalAlign="middle">
-				<s:Label text="日　　期："/>
-				<mx:DateField id="dateTime" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}" 
+				<s:Label text="开始时间："/>			
+				<mx:DateField id="dateTimeS" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}" 
 							  dayNames="['日','一','二','三','四','五','六']"
-							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
-			</s:HGroup>
-			
-			<s:HGroup width="100%" verticalAlign="middle">
-				<s:Label text="开始时间："/>				
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>	
 				<components:TimeField id="timeS" width="100%" height="21"/>
 			</s:HGroup>
 			
 			<s:HGroup width="100%" verticalAlign="middle">
-				<s:Label text="结束时间："/>				
+				<s:Label text="结束时间："/>		
+				<mx:DateField id="dateTimeE" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}" 
+							  dayNames="['日','一','二','三','四','五','六']"
+							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>			
 				<components:TimeField id="timeE" width="100%" height="21"/>
 			</s:HGroup>
 		</components:SkinnableTitleContainer>	
@@ -188,23 +195,29 @@
 			</s:HGroup>	
 		</components:SkinnableTitleContainer>		
 		
-		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
-			<s:ButtonBar width="100%" id="btnBar" changing="btnBar_changingHandler(event)" selectedIndex="1">
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
 				<s:ArrayCollection>
 					<fx:String>图形</fx:String>
 					<fx:String>表格</fx:String>
 				</s:ArrayCollection>
 			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
 			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
 					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-			
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
 		</components:SkinnableTitleContainer>	
 	</s:HGroup>
 	
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
 		<s:NavigatorContent>			
-			<s:SkinnableContainer left="0" right="0" top="0" bottom="0">			
+			<s:SkinnableContainer id="containerChart" left="0" right="0" top="0" bottom="0">			
 				<s:Rect id="border" left="0" right="0" top="0" bottom="0">
 					<s:stroke>
 						<s:SolidColorStroke weight="1" color="#63c3d6"/>
@@ -260,7 +273,7 @@
 				<s:Label left="10" top="20" text="抱索力（KG）"/>
 				<s:Label right="15" bottom="40" text="时间"/>
 				<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-						 text="{listRopewayId.selectedItem.ropewayCarId}实时抱索力统计"/>
+						 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>
 			</s:SkinnableContainer>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
@@ -270,7 +283,7 @@
 			
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Line stroke="{gapStroke}" width="100%"/>
-				<s:Label text="实时抱索力统计（{colRopewayHis.length}）" fontWeight="bold"/>
+				<s:Label text="历史抱索力（{colRopewayHis.length}）" fontWeight="bold"/>
 				<s:Line stroke="{gapStroke}" width="100%"/>
 			</s:HGroup>
 			

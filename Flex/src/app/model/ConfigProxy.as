@@ -7,6 +7,7 @@ package app.model
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -54,9 +55,12 @@ package app.model
 			}
 			
 			var col:Array = [];
-			for each(var s:String in xml.Stations.Station)
+			RopewayProxy.dictAlarmValue = new Dictionary;
+			for each(var x:XML in xml.Stations.Station)
 			{
+				var s:String = String(x.SName);
 				col.push(s);
+				RopewayProxy.dictAlarmValue[s] = Number(x.AlarmValue);
 			}
 			
 			var index:Number = Number(config.station);
@@ -80,11 +84,11 @@ package app.model
 				config.stations = new ArrayCollection(col[0]);
 			}
 			
-			var value:Number = Number(xml.AlarmValue);
+			/*var value:Number = Number(xml.AlarmValue);
 			if(!isNaN(value))
 			{
 				RopewayProxy.alarmVal = value;
-			}
+			}*/
 			
 			config.station = config.stations[0];
 					

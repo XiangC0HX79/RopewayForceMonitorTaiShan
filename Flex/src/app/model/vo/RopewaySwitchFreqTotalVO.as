@@ -1,5 +1,7 @@
 package app.model.vo
 {
+	import com.adobe.serialization.json.JSON;
+	
 	import mx.utils.ObjectProxy;
 
 	[Bindable]
@@ -70,6 +72,11 @@ package app.model.vo
 		public function RopewaySwitchFreqTotalVO(source:ObjectProxy)
 		{
 			_source = source;			
+		}
+		
+		public function toString():String
+		{
+			return JSON.encode(_source.valueOf());
 		}
 	}
 }

@@ -56,6 +56,8 @@
 			
 			public static var SELECT_ONE:String = "SelectOne";
 			
+			public static var EXPORT:String = "Export";
+			
 			[Bindable]public var colStations:ArrayCollection;
 			
 			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
@@ -265,25 +267,31 @@
 				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
 								width="100%" change="listRopewayId_changeHandler(event)"/>
 			</s:HGroup>	
-		</components:SkinnableTitleContainer>		
+		</components:SkinnableTitleContainer>	
 		
-		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
-			<s:ButtonBar width="100%" id="btnBar" changing="btnBar_changingHandler(event)" selectedIndex="1">
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
 				<s:ArrayCollection>
 					<fx:String>图形</fx:String>
 					<fx:String>表格</fx:String>
 				</s:ArrayCollection>
 			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
 			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
 					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
-			
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>	
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
 		</components:SkinnableTitleContainer>	
 	</s:HGroup>
 	
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%">
 		<s:NavigatorContent>
-			<s:SkinnableContainer left="0" right="0" top="0" bottom="0">			
+			<s:SkinnableContainer id="containerChart" left="0" right="0" top="0" bottom="0">			
 				<s:Rect id="border" left="0" right="0" top="0" bottom="0">
 					<s:stroke>
 						<s:SolidColorStroke weight="1" color="#63c3d6"/>

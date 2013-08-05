@@ -1,5 +1,7 @@
 package app.model.vo
 {
+	import flash.utils.Dictionary;
+	
 	import mx.collections.ArrayCollection;
 
 	[Bindable]

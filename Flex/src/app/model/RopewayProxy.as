@@ -23,8 +23,8 @@ package app.model
 	{
 		public static const NAME:String = "RopewayProxy";
 		
-		public static var alarmVal:Number = 50;
-		
+		public static var dictAlarmValue:Dictionary;
+				
 		public function RopewayProxy()
 		{
 			super(NAME, new ArrayCollection);
@@ -55,6 +55,10 @@ package app.model
 				if(arr.every(callback,null))
 				{
 					rw.aveValue = Math.round(rw.totalValue / rw.switchFreq);
+					
+					rw.totalValue = 0;
+					rw.switchFreq = 0;
+					
 					arr.push(rw);
 				}
 			}
@@ -110,10 +114,16 @@ package app.model
 			ropewayForce.alarm = 0;
 			ropeway.alarm = 0;
 			
+			if(ropewayForce.ropewayForce < 400)
+			{						
+				ropewayForce.alarm |= 4;
+				ropeway.alarm |= 4;
+			}
+			
 			if(ropeway.ropewayHistory.length > 0)
 			{						
 				var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
-				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > RopewayProxy.alarmVal)
+				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > dictAlarmValue[ropeway.ropewayStation])
 				{
 					ropewayForce.alarm |= 2;
 					ropeway.alarm |= 2;
@@ -122,7 +132,7 @@ package app.model
 			
 			if(ropeway.yesterdayAve > 0)
 			{						
-				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > RopewayProxy.alarmVal)
+				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > dictAlarmValue[ropeway.ropewayStation])
 				{
 					ropewayForce.alarm |= 1;
 					ropeway.alarm |= 1;

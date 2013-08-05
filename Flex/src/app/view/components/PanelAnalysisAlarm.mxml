@@ -40,6 +40,8 @@
 			
 			public static var QUERY:String = "Query";
 			
+			public static var EXPORT:String = "Export";
+			
 			public static var STATION_CHANGE:String = "StaionChange";
 			
 			[Bindable]public var colStations:ArrayCollection;
@@ -169,7 +171,10 @@
 		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
 			<s:Button label="查询" icon="@Embed('assets/image/btn_find.jpg')" 
 					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
-			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>		
 		</components:SkinnableTitleContainer>	
 	</s:HGroup>
 		

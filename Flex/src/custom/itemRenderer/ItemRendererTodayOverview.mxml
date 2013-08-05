@@ -43,7 +43,7 @@
 		</s:HGroup>
 		
 		<s:HGroup paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}">
-			<s:Label text="{_ropeway.ropewayCarId}"/>
+			<s:Label text="{_ropeway.ropewayCarId}" color="0x1b5aa2"/>
 			
 			<s:Label text="{_ropeway.deteValue}{_ropeway.valueUnit}"/>			
 		</s:HGroup>

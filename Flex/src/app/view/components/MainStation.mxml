@@ -87,7 +87,7 @@
 	</s:HGroup>
 	
 	<s:HGroup id="gpAnalysis" height="100%" gap="30" right="0" verticalAlign="middle" paddingRight="60" visible="false">	
-		<s:RadioButton label="实时抱索力" groupName="rbgAnalysis" selected="true"/>
+		<s:RadioButton label="历史抱索力" groupName="rbgAnalysis" selected="true"/>
 		<s:RadioButton label="平均抱索力" groupName="rbgAnalysis"/>
 		<s:RadioButton label="开合次数" groupName="rbgAnalysis"/>
 		<s:RadioButton label="总开合次数" groupName="rbgAnalysis"/>
