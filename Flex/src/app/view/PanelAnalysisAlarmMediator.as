@@ -20,6 +20,7 @@ package app.view
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayCollection;
@@ -116,84 +117,31 @@ package app.view
 		private const xltname:String = "报警信息";	
 		
 		private function onExport(event:Event):void
-		{						
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在导出数据，请稍后..");
+		{			
+			var baseUrl:String = WebServiceProxy.BASE_URL;
+			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportChart.aspx");
 			
-			flash.utils.setTimeout(export,200);
-		}	
-		
-		private function export():void
-		{
-			var bound:String = "---------------------------293342587424372"; //暂时固定，留待扩充
-			var cntType: String = "multipart/form-data;boundary=" + bound;
-			var header:URLRequestHeader = new URLRequestHeader ("Content-Type", cntType);
+			var urlVar:URLVariables = new URLVariables;
+			urlVar.xltname = xltname;
 			
-			var data:ByteArray = new ByteArray(); //用于保存URLRequest体内容的数组
-			
-			//开始封装图表内容					
-			var ts:String = "--" + bound + "\r\n" + "Content-Disposition: form-data; name=\"table\"; filename=\"table.xls\";\r\n";
-			ts += "Content-Type: image/jpg\r\n\r\n";
-			
-			data.writeMultiByte(ts, "GB2312");
-			
-			data.position = data.length;
-			var json:String = "[";
+			var data:String = "[";
 			for each(var rf:RopewayAlarmVO in panelAnalysisAlarm.colRopewayHis)
 			{
-				json += rf.toString() + ",";
+				data += rf.toString() + ",";
 			}
-			json = json.substr(0,json.length - 1) + "]";
-			data.writeMultiByte(json, "GB2312");
+			data = data.substr(0,data.length - 1) + "]";
+			urlVar.data = data;
+						
+			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
+			downloadURL.method = URLRequestMethod.POST;
+			downloadURL.contentType = "text/plain";	
+			downloadURL.data = urlVar;
 			
-			//添加结束分隔符					
-			var es:String = "\r\n--" + bound + "--\r\n";
-			
-			data.position = data.length;
-			data.writeMultiByte(es, "GB2312");
-			
-			var baseUrl:String = WebServiceProxy.BASE_URL;
-			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportChart.aspx?xltname=" + xltname);
-			var request:URLRequest = new URLRequest(url);
-			request.requestHeaders.push(header);
-			request.method = "POST";	
-			request.data = data; //添加为URLRequest的体内容
-			
-			var load:URLLoader = new URLLoader(request);
-			load.addEventListener(Event.COMPLETE, onUpload);
-			load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
-		}
-		
-		private function onUpload(event:Event):void
-		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
-			
-			var jd:* = JSON.decode(event.target.data);
-			if(jd.msg == 0)
-			{
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,["数据导出成功，请选择本地保存位置。",fileDownload]);
-			}
-			else
-			{				
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,jd.msgbox);
-			}
-			
-			function fileDownload(event:CloseEvent):void
-			{		
-				var baseUrl:String = WebServiceProxy.BASE_URL;
-				var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/DownloadChart.aspx");
-				
-				var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
-				downloadURL.method = URLRequestMethod.POST;
-				downloadURL.contentType = "text/plain";	
-				downloadURL.data = encodeURIComponent(jd.msgbox);
-				
-				var fileRef:FileReference = new FileReference;
-				fileRef.addEventListener(Event.SELECT,onFileSelect);	
-				//fileRef.addEventListener(Event.CANCEL,onFileCancel);				
-				fileRef.addEventListener(Event.COMPLETE,onDownloadFile);
-				fileRef.addEventListener(IOErrorEvent.IO_ERROR,onIOError);			
-				fileRef.download(downloadURL,xltname + ".xls");	
-			}
+			var fileRef:FileReference = new FileReference;
+			fileRef.addEventListener(Event.SELECT,onFileSelect);				
+			fileRef.addEventListener(Event.COMPLETE,onDownloadFile);
+			fileRef.addEventListener(IOErrorEvent.IO_ERROR,onIOError);			
+			fileRef.download(downloadURL,xltname + ".xls");	
 			
 			function onFileSelect(event:Event):void
 			{						

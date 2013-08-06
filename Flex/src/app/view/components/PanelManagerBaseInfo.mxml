@@ -66,9 +66,9 @@
 				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 				alternatingRowColors="[#FFFFFF,#CFEDF7]">
 		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>		
+			<s:ArrayList>	
 				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
 				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
 				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="200"/>
 				<s:GridColumn headerText="备注" dataField="memo"/>
@@ -108,9 +108,9 @@
 				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 				alternatingRowColors="[#FFFFFF,#CFEDF7]">
 		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>		
+			<s:ArrayList>	
 				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
 				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
 				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="100"/>
 				<s:GridColumn headerText="更新人员" dataField="updateUser" width="200"/>

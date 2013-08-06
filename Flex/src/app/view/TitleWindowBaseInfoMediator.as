@@ -132,6 +132,9 @@ package app.view
 			
 			for each(var r:RopewayBaseinfoVO in _ropewayBaseinfoProxy.colBaseinfo)
 			{
+				if(r.ropewayId == ropewayId)
+					continue;
+				
 				if(r.ropewayCarId == ropewayCarId)
 				{
 					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"吊箱编号已存在！");
