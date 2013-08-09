@@ -150,8 +150,12 @@ package app.view
 			
 			if(panelAnalysisForce.btnBar.selectedIndex == 0)
 			{					
+				panelAnalysisForce.lbTitle.visible = true;
+				
 				var imgBD:BitmapData = new BitmapData(panelAnalysisForce.containerChart.width,panelAnalysisForce.containerChart.height,false,0xFFFFFF);
 				imgBD.draw(panelAnalysisForce.containerChart);
+				
+				panelAnalysisForce.lbTitle.visible = false;
 				
 				var jpegEncoder:JPEGEncoder = new JPEGEncoder;
 				var ba:ByteArray = jpegEncoder.encode(imgBD);

@@ -33,6 +33,7 @@
 			import custom.itemRenderer.ItemRendererLineChartForce;
 			
 			import mx.charts.HitData;
+			import mx.charts.chartClasses.IAxisRenderer;
 			import mx.charts.events.ChartItemEvent;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
@@ -45,6 +46,7 @@
 			import spark.events.IndexChangeEvent;
 			import spark.events.RendererExistenceEvent;
 			import spark.filters.ColorMatrixFilter;
+
 			
 			public static var ONE_HOUR:Number = 60 * 60 * 1000;
 			
@@ -139,6 +141,12 @@
 				numTempMax.text = "";
 				colRopewayHis.source = [];
 			}
+			
+			private function labelHorizontalAxis(categoryValue:Object, previousCategoryValue:Object, axis:CategoryAxis, categoryItem:Object):String 
+			{ 				
+				var s:Array = dateF.format(categoryValue).split(" ");
+				return s[0]+ "\n" + s[1];
+			}
 		]]>
 	</fx:Script>
 	
@@ -214,67 +222,77 @@
 					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
 		</components:SkinnableTitleContainer>	
 	</s:HGroup>
-	
+			
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
-		<s:NavigatorContent>			
-			<s:SkinnableContainer id="containerChart" left="0" right="0" top="0" bottom="0">			
-				<s:Rect id="border" left="0" right="0" top="0" bottom="0">
-					<s:stroke>
-						<s:SolidColorStroke weight="1" color="#63c3d6"/>
-					</s:stroke>
-				</s:Rect>	
-				
-				<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
-							  left="20" right="40" bottom="20" top="40" dataProvider="{colRopewayHis}">
-					<mx:seriesFilters>
-						<fx:Array/>
-					</mx:seriesFilters>
-					<mx:backgroundElements>
-						<fx:Array>						
-							<mx:GridLines gridDirection="both" 
-										  horizontalStroke="{gridStroke}"
-										  verticalStroke="{gridStroke}"/>
-						</fx:Array>
-					</mx:backgroundElements>
-					
-					<mx:annotationElements>
-						<mx:CartesianDataCanvas id="dataCanvas"/>
-					</mx:annotationElements>
-					
-					<mx:verticalAxis>
-						<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
-					</mx:verticalAxis>
-					<mx:horizontalAxis>
-						<mx:DateTimeAxis displayLocalTime="true"
-										 alignLabelsToUnits="true"
-										 id="horizontalAxis"/>
-					</mx:horizontalAxis>
-					
-					<mx:verticalAxisRenderers>					
-						<mx:AxisRenderer axis="{verticalAxis}" 
-										 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
-										 minorTickPlacement="none"/>
-					</mx:verticalAxisRenderers>
-					
-					<mx:horizontalAxisRenderers>			
-						<mx:AxisRenderer axis="{horizontalAxis}" 
-										 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
-										 minorTickPlacement="none"/>					
-					</mx:horizontalAxisRenderers>
-					
-					<mx:series>
-						<mx:LineSeries yField="ropewayForce" xField="ropewayTime" lineStroke="{lStroke}"
-									   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}" 
-									   showDataEffect="{wipeShow}">
-						</mx:LineSeries>
-					</mx:series>
-				</mx:LineChart>		
-				
-				<s:Label left="10" top="20" text="抱索力（KG）"/>
-				<s:Label right="15" bottom="40" text="时间"/>
-				<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-						 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>
-			</s:SkinnableContainer>
+		<s:NavigatorContent>					
+			<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+				<s:stroke>
+					<s:SolidColorStroke weight="1" color="#63c3d6"/>
+				</s:stroke>
+			</s:Rect>	
+			
+			<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+					 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>
+			
+			<s:Scroller left="0" right="0" top="0" bottom="0">	
+				<s:Group>						
+					<s:Group id="containerChart" height="100%" width="{colRopewayHis.length * 65 + 110}">
+						<s:Label id="lbTitle" visible="false" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+								 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>						
+						<s:Label left="10" top="20" text="抱索力（KG）"/>
+						<s:Label right="15" bottom="40" text="时间"/>
+						
+						<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
+									  left="20" right="40" bottom="20" top="40" dataProvider="{colRopewayHis}">
+							<mx:seriesFilters>
+								<fx:Array/>
+							</mx:seriesFilters>
+							<mx:backgroundElements>
+								<fx:Array>						
+									<components:GridLineAnalyse gridDirection="both"
+												  horizontalStroke="{gridStroke}"
+												  verticalStroke="{gridStroke}">
+										<components:verticalFill>
+											<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+										</components:verticalFill>
+									</components:GridLineAnalyse>
+								</fx:Array>
+							</mx:backgroundElements>
+							
+							<mx:verticalAxis>
+								<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+							</mx:verticalAxis>
+							
+							<mx:horizontalAxis>
+								<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
+												 ticksBetweenLabels="false" padding="1"
+												 labelFunction="labelHorizontalAxis" />
+							</mx:horizontalAxis>
+							
+							<mx:verticalAxisRenderers>					
+								<mx:AxisRenderer axis="{verticalAxis}" 
+												 axisStroke="{tickStroke}" 
+												 tickStroke="{tickStroke}"
+												 minorTickPlacement="none"/>
+							</mx:verticalAxisRenderers>
+							
+							<mx:horizontalAxisRenderers>			
+								<mx:AxisRenderer axis="{horizontalAxis}"
+												 textAlign="center"
+												 axisStroke="{tickStroke}" 
+												 tickStroke="{tickStroke}"/>					
+							</mx:horizontalAxisRenderers>
+							
+							<mx:series>
+								<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
+											   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}" 
+											   showDataEffect="{wipeShow}">
+								</mx:LineSeries>
+							</mx:series>
+						</mx:LineChart>		
+					</s:Group>
+				</s:Group>
+			</s:Scroller>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
 			<s:layout>

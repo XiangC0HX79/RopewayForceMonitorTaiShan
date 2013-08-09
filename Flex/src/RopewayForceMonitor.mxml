@@ -41,7 +41,7 @@
 				var contextMenu:ContextMenu=new ContextMenu();
 				contextMenu.hideBuiltInItems(); 
 				
-				var contextMenuItem:ContextMenuItem=new ContextMenuItem("版本：1.2.0");			
+				var contextMenuItem:ContextMenuItem=new ContextMenuItem("版本：1.2.1");			
 				contextMenu.customItems.push(contextMenuItem);
 				
 				imageVer.contextMenu=contextMenu;
