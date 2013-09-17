@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" fontSize="12"
+			   creationComplete="app_creationComplete(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import model.ChartData;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.utils.ObjectUtil;
+			
+			import spark.formatters.DateTimeFormatter;
+			
+			import view.ChartTip;
+						
+			private var timeMin:Number;
+			
+			private var timeMax:Number;
+						
+			[Bindable]private var dateMin:Date;
+			
+			[Bindable]private var dateMax:Date;
+			
+			[Bindable]private var dataPro:Array;
+			
+			private var _chartTip:ChartTip = new ChartTip;
+			
+			private var _file:FileReference;
+			
+			protected function app_creationComplete(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub		
+				var dt:Date = new Date;
+				var testDt:Array = [];
+				
+				var df:DateTimeFormatter = new DateTimeFormatter;
+				df.dateTimePattern = "yyyy/MM/dd HH:mm:ss";
+				for(var i:int = 0;i<400;i++)
+				{
+					var o:Object = {};
+					o.Month = df.format(new Date(dt.time + 6*60*60*1000*i));
+					o.Count = int(Math.random() * 150);
+					o.act = "";
+					o.测试 = "测试" + i;
+					testDt.push(o);
+				} 
+								
+				UpdateChart(JSON.stringify(testDt),"Month","Count","act"); 
+				
+				_file = new FileReference;
+				
+				ExternalInterface.addCallback("updateChart",UpdateChart);
+			}
+			
+			private function UpdateChart(dp:String,xField:String = "xField",yField:String = "yField",actField:String = "actField"):void
+			{
+				var col:Array = JSON.parse(dp) as Array;
+				
+				if(!col || (col.length == 0))
+				{
+					Alert.show("数据错误。");
+					return;
+				}
+				
+				var objInfo:Object = ObjectUtil.getClassInfo(col[0]);
+				var fieldName:Array = objInfo["properties"] as Array;					
+				if(fieldName.length < 3)
+				{
+					return;
+				}
+								
+				dataPro = [];
+				for each(var item:Object in col)
+				{
+					var charData:ChartData = new ChartData;
+					
+					for each(var qn:QName in fieldName)
+					{
+						if(qn.localName == xField)
+						{
+							charData.xField = new Date(Date.parse(item[qn.localName]));
+						}
+						else if(qn.localName == yField)
+						{
+							charData.yField = Number(item[qn.localName]);
+						}
+						else if(qn.localName == actField)
+						{
+							charData.actField = String(item[qn.localName]);
+						}
+						else
+						{
+							charData.data[qn.localName] = item[qn.localName];
+						}
+					}
+					
+					if(charData.xField && charData.yField)
+						dataPro.push(charData);
+				}
+				
+				if(!dataPro || (dataPro.length == 0))
+				{
+					Alert.show("数据错误。");
+					return;
+				}
+				
+				timeMin = Date.parse(dataPro[0].xField);
+				dateMin = new Date(timeMin);
+				
+				timeMax = Date.parse(dataPro[dataPro.length - 1].xField);
+				dateMax = new Date(timeMax);
+				
+				if(!chart.hasEventListener(MouseEvent.MOUSE_DOWN))
+					chart.addEventListener(MouseEvent.MOUSE_DOWN,chart_mouseDownHandler);
+				
+				if(!chart.hasEventListener(MouseEvent.MOUSE_MOVE))
+					chart.addEventListener(MouseEvent.MOUSE_MOVE,chart_mouseMoveHandler);
+				
+				if(!chart.hasEventListener(MouseEvent.CLICK))
+					chart.addEventListener(MouseEvent.CLICK,chart_clickHandler);
+				
+				if(!chart.hasEventListener(MouseEvent.MOUSE_OUT))
+					chart.addEventListener(MouseEvent.MOUSE_OUT,chart_mouseOutHandler);				
+			}			
+			
+			private var sDt:Date;
+			private var _d:ChartData;
+			protected function chart_mouseMoveHandler(event:MouseEvent):void
+			{				
+				var localPt:Point = dataCanvas.globalToLocal(new Point(event.stageX,event.stageY));
+				
+				var dt:Date = new Date(dataCanvas.localToData(localPt)[0]);				
+				
+				if(event.buttonDown)
+				{
+					var off:Number = sDt.time - dt.time;
+					
+					if((dateMin.time + off >= timeMin)
+						&& (dateMax.time + off <= timeMax))
+					{
+						dateMin = new Date(dateMin.time + off);
+						dateMax = new Date(dateMax.time + off);
+					}
+				}
+				else
+				{
+					_d = getNearestData(dt,dataPro);
+					
+					dataCanvas.clear();
+					dataCanvas.beginFill(0xE48701);
+					dataCanvas.drawCircle(_d.xField,_d.yField,5);
+					dataCanvas.endFill();
+					
+					_chartTip.d = _d;
+										
+					off = 10;
+					
+					var pt:Point = dataCanvas.dataToLocal(_d.xField,_d.yField);
+					
+					var w:Number = 165;
+					var h:Number = 50;
+					if(_chartTip.txt.width && _chartTip.txt.height)
+					{
+						w = _chartTip.txt.width + 20;
+						h = _chartTip.txt.height + 20;
+					}
+					
+					var lbrect:Rectangle = new Rectangle(pt.x - off - w,pt.y + off,w,h);
+					var rbrect:Rectangle = new Rectangle(pt.x + off,pt.y + off,w,h);
+					var ltrect:Rectangle = new Rectangle(pt.x - off - w,pt.y - off - h,w,h);
+					var rtrect:Rectangle = new Rectangle(pt.x + off,pt.y - off - h,w,h);
+					
+					var prect:Rectangle = new Rectangle(0,0,dataCanvas.width,dataCanvas.height);
+					
+					if(prect.containsRect(lbrect))
+					{
+						pt.x = lbrect.x;
+						pt.y = lbrect.y;
+					}
+					else if(prect.containsRect(rbrect))
+					{
+						pt.x = rbrect.x;
+						pt.y = rbrect.y;
+					}
+					else if(prect.containsRect(ltrect))
+					{
+						pt.x = ltrect.x;
+						pt.y = ltrect.y;
+					}
+					else
+					{
+						pt.x = rtrect.x;
+						pt.y = rtrect.y;
+					}
+					
+					var cs:Array = dataCanvas.localToData(new Point(pt.x,pt.y));
+					var ce:Array = dataCanvas.localToData(new Point(pt.x + w,pt.y + h));
+					
+					dataCanvas.dataChildren = [_chartTip];
+					dataCanvas.updateDataChild(_chartTip,new Date(cs[0]),cs[1],new Date(ce[0]),ce[1]);
+				}
+			}
+			
+			protected function chart_mouseDownHandler(event:MouseEvent):void
+			{
+				if(event.buttonDown)
+				{
+					sDt = new Date(dataCanvas.localToData(new Point(event.localX,event.localY))[0]);
+				}
+			}
+			
+			protected function linkbar_itemClickHandler(event:ItemClickEvent):void
+			{
+				var min:Date = new Date(dateMax.time);
+				
+				var lb:String = linkBar.dataProvider[event.index];
+				switch(lb)
+				{
+					case "1周":
+						min.date -= 7;
+						break;
+					case "1月":
+						min.month -= 1;
+						break;
+					case "1季度":
+						min.month -= 3;
+						break;
+					case "半年":
+						min.month -= 6;
+						break;
+					case "1年":
+						min.fullYear -= 1;
+						break;
+					case "全部":
+						min = new Date(timeMin);
+						break;
+				}
+				
+				if(min.time < timeMin)
+					min = new Date(timeMin);
+				
+				dateMin = min;
+			}
+			
+			private function getNearestData(date:Date,col:Array):ChartData
+			{
+				if(date.time <= col[0].xField.time)
+					return col[0];
+				
+				if(date.time >= col[col.length - 1].xField.time)
+					return col[col.length - 1];
+				
+				if(col.length == 2)
+				{
+					var f:Number = date.time - col[0].xField.time;
+					var c:Number = col[1].xField.time - date.time;
+					return (f < c)?col[0]:col[1];
+				}
+								
+				var i:int = Math.floor(col.length / 2);			
+				if(date.time < col[i].xField.time)
+				{
+					return getNearestData(date,col.slice(0,i + 1));
+				}
+				else if(date.time > col[i].xField.time)
+				{					
+					return getNearestData(date,col.slice(i,col.length));
+				}
+				else
+				{
+					return col[i];
+				}
+			}
+			
+			protected function chart_clickHandler(event:MouseEvent):void
+			{
+				if(_d)
+				{					
+					ExternalInterface.call("onChartClick",_d.actField);
+				}
+			}
+			
+			protected function img_buttonDownHandler(event:FlexEvent):void
+			{	
+				var jpeg:JPEGEncoder = new JPEGEncoder;
+				_file.save(jpeg.encode(ImageSnapshot.captureBitmapData(this)),"chart.jpg");
+			}
+			
+			protected function chart_mouseOutHandler(event:MouseEvent):void
+			{
+				dataCanvas.clear();
+				dataCanvas.removeAllChildren();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		
+		<s:SolidColorStroke id="lineStroke" color="0xE48701" weight="1"/>
+		
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		
+		<s:DateTimeFormatter id="dateTimeFormatter" dateTimePattern="yyyy-MM-dd"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
+	<!--
+	<s:HGroup>
+		<s:Label id="lblDate" text="{dateTimeFormatter.format(dateMin)} 至 {dateTimeFormatter.format(dateMax)}"/>
+		<s:Spacer width="100%"/>
+		<s:Label id="lblValue"/>
+	</s:HGroup>
+	-->	
+	
+		<!--<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+			<s:stroke>
+				<s:SolidColorStroke color="0xB5B5B5"/>
+			</s:stroke>
+		</s:Rect>-->
+		<mx:LineChart id="chart" width="100%" height="100%" dataProvider="{dataPro}" fontSize="12">
+			<mx:seriesFilters>
+				<fx:Array/>
+			</mx:seriesFilters>
+			
+			<mx:backgroundElements>
+				<fx:Array>						
+					<mx:GridLines gridDirection="horizontal" 
+								  horizontalStroke="{gridStroke}"
+								  verticalStroke="{gridStroke}"/>
+				</fx:Array>
+			</mx:backgroundElements>
+			
+			<mx:annotationElements>
+				<mx:CartesianDataCanvas id="dataCanvas"/>
+			</mx:annotationElements>
+			
+			<mx:verticalAxis>
+				<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+			</mx:verticalAxis>
+			
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis id="horizontalAxis" maximum="{dateMax}" minimum="{dateMin}"/>
+			</mx:horizontalAxis>
+			
+			<mx:verticalAxisRenderers>					
+				<mx:AxisRenderer axis="{verticalAxis}" tickPlacement="none" axisStroke="{tickStroke}"/>
+			</mx:verticalAxisRenderers>
+			
+			<mx:horizontalAxisRenderers>			
+				<mx:AxisRenderer axis="{horizontalAxis}" tickPlacement="none" axisStroke="{tickStroke}"/>					
+			</mx:horizontalAxisRenderers>
+			
+			<mx:series>
+				<mx:LineSeries xField="xField" yField="yField" lineStroke="{lineStroke}"/>
+			</mx:series>
+		</mx:LineChart>
+	
+	<s:Line width="100%" stroke="{gridStroke}"/>
+	
+	<s:HGroup verticalAlign="middle">
+		<mx:LinkButton label="生成图片" buttonDown="img_buttonDownHandler(event)"
+					   textDecoration="underline" buttonMode="true"/>
+		<s:Spacer width="100%"/>
+		<s:Label text="时间宽度："/>
+		<mx:LinkBar id="linkBar" textDecoration="underline" buttonMode="true" itemClick="linkbar_itemClickHandler(event)">
+			<mx:dataProvider>
+				<s:ArrayCollection>
+					<fx:String>1周</fx:String>
+					<fx:String>1月</fx:String>
+					<fx:String>1季度</fx:String>
+					<fx:String>半年</fx:String>
+					<fx:String>1年</fx:String>
+					<fx:String>全部</fx:String>
+				</s:ArrayCollection>
+			</mx:dataProvider>
+		</mx:LinkBar>
+	</s:HGroup>	
+</s:Application>

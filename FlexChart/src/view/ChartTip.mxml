@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="200" height="70">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[			
+			import model.ChartData;
+			
+			import spark.formatters.DateTimeFormatter;
+			
+			public function set d(value:ChartData):void
+			{
+				var df:DateTimeFormatter = new DateTimeFormatter;
+				df.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
+				
+				var s:String = "时间：" + df.format(value.xField) + "\n";
+				s +=  "数值：" + value.yField.toFixed(2);
+				
+				for(var key:* in value.data)
+				{
+					s += "\n" + key + "：" + value.data[key];
+				}
+				txt.text = s;
+			}
+		]]>
+	</fx:Script>	
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:fill>
+			<s:SolidColor color="white"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="2"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">	
+		<mx:Text id="txt"/>
+	</s:VGroup>
+</s:Group>
