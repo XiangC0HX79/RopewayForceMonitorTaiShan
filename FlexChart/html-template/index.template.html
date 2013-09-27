@@ -57,6 +57,20 @@
                 flashvars, params, attributes);
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+            
+        function thisMovie(movieName) {
+            if (navigator.appName.indexOf("Microsoft") != -1) {
+                return window[movieName];
+            } else {
+
+                return document[movieName];
+            }
+        }
+        
+        function updateChart()
+        {
+        	thisMovie("${application}").updateChart("");
+        }
         </script>
     </head>
     <body>
@@ -103,6 +117,7 @@
                 </object>
                 <!--<![endif]-->
             </object>
-        </noscript>     
+        </noscript>  
+        <input type="button" onclick="updateChart()" value="数据"/>   
    </body>
 </html>

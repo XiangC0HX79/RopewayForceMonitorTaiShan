@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:app="app.*" title="设置"
+			   width="450" chromeColor="#77CAFF" close="WindowsClose()"
+			   cornerRadius="0.2">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup width="440" horizontalAlign="contentJustify" paddingBottom="5" paddingTop="5">
+		<s:Scroller chromeColor="#B7B7B7" width="100%">
+			<s:DataGroup id="imageGroup" rendererAdd="imageGroup_rendererAddHandler(event)"
+						 itemRenderer="custom.itemRenderer.ItemRenderImage">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+			</s:DataGroup>
+		</s:Scroller>
+		<s:HGroup horizontalAlign="center">
+			<s:Button label="保存" buttonDown="Save()"/>
+			<s:Button label="取消" buttonDown="WindowsClose()"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import app.model.ChartVO;
+			
+			import custom.itemRenderer.ItemRenderImage;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.soap.WebService;
+			
+			import spark.events.RendererExistenceEvent;
+			
+			private var ws:WebService = new WebService();
+			
+			private var _dictSel:Dictionary;
+			
+			public function Init(dictSel:Dictionary):void
+			{				
+				_dictSel = dictSel;
+				
+				imageGroup.dataProvider = FlexGlobals.topLevelApplication.arrallList;
+			}
+			
+			private function WindowsClose():void
+			{
+				PopUpManager.removePopUp(this);					
+			}
+			
+			private function Submit():void
+			{
+				FlexGlobals.topLevelApplication.ShowDashboard(_dictSel);
+				
+				PopUpManager.removePopUp(this);	
+			}
+			
+			private function Save():void
+			{
+				var str:String = "";
+				for(var key:Object in _dictSel)
+				{					
+					if(_dictSel[key])
+					{
+						if(str == "")
+							str += key.id;
+						else
+							str += "|" + key.id;
+					}
+				}
+				
+				var urlVar:URLVariables = new URLVariables;
+				urlVar.chartIds = str;
+				
+				var request:URLRequest = new URLRequest(FlexGlobals.topLevelApplication.webUrl);
+				request.method = "POST";	
+				request.data = urlVar;
+									
+				var load:URLLoader = new URLLoader(request);
+				load.addEventListener(Event.COMPLETE, onSaveHandle);
+				load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+			}
+			
+			private function onSaveHandle(event:Event):void
+			{				
+				Submit();	
+			}
+			
+			private function onIOError(event:IOErrorEvent):void
+			{
+				Alert.show(event.text);
+			}
+			
+			protected function imageGroup_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:ItemRenderImage = event.renderer as ItemRenderImage;
+				renderer.cb.selected = _dictSel[event.data];
+				renderer.addEventListener(ItemRenderImage.CHECK,onRenderCheck);
+			}
+			
+			private function onRenderCheck(event:Event):void
+			{
+				var renderer:ItemRenderImage = event.target as ItemRenderImage;
+				_dictSel[renderer.data] = renderer.cb.selected;
+			}
+		]]>
+	</fx:Script>
+</s:TitleWindow>

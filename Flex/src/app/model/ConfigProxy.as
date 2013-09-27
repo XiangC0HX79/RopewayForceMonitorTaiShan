@@ -10,11 +10,12 @@ package app.model
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.rpc.events.ResultEvent;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class ConfigProxy extends Proxy implements IProxy
+	public class ConfigProxy extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "ConfigProxy";
 		
@@ -29,7 +30,7 @@ package app.model
 		}
 		
 		public function InitConfig(station:String):void
-		{
+		{			
 			config.station = station;
 			
 			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));			
@@ -62,42 +63,35 @@ package app.model
 				col.push(s);
 				RopewayProxy.dictAlarmValue[s] = Number(x.AlarmValue);
 			}
-			
-			var index:Number = Number(config.station);
-			if(!isNaN(index))
-			{
-				if(index == 0)
-				{
-					config.stations = new ArrayCollection(col);
-				}
-				else if((index <= col.length) && (index > 0))
-				{
-					config.stations = new ArrayCollection([col[index - 1]]);
-				}
-				else
-				{
-					config.stations = new ArrayCollection(col[0]);
-				}
-			}
-			else
-			{
-				config.stations = new ArrayCollection(col[0]);
-			}
-			
-			/*var value:Number = Number(xml.AlarmValue);
-			if(!isNaN(value))
-			{
-				RopewayProxy.alarmVal = value;
-			}*/
-			
-			config.station = config.stations[0];
-					
+			config.stations = new ArrayCollection(col);
+								
 			config.serverIp = xml.ServerIp;
 			
 			config.serverPort = int(xml.ServerPort);	
 						
 			WebServiceProxy.BASE_URL = xml.WebServiceUrl;
-				
+							
+			send("RopeDete_InitDept",onInitDept,config.station);
+		}
+		
+		private function onInitDept(event:ResultEvent):void
+		{
+			var col:Array = [];
+			for each(var s:String in config.stations)
+			{
+				for each(var item:Object in event.result)
+				{
+					if(s.indexOf(String(item.DWMC))>=0)
+					{
+						col.push(s);
+						break;
+					}
+				}				
+			}
+			config.stations.source = col;
+			
+			config.station = config.stations[0];
+						
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);
 		}
 	}

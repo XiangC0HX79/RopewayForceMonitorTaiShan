@@ -35,7 +35,7 @@
 			for(var i=0;i<arr.length;i++)
 			{
 				var ar = arr[i].split('=');
-				if((ar[0] == "?station") || (ar[0] == "station"))
+				if((ar[0] == "?dep") || (ar[0] == "dep"))
 				{
 				   station = ar[1];
 				}
@@ -46,7 +46,7 @@
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
-            flashvars.station = station;
+            flashvars.station = "1,2";//station;
             var params = {};
             params.quality = "high";
             params.bgcolor = "${bgcolor}";

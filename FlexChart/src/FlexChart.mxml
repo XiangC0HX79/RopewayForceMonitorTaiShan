@@ -36,7 +36,7 @@
 			protected function app_creationComplete(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub		
-				var dt:Date = new Date;
+				/* var dt:Date = new Date;
 				var testDt:Array = [];
 				
 				var df:DateTimeFormatter = new DateTimeFormatter;
@@ -51,16 +51,28 @@
 					testDt.push(o);
 				} 
 								
-				UpdateChart(JSON.stringify(testDt),"Month","Count","act"); 
+				UpdateChart(JSON.stringify(testDt),"Month","Count","act");  */
 				
 				_file = new FileReference;
 				
 				ExternalInterface.addCallback("updateChart",UpdateChart);
+				
+				var cm:ContextMenu = new ContextMenu;
+				cm.customItems = [new ContextMenuItem("Ver 1.0.1")];
+				this.contextMenu = cm;
 			}
 			
 			private function UpdateChart(dp:String,xField:String = "xField",yField:String = "yField",actField:String = "actField"):void
 			{
-				var col:Array = JSON.parse(dp) as Array;
+				try
+				{
+					var col:Array = JSON.parse(dp) as Array;					
+				}
+				catch(ex:Error)
+				{					
+					Alert.show("数据错误。");
+					return;
+				}
 				
 				if(!col || (col.length == 0))
 				{
