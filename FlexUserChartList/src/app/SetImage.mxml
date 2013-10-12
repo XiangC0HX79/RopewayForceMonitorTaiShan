@@ -3,25 +3,28 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:app="app.*" title="设置"
-			   width="450" chromeColor="#77CAFF" close="WindowsClose()"
-			   cornerRadius="0.2">
+			   chromeColor="#77CAFF" close="WindowsClose()"
+			   cornerRadius="0.2" creationComplete="titlewindow1_creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:VGroup width="440" horizontalAlign="contentJustify" paddingBottom="5" paddingTop="5">
-		<s:Scroller chromeColor="#B7B7B7" width="100%">
-			<s:DataGroup id="imageGroup" rendererAdd="imageGroup_rendererAddHandler(event)"
-						 itemRenderer="custom.itemRenderer.ItemRenderImage">
-				<s:layout>
-					<s:HorizontalLayout paddingLeft="5" paddingRight="5"/>
-				</s:layout>
-			</s:DataGroup>
-		</s:Scroller>
-		<s:HGroup horizontalAlign="center">
-			<s:Button label="保存" buttonDown="Save()"/>
-			<s:Button label="取消" buttonDown="WindowsClose()"/>
-		</s:HGroup>
-	</s:VGroup>
+	<s:layout>
+		<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" 
+						  horizontalAlign="center"/>
+	</s:layout>
+	
+	<s:Scroller chromeColor="#B7B7B7" width="100%">
+		<s:DataGroup id="imageGroup" rendererAdd="imageGroup_rendererAddHandler(event)"
+					 itemRenderer="custom.itemRenderer.ItemRenderImage">
+			<s:layout>
+				<s:HorizontalLayout paddingLeft="5" paddingRight="5"/>
+			</s:layout>
+		</s:DataGroup>
+	</s:Scroller>
+	<s:HGroup>
+		<s:Button label="保存" buttonDown="Save()"/>
+		<s:Button label="取消" buttonDown="WindowsClose()"/>
+	</s:HGroup>
 	
 	<fx:Script>
 		<![CDATA[
@@ -32,10 +35,12 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.soap.WebService;
 			
+			import spark.components.Application;
 			import spark.events.RendererExistenceEvent;
 			
 			private var ws:WebService = new WebService();
@@ -75,16 +80,26 @@
 					}
 				}
 				
-				var urlVar:URLVariables = new URLVariables;
-				urlVar.chartIds = str;
+				IFDEF::Debug
+				{
+					Submit();
+				}
 				
-				var request:URLRequest = new URLRequest(FlexGlobals.topLevelApplication.webUrl);
-				request.method = "POST";	
-				request.data = urlVar;
-									
-				var load:URLLoader = new URLLoader(request);
-				load.addEventListener(Event.COMPLETE, onSaveHandle);
-				load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+				IFDEF::Release
+				{
+					var urlVar:URLVariables = new URLVariables;
+					urlVar.chartIds = str;
+					
+					var webUrl:String = this.parentApplication.parameters.urlSave;
+					
+					var request:URLRequest = new URLRequest(webUrl);
+					request.method = "POST";	
+					request.data = urlVar;
+										
+					var load:URLLoader = new URLLoader(request);
+					load.addEventListener(Event.COMPLETE, onSaveHandle);
+					load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+				}
 			}
 			
 			private function onSaveHandle(event:Event):void
@@ -109,6 +124,13 @@
 				var renderer:ItemRenderImage = event.target as ItemRenderImage;
 				_dictSel[renderer.data] = renderer.cb.selected;
 			}
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.x = this.parentApplication.width - this.width - 20;
+				this.y = 20;
+			}
+			
 		]]>
 	</fx:Script>
 </s:TitleWindow>

@@ -6,8 +6,11 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flash.utils.setTimeout;
+			
 			import model.ChartData;
 			
+			import mx.charts.chartClasses.IAxis;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
@@ -22,7 +25,11 @@
 			private var timeMin:Number;
 			
 			private var timeMax:Number;
-						
+			
+			[Bindable]private var _spanIndex:Number;
+			
+			[Bindable]private var _unit:String;
+			
 			[Bindable]private var dateMin:Date;
 			
 			[Bindable]private var dateMax:Date;
@@ -35,35 +42,49 @@
 			
 			protected function app_creationComplete(event:FlexEvent):void
 			{
-				// TODO Auto-generated method stub		
-				/* var dt:Date = new Date;
-				var testDt:Array = [];
-				
-				var df:DateTimeFormatter = new DateTimeFormatter;
-				df.dateTimePattern = "yyyy/MM/dd HH:mm:ss";
-				for(var i:int = 0;i<400;i++)
-				{
-					var o:Object = {};
-					o.Month = df.format(new Date(dt.time + 6*60*60*1000*i));
-					o.Count = int(Math.random() * 150);
-					o.act = "";
-					o.测试 = "测试" + i;
-					testDt.push(o);
-				} 
-								
-				UpdateChart(JSON.stringify(testDt),"Month","Count","act");  */
+				var cm:ContextMenu = new ContextMenu;
+				cm.customItems = [new ContextMenuItem("Ver 1.0.8")];
+				this.contextMenu = cm;
 				
 				_file = new FileReference;
+				_file.addEventListener(Event.CANCEL,onFileCancel);
+				_file.addEventListener(Event.COMPLETE,onFileComplete);
 				
-				ExternalInterface.addCallback("updateChart",UpdateChart);
+				_spanIndex = (linkBar.dataProvider as ArrayCollection).length - 1;
 				
-				var cm:ContextMenu = new ContextMenu;
-				cm.customItems = [new ContextMenuItem("Ver 1.0.1")];
-				this.contextMenu = cm;
+				IFDEF::Debug
+				{
+					var dt:Date = new Date;
+					var testDt:Array = [];
+					
+					var df:DateTimeFormatter = new DateTimeFormatter;
+					df.dateTimePattern = "yyyy/MM/dd HH:mm:ss";
+					for(var i:int = 0;i<400;i++)
+					{
+						var o:Object = {};
+						o.Month = df.format(new Date(dt.time + 6*60*60*1000*i));
+						o.Count = int(Math.random() * 150);
+						o.act = "";
+						o.测试 = "测试" + i;
+						testDt.push(o);
+					} 
+									
+					UpdateChart(JSON.stringify(testDt),"KG","Month","Count","act");
+				}
+				
+				IFDEF::Release
+				{
+					ExternalInterface.addCallback("updateChart",UpdateChart);
+					
+					ExternalInterface.call("updateChart");
+				}
 			}
 			
-			private function UpdateChart(dp:String,xField:String = "xField",yField:String = "yField",actField:String = "actField"):void
+			private function UpdateChart(dp:String,unit:String,xField:String = "xField",yField:String = "yField",actField:String = "actField"):void
 			{
+				_unit = unit;
+				_chartTip.unit = unit;
+				
 				try
 				{
 					var col:Array = JSON.parse(dp) as Array;					
@@ -96,7 +117,8 @@
 					{
 						if(qn.localName == xField)
 						{
-							charData.xField = new Date(Date.parse(item[qn.localName]));
+							var s:String = String(item[qn.localName]).replace(/-/g,"/");
+							charData.xField = new Date(Date.parse(s));
 						}
 						else if(qn.localName == yField)
 						{
@@ -123,9 +145,16 @@
 				}
 				
 				timeMin = Date.parse(dataPro[0].xField);
-				dateMin = new Date(timeMin);
-				
 				timeMax = Date.parse(dataPro[dataPro.length - 1].xField);
+				
+				if(dataPro.length == 2)
+				{
+					var diff:Number = timeMax - timeMin;
+					timeMin -= diff / 5;
+					timeMax += diff / 5;
+				}
+						
+				dateMin = new Date(timeMin);
 				dateMax = new Date(timeMax);
 				
 				if(!chart.hasEventListener(MouseEvent.MOUSE_DOWN))
@@ -138,7 +167,10 @@
 					chart.addEventListener(MouseEvent.CLICK,chart_clickHandler);
 				
 				if(!chart.hasEventListener(MouseEvent.MOUSE_OUT))
-					chart.addEventListener(MouseEvent.MOUSE_OUT,chart_mouseOutHandler);				
+					chart.addEventListener(MouseEvent.MOUSE_OUT,chart_mouseOutHandler);			
+				
+			/* 	if(!chart.hasEventListener(MouseEvent.MOUSE_WHEEL))
+					chart.addEventListener(MouseEvent.MOUSE_WHEEL,chart_mouseWheelHandler);		 */			
 			}			
 			
 			private var sDt:Date;
@@ -229,9 +261,16 @@
 			
 			protected function linkbar_itemClickHandler(event:ItemClickEvent):void
 			{
+				_spanIndex = event.index;
+				
+				resizeDateSpan();
+			}
+			
+			private function resizeDateSpan():void
+			{				
 				var min:Date = new Date(dateMax.time);
 				
-				var lb:String = linkBar.dataProvider[event.index];
+				var lb:String = linkBar.dataProvider[_spanIndex];
 				switch(lb)
 				{
 					case "1周":
@@ -300,8 +339,20 @@
 			
 			protected function img_buttonDownHandler(event:FlexEvent):void
 			{	
+				loading.visible = true;
+											
 				var jpeg:JPEGEncoder = new JPEGEncoder;
-				_file.save(jpeg.encode(ImageSnapshot.captureBitmapData(this)),"chart.jpg");
+				_file.save(jpeg.encode(ImageSnapshot.captureBitmapData(gpChart)),"chart.jpg");
+			}
+			
+			private function onFileCancel(event:Event):void
+			{				
+				loading.visible = false;
+			}
+			
+			private function onFileComplete(event:Event):void
+			{				
+				loading.visible = false;
 			}
 			
 			protected function chart_mouseOutHandler(event:MouseEvent):void
@@ -310,6 +361,35 @@
 				dataCanvas.removeAllChildren();
 			}
 			
+			protected function chart_mouseWheelHandler(event:MouseEvent):void
+			{
+				if(event.delta < 0)
+				{
+					_spanIndex--;
+				}
+				else if(event.delta > 0)
+				{
+					_spanIndex++;
+				}
+				else
+				{
+					return;
+				}
+				
+				if(_spanIndex < 0)
+					_spanIndex = 0;
+				
+				var max:Number = (linkBar.dataProvider as ArrayCollection).length - 1;
+				if(_spanIndex > max)
+					_spanIndex = max;
+										
+				resizeDateSpan();
+			}
+			
+			protected function horizontalAxisLabelFunction(labelValue:Object, previousValue:Object, axis:IAxis):String 
+			{
+				return dateTimeFormatter.format(labelValue);
+			}
 		]]>
 	</fx:Script>
 	
@@ -325,7 +405,7 @@
 	</fx:Declarations>
 	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="justify"/>
+		<s:VerticalLayout horizontalAlign="justify" paddingTop="10"/>
 	</s:layout>
 	<!--
 	<s:HGroup>
@@ -340,7 +420,13 @@
 				<s:SolidColorStroke color="0xB5B5B5"/>
 			</s:stroke>
 		</s:Rect>-->
-		<mx:LineChart id="chart" width="100%" height="100%" dataProvider="{dataPro}" fontSize="12">
+	<s:Group id="gpChart" width="100%" height="100%">		
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF"/>
+			</s:fill>
+		</s:Rect>	
+		<mx:LineChart width="100%" height="100%" id="chart" dataProvider="{dataPro}" fontSize="12" mouseChildren="false">
 			<mx:seriesFilters>
 				<fx:Array/>
 			</mx:seriesFilters>
@@ -362,7 +448,7 @@
 			</mx:verticalAxis>
 			
 			<mx:horizontalAxis>
-				<mx:DateTimeAxis id="horizontalAxis" maximum="{dateMax}" minimum="{dateMin}"/>
+				<mx:DateTimeAxis id="horizontalAxis" labelFunction="horizontalAxisLabelFunction" maximum="{dateMax}" minimum="{dateMin}"/>
 			</mx:horizontalAxis>
 			
 			<mx:verticalAxisRenderers>					
@@ -370,13 +456,15 @@
 			</mx:verticalAxisRenderers>
 			
 			<mx:horizontalAxisRenderers>			
-				<mx:AxisRenderer axis="{horizontalAxis}" tickPlacement="none" axisStroke="{tickStroke}"/>					
+				<mx:AxisRenderer axis="{horizontalAxis}" tickLength="5" tickPlacement="inside" tickStroke="{tickStroke}" axisStroke="{tickStroke}"/>					
 			</mx:horizontalAxisRenderers>
 			
 			<mx:series>
 				<mx:LineSeries xField="xField" yField="yField" lineStroke="{lineStroke}"/>
 			</mx:series>
 		</mx:LineChart>
+		<s:Label text="({_unit})" x="2" y="20"/>
+	</s:Group>
 	
 	<s:Line width="100%" stroke="{gridStroke}"/>
 	
@@ -398,4 +486,13 @@
 			</mx:dataProvider>
 		</mx:LinkBar>
 	</s:HGroup>	
+	
+	<s:Group id="loading" visible="false" includeInLayout="false" width="{this.width}" height="{this.height}">		
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF" alpha="0.5"/>
+			</s:fill>
+		</s:Rect>
+		<s:Label verticalCenter="0" horizontalCenter="0" text="正在导出图片，请稍后..." fontSize="20"/>
+	</s:Group>
 </s:Application>

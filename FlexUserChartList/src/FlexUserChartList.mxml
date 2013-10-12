@@ -2,7 +2,8 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:components="app.*" creationComplete="Init()" width="100%" height="480">
+			   xmlns:components="app.*" creationComplete="Init()" 
+			   width="100%" height="240">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -26,49 +27,50 @@
 			import mx.collections.ArrayCollection;
 			import mx.collections.XMLListCollection;
 			import mx.controls.Alert;
+			import mx.events.ResizeEvent;
 			import mx.managers.PopUpManager;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.soap.WebService;
 			
-			[Embed(source="img/1.png")]private var MySkin1:Class;
-			[Embed(source="img/2.png")]private var MySkin2:Class;
-			[Embed(source="img/3.png")]private var MySkin3:Class;
-			[Embed(source="img/4.png")]private var MySkin4:Class;
-			[Embed(source="img/5.png")]private var MySkin5:Class;
-			[Embed(source="img/6.png")]private var MySkin6:Class;
-			[Embed(source="img/7.png")]private var MySkin7:Class;
-			[Embed(source="img/8.png")]private var MySkin8:Class;
-			[Embed(source="img/9.png")]private var MySkin9:Class;
-			private var imgs:Array = [MySkin1,MySkin2,MySkin3,MySkin4,MySkin5,MySkin6,MySkin7,MySkin8,MySkin9];
-			
 			[Bindable]public var arrList:ArrayCollection = new ArrayCollection;
 			[Bindable]public var arrallList:ArrayCollection = new ArrayCollection;
 			
-			private var ws:WebService = new WebService();
-			public var webUrl:String = "";
-			//public var allDashboard:String = "";
-			public var allBarName:String = "";
-			//public var userInfo:String = "";
+			//public var webUrl:String = "";
+			//public var allBarName:String = "";
 			
 			private var _dictSel:Dictionary = new Dictionary;
 			
 			private function Init():void
-			{
+			{				
 				ExternalInterface.addCallback("OnSet",ExternalSet);
+								
+				IFDEF::Debug
+				{				
+					var s:String = '{"listBar":[{"ItemId":"1","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/1.png"},{"ItemId":"2","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/2.png"},{"ItemId":"3","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/3.png"},{"ItemId":"4","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/4.png"},{"ItemId":"5","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/5.png"},{"ItemId":"6","ItemCheckIndex":"COS\u8868","ItemCheckData":"/skin/bar/6.png"},{"ItemId":"7","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/7.png"},{"ItemId":"8","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/8.png"},{"ItemId":"9","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/9.png"}],' +
+						'"listBarConfig":[{"Id":1,"BarId":6,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"}' +
+						',{"Id":2,"BarId":6,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""}' +
+						',{"Id":3,"BarId":6,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}' +
+						',{"Id":4,"BarId":6,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],' +
+						'"listUserChart":[{"Id":1,"UserId":2201,"CharId":1},{"Id":2,"UserId":2201,"CharId":2},{"Id":3,"UserId":2201,"CharId":3},{"Id":4,"UserId":2201,"CharId":4}],' +
+						'"listChartData":[{"CheckData":-1,"CheckDate":"09/25/2013 16:02:22","ItemId":3,"CheckType":0,"ChartId":1}' +
+						',{"CheckData":0,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":2}' +
+						',{"CheckData":0.5,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":3}' +
+						',{"CheckData":1,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":4}]}';
+					InitData(s);
+				}
 				
-				webUrl = this.parameters.urlSave;
-				var urlInit:String = this.parameters.urlInit;
-				
-				var request:URLRequest = new URLRequest(urlInit);
-				request.method = "POST";	
-				
-			/* 	var load:URLLoader = new URLLoader(request);
-				load.addEventListener(Event.COMPLETE, onInitHandle);
-				load.addEventListener(IOErrorEvent.IO_ERROR,onIOError); */
-				
-				var s:String = '{"listBar":[{"ItemId":"1","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/1.png"},{"ItemId":"2","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/2.png"},{"ItemId":"3","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/3.png"},{"ItemId":"4","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/4.png"},{"ItemId":"5","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/5.png"},{"ItemId":"6","ItemCheckIndex":"COS\u8868","ItemCheckData":"/skin/bar/6.png"},{"ItemId":"7","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/7.png"},{"ItemId":"8","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/8.png"},{"ItemId":"9","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/9.png"}],"listBarConfig":[{"Id":2,"BarId":2,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"},{"Id":3,"BarId":2,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""},{"Id":5,"BarId":5,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""},{"Id":6,"BarId":8,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],"listUserChart":[{"Id":811,"UserId":2201,"CharId":1},{"Id":812,"UserId":2201,"CharId":3},{"Id":813,"UserId":2201,"CharId":7},{"Id":814,"UserId":2201,"CharId":9}],"listChartData":[{"CheckData":121.0,"CheckDate":"09/25/2013 16:02:22","ItemId":3,"CheckType":0,"ChartId":3},{"CheckData":11.0,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":3}]}';
-				InitData(s);
+				IFDEF::Release
+				{
+					var urlInit:String = this.parameters.urlInit;
+					
+					var request:URLRequest = new URLRequest(urlInit + "?uid=" + Math.random());
+					request.method = "POST";	
+					
+					var load:URLLoader = new URLLoader(request);
+					load.addEventListener(Event.COMPLETE, onInitHandle);
+					load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+				}
 			}
 						
 			private function onInitHandle(event:Event):void
@@ -96,8 +98,15 @@
 					{
 						if(int(bar.ItemId) == chart.barId)
 						{
-							chart.barImgSource = "/FlexUserChartList/bin-debug" + bar.ItemCheckData;
-							//chart.barImgSource = bar.ItemCheckData;
+							IFDEF::Debug
+							{			
+								chart.barImgSource = "/FlexUserChartList/bin-debug" + bar.ItemCheckData;
+							}
+							
+							IFDEF::Release
+							{
+								chart.barImgSource = bar.ItemCheckData;
+							}
 							break;
 						}
 					}
@@ -118,6 +127,7 @@
 					
 					arrallList.addItem(chart);
 				}
+				arrallList.source.sortOn("id",Array.NUMERIC);
 				
 				for each(chart in arrallList)
 				{
@@ -135,6 +145,7 @@
 						}
 					}
 				}
+				arrList.source.sortOn("id",Array.NUMERIC);
 				
 				for each(chart in arrList)
 				{
@@ -152,6 +163,7 @@
 					if(dictSel[key])
 						arrList.addItem(key);
 				}
+				arrList.source.sortOn("id",Array.NUMERIC);
 				
 				dashboard.dataProvider = arrList;
 			}
@@ -159,21 +171,20 @@
 			private function ExternalSet():void
 			{
 				var setimage:SetImage = new SetImage();
-				
+				setimage.maxWidth = this.width - 40;
 				PopUpManager.addPopUp(setimage, DisplayObject(this), true);
-				PopUpManager.centerPopUp(setimage);
 								
 				setimage.Init(_dictSel);
-			}			
+			}		
 		]]>
 	</fx:Script>
 	
-	<s:Scroller left="0" right="0" bottom="0" top="0">
+	<s:Scroller left="5" right="5" bottom="5" top="5" horizontalScrollPolicy="off">
 		<s:Group>						
-			<s:DataGroup id="dashboard" height="100%"
+			<s:DataGroup id="dashboard" width="{this.width - 10}"
 						 itemRenderer = "custom.itemRenderer.ItemRenderDashboard">
 				<s:layout>
-					<s:TileLayout rowAlign="justifyUsingHeight" requestedRowCount="2"/>
+					<s:TileLayout rowAlign="justifyUsingHeight"/>
 				</s:layout>
 			</s:DataGroup>
 		</s:Group>

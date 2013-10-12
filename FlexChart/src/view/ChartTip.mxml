@@ -13,13 +13,15 @@
 			
 			import spark.formatters.DateTimeFormatter;
 			
+			[Bindable]public var unit:String;
+			
 			public function set d(value:ChartData):void
 			{
 				var df:DateTimeFormatter = new DateTimeFormatter;
 				df.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 				
 				var s:String = "时间：" + df.format(value.xField) + "\n";
-				s +=  "数值：" + value.yField.toFixed(2);
+				s +=  "数值：" + value.yField + " " + unit;
 				
 				for(var key:* in value.data)
 				{

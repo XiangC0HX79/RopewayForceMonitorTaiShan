@@ -2,9 +2,7 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:app="app.*" autoDrawBackground="false" 
-				resize="itemrenderer_resizeHandler(event)"
-				width="{this.height}">
+				xmlns:app="app.*" autoDrawBackground="false">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Rotate id="rot"  duration="1500" angleTo="{angle2}" angleFrom="0"/>
@@ -33,17 +31,9 @@
 			[Bindable]  
 			private var  angle2:Number; 
 			//[Bindable]  
-			//private var anglef:Number = 0; 
+			//private var numy:Number=300; 
 			//[Bindable]  
-			//private var scx:Number=1; 
-			//[Bindable]  
-			//private var scy:Number=1; 
-			[Bindable]  
-			private var numx:Number=140; 
-			[Bindable]  
-			private var numy:Number=300; 
-			[Bindable]  
-			private var modulus:Number;
+			//private var modulus:Number;
 			
 			//[Bindable]private var _WholeNAME:String = "";
 			
@@ -82,8 +72,10 @@
 						rt.transformX=321;
 						rt.transformY=10;
 					//} 
-					numy = 300;
-					modulus = 90/20;
+					//numy = 300;
+					
+					angle2 = SetData(obj.barValue,90,0,20);
+					//modulus = 90/20;
 				}
 				else if(type == "2")
 				{
@@ -99,8 +91,9 @@
 						rt.transformX = 228;
 						rt.transformY = 232;
 					//}
-					numy = 300;
-					modulus = 45/500;
+					//numy = 300;
+					//modulus = 45/500;
+					angle2 = SetData(obj.barValue,90,-500,500);
 				}
 				else if(type == "3")
 				{
@@ -116,8 +109,9 @@
 						rt.transformX = 228;
 						rt.transformY = 232;
 					//}
-					numy = 300;
-					modulus = 45/2000;
+					//numy = 300;
+					//modulus = 45/2000;
+					angle2 = SetData(obj.barValue,90,-2000,2000);
 				}
 				else if(type == "4")
 				{
@@ -133,8 +127,9 @@
 						rt.transformX=321;
 						rt.transformY=10;
 					//}
-					numy = 300;
-					modulus = 90/500;
+					//numy = 300;
+					//modulus = 90/500;
+						angle2 = SetData(obj.barValue,90,0,500);
 				}
 				else if(type == "5")
 				{
@@ -147,8 +142,9 @@
 					rot.transformY=10; 
 					rt.transformX=321;
 					rt.transformY=10; 
-					numy = 300;
-					modulus = 90/40;
+					//numy = 300;
+					//modulus = 90/40;
+					angle2 = SetData(obj.barValue,90,0,40);
 				}
 				else if(type == "6")
 				{
@@ -161,8 +157,10 @@
 					rot.transformY = 245;
 					rt.transformX = 217;
 					rt.transformY = 245;
-					numy = 300;
-					modulus = 0;
+					
+					//numy = 300;
+					//modulus = 0;
+					angle2 = SetData3(obj.barValue,0.5,1);
 				}
 				else if(type == "7")
 				{
@@ -175,8 +173,9 @@
 					rot.transformY = 51;
 					rt.transformX = 105;
 					rt.transformY = 51;
-					numy = 220;
-					modulus = 300/250;
+					//numy = 220;
+					//modulus = 300/250;
+					angle2 = SetData(obj.barValue,300,0,250);
 				}
 				else if(type == "8")
 				{
@@ -189,25 +188,29 @@
 					rot.transformY = 21;
 					rt.transformX = 167;
 					rt.transformY = 21;
-					numy = 310;
-					modulus = 180/0.4;
+					//numy = 310;
+					//modulus = 180/0.4;
+					angle2 = SetData(obj.barValue,180,0,0.4);
 				}
 				else if(type == "9")
 				{
 					//img.source = MySkin9;
 					rt.source = ZzSkin3;
 					dimg.source = null;
-					rt.x = 92;
-					rt.y = 121;
+					rt.x = 85;
+					rt.y = 230;
 					rot.transformX = 118;
 					rot.transformY = 58;
 					rt.transformX = 118;
 					rt.transformY = 58;
-					numy = 110;
-					modulus = -1;
+					//numy = 110;
+					//modulus = -1;
+					angle2 = SetData2(obj.barValue,0,50);
 				}
 				
-				SetData(obj.barValue);
+				rot.play([rt]);
+				
+				updateNum(obj.barValue);
 				//timer.addEventListener(TimerEvent.TIMER,OnTimer);
 				//timer.start();
 			}
@@ -217,32 +220,10 @@
 			{
 				SetData(_NUM);
 			} */
-						
-			private function SetData(num:Number):void
+					
+			
+			private function updateNum(totel:Number):void
 			{
-				//( rt.content as Bitmap ).smoothing = true; 
-				if(modulus > 0)
-				{
-					angle2 = num*modulus; 
-				}
-				else if(modulus == 0)
-				{
-					angle2 = Math.acos(num)/Math.PI*180/4*3;
-				}
-				else if(modulus == -1)
-				{
-					if(num<=25)
-					{
-						angle2 = num*(-40-num)*(-0.04);//10*(x-10)y = 20 25*(x-25)y = 65 50(x-25)=65(x-10)
-					}
-					else
-					{
-						angle2 = num*(-440+num)/(-150);//30*(x+30)y = 82   5*(x+50)y=13  41(x+50)=39(x+30) 5*30y=1
-					}
-				}
-				rot.play([rt]);
-				//anglef = angle2; 
-				var totel:Number = num;
 				if(totel < 0)
 				{
 					totel = -totel;
@@ -252,38 +233,92 @@
 				{
 					fuimg.visible = false;
 				}
-				Shownum1.setnum(totel/1000%10);
-				Shownum2.setnum(totel/100%10);
-				Shownum3.setnum(totel/10%10);
-				Shownum4.setnum(totel%10);
-				Shownum5.setnum(totel*10%10);
+				
+				var s:String = totel.toPrecision(5);
+				var id:int = s.indexOf(".");
+				if(id >= 0)
+				{
+					dianimg.visible = true;
+					gpNum.setElementIndex(dianimg,id+1);
+					s = s.replace(".","");
+				}
+				else
+				{
+					dianimg.visible = false;
+					gpNum.setElementIndex(dianimg,0);					
+				}
+				
+				Shownum1.setnum(Number(s.charAt(0)));
+				Shownum2.setnum(Number(s.charAt(1)));
+				Shownum3.setnum(Number(s.charAt(2)));
+				Shownum4.setnum(Number(s.charAt(3)));
+				Shownum5.setnum(Number(s.charAt(4)));	
 			}
 			
-			protected function itemrenderer_resizeHandler(event:ResizeEvent):void
+			private function SetData3(num:Number,min:Number,max:Number):Number
+			{ 
+				var pin:Number = Math.abs(num);
+				if(num < min)pin = min;
+				if(num > max)pin = max;
+				
+				if(num >= 0)
+				{
+					return Math.acos(pin)/Math.PI*180/4*3;
+				}
+				else
+				{
+					return -Math.acos(pin)/Math.PI*180/4*3;					
+				}
+			}	
+			
+			private function SetData2(num:Number,min:Number,max:Number):Number
 			{
-				gp.width = this.width - 40;
-				gp.height = this.height - 40;
-				gp.scaleX = gp.width / 420;
-				gp.scaleY = gp.height / 420; 
-			}			
+				var pin:Number = num;
+				if(num < min)pin = min;
+				if(num > max)pin = max;
+				
+				if(pin<=25)
+				{
+					return pin*(-40-pin)*(-0.04);//10*(x-10)y = 20 25*(x-25)y = 65 50(x-25)=65(x-10)
+				}
+				else
+				{
+					return pin*(-440+pin)/(-150);//30*(x+30)y = 82   5*(x+50)y=13  41(x+50)=39(x+30) 5*30y=1
+				}
+			}
+			
+			private function SetData(num:Number,angel:Number,min:Number,max:Number):Number
+			{
+				var pin:Number = num;
+				if(num < min)pin = min;
+				if(num > max)pin = max;
+				var modulus:Number = angel / (max - min);
+				return pin*modulus; 
+			}	
 		]]>
-	</fx:Script>		
-	<s:Group left="0" right="0" top="0" bottom="0" clipAndEnableScrolling="true">		
-		<s:Image id="img" x="60" y="45" width="150" height="150"/> 
-		<s:Group id="gp" x="20" y="5" width="150" height="150">
-			<mx:Image id="fuimg" source="{FuSkin}" x="{numx-30}" y="{numy+25}" visible="false"/> 
-			<app:shownum id="Shownum1" width="30" height="50" x="{numx}" y="{numy}"/>
-			<app:shownum id="Shownum2" width="30" height="50" x="{numx+30}" y="{numy}"/>
-			<app:shownum id="Shownum3" width="30" height="50" x="{numx+60}" y="{numy}"/>
-			<app:shownum id="Shownum4" width="30" height="50" x="{numx+90}" y="{numy}"/>
-			<app:shownum id="Shownum5" width="30" height="50" x="{numx+125}" y="{numy}"/>
-			<mx:Image id="dianimg" source="{DianSkin}" x="{numx+121}" y="{numy+45}"/>
+	</fx:Script>	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:Group>		
+		<s:Image id="img" width="200" height="200"/> 
+		<s:Group width="420" height="420" scaleX="{img.width/420}" scaleY="{img.height/420}">
 			<s:Group id="groupRt">
 				<mx:Image id="rt" x="36"  y= "355"/>   
 			</s:Group> 
 			<s:Image id="dimg" x="343" y= "355"/>
+			<s:HGroup bottom="40" horizontalCenter="0" id="gpNum" verticalAlign="justify" gap="0">
+				<s:Image id="fuimg" source="@Embed(source='img/fu.png')" verticalAlign="middle"/> 
+				<app:shownum id="Shownum1" width="30" height="50"/>
+				<app:shownum id="Shownum2" width="30" height="50"/>
+				<app:shownum id="Shownum3" width="30" height="50"/>
+				<app:shownum id="Shownum4" width="30" height="50"/>
+				<app:shownum id="Shownum5" width="30" height="50"/>
+				<s:Image id="dianimg" source="@Embed(source='img/xiaoshu.png')" verticalAlign="bottom"/>				
+			</s:HGroup>
 		</s:Group>
 	</s:Group>
 	
-	<s:Label fontSize="16" width="100%" textAlign="center" bottom="10" text="{data.barName}"/>
+	<s:Label fontSize="16" width="100%" textAlign="center" text="{data.barName}"/>
 </s:ItemRenderer>
