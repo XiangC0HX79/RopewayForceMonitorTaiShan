@@ -1,7 +1,7 @@
 <Config>
-	<WebServiceUrl>http://localhost:7146/FlexWebService.asmx?wsdl</WebServiceUrl>
-	<ServerIp>192.168.1.212</ServerIp>
-	<ServerPort>4321</ServerPort>
+	<WebServiceUrl>http://localhost:1134/FlexWebService.asmx?wsdl</WebServiceUrl>
+	<ServerIp>127.0.0.1</ServerIp>
+	<ServerPort>4444</ServerPort>
 	<Stations>
 		<Station>
 			<SName>桃花源驱动站</SName>
@@ -17,6 +17,14 @@
 		</Station>
 		<Station>
 			<SName>中天门回转站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
+		<Station>
+			<SName>后石坞驱动站</SName>
+			<AlarmValue>50</AlarmValue>
+		</Station>
+		<Station>
+			<SName>后石坞回转站</SName>
 			<AlarmValue>50</AlarmValue>
 		</Station>
 	</Stations>

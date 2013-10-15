@@ -29,9 +29,10 @@ package app.model
 			return data as ConfigVO;
 		}
 		
-		public function InitConfig(station:String):void
+		public function InitConfig(station:String,ropeway:String):void
 		{			
 			config.station = station;
+			config.ropeway = ropeway;
 			
 			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));			
 			load.addEventListener(Event.COMPLETE,onLocaleConfigResult);
@@ -55,15 +56,33 @@ package app.model
 				return;
 			}
 			
-			var col:Array = [];
+			config.stations = new ArrayCollection();
+			//var col:Array = [];
 			RopewayProxy.dictAlarmValue = new Dictionary;
 			for each(var x:XML in xml.Stations.Station)
 			{
 				var s:String = String(x.SName);
-				col.push(s);
-				RopewayProxy.dictAlarmValue[s] = Number(x.AlarmValue);
+				
+				var b:Boolean = true;
+				if((config.station == "4") && (s.indexOf("桃花源") < 0))
+					b = false;
+				else if((config.station == "2") && (s.indexOf("中天门") < 0))
+					b = false;
+				else if((config.station == "3") && (s.indexOf("后石坞") < 0))
+					b = false;
+				
+				if((config.ropeway == "0") && (s.indexOf("驱动站") < 0))
+					b = false;
+				else if((config.ropeway == "1") && (s.indexOf("回转站") < 0))
+					b = false;
+				
+				if(b)
+				{
+					RopewayProxy.dictAlarmValue[s] = Number(x.AlarmValue);
+					config.stations.addItem(s);
+				}
+				//col.push(s);
 			}
-			config.stations = new ArrayCollection(col);
 								
 			config.serverIp = xml.ServerIp;
 			
@@ -71,7 +90,7 @@ package app.model
 						
 			WebServiceProxy.BASE_URL = xml.WebServiceUrl;
 							
-			send("RopeDete_InitDept",onInitDept,config.station);
+			/*send("RopeDete_InitDept",onInitDept,config.station);
 		}
 		
 		private function onInitDept(event:ResultEvent):void
@@ -88,7 +107,7 @@ package app.model
 					}
 				}				
 			}
-			config.stations.source = col;
+			config.stations.source = col;*/
 			
 			config.station = config.stations[0];
 						

@@ -5,6 +5,8 @@ package app.model
 	{
 		public var id:int;
 		
+		public var itemId:int;
+		
 		public var barId:int;
 		
 		public var barImgSource:String;
@@ -14,6 +16,10 @@ package app.model
 		public var barTime:Date;
 		
 		public var barValue:Number;
+		
+		public var barMaxValue:Number;
+		
+		public var barMinValue:Number;
 		
 		public function ChartVO()
 		{
