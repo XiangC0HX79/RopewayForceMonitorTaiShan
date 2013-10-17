@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="100" minHeight="100" 
+			   creationComplete="appInit(event)">		
+		
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.utils.URLUtil; 
+			
+			private var _camera:Camera; 
+			
+			private var _loginHandle:String = "loginHandle";
+			
+			private function videoDisplay_creationComplete():void 
+			{
+				_camera = Camera.getCamera(); 
+				if (_camera) 
+				{ 					
+					videoDisplay.attachCamera(_camera); 
+				} 
+			} 
+			
+			private function login(url:String,loginHandle:String):void
+			{ 								
+				_loginHandle = loginHandle;
+				
+				if(!_camera)
+				{
+					ExternalInterface.call(_loginHandle,"6");
+					return;
+				}
+				
+				var imgBD:BitmapData=new BitmapData(videoDisplay.width,videoDisplay.height); 
+				imgBD.draw(videoDisplay,new Matrix()); 
+				
+				var prepare:Boolean = false;
+				var vector:Vector.<uint> = imgBD.getVector(new Rectangle(0,0,imgBD.width,imgBD.height));
+				for each(var pixel:uint in vector)
+				{
+					var p:uint = pixel & 0x00FFFFFF;
+					if(p > 0)
+					{
+						prepare = true;
+						break;
+					}
+				}
+				if(!prepare)
+				{
+					ExternalInterface.call(_loginHandle,"6");
+					return;					
+				}
+								
+				var jpegEncoder:JPEGEncoder = new JPEGEncoder;
+				var ba:ByteArray = jpegEncoder.encode(imgBD);
+										
+				
+				var bound:String = "---------------------------293342587424372"; //暂时固定，留待扩充
+				var cntType: String = "multipart/form-data;boundary=" + bound;
+				var header:URLRequestHeader = new URLRequestHeader ("Content-Type", cntType);
+				
+				
+				var data:ByteArray = new ByteArray(); //用于保存URLRequest体内容的数组
+				
+				//开始封装一个文件（图片）
+				
+				var ts:String = "--" + bound + "\r\n" + "Content-Disposition: form-data; name=\"photo\"; filename=\"loginHead.jpg\";\r\n";
+				ts += "Content-Type: image/jpg\r\n\r\n";
+				data.writeMultiByte(ts, "GB2312");
+				data.position = data.length;
+				
+				data.writeBytes(ba);
+				
+				//封装文件结束（如果含有多个文件，可以重复上述这一小段代码）
+				
+				//添加结束分隔符
+				
+				var es:String = "\r\n--" + bound + "--\r\n";
+				data.position = data.length;
+				data.writeMultiByte(es, "GB2312");
+				
+				var request:URLRequest = new URLRequest(url);
+				request.requestHeaders.push(header);
+				request.method = "POST";	
+				request.data = data; //添加为URLRequest的体内容
+				
+				var load:URLLoader = new URLLoader(request);
+				load.addEventListener(Event.COMPLETE, onUpload);
+				load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+			}
+						
+			private function onUpload(event:Event):void
+			{	
+				ExternalInterface.call(_loginHandle,event.target.data);
+			}
+			
+			private function onIOError(event:IOErrorEvent):void
+			{
+				ExternalInterface.call(_loginHandle,"5");
+			}	
+			
+			protected function appInit(event:FlexEvent):void
+			{								 
+				if (ExternalInterface.available) 
+				{
+					var javascript:XML = new XML("<script>" +
+													"function(){" +
+														"if (typeof(swfInitialized) == \"undefined\"){" +
+															"swfInitialized = true;" +
+														"}" +
+													"}" +
+												"</script>");
+					
+					ExternalInterface.call(javascript);			
+					ExternalInterface.addCallback("login",login);	
+				}
+			}		
+		]]>
+	</fx:Script>
+	
+	<mx:VideoDisplay id="videoDisplay" width="100%" height="100%"
+					 creationComplete="videoDisplay_creationComplete();"/>
+</s:Application>
