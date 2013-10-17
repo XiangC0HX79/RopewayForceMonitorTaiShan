@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:app="app.*" autoDrawBackground="false">
+				xmlns:mx="library://ns.adobe.com/flex/mx" buttonMode="true"
+				xmlns:app="app.*" autoDrawBackground="false" click="itemrenderer1_clickHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Rotate id="rot"  duration="1500" angleTo="{angle2}" angleFrom="0"/>
@@ -55,6 +55,15 @@
 			
 			private function ChangeImage(obj:ChartVO):void
 			{				
+				if(
+					(!isNaN(obj.barMinValue) && (obj.barValue < obj.barMinValue))
+					|| 
+					(!isNaN(obj.barMaxValue) && (obj.barValue > obj.barMaxValue))
+				)
+					bg.visible = true;
+				else 
+					bg.visible = false;
+				
 				img.source = obj.barImgSource;
 								
 				var type:String = obj.barId.toString();
@@ -295,13 +304,18 @@
 				var modulus:Number = angel / (max - min);
 				return pin*modulus; 
 			}	
+			
+			protected function itemrenderer1_clickHandler(event:MouseEvent):void
+			{				
+				ExternalInterface.call("onChartClick",(data as ChartVO).itemId);
+			}			
 		]]>
 	</fx:Script>	
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<s:Group>		
+	<s:Group>	
 		<s:Image id="img" width="200" height="200"/> 
 		<s:Group width="420" height="420" scaleX="{img.width/420}" scaleY="{img.height/420}">
 			<s:Group id="groupRt">
@@ -317,7 +331,12 @@
 				<app:shownum id="Shownum5" width="30" height="50"/>
 				<s:Image id="dianimg" source="@Embed(source='img/xiaoshu.png')" verticalAlign="bottom"/>				
 			</s:HGroup>
-		</s:Group>
+		</s:Group>	
+		<s:Rect id="bg" left="0" right="0" top="0" bottom="0" alpha="0.2">
+			<s:fill>
+				<s:SolidColor color="0xFF0000"/>
+			</s:fill>
+		</s:Rect>
 	</s:Group>
 	
 	<s:Label fontSize="16" width="100%" textAlign="center" text="{data.barName}"/>

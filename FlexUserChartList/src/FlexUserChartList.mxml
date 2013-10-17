@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:components="app.*" creationComplete="Init()" 
-			   width="100%" height="240">
+			   width="100%" height="260">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -36,27 +36,39 @@
 			[Bindable]public var arrList:ArrayCollection = new ArrayCollection;
 			[Bindable]public var arrallList:ArrayCollection = new ArrayCollection;
 			
+			[Bindable]public var gap:Number = 10;
 			//public var webUrl:String = "";
 			//public var allBarName:String = "";
 			
 			private var _dictSel:Dictionary = new Dictionary;
 			
 			private function Init():void
-			{				
+			{		
+				if(!isNaN(Number(this.parameters.gap)))
+					gap = Number(this.parameters.gap);
+				
 				ExternalInterface.addCallback("OnSet",ExternalSet);
 								
 				IFDEF::Debug
 				{				
-					var s:String = '{"listBar":[{"ItemId":"1","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/1.png"},{"ItemId":"2","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/2.png"},{"ItemId":"3","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/3.png"},{"ItemId":"4","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/4.png"},{"ItemId":"5","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/5.png"},{"ItemId":"6","ItemCheckIndex":"COS\u8868","ItemCheckData":"/skin/bar/6.png"},{"ItemId":"7","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/7.png"},{"ItemId":"8","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/8.png"},{"ItemId":"9","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/9.png"}],' +
-						'"listBarConfig":[{"Id":1,"BarId":6,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"}' +
-						',{"Id":2,"BarId":6,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""}' +
-						',{"Id":3,"BarId":6,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}' +
-						',{"Id":4,"BarId":6,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],' +
+					var s:String = '{"listBar":[{"ItemId":"1","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/1.png"}' +
+						',{"ItemId":"2","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/2.png"}' +
+						',{"ItemId":"3","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/3.png"}' +
+						',{"ItemId":"4","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/4.png"}' +
+						',{"ItemId":"5","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/5.png"}' +
+						',{"ItemId":"6","ItemCheckIndex":"COS\u8868","ItemCheckData":"/skin/bar/6.png"}' +
+						',{"ItemId":"7","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/7.png"}' +
+						',{"ItemId":"8","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/8.png"}' +
+						',{"ItemId":"9","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/9.png"}],' +
+						'"listBarConfig":[{"Id":1,"BarId":5,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"}' +
+						',{"Id":2,"BarId":5,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""}' +
+						',{"Id":3,"BarId":5,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}' +
+						',{"Id":4,"BarId":5,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],' +
 						'"listUserChart":[{"Id":1,"UserId":2201,"CharId":1},{"Id":2,"UserId":2201,"CharId":2},{"Id":3,"UserId":2201,"CharId":3},{"Id":4,"UserId":2201,"CharId":4}],' +
-						'"listChartData":[{"CheckData":-1,"CheckDate":"09/25/2013 16:02:22","ItemId":3,"CheckType":0,"ChartId":1}' +
-						',{"CheckData":0,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":2}' +
-						',{"CheckData":0.5,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":3}' +
-						',{"CheckData":1,"CheckDate":"09/25/2013 16:06:58","ItemId":3,"CheckType":0,"ChartId":4}]}';
+						'"listChartData":[{"CheckData":-1,"CheckDate":"09/25/2013 16:02:22","ItemId":5,"CheckType":0,"ChartId":1,"MinValue":0,"MaxValue":0.5}' +
+						',{"CheckData":0,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":2}' +
+						',{"CheckData":0.5,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":3,"MinValue":0,"MaxValue":0.5}' +
+						',{"CheckData":1,"CheckDate":"09/25/2013 16:06:58","ItemId":4,"CheckType":0,"ChartId":4,"MinValue":0,"MaxValue":0.5}]}';
 					InitData(s);
 				}
 				
@@ -120,7 +132,10 @@
 							if(!chart.barTime || (chart.barTime.time < barTime.time))
 							{
 								chart.barTime = barTime;
+								chart.itemId = Number(barValue.ItemId);
 								chart.barValue = Number(barValue.CheckData);
+								chart.barMinValue = Number(barValue.MinValue);
+								chart.barMaxValue = Number(barValue.MaxValue);
 							}
 						}
 					}
@@ -184,7 +199,7 @@
 			<s:DataGroup id="dashboard" width="{this.width - 10}"
 						 itemRenderer = "custom.itemRenderer.ItemRenderDashboard">
 				<s:layout>
-					<s:TileLayout rowAlign="justifyUsingHeight"/>
+					<s:TileLayout rowAlign="justifyUsingHeight" verticalGap="{gap}" horizontalGap="{gap}"/>
 				</s:layout>
 			</s:DataGroup>
 		</s:Group>

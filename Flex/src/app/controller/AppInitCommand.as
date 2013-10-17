@@ -17,7 +17,7 @@ package app.controller
 			
 			var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			
-			proxy.InitConfig(application.parameters.station);
+			proxy.InitConfig(application.parameters.station,application.parameters.ropeway);
 		}
 	}
 }

@@ -11,6 +11,8 @@ package app.model.vo
 				
 		public var station:String;
 		
+		public var ropeway:String;
+		
 		public var stations:ArrayCollection;
 		
 		public var serverIp:String;
