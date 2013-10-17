@@ -96,6 +96,8 @@
 				request.method = "POST";	
 				request.data = data; //添加为URLRequest的体内容
 				
+				//Alert.show(data.length.toString());
+				
 				var load:URLLoader = new URLLoader(request);
 				load.addEventListener(Event.COMPLETE, onUpload);
 				load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);

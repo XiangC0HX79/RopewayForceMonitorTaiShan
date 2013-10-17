@@ -22,6 +22,7 @@
 			[Embed(source="img/zz_2.png")]private var ZzSkin2:Class;
 			[Embed(source="img/zz_2_2.png")]private var ZzSkin2_2:Class;
 			[Embed(source="img/zz_3.png")]private var ZzSkin3:Class;
+			[Embed(source="img/zz_4.png")]private var ZzSkin4:Class;
 			[Embed(source="img/dian.png")]private var DdSkin:Class;
 			[Bindable][Embed(source="img/xiaoshu.png")]
 			private var DianSkin:Class;
@@ -69,22 +70,17 @@
 				var type:String = obj.barId.toString();
 				if(type == "1")
 				{
-					//img.source = MySkin1;
 					rt.source = ZzSkin1;
 					dimg.source = DdSkin;
-					//if( anglef==0)
-					//{											
-						rt.x=36; 
-						rt.y=355;						
-						rot.transformX = 321;
-						rot.transformY = 10;						
-						rt.transformX=321;
-						rt.transformY=10;
-					//} 
-					//numy = 300;
 					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+						
 					angle2 = SetData(obj.barValue,90,0,20);
-					//modulus = 90/20;
 				}
 				else if(type == "2")
 				{
@@ -216,6 +212,90 @@
 					//modulus = -1;
 					angle2 = SetData2(obj.barValue,0,50);
 				}
+				else if(type == "10")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,500);
+				}
+				else if(type == "11")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,750);
+				}
+				else if(type == "12")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,450);
+				}
+				else if(type == "13")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,1);
+				}
+				else if(type == "14")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,12);
+				}
+				else if(type == "15")
+				{
+					rt.source = ZzSkin4;
+					
+					rt.x=SetData4(obj.barValue,0,7); 
+					rt.y=130;					
+				}
+				else if(type == "16")
+				{
+					rt.source = ZzSkin4;
+					
+					rt.x=SetData4(obj.barValue,0,7); 
+					rt.y=130;					
+				}
 				
 				rot.play([rt]);
 				
@@ -243,12 +323,14 @@
 					fuimg.visible = false;
 				}
 				
-				var s:String = totel.toPrecision(5);
+				var s:String = totel.toFixed(2);
+				s = Number(s).toString();
+				
 				var id:int = s.indexOf(".");
 				if(id >= 0)
 				{
 					dianimg.visible = true;
-					gpNum.setElementIndex(dianimg,id+1);
+					gpNum.setElementIndex(dianimg,id+7-s.length);
 					s = s.replace(".","");
 				}
 				else
@@ -257,15 +339,51 @@
 					gpNum.setElementIndex(dianimg,0);					
 				}
 				
-				Shownum1.setnum(Number(s.charAt(0)));
-				Shownum2.setnum(Number(s.charAt(1)));
-				Shownum3.setnum(Number(s.charAt(2)));
-				Shownum4.setnum(Number(s.charAt(3)));
-				Shownum5.setnum(Number(s.charAt(4)));	
+				if(s.length < 5)
+					Shownum1.visible = false
+				else
+				{
+					Shownum1.visible = true;
+					Shownum1.setnum(Number(s.charAt(s.length - 5)));					
+				}
+				
+				if(s.length < 4)
+					Shownum2.visible = false
+				else
+				{
+					Shownum2.visible = true;
+					Shownum2.setnum(Number(s.charAt(s.length - 4)));					
+				}
+				
+				if(s.length < 3)
+					Shownum3.visible = false
+				else
+				{
+					Shownum3.visible = true;
+					Shownum3.setnum(Number(s.charAt(s.length - 3)));					
+				}
+				
+				if(s.length < 2)
+					Shownum4.visible = false
+				else
+				{
+					Shownum4.visible = true;
+					Shownum4.setnum(Number(s.charAt(s.length - 2)));					
+				}
+				
+				Shownum5.setnum(Number(s.charAt(s.length - 1)));	
 			}
+						
+			private function SetData4(num:Number,min:Number,max:Number):Number
+			{
+				var pin:Number = num;
+				if(num < min)pin = min;
+				if(num > max)pin = max;
+				return (pin - min) / (max - min) * 350 + 35; 
+			}	
 			
 			private function SetData3(num:Number,min:Number,max:Number):Number
-			{ 
+			{  
 				var pin:Number = Math.abs(num);
 				if(num < min)pin = min;
 				if(num > max)pin = max;

@@ -59,16 +59,23 @@
 						',{"ItemId":"6","ItemCheckIndex":"COS\u8868","ItemCheckData":"/skin/bar/6.png"}' +
 						',{"ItemId":"7","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/7.png"}' +
 						',{"ItemId":"8","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/8.png"}' +
-						',{"ItemId":"9","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/9.png"}],' +
-						'"listBarConfig":[{"Id":1,"BarId":5,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"}' +
-						',{"Id":2,"BarId":5,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""}' +
-						',{"Id":3,"BarId":5,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}' +
-						',{"Id":4,"BarId":5,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],' +
+						',{"ItemId":"9","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/9.png"}' +
+						',{"ItemId":"10","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/10.png"}' +
+						',{"ItemId":"11","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/11.png"}' +
+						',{"ItemId":"12","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/12.png"}' +
+						',{"ItemId":"13","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/13.png"}' +
+						',{"ItemId":"14","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/14.png"}' +
+						',{"ItemId":"15","ItemCheckIndex":"\u538B\u5F3A\u8868","ItemCheckData":"/skin/bar/15.png"}' +
+						',{"ItemId":"16","ItemCheckIndex":"\u672A\u77E5\u8868","ItemCheckData":"/skin/bar/16.png"}],' +
+						'"listBarConfig":[{"Id":1,"BarId":16,"BarName":"\u9A71\u52A8\u7AD9\u7535\u6D41\u8868","RopeWay":2,"BarMemo":"\u53D1\u751F\u7684\u53D1\u751F\u5927"}' +
+						',{"Id":2,"BarId":16,"BarName":"XXX\u8868","RopeWay":2,"BarMemo":""}' +
+						',{"Id":3,"BarId":16,"BarName":"\u7535\u538B\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}' +
+						',{"Id":4,"BarId":16,"BarName":"\u538B\u5F3A\u8868\u6D4B\u8BD5","RopeWay":2,"BarMemo":""}],' +
 						'"listUserChart":[{"Id":1,"UserId":2201,"CharId":1},{"Id":2,"UserId":2201,"CharId":2},{"Id":3,"UserId":2201,"CharId":3},{"Id":4,"UserId":2201,"CharId":4}],' +
-						'"listChartData":[{"CheckData":-1,"CheckDate":"09/25/2013 16:02:22","ItemId":5,"CheckType":0,"ChartId":1,"MinValue":0,"MaxValue":0.5}' +
-						',{"CheckData":0,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":2}' +
-						',{"CheckData":0.5,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":3,"MinValue":0,"MaxValue":0.5}' +
-						',{"CheckData":1,"CheckDate":"09/25/2013 16:06:58","ItemId":4,"CheckType":0,"ChartId":4,"MinValue":0,"MaxValue":0.5}]}';
+						'"listChartData":[{"CheckData":-100,"CheckDate":"09/25/2013 16:02:22","ItemId":5,"CheckType":0,"ChartId":1,"MinValue":0,"MaxValue":0.5}' +
+						',{"CheckData":0.2,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":2}' +
+						',{"CheckData":10,"CheckDate":"09/25/2013 16:06:58","ItemId":5,"CheckType":0,"ChartId":3,"MinValue":0,"MaxValue":0.5}' +
+						',{"CheckData":800,"CheckDate":"09/25/2013 16:06:58","ItemId":4,"CheckType":0,"ChartId":4,"MinValue":0,"MaxValue":0.5}]}';
 					InitData(s);
 				}
 				
