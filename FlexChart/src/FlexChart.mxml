@@ -153,9 +153,14 @@
 					timeMin -= diff / 5;
 					timeMax += diff / 5;
 				}
-						
-				dateMin = new Date(timeMin);
-				dateMax = new Date(timeMax);
+				
+				var offTime:Number = (timeMax - timeMin) / 20;
+				
+				dateMax = new Date(timeMax + offTime);
+				dateMin = new Date(timeMin - offTime);		
+				
+				//dateMin = new Date(timeMin);
+				//dateMax = new Date(timeMax);
 				
 				if(!chart.hasEventListener(MouseEvent.MOUSE_DOWN))
 					chart.addEventListener(MouseEvent.MOUSE_DOWN,chart_mouseDownHandler);
@@ -268,7 +273,12 @@
 			
 			private function resizeDateSpan():void
 			{				
-				var min:Date = new Date(dateMax.time);
+				var offTime:Number = (dateMax.time - dateMin.time) / 22;
+				
+				var tMax:Date = new Date(dateMax.time - offTime);
+				var tMin:Date = new Date(dateMin.time + offTime);
+				
+				var min:Date = new Date(tMax.time);
 				
 				var lb:String = linkBar.dataProvider[_spanIndex];
 				switch(lb)
@@ -296,7 +306,40 @@
 				if(min.time < timeMin)
 					min = new Date(timeMin);
 				
-				dateMin = min;
+				tMin = min;
+				
+				var max:Date = new Date(tMin.time);
+				switch(lb)
+				{
+					case "1周":
+						max.date += 7;
+						break;
+					case "1月":
+						max.month += 1;
+						break;
+					case "1季度":
+						max.month += 3;
+						break;
+					case "半年":
+						max.month += 6;
+						break;
+					case "1年":
+						max.fullYear += 1;
+						break;
+					case "全部":
+						max = new Date(timeMax);
+						break;
+				}
+				
+				if(max.time > timeMax)
+					max = new Date(timeMax);
+				
+				tMax = max;
+				
+				offTime = (tMax.time - tMin.time) / 20;
+				
+				dateMax = new Date(tMax.time + offTime);
+				dateMin = new Date(tMin.time - offTime);				
 			}
 			
 			private function getNearestData(date:Date,col:Array):ChartData
