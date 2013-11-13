@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   skinClass="custom.skin.SkinTitleWindow"
+			   width="500" height="200" close="closewindow()">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.AreaWheelVO;
+			import app.model.vo.WheelHistoryVO;
+			import app.model.vo.WheelManageVO;
+			import app.model.vo.WheelVO;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			public var BASEINFO_ADD:String = "BaseInfoAdd";	
+			
+			public var BASEINFO_DELETE:String = "BaseInfoDelete";	
+			
+			
+			public static const BASEINFO_EDIT:String = "BaseInfoEdit";
+			
+			[Bindable]public var baseInfo:AreaWheelVO;
+			
+			
+			[Bindable]public var _id:String;
+			
+			[Bindable]public var type:String;
+			
+			
+			private function closewindow():void
+			{
+				if(datagrid.dataProvider != null)
+					datagrid.dataProvider.removeAll();
+				PopUpManager.removePopUp(this);	
+			}
+			
+			private function dataSelect(event:Event):void
+			{
+				var wm:WheelManageVO = datagrid.selectedItem as WheelManageVO;
+				t_wheelId.text = wm.WheelId.toString();
+				listStandType.selectedIndex = new int(wm.WheelType) - 1;
+			}
+		]]>
+	</fx:Script>
+	<s:Label y="-35" horizontalCenter="0" text="{baseInfo.AreaId.toString()+'#区域滚轮管理'}" fontSize="20"/>
+	<s:DataGrid id="datagrid" width="100" top="5" left="5" height="100%" 
+				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]" selectionChange="dataSelect(event)">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn headerText="滚轮编号" dataField="WheelId"/>
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+	<s:VGroup top="5" left="114" height="100%" width="100%">
+		<s:HGroup width="100%">
+			<s:Label paddingTop="6" text="　所属索道：" fontWeight="bold"/>	
+			<!--<s:DropDownList id="listRopeway" width="100%" enabled="false" 
+							prompt="{FlexGlobals.topLevelApplication.Station}"
+							requireSelection="true" selectedIndex="0">
+			</s:DropDownList>-->
+			<s:TextInput id="listRopeway" width="109" enabled="false"/>
+			<s:Label paddingTop="6" text=" 所属支架："/>
+			<s:TextInput id="t_standId" width="100" enabled="false" text="{baseInfo.StandId.toString()}"/>
+		</s:HGroup>
+		<s:Label height="1"/>
+		<s:HGroup width="100%">
+			<s:Label paddingTop="6" text="　所属区域：" fontWeight="bold"/>	
+			<s:TextInput id="t_areaId" width="109" enabled="false" text="{baseInfo.AreaId.toString()}"/>
+			<s:Label paddingTop="6" text=" 滚轮编号："/>
+			<s:TextInput id="t_wheelId" width="100"/>
+		</s:HGroup>
+		<s:Label height="1"/>
+		<s:HGroup width="100%">
+			<s:Label paddingTop="6" text="　滚轮类型：" fontWeight="bold"/>	
+			<s:DropDownList id="listStandType" width="109" selectedIndex="0">
+				<s:ArrayCollection>
+					<fx:String>上滚轮</fx:String>
+					<fx:String>下滚轮</fx:String>
+				</s:ArrayCollection>
+			</s:DropDownList>
+		</s:HGroup>
+		<s:Label height="1"/>
+		<s:HGroup width="100%">
+			<s:Label width="100%"/>
+			<s:Button label="新增" id="addbn" buttonDown="dispatchEvent(new Event(BASEINFO_ADD));"/>
+			<s:Button label="编辑" id="editbn" buttonDown="dispatchEvent(new Event(BASEINFO_EDIT));"/>
+			<s:Button label="删除" id="deletebn" buttonDown="dispatchEvent(new Event(BASEINFO_DELETE));"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:TitleWindow>

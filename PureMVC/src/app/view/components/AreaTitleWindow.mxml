@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:components="app.view.components.*"
+			   width="1000" height="400" close="closewindow()"
+			   skinClass="custom.skin.SkinTitleWindow" title="efw">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>	
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH 'h'"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.WheelHistoryVO;
+			
+			import custom.itemRenderer.ItemRendererAreaDetection;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.Image;
+			
+			[Bindable]public var _id:String = "";
+			[Bindable]public var colMaintain:ArrayCollection = new ArrayCollection();
+			public static const MAINTAIN_ADD:String = "MaintainAdd";
+			public static const MAINTAIN_EDIT:String = "MaintainEdit";
+			public static const MAINTAIN_DELETE:String = "MaintainDelete";
+			
+			private function closewindow():void
+			{
+				if(datagroup.dataProvider != null)
+					datagroup.dataProvider.removeAll();
+				PopUpManager.removePopUp(this);	
+			}
+			
+			public function imgclick(id:String):void
+			{
+				_id = id;
+				for(var i:Number = 0;i<datagroup.numElements;i++)
+				{
+					var ele:ItemRendererAreaDetection = datagroup.getElementAt(i) as ItemRendererAreaDetection;
+					ele.invalidateDisplayList();
+				}
+			
+			}
+			
+			
+			private function dealDataLabelFunction(wheelHistoryVO:WheelHistoryVO,column:GridColumn):String
+			{
+				var thisStringBytsLength :ByteArray = new ByteArray();
+				thisStringBytsLength.writeMultiByte(wheelHistoryVO.MaintainInfo,"gb2312");
+				if(thisStringBytsLength.length > 30)
+					return wheelHistoryVO.MaintainInfo.substr(0,15) + "...";
+				else
+					return wheelHistoryVO.MaintainInfo;
+			}
+			
+			private function dealMemoDataLabelFunction(wheelHistoryVO:WheelHistoryVO,column:GridColumn):String
+			{
+				var thisStringBytsLength :ByteArray = new ByteArray();
+				thisStringBytsLength.writeMultiByte(wheelHistoryVO.Memo,"gb2312");
+				if(thisStringBytsLength.length > 50)
+					return wheelHistoryVO.Memo.substr(0,25) + "...";
+				else
+					return wheelHistoryVO.Memo;
+			}
+			
+			private function dealDateLabelFunction(wheelHistoryVO:WheelHistoryVO,column:GridColumn):String
+			{
+				if(wheelHistoryVO.MaintainTime.time > 0)
+					return dateF.format(wheelHistoryVO.MaintainTime);
+				else
+					return "未处置";
+			}
+		]]>
+	</fx:Script>
+	<s:Label y="-35" horizontalCenter="0" text="{_id+'#历史维护明细'}" fontSize="20"/>
+	<s:Scroller width="100%" top="2" height="150">
+		<s:DataGroup id="datagroup" itemRenderer="custom.itemRenderer.ItemRendererAreaDetection">
+			<s:layout>
+				<s:TileLayout columnAlign="justifyUsingWidth" 
+							  paddingTop="2" paddingBottom="2"/>
+			</s:layout>	
+		</s:DataGroup>
+	</s:Scroller>
+	<s:HGroup left="5" width="100%" top="160">
+		<s:Button id="wheelmanagebn" label="滚轮管理"/>
+		<s:Button id="addbn" label="新增维护信息"/>
+		<!--<s:Button id="editbn" label="编辑"/>
+		<s:Button id="deletebn" label="删除"/>-->
+	</s:HGroup>
+	<s:HGroup height="20" top="180" width="100%" verticalAlign="middle">
+		<s:Line stroke="{lStroke}" width="100%"/>
+		<s:Label text="{'维护信息（'+colMaintain.length+'）'}" fontSize="14" fontWeight="bold"/>
+		<s:Line stroke="{lStroke}" width="100%"/>
+	</s:HGroup>
+	<s:DataGrid id="datagrid" width="100%" top="200" height="100%" 
+				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn headerText="滚轮编号" dataField="WheelId" width="70"/>
+				<s:GridColumn headerText="维护类型" dataField="MaintainType" width="70"/>
+				<s:GridColumn headerText="维护时间" dataField="MaintainTime"  labelFunction="dealDateLabelFunction" width="120"/>
+				<s:GridColumn headerText="维护人" dataField="MaintainUser" width="70"/>
+				<s:GridColumn headerText="维护内容" dataField="MaintainInfo" width="200" dataTipField="MaintainInfo" labelFunction="dealDataLabelFunction" showDataTips="true"/>		
+				<s:GridColumn headerText="备注" dataField="Memo" width="320" dataTipField="Memo" labelFunction="dealMemoDataLabelFunction" showDataTips="true"/>
+				<s:GridColumn headerText="操作">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>										
+								<fx:Script>
+									<![CDATA[
+										protected function button_down(event:Event):void
+										{
+											dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_EDIT,true));
+										}
+										protected function button_down2(event:Event):void
+										{
+											dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_DELETE,true));
+										}
+									]]>
+								</fx:Script>
+								
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</s:layout>
+								
+								<s:Button label="编辑" width="50" buttonDown="button_down(event)"/>
+								<s:Button label="删除" width="50" buttonDown="button_down2(event)"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+</s:TitleWindow>

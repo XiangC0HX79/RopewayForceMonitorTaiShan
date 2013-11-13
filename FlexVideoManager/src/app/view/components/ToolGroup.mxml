@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" horizontalAlign="center">
+	
+	<s:states>
+		<s:State name="view"/>
+		<s:State name="edit"/>
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			public static const ZOOM_OUT:String = "ZoomOut";
+			public static const ZOOM_IN:String = "ZoomIn";
+			public static const SIZE_TURE:String = "SizeTrue";
+			public static const SIZE_CONTENT:String = "SizeContent";
+			
+			public static const DEFUALT:String = "Default";
+			public static const CAM_ADD:String = "CamAdd";
+			public static const CAM_DEL:String = "CamDel";
+		]]>
+	</fx:Script>
+	
+	<s:Image buttonMode="true" source="@Embed('assets/image/zoom_out.png')" click="dispatchEvent(new Event(ZOOM_OUT))"/>
+	<s:Image buttonMode="true" source="@Embed('assets/image/zoom_in.png')" click="dispatchEvent(new Event(ZOOM_IN))"/>
+	<s:Image buttonMode="true" source="@Embed('assets/image/size_true.png')" click="dispatchEvent(new Event(SIZE_TURE))"/>
+	<s:Image buttonMode="true" source="@Embed('assets/image/size_content.png')" click="dispatchEvent(new Event(SIZE_CONTENT))"/>
+	
+	<s:Image includeIn="edit" buttonMode="true" source="@Embed('assets/image/btn_default.png')" click="dispatchEvent(new Event(DEFUALT))"/>
+	<s:Image includeIn="edit" buttonMode="true" source="@Embed('assets/image/btn_cam_add.png')" click="dispatchEvent(new Event(CAM_ADD))"/>
+	<s:Image includeIn="edit" buttonMode="true" source="@Embed('assets/image/btn_cam_del.png')" click="dispatchEvent(new Event(CAM_DEL))"/>
+</s:VGroup>

@@ -23,6 +23,7 @@
 			[Embed(source="img/zz_2_2.png")]private var ZzSkin2_2:Class;
 			[Embed(source="img/zz_3.png")]private var ZzSkin3:Class;
 			[Embed(source="img/zz_4.png")]private var ZzSkin4:Class;
+			[Embed(source="img/zz_5.png")]private var ZzSkin5:Class;
 			[Embed(source="img/dian.png")]private var DdSkin:Class;
 			[Bindable][Embed(source="img/xiaoshu.png")]
 			private var DianSkin:Class;
@@ -287,14 +288,14 @@
 					rt.source = ZzSkin4;
 					
 					rt.x=SetData4(obj.barValue,0,7); 
-					rt.y=130;					
+					rt.y=160;					
 				}
 				else if(type == "16")
 				{
 					rt.source = ZzSkin4;
 					
 					rt.x=SetData4(obj.barValue,0,7); 
-					rt.y=130;					
+					rt.y=160;					
 				}
 				
 				rot.play([rt]);

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 rollOverColor="#008EAC" doubleClickEnabled="true"
+		 doubleClick="title_doubleClickHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="rbGroup" change="rbGroup_changeHandler(event)"/>		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import custom.itemRenderer.ItemRendererMainStation;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			import spark.events.RendererExistenceEvent;
+						
+			[Bindable]public var dpStations:ArrayCollection;
+			
+			public static const LOCATE_WHEEL:String = "LocateWheel";
+						
+			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var render:ItemRendererMainStation = event.renderer as ItemRendererMainStation;
+				render.rb.group = rbGroup;
+				if(event.data == FlexGlobals.topLevelApplication.Station)
+					render.rb.selected = true;
+			}
+			
+			protected function rbGroup_changeHandler(event:Event):void
+			{				
+				var radioButtonGroup:RadioButtonGroup = event.currentTarget as RadioButtonGroup;
+				FlexGlobals.topLevelApplication.Station = radioButtonGroup.selectedValue.toString();
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			protected function title_doubleClickHandler(event:MouseEvent):void
+			{				
+				//stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
+			}
+			
+			private function OnButtondown(event:FlexEvent):void
+			{
+				dispatchEvent(new Event(LOCATE_WHEEL));
+			}
+		]]>
+	</fx:Script>
+	<s:Image left="0" bottom="0" top="0" scaleMode="stretch"
+			 source="assets/image/top_left.png"/>
+	<s:Rect left="11" right="10" bottom="0" top="0">
+		<s:fill>
+			<s:BitmapFill fillMode="repeat" source="@Embed('assets/image/top_bg.png')"/>
+		</s:fill>
+	</s:Rect>
+	<s:Image right="0" bottom="0" top="0" scaleMode="stretch"
+			 source="assets/image/top_right.png"/>
+	
+	<s:HGroup height="100%" verticalAlign="middle" paddingLeft="10">		
+		<s:Image source="assets/image/top_icon.png"/>
+		<s:Label paddingTop="3" id="lbContent" text="支架概览" color="0xffffff" fontSize="14"/>
+	</s:HGroup>
+	<s:HGroup right="15" top="4" height="100%">
+		<s:Label paddingTop="6" text="滚轮编号：" color="0xffffff"/>
+		<s:TextInput id="wheelidinput" width="100"/>
+		<s:Button label="定位" width="70" buttonDown="OnButtondown(event)"/>
+		<s:DataGroup id="datagroup" dataProvider="{dpStations}"
+					 rendererAdd="datagroup_rendererAddHandler(event)"
+					 itemRenderer="custom.itemRenderer.ItemRendererMainStation">
+			<s:layout>
+				<s:HorizontalLayout gap="40" verticalAlign="middle"/>
+			</s:layout>
+		</s:DataGroup>
+	</s:HGroup>
+</s:Group>

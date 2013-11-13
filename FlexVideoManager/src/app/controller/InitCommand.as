@@ -1,6 +1,8 @@
 package app.controller
 {
-	import app.model.AppParamProxy;
+	import app.model.AreaProxy;
+	import app.model.ParamProxy;
+	import app.model.VideoProxy;
 	
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
@@ -14,8 +16,12 @@ package app.controller
 		{
 			var application:Application = note.getBody() as Application;
 			
-			var appParamProxy:AppParamProxy = facade.retrieveProxy(AppParamProxy.NAME) as AppParamProxy;
-			appParamProxy.appParam.imageSrc = application.parameters.imageSrc;
+			var unitId:Number = Number(application.parameters.unitId);
+			if(!unitId)
+				unitId = 0;
+			
+			var areaProxy:AreaProxy = facade.retrieveProxy(AreaProxy.NAME) as AreaProxy;
+			areaProxy.initData(unitId);
 		}
 	}
 }

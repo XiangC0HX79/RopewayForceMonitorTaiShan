@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.AppParamVO;
+			import app.model.vo.AreaVO;
 			
-			[Bindable]public var appParam:AppParamVO;
+			[Bindable]public var area:AreaVO;
 		]]>
 	</fx:Script>
-	<s:Image source="@{appParam.imageSrc}"/>
+	<s:Image id="img" source="{area.imageSrc}" ready="dispatchEvent(event)"/>
+	<s:Group id="layerVideo" left="0" right="0" top="0" bottom="0"/>
 </s:Group>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   skinClass="custom.skin.SkinTitleWindow"
+			   title="{_ropeway+'第'+_id+'号滚轮维护信息'}" title.Edit="编辑维护信息" width="500" close="closewindow()">
+	<s:states>
+		<s:State name="New"/>
+		<s:State name="Edit"/>
+	</s:states>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.WheelHistoryVO;
+			import app.model.vo.WheelVO;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+						
+			public static const BASEINFO_NEW:String = "BaseInfoNew";	
+			
+			public static const BASEINFO_EDIT:String = "BaseInfoEdit";	
+			
+			[Bindable]public var baseInfo:WheelHistoryVO;
+			
+			
+			[Bindable]public var _id:String;
+			
+			[Bindable]public var _ropeway:String;
+			
+			[Bindable]public var type:String;
+			
+			[Bindable]public var num:Number;
+			
+			
+			private function closewindow():void
+			{
+				PopUpManager.removePopUp(this);	
+			}
+			
+			
+			
+			public function get dateS():Date
+			{						
+				return new Date(dateDayS.selectedDate.fullYear
+					,dateDayS.selectedDate.month
+					,dateDayS.selectedDate.date
+					,Number(textHourS.value)
+					,0);
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
+	
+	<!--<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" text="　所属索道：" fontWeight="bold"/>	
+		<s:TextInput id="listRopeway" enabled="false" width="100%" text="{_ropeway}"/>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" text="　滚轮编号：" fontWeight="bold"/>
+		<s:TextInput id="wheelId" enabled="false" width="100%" text="{_id}"/>
+	</s:HGroup>-->
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" text="　维护类型：" fontWeight="bold"/>
+		<s:DropDownList id="listMaintainType" selectedItem="{baseInfo.MaintainType}" width="100%">
+		</s:DropDownList>
+		<s:Label paddingTop="6" text="是否更换：" fontWeight="bold"/>
+		<s:CheckBox id="cbisChange"/>
+		<s:Label paddingTop="6" text="维护日期:" fontWeight="bold"/>
+		<mx:DateField id="dateDayS" formatString="YYYY-MM-DD" selectedDate="{new Date}"
+					  dayNames="['日','一','二','三','四','五','六']"
+					  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+		<s:NumericStepper id="textHourS" maximum="23" width="45" value="{num}"/>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" fontWeight="bold" text="　维护内容：" id="lb"/>
+		<s:TextArea id="maintainInfo" width="100%" height="100" text="{baseInfo.MaintainInfo}"/>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" fontWeight="bold"
+				 text="　备　　注："/>
+		<s:TextArea id="memo" width="100%" height="100" text="{baseInfo.Memo}"/>	
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label paddingTop="6" fontWeight="bold" text="　维  护 人：" />
+		<s:TextInput id="maintainUser" width="100%" text="{baseInfo.MaintainUser}"/>	
+	</s:HGroup>
+	
+	<s:HGroup horizontalAlign="center">
+		<s:Button label="保存" id="submit" buttonDown="dispatchEvent(new Event(BASEINFO_NEW));"/>
+		<s:Button label="取消" buttonDown="dispatchEvent(new CloseEvent(CloseEvent.CLOSE))"/>
+	</s:HGroup>
+</s:TitleWindow>

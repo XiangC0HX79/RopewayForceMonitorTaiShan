@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:RichEditableText xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					creationComplete="created()">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			import mx.controls.Label;
+			protected var file:FileReference;
+			protected function created():void
+			{
+				var upload:Button=new Button();
+				
+				upload.label="upload";
+				
+				
+				//this.toolBar2.addChild(upload);
+				
+				upload.addEventListener(MouseEvent.CLICK,onClick);
+				
+				file=new FileReference();
+			}
+			protected function onClick(event:MouseEvent):void
+			{
+				file.browse([new FileFilter("*.jpg","*.jpg")]);
+			}
+		]]>
+	</fx:Script>
+</s:RichEditableText>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 left="0" right="0" top="0" bottom="0">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:SkinnableContainer width="100%" backgroundColor="0xFFFFFF" backgroundAlpha="0">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text="所属区域：" fontWeight="bold"/>
+		<s:ComboBox id="cb"/>
+		<s:Label text="滚轮编号：" fontWeight="bold"/>
+		<s:TextInput id="CarId"/>
+		<s:Label width="100%" visible="false"/>
+		<s:Button id="addbn" width="100" label="新　　增" />
+		<!--<s:Button id="editbn" width="100" label="编　　辑" />-->
+		<s:Button id="deletebn" width="100" label="删　　除" />
+	</s:SkinnableContainer>	
+	<s:DataGrid id="datagrid" width="100%" height="50%">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn headerText="所属支架" dataField="StandId" width="200"/>
+				<s:GridColumn headerText="所属区域" dataField="AreaId" width="200"/>		
+				<s:GridColumn headerText="滚轮编号" dataField="WheelId" width="200"/>
+				<s:GridColumn headerText="所属索道" dataField="ropewayStation" width="200"/>
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+</s:VGroup>

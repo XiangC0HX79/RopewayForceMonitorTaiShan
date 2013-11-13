@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="facade.startup(this)"
+			   preloader="custom.components.AppDownloadProgressBar"
+			   xmlns:components="app.view.components.*" width="100%" height="668">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		s|Label{
+			font-family: '微软雅黑';
+		}
+		 mx|ToolTip{
+			font-family: '微软雅黑';
+		} 
+		s|Grid{
+			font-family: '微软雅黑';
+		}
+		mx|Alert{
+			fontFamily: '微软雅黑';
+		}
+		mx|TabNavigator{
+			fontFamily: '微软雅黑';
+		}
+		mx|DataGrid{
+			fontFamily: '微软雅黑';
+		}
+	
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import app.ApplicationFacade;
+			import app.model.vo.ConfigVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			private var facade:ApplicationFacade = ApplicationFacade.getInstance();
+			
+			public var Station:String = "桃花源";
+			
+			public var WheelId:String = "";
+			
+			public var UserName:String = "";
+			
+			public var Config:ConfigVO = new ConfigVO();
+			
+			public var DepIds:String = "";
+			
+			public var WarnArr:ArrayCollection = new ArrayCollection();
+			
+			protected function title_doubleClickHandler(event:MouseEvent):void
+			{				
+				stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
+			}
+			//更换轮胎 张三 无 维护轴承
+		]]>
+	</fx:Script>
+	<components:MainStation id="mainStation" top="0" height="31" left="0" right="0"/>
+	<s:SkinnableContainer top="31" bottom="0" left="0" right="0" width="100%" height="100%" skinClass="custom.skin.SkinMainContent">
+		<s:Group height="100" left="0" right="0">
+			<s:Image source="assets/image/lun.png" top="25" left="5" width="40" height="40"/>
+			<s:Label text="正常" top="35" left="50" fontSize="18"/>
+			<s:Image source="assets/image/ylun.png" top="25" left="140" width="40" height="40"/>
+			<s:Label text="设备达到预警维护时间" top="35" left="185" fontSize="18"/>
+			<s:Image source="assets/image/hlun.png" top="25" left="410" width="40" height="40"/>
+			<s:Label text="设备需要维护" top="35" left="455" fontSize="18"/>
+		</s:Group>
+		<s:Group id="warngroup" left="655" top="5"  width="100%"/>
+		<s:Group id="main" top="100" bottom="0" left="0" right="0" width="100%"/>
+	</s:SkinnableContainer>
+	<components:MainMenu id="mainMenu" top="100" bottom="0" width="100" visible="false"/>
+	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
+</s:Application>

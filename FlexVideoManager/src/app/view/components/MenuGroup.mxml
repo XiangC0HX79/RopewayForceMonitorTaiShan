@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DataGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 rendererAdd="datagroup_rendererAddHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.AreaVO;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.events.RendererExistenceEvent;
+			
+			public static const RENDER_CLICK:String = "RenderClick";
+			
+			public var area:AreaVO;
+			
+			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				event.renderer.addEventListener(FlexEvent.BUTTON_DOWN,onRendererClick);				
+			}
+			
+			private function onRendererClick(event:Event):void
+			{
+				area = event.currentTarget.data as AreaVO;
+				dispatchEvent(new Event(RENDER_CLICK));
+			}			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+	
+	<s:itemRenderer>
+		<fx:Component>
+			<s:ItemRenderer>
+				<s:Button label="{data.title}" buttonDown="dispatchEvent(event)"/>				
+			</s:ItemRenderer>
+		</fx:Component>
+	</s:itemRenderer>
+</s:DataGroup>

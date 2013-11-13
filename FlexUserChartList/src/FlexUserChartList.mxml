@@ -83,7 +83,7 @@
 				{
 					var urlInit:String = this.parameters.urlInit;
 					
-					var request:URLRequest = new URLRequest(urlInit + "?uid=" + Math.random());
+					var request:URLRequest = new URLRequest(urlInit + "&uid=" + Math.random());
 					request.method = "POST";	
 					
 					var load:URLLoader = new URLLoader(request);

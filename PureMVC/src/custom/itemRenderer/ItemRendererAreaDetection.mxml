@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				focusColor="#FFFFFF" rollOverColor="#FFFFFF">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.WheelManageVO;
+			
+			import mx.formatters.DateFormatter;
+			
+			[Bindable]public var _areaWheel:WheelManageVO;
+			[Bindable]public var _id:String;
+			[Bindable]public var _areaid:String;
+			[Bindable]public var _warningstatus:String;
+			[Bindable]public var _wheeltype:String;
+			[Bindable]public var _wheeldate:String = "";
+			[Bindable]public var _standdate:String = "";
+			[Bindable]public var _wheelhour:int;
+			[Bindable]public var _standhour:int;
+			[Bindable]public var _source:String = "assets/image/lun.png";
+			[Bindable]public var _tip:String;
+			
+						
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if(value)
+				{
+					_areaWheel = value as WheelManageVO;
+					
+					_id = _areaWheel.WheelId;
+					
+					_warningstatus = _areaWheel.Status;
+					
+					_wheeltype = _areaWheel.WheelType;
+					
+					if(_warningstatus == "yellow")
+						_source = "assets/image/ylun.png";
+					else if(_warningstatus == "red")
+						_source = "assets/image/hlun.png";
+					else
+					{
+						if(int(_wheeltype) == 1)
+							_source = "assets/image/slun.png";
+						else
+							_source = "assets/image/xlun.png";
+					}
+					var dateFormatter:DateFormatter = new DateFormatter();
+					dateFormatter.formatString = "YYYY-MM-DD";
+					_wheeldate= dateFormatter.format(_areaWheel.wheelHis.WheelDate); 
+					
+					_standdate = dateFormatter.format(_areaWheel.wheelHis.StandDate); 
+					
+					_standhour = _areaWheel.wheelHis.Standhour;
+					
+					_wheelhour = _areaWheel.wheelHis.Wheelhour;
+					
+					_tip = "轮胎维护时间：" + _wheeldate + "\r轴承维护时间：" + _standdate + "\r轮胎累计运行时间：" + _wheelhour + " h\r轴承累计运行时间：" + _standhour +　" h";
+				}
+			}
+			
+			override public function get data():Object
+			{		
+				return super.data;
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth , unscaledHeight);
+				
+				if(this.parentDocument._id == this._id)
+				{
+					this.graphics.lineStyle(2,0x0);
+					this.graphics.drawCircle(25,25,28);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Group>
+		<s:Image id="wheelimg" source="{_source}" top="0" width="50" height="50" toolTip="{_tip}"
+				 click="this.parentDocument.imgclick(_id)"
+				 mouseOver="buttonMode=true" mouseOut="buttonMode=false"/>
+		<s:Label top="55" horizontalCenter="0" text="{_id}"/>
+	</s:Group>
+</s:ItemRenderer>

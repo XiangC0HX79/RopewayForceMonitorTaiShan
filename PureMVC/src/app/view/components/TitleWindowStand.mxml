@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:ckeditor="be.aboutme.as3.ckeditor.*"
+			   width="640" height="500" close="closewindow()"
+			   skinClass="custom.skin.SkinTitleWindow" title="{_ropeway+'第'+_standId+'号支架'}" focusIn="dispatchEvent(new Event(IFRAME_FOCUSOUT));" xmlns:ns="http://code.google.com/p/flex-iframe/">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>	
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH 'h'"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.AttachVO;
+			import app.model.vo.StandMaintainVO;
+			import app.model.vo.WheelHistoryVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			import mx.utils.*;
+			
+			import spark.components.Image;
+			import spark.components.gridClasses.GridColumn;
+			import spark.events.GridSelectionEvent;
+			
+			public static const STANDINFO_SAVE:String = "StandinfoSave";
+			public static const TAB_CHANGE:String = "TabChange";
+			public static const PIC_UPLOAD:String = "PicUpload";
+			public static const MAINTAIN_ADD:String = "MaintainAdd";
+			public static const MAINTAIN_EDIT:String = "MaintainEdit";
+			public static const MAINTAIN_DELETE:String = "MaintainDelete";
+			public static const MAINTAIN_SEARCH:String = "MaintainSearch";
+			public static const IFRAME_FOCUSOUT:String = "IframeFocusout";
+			
+			[Bindable]public var _id:String = "";
+			[Bindable]public var colMaintain:ArrayCollection = new ArrayCollection();
+			[Bindable]public var num:Number;
+			[Bindable]public var _ropeway:String = "";
+			[Bindable]public var _standId:int;
+			[Bindable]public var attach:AttachVO;
+			
+			
+			private function closewindow():void
+			{
+				//standinforich.htmlText = "";
+				if(datagrid != null)
+					datagrid.dataProvider = null;
+				PopUpManager.removePopUp(this);	
+			}
+			
+			public function imgclick(id:String):void
+			{
+				_id = id;
+			}
+			
+			private function dealDateLabelFunction(standMaintainVO:StandMaintainVO,column:GridColumn):String
+			{
+				if(standMaintainVO.MDate.time > 0)
+					return dateF.format(standMaintainVO.MDate);
+				else
+					return "未处置";
+			}
+			
+			private function dealDataLabelFunction(standMaintainVO:StandMaintainVO,column:GridColumn):void
+			{
+				/* var thisStringBytsLength :ByteArray = new ByteArray();
+				thisStringBytsLength.writeMultiByte(standMaintainVO.MaintainInfo,"gb2312");
+				if(thisStringBytsLength.length > 40)
+					return standMaintainVO.MaintainInfo.substr(0,20) + "...";
+				else
+					return standMaintainVO.MaintainInfo; */
+			}
+			
+			protected function datagrid_selectionChangeHandler(event:GridSelectionEvent):void
+			{
+				//var o:* = new *(datagrid.selectedItem);
+				var sm:StandMaintainVO = new StandMaintainVO(datagrid.selectedItem);
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:TabNavigator id="tn" x="2" y="2" width="100%" height="100%">
+		<s:NavigatorContent id="nc1" width="100%" height="100%" label="支架详情" skinClass="custom.skin.SkinNavigatorContent">
+			<s:HGroup top="5" left="5" bottom="5" right="5" width="100%" height="100%">
+				<!--<s:VGroup height="100%" width="50%">
+					<s:HGroup width="100%">
+						<s:Label paddingTop="6" text="　所属索道：" fontWeight="bold"/>	
+						<s:TextInput id="listRopeway" width="109" enabled="false" text="{_ropeway}"/>
+						<s:Label paddingTop="6" text=" 所属支架："/>
+						<s:TextInput id="t_standId" width="100" enabled="false" text="{_standId}"/>
+					</s:HGroup>
+					<s:Label height="100%"/>
+					<s:Label height="10"/>
+				</s:VGroup>-->
+				<s:VGroup height="100%" width="100%">
+					<!--<s:Label text="　   支架照片：" fontWeight="bold" paddingTop="5"/>
+					<s:SkinnableContainer width="100%" height="151" backgroundAlpha="0.3"
+										  backgroundColor="0xFFFFFF">
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<s:List id="attachList" dataProvider="{attach.listConsultImage}" width="100%" height="146" horizontalScrollPolicy="on"
+								itemRenderer="custom.itemRenderer.ItemRendererAttach">
+							<s:layout>
+								<s:HorizontalLayout/>
+							</s:layout>		
+						</s:List>
+					</s:SkinnableContainer>	-->
+					<!--<s:Label paddingTop="6" text="　支架详情：" fontWeight="bold"/>	-->
+					<!--<s:TextArea id="standinfoarea" width="100%" height="100%"/>-->
+					<!--<mx:RichTextEditor id="standinforich" title="　支架详情："/>-->
+					<!--<ckeditor:CKEditor id="standinforich" height="100%" width="100%">
+						<ckeditor:htmlText>
+							<![CDATA[ 
+							<p>This is <strong>a test<strong></p>
+							<p>Does this work properly?</p>
+							]]>
+						</ckeditor:htmlText>
+					</ckeditor:CKEditor>-->
+					<ns:IFrame id="iframe" width="100%" height="100%">
+						
+					</ns:IFrame>
+					<s:HGroup width="100%">
+						<s:Label width="100%"/>
+						<s:Button label="保存" id="addbn" buttonDown="dispatchEvent(new Event(STANDINFO_SAVE));"/>
+						<s:Button label="取消" id="cancelbn" buttonDown="closewindow()"/>
+					</s:HGroup>
+					<s:Label height="10"/>
+				</s:VGroup>
+			</s:HGroup>
+			<s:Button x="444" y="199" id="uploadbn" label="插入图片" buttonDown="dispatchEvent(new Event(PIC_UPLOAD));" visible="false"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent id="nc2" width="100%" height="100%" label="维护列表" skinClass="custom.skin.SkinNavigatorContent" show="dispatchEvent(new Event(TAB_CHANGE));">
+			<s:VGroup width="100%" height="100%">
+				<s:HGroup verticalAlign="middle" width="100%">
+					<s:Label text="从"/>
+					<mx:DateField id="dateDayF" dayNames="['日','一','二','三','四','五','六']"
+								  formatString="YYYY-MM-DD"
+								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"
+								  selectedDate="{new Date}"
+								  width="107"/>
+					<s:Label text="到"/>
+					<mx:DateField id="dateDayT" dayNames="['日','一','二','三','四','五','六']"
+								  formatString="YYYY-MM-DD"
+								  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"
+								  selectedDate="{new Date}"
+								  width="107"/>
+					<s:Button id="Search" label="查询" buttonDown="dispatchEvent(new Event(MAINTAIN_SEARCH));"/>
+					<s:Button id="Addbn" label="新增" buttonDown="dispatchEvent(new Event(MAINTAIN_ADD));"/>
+				</s:HGroup>
+				<s:DataGrid id="datagrid" width="100%" top="200" height="100%" 
+							borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+							alternatingRowColors="[#FFFFFF,#CFEDF7]" selectionChange="datagrid_selectionChangeHandler(event)">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="所属索道" dataField="RopeWay" width="70"/>
+							<s:GridColumn headerText="支架编号" dataField="BracketId" width="100"/>	
+							<s:GridColumn headerText="维护时间" dataField="MDate"  labelFunction="dealDateLabelFunction" width="120"/>
+							<s:GridColumn headerText="维护人" dataField="InputUserName" width="60"/>
+							<!--<s:GridColumn headerText="维护内容" dataField="MaintainInfo" dataTipField="MaintainInfo" labelFunction="dealDataLabelFunction" showDataTips="true" width="270"/>-->
+							<s:GridColumn headerText="操作">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>										
+											<fx:Script>
+												<![CDATA[
+													protected function button_down(event:Event):void
+													{
+														dispatchEvent(new Event(TitleWindowStand.MAINTAIN_EDIT,true));
+													}
+													
+													protected function button_down2(event:Event):void
+													{
+														dispatchEvent(new Event(TitleWindowStand.MAINTAIN_DELETE,true));
+													}
+												]]>
+											</fx:Script>
+											
+											<s:layout>
+												<s:HorizontalLayout horizontalAlign="center"/>
+											</s:layout>
+											
+											<s:Button label="查看" width="50" buttonDown="button_down(event)"/>
+											<s:Button label="删除" width="50" buttonDown="button_down2(event)"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+						</s:ArrayList>				
+					</s:columns>
+				</s:DataGrid>
+			</s:VGroup>
+		</s:NavigatorContent>
+	</mx:TabNavigator>
+</s:TitleWindow>

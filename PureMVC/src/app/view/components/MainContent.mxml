@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="app.view.components.contentcomponents.*"
+		 xmlns:component="app.view.components.*" width="1963" height="340"
+		 mouseWheel="this_mouseWheelHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.model.WheelProxy;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.puremvc.as3.patterns.facade.Facade;
+			
+			public static const WHEEL_DETECTION:String = "WheelDetection";
+			public static const STAND_DETECTION:String = "StandDetection";
+			[Bindable]public var _id:String;
+			[Bindable]public var _standid:String;
+			
+			private static const W:Number = FlexGlobals.topLevelApplication.width-100;
+			private static const H:Number = 340;
+			
+			private var indexScale:Number;
+			private var listScale:Array;
+			//143,1751
+			protected function image_readyHandler(event:FlexEvent):void
+			{
+				listScale = [];
+				var scale:Number = Math.max(W / imgTMB.bitmapData.width,H / imgTMB.bitmapData.width);
+				if(scale <= 1)
+				{
+					listScale.push(scale);
+					listScale.push((1-scale)/2 + scale);
+					listScale.push(1);
+					
+					indexScale = 2;
+				}
+				else
+				{
+					listScale.push(1);
+					listScale.push((1+scale)/2);
+					listScale.push(scale);				
+					
+					indexScale = 0;
+				}
+				
+				this.x = (W - imgTMB.bitmapData.width) / 2;
+				this.y = (H - imgTMB.bitmapData.height) / 2;
+			}
+			
+			protected function this_mouseWheelHandler(event:MouseEvent):void
+			{
+				if(event.delta > 0)
+				{
+					zoomin();
+				}
+				else if(event.delta < 0)
+				{				
+					zoomout();
+				}
+			}
+			
+			private var srcPoint:Point;
+			protected function image_mouseDownHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				srcPoint = new Point(event.stageX,event.stageY);
+			}
+			
+			protected function image_mouseMoveHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.buttonDown && srcPoint)
+				{					
+					var desPoint:Point = new Point(event.stageX,event.stageY);
+					
+					var tempPoint:Point = new Point(this.x + (desPoint.x - srcPoint.x)*this.scaleX
+						,this.y + (desPoint.y - srcPoint.y)*this.scaleY);
+					
+					var imageW:Number = this.width * this.scaleX;
+					var imageH:Number = this.height * this.scaleY;
+					
+					if(W < imageW)
+					{
+						if(tempPoint.x > 0)
+						{
+							this.x = 0;
+						}
+						else if(tempPoint.x < W - imageW)
+						{
+							this.x = W - imageW;
+						}
+						else
+						{
+							this.x = tempPoint.x;
+						}		
+					}
+					
+					if(H < imageH)
+					{
+						if(tempPoint.y > 0)
+						{
+							this.y = 0;
+						}
+						else if(tempPoint.y < H - imageH)
+						{
+							this.y = H - imageH;
+						}
+						else
+						{
+							this.y = tempPoint.y;
+						}	
+					}
+					
+					srcPoint.x = desPoint.x;
+					srcPoint.y = desPoint.y; 
+				}
+			}
+			
+			protected function this_mouseUpHandler(event:MouseEvent):void
+			{
+				srcPoint = null;
+			}
+			
+			private function zoomin():void
+			{				
+				if(indexScale > 0)
+				{
+					indexScale--;
+					this.scaleX = listScale[indexScale];
+					this.scaleY = listScale[indexScale];
+				}
+				
+				ajustPosition();
+			}
+			
+			private function zoomout():void
+			{				
+				if(indexScale < 2)
+				{
+					indexScale++;
+					this.scaleX = listScale[indexScale];
+					this.scaleY = listScale[indexScale];
+				}
+				
+				ajustPosition();
+			}
+			private function ajustPosition():void
+			{				
+				var w:int = int(listScale[indexScale] * imgTMB.bitmapData.width);
+				var h:int = int(listScale[indexScale] * imgTMB.bitmapData.height);
+				if(w <= W)
+					this.x = (W - w) / 2;
+				else if(this.x > 0)
+					this.x = 0;
+				else if(this.x + w < W)
+					this.x = W - w;
+				
+				if(h <= H)
+					this.y = (H - h) / 2;
+				else if(this.y > 0)
+					this.y = 0;
+				else if(this.y + h < H)
+					this.y = H - h;
+			}
+		]]>
+	</fx:Script>
+	<s:Image id="imgTMB" source="assets/image/back.png" width="100%" height="100%"
+			 ready="image_readyHandler(event)"
+			 mouseMove="image_mouseMoveHandler(event)"
+			 mouseDown="image_mouseDownHandler(event)" 
+			 mouseUp="this_mouseUpHandler(event)"/>
+	<s:Image id="l1" x="10" y="44" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l1.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l2" x="10" y="215" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l2.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l3" x="141" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l3.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l4" x="141" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l4.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l5" x="302" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l5.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l6" x="302" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l6.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l7" x="463" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l7.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l8" x="463" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l8.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l9" x="624" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l9.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l10" x="624" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l10.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l11" x="785" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l11.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l12" x="785" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l12.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l13" x="946" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l13.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l14" x="946" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l14.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l15" x="1107" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l15.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l16" x="1107" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l16.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l17" x="1268" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l17.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l18" x="1268" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l18.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l19" x="1429" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l19.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l20" x="1429" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l20.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l21" x="1590" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l21.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l22" x="1590" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l22.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l23" x="1751" y="0" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l23.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l24" x="1751" y="261" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l24.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l25" x="1884" y="44" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l25.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="l26" x="1884" y="215" width="70" height="70" source="assets/image/lun.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_id= l26.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
+	<s:Image id="b1" x="147" y="100" height="133" source="assets/image/1.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b1.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b2" x="308" y="100" height="133" source="assets/image/2.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b2.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b3" x="469" y="100" height="133" source="assets/image/3.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b3.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b4" x="630" y="100" height="133" source="assets/image/4.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b4.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b5" x="791" y="100" height="133" source="assets/image/5.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b5.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b6" x="952" y="100" height="133" source="assets/image/6.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b6.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b7" x="1113" y="100" height="133" source="assets/image/7.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b7.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b8" x="1274" y="100" height="133" source="assets/image/8.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b8.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b9" x="1435" y="100" height="133" source="assets/image/9.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b9.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b10" x="1596" y="100" height="133" source="assets/image/10.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b10.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+	<s:Image id="b11" x="1757" y="100" height="133" source="assets/image/11.png"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
+			 click="_standid= b11.id;dispatchEvent(new Event(STAND_DETECTION));"/>
+</s:Group>
