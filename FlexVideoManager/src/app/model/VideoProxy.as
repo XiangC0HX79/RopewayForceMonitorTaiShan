@@ -78,6 +78,8 @@ package app.model
 				
 				dict[video.id] = video;
 				
+				sendNotification(Notifications.NOTIFY_ALERT_INFO,"摄像头添加成功。");
+				
 				sendNotification(Notifications.IMAGE_GROUP_REFRESH,dict);
 			}
 		}
@@ -121,6 +123,8 @@ package app.model
 				var video:VideoVO = event.token.video as VideoVO;
 				
 				dict[video.id] = video;
+				
+				sendNotification(Notifications.NOTIFY_ALERT_INFO,"摄像头信息更新成功。");
 				
 				sendNotification(Notifications.IMAGE_GROUP_REFRESH,dict);
 			}

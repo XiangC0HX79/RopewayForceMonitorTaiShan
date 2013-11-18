@@ -57,6 +57,11 @@
                 flashvars, params, attributes);
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+            
+            function filter(stop)
+            {
+            	${swf}.FilterByStop(stop);
+            }
         </script>
     </head>
     <body>
@@ -104,5 +109,8 @@
                 <!--<![endif]-->
             </object>
         </noscript>     
+        <input type="button" onClick="filter(0)"/>
+        <input type="button" onClick="filter(1)"/>
+        <input type="button" onClick="filter(2)"/>
    </body>
 </html>

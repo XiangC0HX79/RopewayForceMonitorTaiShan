@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="100">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="180">
 	<fx:Script>
 		<![CDATA[
 			import app.model.vo.VideoVO;
@@ -22,11 +22,23 @@
 	<s:VGroup left="10" right="10" top="10" bottom="10" horizontalAlign="justify">
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="名称："/>
-			<s:TextInput id="txtTitle" width="100%" text="{video.title}"/>
+			<s:TextInput id="txtTitle" width="100%" text="{video.title}" trackingLeft="6"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle">
-			<s:Label text="说明："/>
-			<s:TextInput id="txtInfo" width="100%" text="{video.info}"/>
+			<s:Label text="IP地址："/>
+			<s:TextInput id="txtIpAddress" width="100%"/>
+		</s:HGroup>		
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="端口："/>
+			<s:TextInput id="txtPort" text="37777" width="100%" trackingLeft="6"/>
+		</s:HGroup>		
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="用户名："/>
+			<s:TextInput id="txtUserName" text="admin" width="100%"/>
+		</s:HGroup>		
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="密码："/>
+			<s:TextInput id="txtPassword" text="admin" width="100%" trackingLeft="6"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle" horizontalAlign="center">
 			<s:Button label="保存" buttonDown="dispatchEvent(new Event(SAVE))"/>

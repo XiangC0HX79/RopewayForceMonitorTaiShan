@@ -21,6 +21,8 @@ package app.model
 		
 		public var barMinValue:Number;
 		
+		public var ropewayStop:Number;
+		
 		public function ChartVO()
 		{
 		}

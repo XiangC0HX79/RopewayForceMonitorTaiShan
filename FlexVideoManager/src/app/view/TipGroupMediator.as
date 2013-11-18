@@ -1,11 +1,11 @@
 package app.view
 {
+	import flash.events.Event;
+	import flash.geom.Point;
+	
 	import app.model.VideoProxy;
 	import app.model.vo.VideoVO;
 	import app.view.components.TipGroup;
-	
-	import flash.events.Event;
-	import flash.geom.Point;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -30,7 +30,7 @@ package app.view
 		private function onSave(event:Event):void
 		{
 			tipGroup.video.title = tipGroup.txtTitle.text;
-			tipGroup.video.info = tipGroup.txtInfo.text;
+			tipGroup.video.info = tipGroup.txtIpAddress.text + "|" + tipGroup.txtPort.text + "|" + tipGroup.txtUserName.text + "|" + tipGroup.txtPassword.text;
 			
 			var videoProxy:VideoProxy  = facade.retrieveProxy(VideoProxy.NAME) as VideoProxy;
 			videoProxy.updateVideo(tipGroup.video);
@@ -61,6 +61,12 @@ package app.view
 		private function showTip(video:VideoVO,pt:Point):void
 		{
 			tipGroup.video = video.clone();
+			
+			var arr:Array = tipGroup.video.info.split("|");			
+			tipGroup.txtIpAddress.text = arr[0];
+			tipGroup.txtPort.text = (arr.length > 1)?arr[1]:"";
+			tipGroup.txtUserName.text = (arr.length > 2)?arr[2]:"";
+			tipGroup.txtPassword.text = (arr.length > 2)?arr[3]:"";
 			
 			var offset:Number = 20;
 			if(pt.x > tipGroup.width + offset + 10)
