@@ -25,7 +25,7 @@ package app.model.vo
 		{
 			IFDEF::Debug
 			{
-				return "http://localhost:6361/VideoManager/" + _source.imageSrc;
+				return "http://192.168.1.212:40000/VideoManager/" + _source.imageSrc;
 			}
 			
 			IFDEF::Release

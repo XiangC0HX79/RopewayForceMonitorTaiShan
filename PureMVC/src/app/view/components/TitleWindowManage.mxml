@@ -49,7 +49,7 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Label y="-35" horizontalCenter="0" text="{baseInfo.AreaId.toString()+'#区域滚轮管理'}" fontSize="20"/>
+	<s:Label y="-35" horizontalCenter="0" text="{baseInfo.shortName + '区域滚轮管理'}" fontSize="20"/>
 	<s:DataGrid id="datagrid" width="100" top="5" left="5" height="100%" 
 				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 				alternatingRowColors="[#FFFFFF,#CFEDF7]" selectionChange="dataSelect(event)">
@@ -73,7 +73,7 @@
 		<s:Label height="1"/>
 		<s:HGroup width="100%">
 			<s:Label paddingTop="6" text="　所属区域：" fontWeight="bold"/>	
-			<s:TextInput id="t_areaId" width="109" enabled="false" text="{baseInfo.AreaId.toString()}"/>
+			<s:TextInput id="t_areaId" width="109" enabled="false" text="{baseInfo.shortName}"/>
 			<s:Label paddingTop="6" text=" 滚轮编号："/>
 			<s:TextInput id="t_wheelId" width="100"/>
 		</s:HGroup>
@@ -82,8 +82,8 @@
 			<s:Label paddingTop="6" text="　滚轮类型：" fontWeight="bold"/>	
 			<s:DropDownList id="listStandType" width="109" selectedIndex="0">
 				<s:ArrayCollection>
-					<fx:String>上滚轮</fx:String>
-					<fx:String>下滚轮</fx:String>
+					<fx:String>托索轮</fx:String>
+					<fx:String>压索轮</fx:String>
 				</s:ArrayCollection>
 			</s:DropDownList>
 		</s:HGroup>

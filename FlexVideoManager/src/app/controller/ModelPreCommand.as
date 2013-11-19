@@ -21,7 +21,7 @@ package app.controller
 			
 			var application:Application = note.getBody() as Application;
 			var paramProxy:ParamProxy = facade.retrieveProxy(ParamProxy.NAME) as ParamProxy;
-			paramProxy.param.edited = (Number(application.parameters.edit) == 1);
+			paramProxy.param.edited = true;//(Number(application.parameters.edit) == 1);
 		}
 	}
 }

@@ -8,6 +8,9 @@ package app.controller
 	import app.view.TipGroupMediator;
 	import app.view.ToolGroupMediator;
 	
+	import flash.ui.ContextMenu;
+	import flash.ui.ContextMenuItem;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
@@ -18,7 +21,13 @@ package app.controller
 		override public function execute(note:INotification):void
 		{
 			var application:FlexVideoManager = note.getBody() as FlexVideoManager;
-						
+			
+			var cm:ContextMenu = new ContextMenu;
+			cm.customItems.push(new ContextMenuItem("版本：1.1.14"));
+			cm.hideBuiltInItems();
+			
+			application.contextMenu = cm;
+			
 			facade.registerMediator(new AlertMediator);
 			
 			facade.registerMediator(new FlexVideoManagerMediator(application));

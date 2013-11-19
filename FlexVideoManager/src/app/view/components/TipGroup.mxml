@@ -21,24 +21,24 @@
 	</s:Rect>
 	<s:VGroup left="10" right="10" top="10" bottom="10" horizontalAlign="justify">
 		<s:HGroup verticalAlign="middle">
-			<s:Label text="名称："/>
-			<s:TextInput id="txtTitle" width="100%" text="{video.title}" trackingLeft="6"/>
+			<s:Label text="名称：" trackingLeft="6"/>
+			<s:TextInput id="txtTitle" width="100%" text="{video.title}"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="IP地址："/>
 			<s:TextInput id="txtIpAddress" width="100%"/>
 		</s:HGroup>		
 		<s:HGroup verticalAlign="middle">
-			<s:Label text="端口："/>
-			<s:TextInput id="txtPort" text="37777" width="100%" trackingLeft="6"/>
+			<s:Label text="端口：" trackingLeft="6"/>
+			<s:TextInput id="txtPort" text="37777" width="100%"/>
 		</s:HGroup>		
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="用户名："/>
 			<s:TextInput id="txtUserName" text="admin" width="100%"/>
 		</s:HGroup>		
 		<s:HGroup verticalAlign="middle">
-			<s:Label text="密码："/>
-			<s:TextInput id="txtPassword" text="admin" width="100%" trackingLeft="6"/>
+			<s:Label text="密码：" trackingLeft="6"/>
+			<s:TextInput id="txtPassword" text="admin" width="100%"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle" horizontalAlign="center">
 			<s:Button label="保存" buttonDown="dispatchEvent(new Event(SAVE))"/>

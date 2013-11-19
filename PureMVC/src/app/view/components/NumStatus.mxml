@@ -21,7 +21,7 @@
 				redNum.text = red.toString();
 				yellowNum.text = yellow.toString();
 				blackNum.text = black.toString();
-				areaId.text = areaid.toString();
+				areaId.text = (areaid % 2) == 0?"下":"上";
 				var dateFormatter:DateFormatter = new DateFormatter();
 				dateFormatter.formatString = "YYYY-MM-DD JJ h";
 				if(dateFormatter.format(lastdate) == "1900-02-01 00 h")

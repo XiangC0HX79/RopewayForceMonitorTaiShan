@@ -6,6 +6,7 @@ package app.view
 	import app.model.vo.VideoVO;
 	import app.view.components.ImageVideo;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
@@ -13,6 +14,7 @@ package app.view
 	
 	import mx.core.DragSource;
 	import mx.events.FlexEvent;
+	import mx.graphics.ImageSnapshot;
 	import mx.managers.DragManager;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -80,13 +82,15 @@ package app.view
 		}
 		
 		private function onDragStart(e:MouseEvent):void
-		{									
+		{							
 			var imageProxy:Image = new Image;
-			imageProxy.source = imageVideo.source;
+			imageProxy.source = ImageSnapshot.captureBitmapData(imageVideo);
 			
 			var ds:DragSource = new DragSource();  
 			ds.addData(imageVideo.v,"VideoVO");
-			ds.addData(new Point(e.localX,e.localY),"StartPoint");
+			
+			var sp:Point = imageVideo.globalToLocal(new Point(e.stageX,e.stageY));
+			ds.addData(sp,"StartPoint");
 			DragManager.doDrag(imageVideo,ds,e,imageProxy); 
 		}	
 	}

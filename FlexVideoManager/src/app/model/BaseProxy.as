@@ -21,7 +21,7 @@ package app.model
 			
 			IFDEF::Debug
 			{
-				rootURL = "http://localhost:6361/VideoManager/";
+				rootURL = "http://192.168.1.212:40000/VideoManager/";
 			}
 									
 			var http:HTTPService = new HTTPService;

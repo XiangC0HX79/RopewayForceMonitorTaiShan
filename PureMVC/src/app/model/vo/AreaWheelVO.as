@@ -7,6 +7,17 @@ package app.model.vo
 	{
 		public var AreaId:int;
 		
+		public function get shortName():String
+		{
+			var id:int = int((AreaId - 1) / 2);
+			var up:String = (AreaId % 2) == 0?"下":"上";
+			return id.toString() + "#" + up;
+		}		
+		public function set shortName(value:String):void
+		{
+			
+		}
+		
 		public var StandId:int;
 		
 		public var Black:int=0;
