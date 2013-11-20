@@ -7,21 +7,50 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import app.model.WheelProxy;
-			
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
 			import mx.managers.PopUpManager;
 			
+			import app.model.WheelProxy;
+			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
+			[Embed(source="assets/image/up_arrow.png")]
+			[Bindable]private var upArrow:Class;
+			
+			[Embed(source="assets/image/down_arrow.png")]
+			[Bindable]private var downArrow:Class;
 			
 			public function init(red:int,yellow:int,black:int,areaid:int,lastdate:Date):void
 			{
 				redNum.text = red.toString();
 				yellowNum.text = yellow.toString();
 				blackNum.text = black.toString();
-				areaId.text = (areaid % 2) == 0?"下":"上";
+				
+				var id:int = int((areaid - 1) / 2);
+				var ids:String;
+				if(id == 0)
+					ids = "驱";
+				else if(id == 12)
+					ids = "回";
+				else
+					ids = id.toString();
+				
+				if((areaid % 2) == 0)
+				{			
+					img.y = -65;
+					img.source = downArrow;
+					
+					areaId.text = ids + "#下";					
+				}
+				else
+				{
+					img.y = -70;
+					img.source = upArrow;
+					
+					areaId.text = ids + "#上";					
+				}
+				
 				var dateFormatter:DateFormatter = new DateFormatter();
 				dateFormatter.formatString = "YYYY-MM-DD JJ h";
 				if(dateFormatter.format(lastdate) == "1900-02-01 00 h")
@@ -33,7 +62,8 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Label fontWeight="bold" id="areaId" fontSize="16" y="-48" horizontalCenter="0"/>
+	<s:Image id="img" horizontalCenter="0"/>
+	<s:Label fontWeight="bold" id="areaId" fontSize="12" y="-48" horizontalCenter="0"/>
 	<s:HGroup horizontalCenter="0">
 		<s:Label fontWeight="bold" id="redNum" color="#FF0000" fontSize="16"/>
 		<s:Label fontWeight="bold" text="-" fontSize="16"/>
