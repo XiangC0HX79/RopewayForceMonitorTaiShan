@@ -1,7 +1,8 @@
 <Config>
-	<WebServiceUrl>http://192.168.1.212/FlexWebservice-212/FlexWebService.asmx?wsdl</WebServiceUrl>
+	<!--<WebServiceUrl>http://192.168.1.212/FlexWebservice-212/FlexWebService.asmx?wsdl</WebServiceUrl>-->
+	<WebServiceUrl>http://localhost:28775/FlexWebService.asmx?wsdl</WebServiceUrl>
 	<ServerIp>192.168.1.212</ServerIp>
-	<ServerPort>4321</ServerPort>
+	<ServerPort>843</ServerPort>
 	<Stations>
 		<Station>
 			<SName>桃花源驱动站</SName>

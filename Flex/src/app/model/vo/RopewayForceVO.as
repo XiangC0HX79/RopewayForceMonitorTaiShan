@@ -1,6 +1,7 @@
 package app.model.vo
 {	
 	import com.adobe.serialization.json.JSON;
+	import com.adobe.utils.DateUtil;
 	
 	import mx.utils.ObjectProxy;
 	import mx.utils.object_proxy;
@@ -97,7 +98,10 @@ package app.model.vo
 		 **/
 		public function get ropewayTime():Date	
 		{
-			return _source.DeteDate;
+			if(_source.DeteDate is Date)				
+				return _source.DeteDate;
+			else
+				return new Date(Date.parse(_source.DeteDate));
 		}
 		public function set ropewayTime(value:Date):void	
 		{
@@ -158,16 +162,16 @@ package app.model.vo
 			//_source.FromRopeWay = value;
 		}
 		
-		private var _source:ObjectProxy;
+		private var _source:Object;
 		
-		public function RopewayForceVO(source:ObjectProxy)
+		public function RopewayForceVO(source:Object)
 		{
 			_source = source;			
 		}
 		
 		public function toString():String
 		{
-			return JSON.encode(_source.valueOf());
+			return JSON.encode(_source);
 		}
 	}
 }

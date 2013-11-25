@@ -4,6 +4,7 @@ package app.model
 	import app.model.vo.RopewayForceVO;
 	import app.model.vo.RopewayVO;
 	
+	import com.adobe.serialization.json.JSON;
 	import com.adobe.utils.DateUtil;
 	
 	import flash.utils.Dictionary;
@@ -32,33 +33,45 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function GetForceHistory(dateS:Date,dateE:Date,station:String,ropewayId:String,tempMin:String,tempMax:String):AsyncToken
+		public function GetForceHistory(where:String,pageIndex:Number = NaN):AsyncToken
 		{
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在统计数据...");
 			
-			var where:String = "";
-			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
-				+ "' AND DeteDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
-			
-			if(station != "所有索道站")
-				where += " AND FromRopeStation = '" + station + "'";
-			
-			if(ropewayId != "所有抱索器")
-				where += " AND RopeCode = '" + ropewayId + "'";
-			
-			if(tempMin != "")
-				where += " AND Temperature >= " + Number(tempMin);
-			
-			if(tempMax != "")
-				where += " AND Temperature <= " + Number(tempMax);
-			
-			return send("RopeDeteValueHis_GetList",onGetForceHistory,where);
+			if(isNaN(pageIndex))
+			{
+				return send("RopeDeteValueHis_GetList",onGetForceHistory,where);
+			}
+			else
+			{
+				var pageSize:Number = 15;
+				
+				var token:AsyncToken = send("RopeDeteValueHis_GetList_Page",onGetForceHistoryPage,where,pageIndex,pageSize);
+				token.pageSize = pageSize;
+				
+				return token;			
+			}
 		}
 		
 		private function onGetForceHistory(event:ResultEvent):void
 		{			
 			var arr:Array = [];
-			for each(var o:ObjectProxy in event.result)
+			for each(var o:Object in event.result)
+			{
+				arr.push(new RopewayForceVO(o));
+			}
+			this.col.source = arr;
+			
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+		}
+		
+		private function onGetForceHistoryPage(event:ResultEvent):void
+		{			
+			var jd:Object = JSON.decode(String(event.result));
+			
+			event.token.totalCount = jd.totalCount;
+			
+			var arr:Array = [];
+			for each(var o:Object in jd.table)
 			{
 				arr.push(new RopewayForceVO(o));
 			}
