@@ -1,6 +1,7 @@
 package app.model.vo
 {
 	import mx.collections.ArrayCollection;
+	import mx.core.FlexGlobals;
 
 	[Bindable]
 	public class AreaWheelVO
@@ -13,12 +14,26 @@ package app.model.vo
 			var ids:String;
 			if(id == 0)
 				ids = "驱动站支架";
-			else if(id == 12)
-				ids = "回转站支架";
-			else
-				ids = id.toString() + "#支架";
 			
-			var up:String = (AreaId % 2) == 0?"下行":"上行";
+			if(FlexGlobals.topLevelApplication.Station == "中天门")
+			{				
+				if(id == 13)
+					ids = "回转站支架";
+				else
+					ids = id.toString() + "#支架";
+				
+				var up:String = (AreaId % 2) == 0?"上行":"下行";
+			}
+			else
+			{
+				if(id == 12)
+					ids = "回转站支架";
+				else
+					ids = id.toString() + "#支架";
+				
+				up = (AreaId % 2) == 0?"下行":"上行";
+			}
+			
 			return ids + up;
 		}		
 		public function set shortName(value:String):void

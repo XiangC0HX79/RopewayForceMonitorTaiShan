@@ -1,8 +1,8 @@
 <Config>
 	<WebServiceUrl>http://localhost:28775/FlexWebService.asmx?wsdl</WebServiceUrl>
 	<Stations>
-		<Station>中天门/2</Station>
-		<Station>后石坞/3</Station>
-		<Station>桃花源/4</Station>
+		<Station>中天门/2/11</Station>
+		<Station>后石坞/3/12</Station>
+		<Station>桃花源/4/13</Station>
 	</Stations>
 </Config>

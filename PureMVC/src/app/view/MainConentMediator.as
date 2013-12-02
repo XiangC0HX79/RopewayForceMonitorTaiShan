@@ -52,7 +52,9 @@ package app.view
 				ApplicationFacade.NOTIFY_INIT_STAND_COMPLETE,
 				ApplicationFacade.NOTIFY_INIT_WHEEL_COMPLETE,
 				ApplicationFacade.NOTIFY_LOCATE_AREA,
-				ApplicationFacade.NOTIFY_LOCATE_WHEEL
+				ApplicationFacade.NOTIFY_LOCATE_WHEEL,
+				ApplicationFacade.NOTIFY_INIT_STATION_CHANGE,
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
 			];
 		}
 		
@@ -85,12 +87,28 @@ package app.view
 		private var n24:NumStatus = new NumStatus();
 		private var n25:NumStatus = new NumStatus();
 		private var n26:NumStatus = new NumStatus();
+		private var n27:NumStatus = new NumStatus();
+		private var n28:NumStatus = new NumStatus();
 		
 		
 		override public function handleNotification(notification:INotification):void
 		{
 			switch(notification.getName())
 			{
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+					if(FlexGlobals.topLevelApplication.Config.station == "中天门")
+						mainContent.currentState = "twelve";
+					else
+						mainContent.currentState = "eleven";
+					break;
+				
+				case ApplicationFacade.NOTIFY_INIT_STATION_CHANGE:
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
+						mainContent.currentState = "twelve";
+					else
+						mainContent.currentState = "eleven";
+					break;
+				
 				case ApplicationFacade.NOTIFY_INIT_STAND_COMPLETE:			
 					standArr = new ArrayCollection();
 					var arr:ArrayCollection = notification.getBody() as ArrayCollection;
@@ -134,12 +152,15 @@ package app.view
 			var warntypearr:ArrayCollection = new ArrayCollection;
 			warntypearr = FlexGlobals.topLevelApplication.WarnArr;
 			var warntip:ArrayCollection = new ArrayCollection();
-			for(var i:int=1;i<=26;i++)
+			
+			var numWheel:Number = (FlexGlobals.topLevelApplication.Station == "中天门")?28:26;
+			for(var i:int=1;i<=numWheel;i++)
 			{
 				var aw:AreaWheelVO = new AreaWheelVO();
 				aw.AreaId = i;
 				wheeltotelarr.addItem(aw);
 			}
+			
 			for(var i2:int=0;i2<arr.length;i2++)
 			{
 				var w:WheelVO = arr[i2];
@@ -424,8 +445,23 @@ package app.view
 						mainContent.addElement(n26);
 						n26.move(mainContent.l26.x-6,mainContent.l26.y+75);
 						break;
+					}						
+					case 27:
+					{
+						mainContent.l25.source = source;
+						n27.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n27);
+						n27.move(mainContent.l27.x-6,mainContent.l27.y+75);
+						break;
 					}
-						
+					case 28:
+					{
+						mainContent.l26.source = source;
+						n28.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n28);
+						n28.move(mainContent.l28.x-6,mainContent.l28.y+75);
+						break;
+					}
 				}
 			}
 			

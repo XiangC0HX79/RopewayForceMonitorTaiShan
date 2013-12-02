@@ -44,7 +44,7 @@
 			public var Station:String = "桃花源";
 			
 			public var WheelId:String = "";
-			
+						
 			public var UserName:String = "";
 			
 			public var Config:ConfigVO = new ConfigVO();

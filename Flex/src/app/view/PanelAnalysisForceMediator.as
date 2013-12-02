@@ -257,12 +257,13 @@ package app.view
 		private function onExport(event:Event):void
 		{			
 			var baseUrl:String = WebServiceProxy.BASE_URL;
-			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportChart.aspx");
+			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportForce.aspx");
 			
 			var urlVar:URLVariables = new URLVariables;
 			urlVar.xltname = xltname;
+			urlVar.whereClause = this._whereClause;
 			
-			var data:String = "[";
+			/*var data:String = "[";
 			for each(var rf:RopewayForceVO in panelAnalysisForce.colRopewayHis)
 			{
 				data += rf.toString() + ",";
@@ -291,7 +292,7 @@ package app.view
 				}
 				
 				urlVar.image = image;
-			}
+			}*/
 			
 			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
 			downloadURL.method = URLRequestMethod.POST;

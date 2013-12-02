@@ -7,11 +7,12 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import app.model.WheelProxy;
+			
+			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
 			import mx.managers.PopUpManager;
-			
-			import app.model.WheelProxy;
 			
 			import org.puremvc.as3.patterns.facade.Facade;
 			
@@ -31,24 +32,50 @@
 				var ids:String;
 				if(id == 0)
 					ids = "驱";
-				else if(id == 12)
-					ids = "回";
-				else
-					ids = id.toString();
 				
-				if((areaid % 2) == 0)
-				{			
-					img.y = -65;
-					img.source = downArrow;
-					
-					areaId.text = ids + "#下";					
+				if(FlexGlobals.topLevelApplication.Station == "中天门")
+				{					
+					if(id == 13)
+						ids = "回";
+					else
+						ids = id.toString();	
+										
+					if((areaid % 2) == 0)
+					{			
+						img.y = -70;
+						img.source = upArrow;
+						
+						areaId.text = ids + "#上";				
+					}
+					else
+					{			
+						img.y = -65;
+						img.source = downArrow;
+						
+						areaId.text = ids + "#下";			
+					}
 				}
 				else
 				{
-					img.y = -70;
-					img.source = upArrow;
-					
-					areaId.text = ids + "#上";					
+					if(id == 12)
+						ids = "回";
+					else
+						ids = id.toString();	
+										
+					if((areaid % 2) == 0)
+					{			
+						img.y = -65;
+						img.source = downArrow;
+						
+						areaId.text = ids + "#下";					
+					}
+					else
+					{
+						img.y = -70;
+						img.source = upArrow;
+						
+						areaId.text = ids + "#上";					
+					}
 				}
 				
 				var dateFormatter:DateFormatter = new DateFormatter();
