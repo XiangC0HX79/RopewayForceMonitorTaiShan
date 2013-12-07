@@ -29,7 +29,7 @@ package app.model
 			
 			IFDEF::Debug
 			{
-				rootURL = "http://192.168.1.212:40000/MaintenanceEntry/WheelFlex/";
+				rootURL = "http://localhost:5869/MaintenanceEntry/WheelFlex/";
 			}
 			
 			var http:HTTPService = new HTTPService;

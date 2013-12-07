@@ -96,7 +96,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					if(FlexGlobals.topLevelApplication.Config.station == "中天门")
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
 						mainContent.currentState = "twelve";
 					else
 						mainContent.currentState = "eleven";
@@ -212,6 +212,7 @@ package app.view
 			}
 			sendNotification(ApplicationFacade.NOTIFY_WARNING_GET,warntip);
 			sendNotification(ApplicationFacade.NOTIFY_WHEELLIST_COMPLETE,standArr);
+			
 			for each(var wm2:WheelManageVO in standArr)
 			{
 				for each(var aw3:AreaWheelVO in wheeltotelarr)
@@ -226,6 +227,14 @@ package app.view
 							aw3.Yellow++;
 					}
 				}
+			}
+			
+			if(numWheel == 26)
+			{
+				if(mainContent.containsElement(n27))
+					mainContent.removeElement(n27);
+				if(mainContent.containsElement(n28))
+					mainContent.removeElement(n28);
 			}
 			
 			for(var r:int = 0;r<wheeltotelarr.length;r++)
@@ -435,7 +444,10 @@ package app.view
 						mainContent.l25.source = source;
 						n25.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n25);
-						n25.move(mainContent.l25.x-6,mainContent.l25.y+75);
+						if(numWheel == 26)
+							n25.move(mainContent.l25.x-6,mainContent.l27.y+75);
+						else
+							n25.move(mainContent.l25.x-6,mainContent.l23.y+75);
 						break;
 					}
 					case 26:
@@ -443,7 +455,10 @@ package app.view
 						mainContent.l26.source = source;
 						n26.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n26);
-						n26.move(mainContent.l26.x-6,mainContent.l26.y+75);
+						if(numWheel == 26)
+							n26.move(mainContent.l26.x-6,mainContent.l28.y+75);
+						else
+							n26.move(mainContent.l26.x-6,mainContent.l24.y+75);
 						break;
 					}						
 					case 27:

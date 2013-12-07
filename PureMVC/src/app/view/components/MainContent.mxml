@@ -180,8 +180,8 @@
 		]]>
 	</fx:Script>
 	<s:states>
-		<s:State name="eleven"/>
 		<s:State name="twelve"/>
+		<s:State name="eleven"/>
 	</s:states>
 	<s:Image id="imgTMB" source="assets/image/back.png" width="100%" height="100%"
 			 ready="image_readyHandler(event)"
@@ -269,10 +269,10 @@
 			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
 			 click="_id= l26.id;dispatchEvent(new Event(WHEEL_DETECTION));"/>
 	<s:Image id="l27" x="2045" y="44" width="70" height="70" source="assets/image/lun.png"
-			 mouseOver="buttonMode=true" mouseOut="buttonMode=false" includeIn="twelve"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false" visible.eleven="false"
 			 click="imgLunclickHandler(event)"/>
 	<s:Image id="l28" x="2045" y="215" width="70" height="70" source="assets/image/lun.png"
-			 mouseOver="buttonMode=true" mouseOut="buttonMode=false" includeIn="twelve"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"  visible.eleven="false"
 			 click="imgLunclickHandler(event)"/>
 	<s:Image id="b1" x="147" y="100" height="133" source="assets/image/1.png"
 			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
@@ -308,6 +308,6 @@
 			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"
 			 click="_standid= b11.id;dispatchEvent(new Event(STAND_DETECTION));"/>
 	<s:Image id="b12" x="1918" y="100" height="133" source="assets/image/12.png"
-			 mouseOver="buttonMode=true" mouseOut="buttonMode=false" includeIn="twelve"
+			 mouseOver="buttonMode=true" mouseOut="buttonMode=false"  visible.eleven="false"
 			 click="_standid= b12.id;dispatchEvent(new Event(STAND_DETECTION));"/>
 </s:Group>

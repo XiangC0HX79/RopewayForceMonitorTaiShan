@@ -14,8 +14,10 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.AreaWheelVO;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.core.IVisualElement;
 			import mx.events.EffectEvent;
 			
@@ -38,10 +40,34 @@
 			
 			private function listLabelFunction(item:Object):String
 			{
+				var id:int = int((item.areaid - 1) / 2);
+				var ids:String;
+				if(id == 0)
+					ids = "驱动站支架";
+				
+				if(FlexGlobals.topLevelApplication.Station == "中天门")
+				{				
+					if(id == 13)
+						ids = "回转站支架";
+					else
+						ids = id.toString() + "#支架";
+					
+					var up:String = (item.areaid % 2) == 0?"上行":"下行";
+				}
+				else
+				{
+					if(id == 12)
+						ids = "回转站支架";
+					else
+						ids = id.toString() + "#支架";
+					
+					up = (item.areaid % 2) == 0?"下行":"上行";
+				}
+								
 				 /* return dateTimeF.format(item.alarmDate) + " "
 					+ item.fromRopeStation + " "
 					+ item.carId + " " + item.alarmDesc;  */
-				 return item.areaid + "号区域中" + item.wheelid + "号滚轮需要维护！"
+				 return  ids + up + item.wheelid + "号滚轮需要维护！"
 			}
 			
 			protected function listAlarm_rendererAddHandler(event:RendererExistenceEvent):void

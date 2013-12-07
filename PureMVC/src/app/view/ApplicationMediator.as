@@ -24,14 +24,11 @@ package app.view
 		public function ApplicationMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			
+			application.DepIds = application.parameters.DepIds;
 			IFDEF::Debug
 			{
 				application.DepIds = "2";
-			}
-			
-			IFDEF::Release
-			{
-				application.DepIds = application.parameters.DepIds;
 			}
 			
 			application.warngroup.addElement(facade.retrieveMediator(PanelRopewayAlarmMediator.NAME).getViewComponent() as IVisualElement);
@@ -71,7 +68,8 @@ package app.view
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					var config:ConfigVO = notification.getBody() as ConfigVO;
-					application.UserName = application.parameters.name;
+					//application.UserName = application.parameters.name;
+					application.Config = config;
 					/*var wt:String = application.parameters.warntype;
 					for each(var str:String in wt.split("/"))
 					{
@@ -82,9 +80,15 @@ package app.view
 						warntype.rhour = array[2];
 						application.WarnArr.addItem(warntype);
 					}*/
-					for(var i:int = 0;i<config.stationsid.length;i++)
+					var depId:String = application.parameters.id;
+					IFDEF::Debug
 					{
-						if(config.stationsid[i] == application.parameters.id)
+						depId = "4";
+					}
+					
+					for(var i:int = 0;i<config.stationsid.length;i++)
+					{						
+						if(config.stationsid[i] == depId)
 							application.Station = config.stations[i];
 					}
 					break;

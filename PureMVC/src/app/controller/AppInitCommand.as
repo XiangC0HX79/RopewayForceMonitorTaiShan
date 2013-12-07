@@ -17,7 +17,19 @@ package app.controller
 			
 			var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			
-			proxy.InitConfig(application.parameters.unit);
+			/*var unit:String = application.parameters.unit;
+			IFDEF::Debug
+			{
+				unit = "中天门";
+			}*/
+						
+			var ds:String = application.parameters.DepIds;
+			IFDEF::Debug
+			{
+				ds = "2,3,4";
+			}
+			
+			proxy.InitConfig(ds);
 		}
 	}
 }
