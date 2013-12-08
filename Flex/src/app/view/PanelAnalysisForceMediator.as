@@ -48,11 +48,10 @@ package app.view
 		{
 			super(NAME, new PanelAnalysisForce);
 						
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.TABLE,onTable);
+			panelAnalysisForce.addEventListener(PanelAnalysisForce.QUERY,onQuery);
+			
 			panelAnalysisForce.addEventListener(PanelAnalysisForce.TABLE_PAGE,onTablePage);
-			
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.CHART,onChart);
-			
+						
 			panelAnalysisForce.addEventListener(PanelAnalysisForce.EXPORT,onExport);
 			panelAnalysisForce.addEventListener(PanelAnalysisForce.STATION_CHANGE,onStationChange);
 			panelAnalysisForce.addEventListener(PanelAnalysisForce.SELECT_ONE,onSelectOne);
@@ -94,76 +93,7 @@ package app.view
 			panelAnalysisForce.colRopeway.source = arr;
 		}
 		
-		private function onChart(event:Event):void
-		{			
-			if(panelAnalysisForce.dateE.time < panelAnalysisForce.dateS.time)
-			{
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"查询时间段结束时间不能小于开始时间。");
-				return;
-			}
-			
-			var ropewayId:String = String(panelAnalysisForce.listRopewayId.selectedItem.ropewayId);
-			if(ropewayId != "所有抱索器")
-			{
-				var validDateE:Date = DateUtil.addDateTime('M',3,panelAnalysisForce.dateS);
-				
-				if(panelAnalysisForce.dateE.time > validDateE.time)
-				{					
-					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"单个抱索器查询时间段不能超过三个月。");
-					return;
-				}
-			}
-			
-			var temp1:Number = Number(panelAnalysisForce.numTempMin.text);
-			var temp2:Number = Number(panelAnalysisForce.numTempMax.text);
-			if(isNaN(temp1) || isNaN(temp2))
-			{
-				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请输入正确的查询温度值。");
-				return;
-			}
-			
-			if((panelAnalysisForce.numTempMin.text != "") && (panelAnalysisForce.numTempMax.text != ""))
-			{
-				if(temp2 < temp1)
-				{					
-					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"查询最高温度不能小于最低温度。");
-					return;
-				}
-			}
-			
-			panelAnalysisForce.selectOne = (panelAnalysisForce.listRopewayId.selectedItem.ropewayId != "所有抱索器");
-			
-			var dateS:Date = panelAnalysisForce.dateS;
-			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
-			var tempMin:String = panelAnalysisForce.numTempMin.text;
-			var tempMax:String = panelAnalysisForce.numTempMax.text;
-			
-			var where:String = "";
-			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
-				+ "' AND DeteDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
-			
-			if(station != "所有索道站")
-				where += " AND FromRopeStation = '" + station + "'";
-			
-			if(ropewayId != "所有抱索器")
-				where += " AND RopeCode = '" + ropewayId + "'";
-			
-			if(tempMin != "")
-				where += " AND Temperature >= " + Number(tempMin);
-			
-			if(tempMax != "")
-				where += " AND Temperature <= " + Number(tempMax);
-			
-			_whereClause =  where;
-			
-			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			proxy.GetForceHistory(this._whereClause);
-			
-			trace(panelAnalysisForce.lineChart.width);
-		}
-		
-		private function onTable(event:Event):void
+		private function onQuery(event:Event):void
 		{			
 			if(panelAnalysisForce.dateE.time < panelAnalysisForce.dateS.time)
 			{
@@ -262,37 +192,6 @@ package app.view
 			var urlVar:URLVariables = new URLVariables;
 			urlVar.xltname = xltname;
 			urlVar.whereClause = this._whereClause;
-			
-			/*var data:String = "[";
-			for each(var rf:RopewayForceVO in panelAnalysisForce.colRopewayHis)
-			{
-				data += rf.toString() + ",";
-			}
-			data = data.substr(0,data.length - 1) + "]";
-			urlVar.data = data;
-			
-			if(panelAnalysisForce.btnBar.selectedIndex == 0)
-			{					
-				panelAnalysisForce.lbTitle.visible = true;
-				
-				var imgBD:BitmapData = new BitmapData(panelAnalysisForce.containerChart.width,panelAnalysisForce.containerChart.height,false,0xFFFFFF);
-				imgBD.draw(panelAnalysisForce.containerChart);
-				
-				panelAnalysisForce.lbTitle.visible = false;
-				
-				var jpegEncoder:JPEGEncoder = new JPEGEncoder;
-				var ba:ByteArray = jpegEncoder.encode(imgBD);
-				ba.position = 0;
-				
-				var image:String = "";
-				while(ba.bytesAvailable)
-				{
-					var n:Number = ba.readUnsignedByte();
-					image += (n <= 0xF)?"0" + n.toString(16):n.toString(16);
-				}
-				
-				urlVar.image = image;
-			}*/
 			
 			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
 			downloadURL.method = URLRequestMethod.POST;

@@ -43,7 +43,7 @@ package app.model
 			}
 			else
 			{
-				var pageSize:Number = 15;
+				var pageSize:Number = 20;
 				
 				var token:AsyncToken = send("RopeDeteValueHis_GetList_Page",onGetForceHistoryPage,where,pageIndex,pageSize);
 				token.pageSize = pageSize;

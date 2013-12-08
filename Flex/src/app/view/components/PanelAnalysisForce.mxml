@@ -51,9 +51,7 @@
 			
 			public static var ONE_HOUR:Number = 60 * 60 * 1000;
 			
-			public static var CHART:String = "Chart";
-			
-			public static var TABLE:String = "Table";		
+			public static var QUERY:String = "Query";		
 			
 			public static var TABLE_PAGE:String = "TablePage";	
 			
@@ -123,14 +121,14 @@
 					if(colRopeway[0] == RopewayVO.ALL)
 						colRopeway.removeItemAt(0);
 					
-					dispatchEvent(new Event(CHART));					
+					//dispatchEvent(new Event(CHART));					
 				}
 				else if(event.newIndex == 1)
 				{					
 					if(colRopeway[0] != RopewayVO.ALL)
 						colRopeway.addItemAt(RopewayVO.ALL,0);
 					
-					dispatchEvent(new Event(TABLE));					
+					//dispatchEvent(new Event(TABLE));					
 				}
 			}
 			
@@ -232,14 +230,9 @@
 			
 			protected function buttonQuery_buttonDownHandler(event:FlexEvent):void
 			{
-				if(btnBar.selectedIndex == 0)
-				{										
-					dispatchEvent(new Event(CHART));					
-				}
-				else if(btnBar.selectedIndex == 1)
-				{										
-					dispatchEvent(new Event(TABLE));					
-				}
+				pageIndex = 1;
+				
+				dispatchEvent(new Event(QUERY));	
 			}
 			
 		]]>
@@ -320,84 +313,65 @@
 			
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
 		<s:NavigatorContent>					
-			<s:Rect id="border" left="0" right="0" top="0" bottom="0">
-				<s:stroke>
-					<s:SolidColorStroke weight="1" color="#63c3d6"/>
-				</s:stroke>
-			</s:Rect>	
-			
-			<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-					 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>
-			
-			<s:Scroller left="0" right="0" top="0" bottom="0">	
-				<s:Group>							
-					<s:Group id="containerChart" height="100%" width="{colRopewayHis.length * 65 + 110}">
-						<s:Label id="lbTitle" visible="false" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-								 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>						
-						<s:Label left="10" top="20" text="抱索力（KG）"/>
-						<s:Label right="15" bottom="40" text="时间"/>
-						
-						<s:Rect height="100%" width="100%">
-							<s:stroke>
-								<s:SolidColorStroke color="0xFF" weight="2"/>
-							</s:stroke>
-						</s:Rect>
-						
-						<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
-									  left="20" right="40" bottom="20" top="40" dataProvider="{colRopewayHis}">
-							<mx:seriesFilters>
-								<fx:Array/>
-							</mx:seriesFilters>
-							<mx:backgroundElements>
-								<fx:Array>						
-									<components:GridLineAnalyse gridDirection="both"
-												  horizontalStroke="{gridStroke}"
-												  verticalStroke="{gridStroke}">
-										<components:verticalFill>
-											<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
-										</components:verticalFill>
-									</components:GridLineAnalyse>
-								</fx:Array>
-							</mx:backgroundElements>
-							
-							<mx:verticalAxis>
-								<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
-							</mx:verticalAxis>
-							
-							<mx:horizontalAxis>
-								<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
-												 ticksBetweenLabels="false"
-												 labelFunction="labelHorizontalAxis" />
-							</mx:horizontalAxis>
-							
-							<mx:verticalAxisRenderers>					
-								<mx:AxisRenderer axis="{verticalAxis}" 
-												 axisStroke="{tickStroke}" 
-												 tickStroke="{tickStroke}"
-												 minorTickPlacement="none"/>
-							</mx:verticalAxisRenderers>
-							
-							<mx:horizontalAxisRenderers>			
-								<mx:AxisRenderer axis="{horizontalAxis}"
-												 textAlign="center"
-												 axisStroke="{tickStroke}" 
-												 tickStroke="{tickStroke}"/>					
-							</mx:horizontalAxisRenderers>
-							
-							<mx:series>
-								<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
-											   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}" 
-											   showDataEffect="{wipeShow}">
-								</mx:LineSeries>
-							</mx:series>
-						</mx:LineChart>		
-					</s:Group>
-				</s:Group>
-			</s:Scroller>
+			<s:Group left="0" right="0" top="0" bottom="0">
+				<s:Label id="lbTitle" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{listRopewayId.selectedItem.ropewayCarId}#吊箱历史抱索力"/>						
+				<s:Label left="10" top="20" text="抱索力（KG）"/>
+				<s:Label right="15" bottom="40" text="时间"/>
+								
+				<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
+							  left="20" right="40" bottom="20" top="40" dataProvider="{colRopewayHis}">
+					<mx:seriesFilters>
+						<fx:Array/>
+					</mx:seriesFilters>
+					<mx:backgroundElements>
+						<fx:Array>						
+							<components:GridLineAnalyse gridDirection="both"
+										  horizontalStroke="{gridStroke}"
+										  verticalStroke="{gridStroke}">
+								<components:verticalFill>
+									<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+								</components:verticalFill>
+							</components:GridLineAnalyse>
+						</fx:Array>
+					</mx:backgroundElements>
+					
+					<mx:verticalAxis>
+						<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+					</mx:verticalAxis>
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
+										 ticksBetweenLabels="false"
+										 labelFunction="labelHorizontalAxis" />
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxisRenderers>					
+						<mx:AxisRenderer axis="{verticalAxis}" 
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"
+										 minorTickPlacement="none"/>
+					</mx:verticalAxisRenderers>
+					
+					<mx:horizontalAxisRenderers>			
+						<mx:AxisRenderer axis="{horizontalAxis}"
+										 textAlign="center"
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"/>					
+					</mx:horizontalAxisRenderers>
+					
+					<mx:series>
+						<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
+									   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}" 
+									   showDataEffect="{wipeShow}">
+						</mx:LineSeries>
+					</mx:series>
+				</mx:LineChart>		
+			</s:Group>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
 			<s:layout>
-				<s:VerticalLayout gap="0"/>
+				<s:VerticalLayout/>
 			</s:layout>
 			
 			<s:HGroup width="100%" verticalAlign="middle">
@@ -422,16 +396,16 @@
 					</s:ArrayList>				
 				</s:columns>
 			</s:DataGrid>
-						
-			<s:HGroup verticalAlign="middle">
-				<s:Label text="{pageIndex}/{pageCount}"/>
-				<s:Button label="首页" buttonDown="firstPage_buttonDownHandler(event)"/>
-				<s:Button label="前页" buttonDown="prePage_buttonDownHandler(event)"/>
-				<s:Button label="后页" buttonDown="nextPage_buttonDownHandler(event)"/>
-				<s:Button label="末页" buttonDown="lastPage_buttonDownHandler(event)"/>
-				<s:NumericStepper id="numPageIndex" height="20" minimum="{1}" maximum="{pageCount}"/>
-				<s:Button label="GO" buttonDown="buttonGo_buttonDownHandler(event)"/>
-			</s:HGroup>
 		</s:NavigatorContent>
 	</mx:ViewStack>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="{pageIndex}/{pageCount}"/>
+		<s:Button label="首页" buttonDown="firstPage_buttonDownHandler(event)"/>
+		<s:Button label="前页" buttonDown="prePage_buttonDownHandler(event)"/>
+		<s:Button label="后页" buttonDown="nextPage_buttonDownHandler(event)"/>
+		<s:Button label="末页" buttonDown="lastPage_buttonDownHandler(event)"/>
+		<s:NumericStepper id="numPageIndex" height="20" minimum="{1}" maximum="{pageCount}"/>
+		<s:Button label="GO" buttonDown="buttonGo_buttonDownHandler(event)"/>
+	</s:HGroup>
 </s:NavigatorContent>
