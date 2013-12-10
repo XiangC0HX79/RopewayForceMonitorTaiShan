@@ -1,15 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopewayForceProxy;
-	import app.model.RopewayProxy;
-	import app.model.WebServiceProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisForce;
-	
 	import com.adobe.serialization.json.JSON;
 	import com.adobe.utils.DateUtil;
 	
@@ -34,6 +24,16 @@ package app.view
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
 	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewayForceProxy;
+	import app.model.RopewayProxy;
+	import app.model.WebServiceProxy;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayForceVO;
+	import app.model.vo.RopewayVO;
+	import app.view.components.PanelAnalysisForce;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -42,7 +42,7 @@ package app.view
 	{
 		public static const NAME:String = "PanelAnalysisForceMediator";
 		
-		private var _whereClause:String;
+		private var _whereClause:String = "";
 		
 		public function PanelAnalysisForceMediator()
 		{
@@ -102,18 +102,7 @@ package app.view
 				return;
 			}
 			
-			var ropewayId:String = String(panelAnalysisForce.listRopewayId.selectedItem.ropewayId);
-			if(ropewayId != "所有抱索器")
-			{
-				var validDateE:Date = DateUtil.addDateTime('M',3,panelAnalysisForce.dateS);
-				
-				if(panelAnalysisForce.dateE.time > validDateE.time)
-				{					
-					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"单个抱索器查询时间段不能超过三个月。");
-					return;
-				}
-			}
-			
+			var ropewayId:String = String(panelAnalysisForce.listRopewayId.selectedItem.ropewayId);			
 			var temp1:Number = Number(panelAnalysisForce.numTempMin.text);
 			var temp2:Number = Number(panelAnalysisForce.numTempMax.text);
 			if(isNaN(temp1) || isNaN(temp2))
@@ -158,9 +147,13 @@ package app.view
 			_whereClause =  where;
 			
 			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			proxy.GetForceHistory(this._whereClause);
-			
-			trace(panelAnalysisForce.lineChart.width);
+			var token:AsyncToken = proxy.GetForceHistory(this._whereClause);
+			token.addResponder(new AsyncResponder(onChartResultHandle,function (error:FaultEvent, token:Object = null):void{}));
+		}
+		
+		private function onChartResultHandle(result:Object, token:Object = null):void
+		{
+			panelAnalysisForce.UpdateChart();
 		}
 		
 		private function onTable(event:Event):void
@@ -170,20 +163,7 @@ package app.view
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"查询时间段结束时间不能小于开始时间。");
 				return;
 			}
-			
-			/*var ropewayId:String = String(panelAnalysisForce.listRopewayId.selectedItem.ropewayId);
-			if(ropewayId != "所有抱索器")
-			{
-				var validDateE:Date = new Date(panelAnalysisForce.dateS.time);
-				validDateE.month = validDateE.month + 3;
-				
-				if(panelAnalysisForce.dateE.time > validDateE.time)
-				{					
-					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"单个抱索器查询时间段不能超过三个月。");
-					return;
-				}
-			}*/
-			
+						
 			var temp1:Number = Number(panelAnalysisForce.numTempMin.text);
 			var temp2:Number = Number(panelAnalysisForce.numTempMax.text);
 			if(isNaN(temp1) || isNaN(temp2))
@@ -255,43 +235,74 @@ package app.view
 		private const xltname:String = "历史抱索力";	
 		
 		private function onExport(event:Event):void
-		{			
+		{		
+			if(panelAnalysisForce.dateE.time < panelAnalysisForce.dateS.time)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"导出时间段结束时间不能小于开始时间。");
+				return;
+			}
+			
+			var ropewayId:String = String(panelAnalysisForce.listRopewayId.selectedItem.ropewayId);	
+			var selectAll:Boolean = (panelAnalysisForce.listRopewayId.selectedItem.ropewayId == "所有抱索器");
+			
+			if(selectAll)
+			{
+				var validDateE:Date = new Date(panelAnalysisForce.dateS.time);
+				validDateE.month = validDateE.month + 1;
+				
+				if(panelAnalysisForce.dateE.time > validDateE.time)
+				{					
+					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"所有抱索器导出时间段不能超过一个月。");
+					return;
+				}
+			}
+			
+			var temp1:Number = Number(panelAnalysisForce.numTempMin.text);
+			var temp2:Number = Number(panelAnalysisForce.numTempMax.text);
+			if(isNaN(temp1) || isNaN(temp2))
+			{
+				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"请输入正确的导出温度值。");
+				return;
+			}
+			
+			if((panelAnalysisForce.numTempMin.text != "") && (panelAnalysisForce.numTempMax.text != ""))
+			{
+				if(temp2 < temp1)
+				{					
+					sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"导出最高温度不能小于最低温度。");
+					return;
+				}
+			}
+			
+			var dateS:Date = panelAnalysisForce.dateS;
+			var dateE:Date= panelAnalysisForce.dateE;
+			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
+			var tempMin:String = panelAnalysisForce.numTempMin.text;
+			var tempMax:String = panelAnalysisForce.numTempMax.text;
+			
+			var where:String = "";
+			where = "DeteDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
+				+ "' AND DeteDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
+			
+			if(station != "所有索道站")
+				where += " AND FromRopeStation = '" + station + "'";
+			
+			if(ropewayId != "所有抱索器")
+				where += " AND RopeCode = '" + ropewayId + "'";
+			
+			if(tempMin != "")
+				where += " AND Temperature >= " + Number(tempMin);
+			
+			if(tempMax != "")
+				where += " AND Temperature <= " + Number(tempMax);
+						
 			var baseUrl:String = WebServiceProxy.BASE_URL;
-			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportChart.aspx");
+			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/")) + "/ExportForce.aspx");
 			
 			var urlVar:URLVariables = new URLVariables;
+			urlVar.type = panelAnalysisForce.selectOne?"chart":"table";
 			urlVar.xltname = xltname;
-			
-			var data:String = "[";
-			for each(var rf:RopewayForceVO in panelAnalysisForce.colRopewayHis)
-			{
-				data += rf.toString() + ",";
-			}
-			data = data.substr(0,data.length - 1) + "]";
-			urlVar.data = data;
-			
-			if(panelAnalysisForce.btnBar.selectedIndex == 0)
-			{					
-				panelAnalysisForce.lbTitle.visible = true;
-				
-				var imgBD:BitmapData = new BitmapData(panelAnalysisForce.containerChart.width,panelAnalysisForce.containerChart.height,false,0xFFFFFF);
-				imgBD.draw(panelAnalysisForce.containerChart);
-				
-				panelAnalysisForce.lbTitle.visible = false;
-				
-				var jpegEncoder:JPEGEncoder = new JPEGEncoder;
-				var ba:ByteArray = jpegEncoder.encode(imgBD);
-				ba.position = 0;
-				
-				var image:String = "";
-				while(ba.bytesAvailable)
-				{
-					var n:Number = ba.readUnsignedByte();
-					image += (n <= 0xF)?"0" + n.toString(16):n.toString(16);
-				}
-				
-				urlVar.image = image;
-			}
+			urlVar.whereClause = where;
 			
 			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
 			downloadURL.method = URLRequestMethod.POST;

@@ -29,7 +29,8 @@ package app.model
 		public function GetForceAveCol(dateS:Date,dateE:Date,station:String,ropewayId:String,type:Number):AsyncToken
 		{
 			var where:String = "";
-			where = "RecordDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
+			where = "MaxValue IS NOT NULL AND MinValue IS NOT NULL AND AverageValue IS NOT NULL "
+				+ "AND RecordDate >= '" + DateUtil.toLocaleW3CDTF(dateS) 
 				+ "' AND RecordDate < '" + DateUtil.toLocaleW3CDTF(dateE) + "'";
 			
 			if(station != "所有索道站")

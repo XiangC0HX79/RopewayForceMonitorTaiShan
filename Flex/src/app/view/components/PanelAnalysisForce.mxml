@@ -23,30 +23,33 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.WebServiceProxy;
-			import app.model.vo.RopewayForceVO;
-			import app.model.vo.RopewayVO;
-			
 			import com.adobe.serialization.json.JSON;
 			import com.adobe.utils.DateUtil;
-			
-			import custom.itemRenderer.ItemRendererGroup;
-			import custom.itemRenderer.ItemRendererLineChartForce;
 			
 			import mx.charts.HitData;
 			import mx.charts.chartClasses.IAxisRenderer;
 			import mx.charts.events.ChartItemEvent;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
 			import mx.graphics.ImageSnapshot;
 			import mx.graphics.codec.JPEGEncoder;
-			
-			import org.puremvc.as3.interfaces.IMediator;
-			import org.puremvc.as3.interfaces.INotification;
-			import org.puremvc.as3.patterns.mediator.Mediator;
+			import mx.utils.ObjectUtil;
 			
 			import spark.events.IndexChangeEvent;
 			import spark.events.RendererExistenceEvent;
 			import spark.filters.ColorMatrixFilter;
+			
+			import app.model.WebServiceProxy;
+			import app.model.vo.RopewayForceVO;
+			import app.model.vo.RopewayVO;
+			
+			import custom.itemRenderer.ItemRendererGroup;
+			import custom.itemRenderer.ItemRendererLineChartForce;
+			
+			import org.puremvc.as3.interfaces.IMediator;
+			import org.puremvc.as3.interfaces.INotification;
+			import org.puremvc.as3.patterns.mediator.Mediator;
 
 			
 			public static var ONE_HOUR:Number = 60 * 60 * 1000;
@@ -68,6 +71,8 @@
 			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
 			
 			[Bindable]public var colRopewayHis:ArrayCollection;
+			
+			[Bindable]public var chartDataPro:ArrayCollection;
 			
 			public var selectOne:Boolean = false;
 			
@@ -102,12 +107,6 @@
 			private function labelForce(item:Object, column:GridColumn):String
 			{
 				return item.ropewayForce + " " + item.ropewayUnit;
-			}			
-			
-			private function dataTipFunction(hitData:HitData):String
-			{
-				var rf:RopewayForceVO = hitData.item as RopewayForceVO;
-				return "时间：" + dateF.format(rf.ropewayTime) + "\n" + "抱索力：" + rf.ropewayForce + " " + rf.ropewayUnit; 
 			}
 
 			protected function btnBar_changingHandler(event:IndexChangeEvent):void
@@ -241,6 +240,64 @@
 					dispatchEvent(new Event(TABLE));					
 				}
 			}
+				
+			private var _chartSize:int;
+			
+			public function UpdateChart():void
+			{				
+				var vAxisMax:Number = 0;	
+				var vAxisMin:Number = 1000;					
+				for each(var rf:RopewayForceVO in colRopewayHis)
+				{
+					vAxisMax = Math.max(vAxisMax,rf.ropewayForce);
+					vAxisMin = Math.min(vAxisMin,rf.ropewayForce);
+				}			
+				
+				vAxisMax = (Math.floor(vAxisMax / 5) + 1) * 5;
+				vAxisMin = (Math.ceil(vAxisMin / 5) - 1) * 5;
+				
+				verticalAxis.maximum = vAxisMax;
+				verticalAxis.minimum = vAxisMin;
+				
+				var arr:Array = [];
+				
+				_chartSize = int(this.width / 30);
+				
+				if(_chartSize < colRopewayHis.length)
+				{
+					chartSlider.visible = true;
+					chartSlider.minimum = 0;
+					chartSlider.maximum = colRopewayHis.length - _chartSize;
+					
+					for(var i:int = 0;i<_chartSize;i++)
+					{
+						arr.push(colRopewayHis[i]);
+					}
+				}
+				else
+				{
+					chartSlider.visible = false;		
+					
+					for each(rf in colRopewayHis)
+					{
+						arr.push(rf);
+					}			
+				}
+				
+				chartDataPro = new ArrayCollection(arr);
+			}		
+			
+			protected function chartSlider_changeEndHandler(event:Event):void
+			{			
+				var arr:Array = [];
+				
+				for(var i:int = chartSlider.value;i<chartSlider.value + _chartSize;i++)
+				{
+					arr.push(colRopewayHis[i]);
+				}
+				
+				chartDataPro = new ArrayCollection(arr);
+			}
 			
 		]]>
 	</fx:Script>
@@ -319,85 +376,72 @@
 	</s:HGroup>
 			
 	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
-		<s:NavigatorContent>					
-			<s:Rect id="border" left="0" right="0" top="0" bottom="0">
-				<s:stroke>
-					<s:SolidColorStroke weight="1" color="#63c3d6"/>
-				</s:stroke>
-			</s:Rect>	
+		<s:NavigatorContent>	
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+							
+			<s:Group height="100%" width="100%">
+				<s:Label id="lbTitle" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{listRopewayId.selectedItem.ropewayCarId}#吊箱历史抱索力"/>						
+				<s:Label left="10" top="20" text="抱索力（KG）"/>
+				<s:Label right="15" bottom="40" text="时间"/>
+				
+				<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
+							  left="20" right="40" bottom="20" top="40" dataProvider="{chartDataPro}">
+					<mx:seriesFilters>
+						<fx:Array/>
+					</mx:seriesFilters>
+					
+					<mx:backgroundElements>
+						<fx:Array>						
+							<components:GridLineAnalyse gridDirection="both"
+										  horizontalStroke="{gridStroke}"
+										  verticalStroke="{gridStroke}">
+								<components:verticalFill>
+									<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+								</components:verticalFill>
+							</components:GridLineAnalyse>
+						</fx:Array>
+					</mx:backgroundElements>
+															
+					<mx:verticalAxis>
+						<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+					</mx:verticalAxis>
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
+										 ticksBetweenLabels="false" 
+										 labelFunction="labelHorizontalAxis" />
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxisRenderers>					
+						<mx:AxisRenderer axis="{verticalAxis}" 
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"
+										 minorTickPlacement="none"/>
+					</mx:verticalAxisRenderers>
+					
+					<mx:horizontalAxisRenderers>			
+						<mx:AxisRenderer axis="{horizontalAxis}"
+										 textAlign="center"
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"/>					
+					</mx:horizontalAxisRenderers>
+					
+					<mx:series>
+						<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
+									   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}">
+						</mx:LineSeries>
+					</mx:series>
+				</mx:LineChart>		
+			</s:Group>
 			
-			<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-					 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>
-			
-			<s:Scroller left="0" right="0" top="0" bottom="0">	
-				<s:Group>							
-					<s:Group id="containerChart" height="100%" width="{colRopewayHis.length * 65 + 110}">
-						<s:Label id="lbTitle" visible="false" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-								 text="{listRopewayId.selectedItem.ropewayCarId}历史抱索力"/>						
-						<s:Label left="10" top="20" text="抱索力（KG）"/>
-						<s:Label right="15" bottom="40" text="时间"/>
-						
-						<s:Rect height="100%" width="100%">
-							<s:stroke>
-								<s:SolidColorStroke color="0xFF" weight="2"/>
-							</s:stroke>
-						</s:Rect>
-						
-						<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip" 
-									  left="20" right="40" bottom="20" top="40" dataProvider="{colRopewayHis}">
-							<mx:seriesFilters>
-								<fx:Array/>
-							</mx:seriesFilters>
-							<mx:backgroundElements>
-								<fx:Array>						
-									<components:GridLineAnalyse gridDirection="both"
-												  horizontalStroke="{gridStroke}"
-												  verticalStroke="{gridStroke}">
-										<components:verticalFill>
-											<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
-										</components:verticalFill>
-									</components:GridLineAnalyse>
-								</fx:Array>
-							</mx:backgroundElements>
-							
-							<mx:verticalAxis>
-								<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
-							</mx:verticalAxis>
-							
-							<mx:horizontalAxis>
-								<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
-												 ticksBetweenLabels="false"
-												 labelFunction="labelHorizontalAxis" />
-							</mx:horizontalAxis>
-							
-							<mx:verticalAxisRenderers>					
-								<mx:AxisRenderer axis="{verticalAxis}" 
-												 axisStroke="{tickStroke}" 
-												 tickStroke="{tickStroke}"
-												 minorTickPlacement="none"/>
-							</mx:verticalAxisRenderers>
-							
-							<mx:horizontalAxisRenderers>			
-								<mx:AxisRenderer axis="{horizontalAxis}"
-												 textAlign="center"
-												 axisStroke="{tickStroke}" 
-												 tickStroke="{tickStroke}"/>					
-							</mx:horizontalAxisRenderers>
-							
-							<mx:series>
-								<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
-											   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}" 
-											   showDataEffect="{wipeShow}">
-								</mx:LineSeries>
-							</mx:series>
-						</mx:LineChart>		
-					</s:Group>
-				</s:Group>
-			</s:Scroller>
+			<s:HSlider width="100%" id="chartSlider" change="chartSlider_changeEndHandler(event)" showDataTip="false"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
 			<s:layout>
-				<s:VerticalLayout gap="0"/>
+				<s:VerticalLayout/>
 			</s:layout>
 			
 			<s:HGroup width="100%" verticalAlign="middle">
