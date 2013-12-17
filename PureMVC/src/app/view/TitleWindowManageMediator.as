@@ -119,9 +119,14 @@ package app.view
 				{
 					if(event.detail == Alert.YES)
 					{
-						titleWindowManage.t_wheelId.text = "";
-						var w:WheelInsertVO = new WheelInsertVO({});
+						var wm:WheelManageVO = titleWindowManage.datagrid.selectedItem as WheelManageVO;
+						
+						var w:WheelInsertVO = new WheelInsertVO(wm);
+						//w.WheelId = titleWindowManage.t_wheelId.text;
 						w.Is_Delete = 1;
+						
+						titleWindowManage.t_wheelId.text = "";
+						
 						var wheelManageProxy:WheelManageProxy = facade.retrieveProxy(WheelManageProxy.NAME) as WheelManageProxy;
 						wheelManageProxy.DeleteWheelManage(w);
 					}
@@ -147,9 +152,11 @@ package app.view
 				}
 				if(nn==0)
 				{
-					var w:WheelInsertVO = new WheelInsertVO({});
+					wm = titleWindowManage.datagrid.selectedItem as WheelManageVO;
+					
+					var w:WheelInsertVO = new WheelInsertVO(wm);
 					w.WheelType = (titleWindowManage.listStandType.selectedIndex + 1).toString();
-					w.WheelId = titleWindowManage.t_wheelId.text;
+					//w.WheelId = titleWindowManage.t_wheelId.text;
 					var wheelManageProxy:WheelManageProxy = facade.retrieveProxy(WheelManageProxy.NAME) as WheelManageProxy;
 					wheelManageProxy.DeleteWheelManage(w);
 					titleWindowManage.t_wheelId.text = "";

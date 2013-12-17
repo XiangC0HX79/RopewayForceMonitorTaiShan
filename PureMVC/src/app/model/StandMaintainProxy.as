@@ -1,11 +1,5 @@
 package app.model
 {
-	import app.ApplicationFacade;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.StandConfigVO;
-	import app.model.vo.StandMaintainDataVO;
-	import app.model.vo.StandMaintainVO;
-	
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
@@ -14,7 +8,12 @@ package app.model
 	import mx.formatters.DateFormatter;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.ResultEvent;
-	import mx.utils.*;
+	
+	import app.ApplicationFacade;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.StandConfigVO;
+	import app.model.vo.StandMaintainDataVO;
+	import app.model.vo.StandMaintainVO;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 
@@ -109,8 +108,9 @@ package app.model
 		
 		private function onInitStandDict(event:ResultEvent):void
 		{
+			var r:Array = JSON.parse(String(event.result)) as Array;
 			var arr:ArrayCollection = new ArrayCollection();
-			for each(var obj:* in event.result)
+			for each(var obj:* in r)
 			{
 				var sb:StandMaintainVO = new StandMaintainVO(obj);
 				for(var i:int = 0;i < config.stations.length;i++)
@@ -130,7 +130,7 @@ package app.model
 			for(var i:int = 0;i < config.stations.length;i++)
 			{
 				if(sm.RopeWay == config.stations[i])
-					o.RopeWay = config.stationsid[i];
+					o.RopeWay = Number(config.stationsid[i]);
 			}
 			var dateFormatter:DateFormatter = new DateFormatter();
 			dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
@@ -152,7 +152,7 @@ package app.model
 		public function AddStandMaintainData(id:int,o:Object):void
 		{
 			var sd:StandMaintainDataVO = new StandMaintainDataVO();
-			sd.Mid = id;
+			sd.MId = id;
 			sd.CheckItemName = o.CheckItemName;
 			sd.CheckItemId = o.CheckItemId;
 			sd.CheckData = o.CheckData;

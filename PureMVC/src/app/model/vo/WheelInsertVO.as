@@ -36,6 +36,7 @@ package app.model.vo
 			o.Id = Id;
 			o.RopeWay = RopeWay;
 			o.WheelType = WheelType;
+			o.Is_Delete = Is_Delete;
 			
 			return o;
 		}

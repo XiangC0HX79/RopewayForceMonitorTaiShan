@@ -6,7 +6,7 @@ package app.model.vo
 	[Bindable]
 	public class StandMaintainDataVO
 	{
-		public var Mid:int;
+		public var MId:int;
 		
 		public var CheckItemId:int;
 		

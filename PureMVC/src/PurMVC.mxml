@@ -45,7 +45,7 @@
 			
 			public var WheelId:String = "";
 						
-			//public var UserName:String = "";
+			public var UserName:String = "";
 			
 			public var Config:ConfigVO = new ConfigVO();
 			

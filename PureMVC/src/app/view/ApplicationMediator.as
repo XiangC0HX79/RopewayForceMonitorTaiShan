@@ -68,7 +68,7 @@ package app.view
 			{
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					var config:ConfigVO = notification.getBody() as ConfigVO;
-					//application.UserName = application.parameters.name;
+					application.UserName = application.parameters.name;
 					application.Config = config;
 					/*var wt:String = application.parameters.warntype;
 					for each(var str:String in wt.split("/"))

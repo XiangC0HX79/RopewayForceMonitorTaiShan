@@ -1,7 +1,5 @@
 package app.model
 {
-	import app.ApplicationFacade;
-	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
@@ -9,7 +7,8 @@ package app.model
 	import mx.rpc.http.HTTPService;
 	import mx.rpc.soap.Operation;
 	import mx.rpc.soap.WebService;
-	import mx.utils.*;
+	
+	import app.ApplicationFacade;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
@@ -42,7 +41,7 @@ package app.model
 			parameters.uid = Math.random();
 			
 			var token:AsyncToken = http.send(parameters);
-			token.addResponder(new AsyncResponder(onResult,function(error:FaultEvent,t:Object):void{},listener));
+			token.addResponder(new AsyncResponder(onResult,function(error:FaultEvent,t:Object):void{trace(error);},listener));
 			return token;
 		}
 		
@@ -79,7 +78,7 @@ package app.model
 					var obj:Object = JSON.parse(String(event.result));
 					listener(new ResultEvent(event.type,event.bubbles,event.cancelable,obj,event.token,event.message));
 				}
-				catch(ex)
+				catch(ex:Error)
 				{
 					listener(event);
 				}

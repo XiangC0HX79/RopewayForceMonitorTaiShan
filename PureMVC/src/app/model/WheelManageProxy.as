@@ -110,8 +110,7 @@ package app.model
 		}
 		
 		private function onAddWheelManage(event:ResultEvent):void
-		{
-			
+		{			
 			sendNotification(ApplicationFacade.NOTIFY_ADD_WHEELMANAGE);
 		}
 		

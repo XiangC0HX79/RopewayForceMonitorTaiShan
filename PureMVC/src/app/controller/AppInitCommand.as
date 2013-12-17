@@ -1,13 +1,15 @@
 package app.controller
 {
 	
+	import mx.controls.Alert;
+	
+	import spark.components.Application;
+	
 	import app.model.ConfigProxy;
 	
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
-	
-	import spark.components.Application;
 	
 	public class AppInitCommand extends SimpleCommand implements ICommand
 	{
@@ -17,6 +19,8 @@ package app.controller
 			
 			var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			
+			Alert.yesLabel = "是";
+			Alert.noLabel = "否";
 			/*var unit:String = application.parameters.unit;
 			IFDEF::Debug
 			{

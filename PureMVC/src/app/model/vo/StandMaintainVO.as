@@ -1,7 +1,6 @@
 package app.model.vo
 {
 	import mx.formatters.DateFormatter;
-	import mx.utils.*;
 	
 	[Bindable]
 	public class StandMaintainVO
@@ -27,7 +26,7 @@ package app.model.vo
 			Id = o.Id;
 			var dateFormatter:DateFormatter = new DateFormatter();
 			dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
-			MDate = o.MDate;
+			MDate = new Date(Date.parse(o.MDate));
 			InputUserName = o.InputUserName;
 		}
 	}
