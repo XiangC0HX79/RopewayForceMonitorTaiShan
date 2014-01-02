@@ -1,5 +1,20 @@
 package app.view
 {
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
+	import mx.core.ClassFactory;
+	import mx.core.FlexGlobals;
+	import mx.core.IVisualElement;
+	import mx.events.CloseEvent;
+	import mx.events.FlexEvent;
+	import mx.managers.PopUpManager;
+	import mx.rpc.events.ResultEvent;
+	
 	import app.ApplicationFacade;
 	import app.model.AreaWheelProxy;
 	import app.model.MaintainTypeProxy;
@@ -14,20 +29,8 @@ package app.view
 	import app.view.components.TitleWindowBaseInfo;
 	import app.view.components.TitleWindowManage;
 	
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.core.IVisualElement;
-	import mx.events.CloseEvent;
-	import mx.events.FlexEvent;
-	import mx.managers.PopUpManager;
-	import mx.rpc.events.ResultEvent;
-	import mx.utils.*;
+	import custom.itemRenderer.ItemRendererAreaDetection;
+	import custom.itemRenderer.ItemRendererAreaDetectionSpecial;
 	
 	import org.puremvc.as3.interfaces.IFacade;
 	import org.puremvc.as3.interfaces.IMediator;
@@ -85,7 +88,7 @@ package app.view
 					if(areaTitleWindow.datagrid.dataProvider != null)
 						areaTitleWindow.datagrid.dataProvider.removeAll();
 					areaTitleWindow._id = "";
-					areaTitleWindow.title =  aw.StandId.toString()+"号支架";
+					areaTitleWindow.title =  aw.shortName + "区域";
 					areaTitleWindow.addbn.enabled = false;
 					/*areaTitleWindow.editbn.enabled = false;
 					areaTitleWindow.deletebn.enabled = false;
@@ -132,6 +135,21 @@ package app.view
 						var wheelHistoryProxy2:WheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
 						wheelHistoryProxy2.InitWheelHistory(chooseid);
 						FlexGlobals.topLevelApplication.WheelId = "";
+					}
+					
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
+					{
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 27) || (aw.AreaId == 28))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);							
+					}
+					else
+					{
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 25) || (aw.AreaId == 26))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);								
 					}
 					break;
 				case ApplicationFacade.NOTIFY_WHEELLIST_COMPLETE:

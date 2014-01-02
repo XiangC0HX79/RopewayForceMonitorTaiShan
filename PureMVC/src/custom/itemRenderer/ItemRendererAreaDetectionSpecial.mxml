@@ -41,20 +41,20 @@
 					if(int(_wheeltype) == 1)
 					{
 						if(_warningstatus == "yellow")
-							_source = "assets/image/wheel_6.png";
+							_source = "assets/image/wheel_12.png";
 						else if(_warningstatus == "red")
-							_source = "assets/image/wheel_4.png";
+							_source = "assets/image/wheel_10.png";
 						else
-							_source = "assets/image/wheel_2.png";
+							_source = "assets/image/wheel_8.png";
 					}
 					else
 					{
 						if(_warningstatus == "yellow")
-							_source = "assets/image/wheel_5.png";
+							_source = "assets/image/wheel_11.png";
 						else if(_warningstatus == "red")
-							_source = "assets/image/wheel_3.png";
+							_source = "assets/image/wheel_9.png";
 						else
-							_source = "assets/image/wheel_1.png";
+							_source = "assets/image/wheel_7.png";
 					}
 					
 					var dateFormatter:DateFormatter = new DateFormatter();

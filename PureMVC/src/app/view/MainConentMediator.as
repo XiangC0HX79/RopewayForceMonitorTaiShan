@@ -228,39 +228,47 @@ package app.view
 					}
 				}
 			}
-			
+					
 			if(numWheel == 26)
 			{
 				if(mainContent.containsElement(n27))
 					mainContent.removeElement(n27);
 				if(mainContent.containsElement(n28))
-					mainContent.removeElement(n28);
+					mainContent.removeElement(n28);	
 			}
 			
 			for(var r:int = 0;r<wheeltotelarr.length;r++)
 			{   
 				var aw4:AreaWheelVO = wheeltotelarr[r];
+				
+				var source2:String = "assets/image/lun2.png";
+				if(aw4.Yellow != 0)
+					source2 = "assets/image/ylun2.png";
+				if(aw4.Red != 0)
+					source2 = "assets/image/rlun2.png";
+				
 				var source:String = "assets/image/lun.png";
 				if(aw4.Yellow != 0)
 					source = "assets/image/ylun.png";
 				if(aw4.Red != 0)
-					source = "assets/image/hlun.png";
+					source = "assets/image/rlun.png";
+				
 				switch(aw4.AreaId)
 				{
 					case 1:
 					{
-						mainContent.l1.source = source;
+						mainContent.l1.source = source2;
 						n1.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n1);
-						n1.move(mainContent.l1.x-6,mainContent.l1.y+75);
+						n1.move(mainContent.l1.x+1,mainContent.l1.y+8);
 						break;
 					}
 					case 2:
 					{
-						mainContent.l2.source = source;
+						mainContent.l2.source = source2;
 						n2.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n2);
-						n2.move(mainContent.l2.x-6,mainContent.l2.y+75);
+						n2.move(mainContent.l2.x+1,mainContent.l2.y+8);
 						break;
 					}
 					case 3:
@@ -268,7 +276,7 @@ package app.view
 						mainContent.l3.source = source;
 						n3.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n3);
-						n3.move(mainContent.l3.x-6,mainContent.l3.y+75);
+						n3.move(mainContent.l3.x+55,mainContent.l3.y+2);
 						break;
 					}
 					case 4:
@@ -276,7 +284,7 @@ package app.view
 						mainContent.l4.source = source;
 						n4.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n4);
-						n4.move(mainContent.l4.x-6,mainContent.l4.y+75);
+						n4.move(mainContent.l4.x+55,mainContent.l4.y+2);
 						break;
 					}
 					case 5:
@@ -284,7 +292,7 @@ package app.view
 						mainContent.l5.source = source;
 						n5.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n5);
-						n5.move(mainContent.l5.x-6,mainContent.l5.y+75);
+						n5.move(mainContent.l5.x+55,mainContent.l5.y+2);
 						break;
 					}
 					case 6:
@@ -292,7 +300,7 @@ package app.view
 						mainContent.l6.source = source;
 						n6.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n6);
-						n6.move(mainContent.l6.x-6,mainContent.l6.y+75);
+						n6.move(mainContent.l6.x+55,mainContent.l6.y+2);
 						break;
 					}
 					case 7:
@@ -300,7 +308,7 @@ package app.view
 						mainContent.l7.source = source;
 						n7.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n7);
-						n7.move(mainContent.l7.x-6,mainContent.l7.y+75);
+						n7.move(mainContent.l7.x+55,mainContent.l7.y+2);
 						break;
 					}
 					case 8:
@@ -308,7 +316,7 @@ package app.view
 						mainContent.l8.source = source;
 						n8.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n8);
-						n8.move(mainContent.l8.x-6,mainContent.l8.y+75);
+						n8.move(mainContent.l8.x+55,mainContent.l8.y+2);
 						break;
 					}
 					case 9:
@@ -316,7 +324,7 @@ package app.view
 						mainContent.l9.source = source;
 						n9.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n9);
-						n9.move(mainContent.l9.x-6,mainContent.l9.y+75);
+						n9.move(mainContent.l9.x+55,mainContent.l9.y+2);
 						break;
 					}
 					case 10:
@@ -324,7 +332,7 @@ package app.view
 						mainContent.l10.source = source;
 						n10.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n10);
-						n10.move(mainContent.l10.x-6,mainContent.l10.y+75);
+						n10.move(mainContent.l10.x+55,mainContent.l10.y+2);
 						break;
 					}
 					case 11:
@@ -332,7 +340,7 @@ package app.view
 						mainContent.l11.source = source;
 						n11.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n11);
-						n11.move(mainContent.l11.x-6,mainContent.l11.y+75);
+						n11.move(mainContent.l11.x+55,mainContent.l11.y+2);
 						break;
 					}
 					case 12:
@@ -340,7 +348,7 @@ package app.view
 						mainContent.l12.source = source;
 						n12.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n12);
-						n12.move(mainContent.l12.x-6,mainContent.l12.y+75);
+						n12.move(mainContent.l12.x+55,mainContent.l12.y+2);
 						break;
 					}
 					case 13:
@@ -348,7 +356,7 @@ package app.view
 						mainContent.l13.source = source;
 						n13.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n13);
-						n13.move(mainContent.l13.x-6,mainContent.l13.y+75);
+						n13.move(mainContent.l13.x+55,mainContent.l13.y+2);
 						break;
 					}
 					case 14:
@@ -356,7 +364,7 @@ package app.view
 						mainContent.l14.source = source;
 						n14.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n14);
-						n14.move(mainContent.l14.x-6,mainContent.l14.y+75);
+						n14.move(mainContent.l14.x+55,mainContent.l14.y+2);
 						break;
 					}
 					case 15:
@@ -364,7 +372,7 @@ package app.view
 						mainContent.l15.source = source;
 						n15.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n15);
-						n15.move(mainContent.l15.x-6,mainContent.l15.y+75);
+						n15.move(mainContent.l15.x+55,mainContent.l15.y+2);
 						break;
 					}
 					case 16:
@@ -372,7 +380,7 @@ package app.view
 						mainContent.l16.source = source;
 						n16.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n16);
-						n16.move(mainContent.l16.x-6,mainContent.l16.y+75);
+						n16.move(mainContent.l16.x+55,mainContent.l16.y+2);
 						break;
 					}
 					case 17:
@@ -380,7 +388,7 @@ package app.view
 						mainContent.l17.source = source;
 						n17.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n17);
-						n17.move(mainContent.l17.x-6,mainContent.l17.y+75);
+						n17.move(mainContent.l17.x+55,mainContent.l17.y+2);
 						break;
 					}
 					case 18:
@@ -388,7 +396,7 @@ package app.view
 						mainContent.l18.source = source;
 						n18.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n18);
-						n18.move(mainContent.l18.x-6,mainContent.l18.y+75);
+						n18.move(mainContent.l18.x+55,mainContent.l18.y+2);
 						break;
 					}
 					case 19:
@@ -396,7 +404,7 @@ package app.view
 						mainContent.l19.source = source;
 						n19.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n19);
-						n19.move(mainContent.l19.x-6,mainContent.l19.y+75);
+						n19.move(mainContent.l19.x+55,mainContent.l19.y+2);
 						break;
 					}
 					case 20:
@@ -404,7 +412,7 @@ package app.view
 						mainContent.l20.source = source;
 						n20.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n20);
-						n20.move(mainContent.l20.x-6,mainContent.l20.y+75);
+						n20.move(mainContent.l20.x+55,mainContent.l20.y+2);
 						break;
 					}
 					case 21:
@@ -412,7 +420,7 @@ package app.view
 						mainContent.l21.source = source;
 						n21.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n21);
-						n21.move(mainContent.l21.x-6,mainContent.l21.y+75);
+						n21.move(mainContent.l21.x+55,mainContent.l21.y+2);
 						break;
 					}
 					case 22:
@@ -420,7 +428,7 @@ package app.view
 						mainContent.l22.source = source;
 						n22.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n22);
-						n22.move(mainContent.l22.x-6,mainContent.l22.y+75);
+						n22.move(mainContent.l22.x+55,mainContent.l22.y+2);
 						break;
 					}
 					case 23:
@@ -428,7 +436,7 @@ package app.view
 						mainContent.l23.source = source;
 						n23.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n23);
-						n23.move(mainContent.l23.x-6,mainContent.l23.y+75);
+						n23.move(mainContent.l23.x+55,mainContent.l23.y+2);
 						break;
 					}
 					case 24:
@@ -436,45 +444,57 @@ package app.view
 						mainContent.l24.source = source;
 						n24.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n24);
-						n24.move(mainContent.l24.x-6,mainContent.l24.y+75);
+						n24.move(mainContent.l24.x+55,mainContent.l24.y+2);
 						break;
 					}
 					case 25:
-					{
-						mainContent.l25.source = source;
+					{						
+						if(numWheel == 26)
+						{							
+							mainContent.l25.source = source2;
+							n25.move(mainContent.l25.x+1,mainContent.l27.y+8);
+						}
+						else
+						{
+							mainContent.l25.source = source;
+							n25.move(mainContent.l25.x+55,mainContent.l23.y+2);
+						}
+						
 						n25.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n25);
-						if(numWheel == 26)
-							n25.move(mainContent.l25.x-6,mainContent.l27.y+75);
-						else
-							n25.move(mainContent.l25.x-6,mainContent.l23.y+75);
 						break;
 					}
 					case 26:
 					{
-						mainContent.l26.source = source;
+						if(numWheel == 26)
+						{					
+							mainContent.l26.source = source2;
+							n26.move(mainContent.l26.x+1,mainContent.l28.y+8);
+						}
+						else
+						{					
+							mainContent.l26.source = source;
+							n26.move(mainContent.l26.x+55,mainContent.l24.y+2);
+						}
+						
 						n26.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n26);
-						if(numWheel == 26)
-							n26.move(mainContent.l26.x-6,mainContent.l28.y+75);
-						else
-							n26.move(mainContent.l26.x-6,mainContent.l24.y+75);
 						break;
 					}						
 					case 27:
 					{
-						mainContent.l25.source = source;
+						mainContent.l27.source = source2;
 						n27.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n27);
-						n27.move(mainContent.l27.x-6,mainContent.l27.y+75);
+						n27.move(mainContent.l27.x+1,mainContent.l27.y+8);
 						break;
 					}
 					case 28:
 					{
-						mainContent.l26.source = source;
+						mainContent.l28.source = source2;
 						n28.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n28);
-						n28.move(mainContent.l28.x-6,mainContent.l28.y+75);
+						n28.move(mainContent.l28.x+1,mainContent.l28.y+8);
 						break;
 					}
 				}
