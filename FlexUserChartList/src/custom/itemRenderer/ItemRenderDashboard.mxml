@@ -297,6 +297,20 @@
 					rt.x=SetData4(obj.barValue,0,7); 
 					rt.y=160;					
 				}
+				else if(type == "17")
+				{
+					rt.source = ZzSkin1;
+					dimg.source = DdSkin;
+					
+					rt.x=36; 
+					rt.y=355;						
+					rot.transformX = 321;
+					rot.transformY = 10;						
+					rt.transformX=321;
+					rt.transformY=10;
+					
+					angle2 = SetData(obj.barValue,90,0,400);			
+				}
 				
 				rot.play([rt]);
 				
