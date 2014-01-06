@@ -60,11 +60,22 @@ package app.model
 						if(wm.WheelId == obj.WheelId)
 						{
 							if(obj.Color == "#FFD700")
-								wm.Status = "yellow";
+							{
+								if(wm.Status != "red")
+									wm.Status = "yellow";									
+							}
 							else if(obj.Color == "#FF0000")
+							{
 								wm.Status = "red";
-							else
+							}
+							else if(
+								(wm.Status != "red")
+								&& 
+								(wm.Status != "yellow")
+							)
+							{
 								wm.Status = "black";
+							}
 						}
 					}
 				}
