@@ -11,30 +11,73 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import custom.itemRenderer.ItemRendererMainStation;
-			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			
+			import spark.events.IndexChangeEvent;
 			import spark.events.RendererExistenceEvent;
+			
+			import custom.itemRenderer.ItemRendererMainStation;
 						
 			[Bindable]public var dpStations:ArrayCollection;
 			
+			[Bindable]public var colArea:ArrayCollection = new ArrayCollection;
+			
+			[Bindable]public var colWheel:ArrayCollection = new ArrayCollection;
+			
 			public static const LOCATE_WHEEL:String = "LocateWheel";
+			public static const AREA_CHANGE:String = "AreaChange";
 						
 			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
 			{
 				var render:ItemRendererMainStation = event.renderer as ItemRendererMainStation;
 				render.rb.group = rbGroup;
 				if(event.data == FlexGlobals.topLevelApplication.Station)
+				{
 					render.rb.selected = true;
+					
+					colArea.removeAll();
+					
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
+					{
+						for(var i:int = 0;i<=28;i++)
+							colArea.addItem(i);
+					}
+					else
+					{
+						for(i = 0;i<=26;i++)
+							colArea.addItem(i);
+					}
+					
+					comboArea.selectedIndex = 0;
+					
+					//comboArea_changeHandler(null);
+				}
 			}
 			
 			protected function rbGroup_changeHandler(event:Event):void
 			{				
 				var radioButtonGroup:RadioButtonGroup = event.currentTarget as RadioButtonGroup;
 				FlexGlobals.topLevelApplication.Station = radioButtonGroup.selectedValue.toString();
+								
+				colArea.removeAll();
+				
+				if(FlexGlobals.topLevelApplication.Station == "中天门")
+				{
+					for(var i:int = 0;i<=28;i++)
+						colArea.addItem(i);
+				}
+				else
+				{
+					for(i = 0;i<=26;i++)
+						colArea.addItem(i);
+				}
+				
+				comboArea.selectedIndex = 0;
+				
+				//comboArea_changeHandler(null);
+				
 				dispatchEvent(new Event(Event.CHANGE));
 			}
 			
@@ -47,6 +90,62 @@
 			{
 				dispatchEvent(new Event(LOCATE_WHEEL));
 			}
+			
+			private function comboAreaLabelFunction(areaid:int):String
+			{				
+				var r:String = "";
+				
+				var id:int = int((areaid - 1) / 2);
+				var ids:String;	
+				
+				if(areaid == 0)
+				{
+					r = "所有区域";
+				}
+				else if(FlexGlobals.topLevelApplication.Station == "中天门")
+				{					
+					if(id == 0)
+						ids = "驱";
+					else if(id == 13)
+						ids = "回";
+					else
+						ids = id.toString();	
+					
+					if((areaid % 2) == 0)
+					{			
+						r = ids + "#上";				
+					}
+					else
+					{			
+						r = ids + "#下";			
+					}
+				}
+				else
+				{					
+					if(id == 0)
+						ids = "驱";
+					else if(id == 12)
+						ids = "回";
+					else
+						ids = id.toString();	
+					
+					if((areaid % 2) == 0)
+					{			
+						r = ids + "#下";					
+					}
+					else
+					{
+						r = ids + "#上";					
+					}
+				}
+				
+				return r;
+			}
+			
+			protected function comboArea_changeHandler(event:IndexChangeEvent):void
+			{
+				dispatchEvent(new Event(AREA_CHANGE));
+			}			
 		]]>
 	</fx:Script>
 	<s:Image left="0" bottom="0" top="0" scaleMode="stretch"
@@ -63,9 +162,12 @@
 		<s:Image source="assets/image/top_icon.png"/>
 		<s:Label paddingTop="3" id="lbContent" text="支架概览" color="0xffffff" fontSize="14"/>
 	</s:HGroup>
+	
 	<s:HGroup right="15" top="4" height="100%">
-		<s:Label paddingTop="6" text="滚轮编号：" color="0xffffff"/>
-		<s:TextInput id="wheelidinput" width="100"/>
+		<s:Label paddingTop="6" text="区域：" color="0xffffff"/>
+		<s:DropDownList id="comboArea" width="100" dataProvider="{colArea}" labelFunction="comboAreaLabelFunction" change="comboArea_changeHandler(event)"/>		
+		<s:Label paddingTop="6" text="滚轮：" color="0xffffff"/>
+		<s:ComboBox id="comboWheel" width="100" dataProvider="{colWheel}" labelField="WheelId"/>
 		<s:Button label="定位" width="70" buttonDown="OnButtondown(event)"/>
 		<s:DataGroup id="datagroup" dataProvider="{dpStations}"
 					 rendererAdd="datagroup_rendererAddHandler(event)"

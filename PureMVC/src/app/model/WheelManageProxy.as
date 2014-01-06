@@ -19,7 +19,6 @@ package app.model
 	{
 		public static const NAME:String = "WheelManageProxy";
 		
-		
 		public function WheelManageProxy(data:Object=null)
 		{
 			super(NAME, new ArrayCollection);
@@ -44,18 +43,19 @@ package app.model
 		
 		private function onInitAllWheelDict(event:ResultEvent):void
 		{
-			var arr:ArrayCollection = new ArrayCollection();
+			//var arr:ArrayCollection = new ArrayCollection();
+			wheelDict.removeAll();
 			for each(var obj:* in event.result)
 			{
 				var wh:WheelManageVO = new WheelManageVO(obj);
-				arr.addItem(wh);
+				wheelDict.addItem(wh);
 			}
 			send("T_MT_InquireAboutHolder_GetModelList",onInitAllWarnDict,"");
 			function  onInitAllWarnDict(event:ResultEvent):void
 			{
 				for each(var obj:* in event.result)
 				{
-					for each(var wm:WheelManageVO in arr)
+					for each(var wm:WheelManageVO in wheelDict)
 					{
 						if(wm.WheelId == obj.WheelId)
 						{
@@ -68,7 +68,7 @@ package app.model
 						}
 					}
 				}
-				sendNotification(ApplicationFacade.NOTIFY_INIT_STAND_COMPLETE,arr);
+				sendNotification(ApplicationFacade.NOTIFY_INIT_STAND_COMPLETE,wheelDict);
 			}
 		}
 		

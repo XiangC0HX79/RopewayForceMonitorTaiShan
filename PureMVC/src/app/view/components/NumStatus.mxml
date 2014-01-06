@@ -37,13 +37,12 @@
 				blackNum.text = black.toString();
 				
 				var id:int = int((areaid - 1) / 2);
-				var ids:String;
-				if(id == 0)
-					ids = "驱";
-				
+				var ids:String;				
 				if(FlexGlobals.topLevelApplication.Station == "中天门")
 				{					
-					if(id == 13)
+					if(id == 0)
+						ids = "驱";
+					else if(id == 13)
 						ids = "回";
 					else
 						ids = id.toString();	
@@ -70,8 +69,10 @@
 					}
 				}
 				else
-				{
-					if(id == 12)
+				{					
+					if(id == 0)
+						ids = "驱";
+					else if(id == 12)
 						ids = "回";
 					else
 						ids = id.toString();	
