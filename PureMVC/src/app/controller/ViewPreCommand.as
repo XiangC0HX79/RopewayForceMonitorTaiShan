@@ -1,6 +1,8 @@
 package app.controller
 {	
 	
+	import spark.components.Application;
+	
 	import app.view.ApplicationMediator;
 	import app.view.AreaTitleWindowMediator;
 	import app.view.ContentManageMediator;
@@ -12,6 +14,7 @@ package app.controller
 	import app.view.StandStationMediator;
 	import app.view.TitleWindowBaseInfoMediator;
 	import app.view.TitleWindowManageMediator;
+	import app.view.TitleWindowProjectMediator;
 	import app.view.TitleWindowStandMaintainMediator;
 	import app.view.TitleWindowStandMediator;
 	import app.view.WheelGroupMediator;
@@ -28,8 +31,6 @@ package app.controller
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
-	
-	import spark.components.Application;
 	
 	public class ViewPreCommand extends SimpleCommand
 	{
@@ -52,6 +53,8 @@ package app.controller
 			facade.registerMediator(new TitleWindowManageMediator(new TitleWindowManage));
 			facade.registerMediator(new TitleWindowStandMediator(new TitleWindowStand));
 			facade.registerMediator(new TitleWindowStandMaintainMediator(new TitleWindowStandMaintain));
+			
+			facade.registerMediator(new TitleWindowProjectMediator);
 		}
 	}
 }

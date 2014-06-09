@@ -1,10 +1,11 @@
 package app.model
 {
-	import app.view.components.TitleWindowBaseInfo;
-	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
-	import mx.utils.*;
+	
+	import app.ApplicationFacade;
+	import app.model.dict.MaintainTypeDict;
+	import app.view.components.TitleWindowBaseInfo;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 
@@ -37,8 +38,16 @@ package app.model
 			{
 				arr.addItem(obj);
 				typeList.addItem(obj.DicValue);
+				
+				var t:MaintainTypeDict = new MaintainTypeDict(obj);
+				if(t.DicValue == "轮胎")
+					MaintainTypeDict.DEFAUT = t;
 			}
 			WheelHistoryProxy.MaintainType = arr;
+			
+			
+			
+			sendNotification(ApplicationFacade.NOTIFY_INIT_MAINTAINTYPE_COMPLETE);
 		}
 	}
 }

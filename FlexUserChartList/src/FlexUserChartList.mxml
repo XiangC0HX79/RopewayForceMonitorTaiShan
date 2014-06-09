@@ -116,7 +116,7 @@
 						',{"CheckData":28.0,"CheckDate":"11/13/2013 16:59:36","ItemId":171,"CheckType":0,"ChartId":14,"MinValue":24.0,"MaxValue":30.0}' +
 						',{"CheckData":390.0,"CheckDate":"11/13/2013 16:59:36","ItemId":172,"CheckType":0,"ChartId":15,"MinValue":360.0,"MaxValue":420.0}' +
 						',{"CheckData":10.8,"CheckDate":"11/13/2013 16:59:36","ItemId":173,"CheckType":0,"ChartId":16,"MinValue":8.0,"MaxValue":11.0}' +
-						',{"CheckData":120.0,"CheckDate":"11/13/2013 16:59:36","ItemId":176,"CheckType":0,"ChartId":32,"MinValue":100.0,"MaxValue":140.0}]}';
+						',{"CheckData":110,"CheckDate":"11/13/2013 16:59:36","ItemId":176,"CheckType":0,"ChartId":32,"MinValue":100.0,"MaxValue":140.0}]}';
 					/*var s:String = '{"listBar":[{"ItemId":"1","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/1.png"}' +
 						',{"ItemId":"2","ItemCheckIndex":"\u7535\u538B\u8868","ItemCheckData":"/skin/bar/2.png"}' +
 						',{"ItemId":"3","ItemCheckIndex":"\u7535\u6D41\u8868","ItemCheckData":"/skin/bar/3.png"}' +

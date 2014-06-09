@@ -1,17 +1,5 @@
 package app.view
 {
-	import app.AppEvent;
-	import app.ApplicationFacade;
-	import app.model.StandBaseinfoProxy;
-	import app.model.StandMaintainProxy;
-	import app.model.vo.AttachImageVO;
-	import app.model.vo.AttachVO;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.StandBaseinfoVO;
-	import app.model.vo.StandMaintainVO;
-	import app.view.components.TitleWindowStand;
-	import app.view.components.TitleWindowStandMaintain;
-	
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.net.FileFilter;
@@ -26,7 +14,18 @@ package app.view
 	import mx.events.MoveEvent;
 	import mx.formatters.DateFormatter;
 	import mx.managers.PopUpManager;
-	import mx.utils.*;
+	
+	import app.AppEvent;
+	import app.ApplicationFacade;
+	import app.model.StandBaseinfoProxy;
+	import app.model.StandMaintainProxy;
+	import app.model.vo.AttachImageVO;
+	import app.model.vo.AttachVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.StandBaseinfoVO;
+	import app.model.vo.StandMaintainVO;
+	import app.view.components.TitleWindowStand;
+	import app.view.components.TitleWindowStandMaintain;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -79,12 +78,8 @@ package app.view
 					var standid:int = notification.getBody() as int;
 					var ropeway:String = FlexGlobals.topLevelApplication.Station;
 					var config:ConfigVO = FlexGlobals.topLevelApplication.Config;
-					var stationid:int;
-					for(var i:int = 0;i < config.stations.length;i++)
-					{
-						if(ropeway == config.stations[i])
-							stationid = config.stationsid[i];
-					}
+					var stationid:int = config.dictStationIdByName[ropeway];
+					
 					IFDEF::Release
 					{
 						titleWindowStand.iframe.source="FlexEdit.aspx?ropeway="+stationid+"&bracket="+standid;
@@ -93,6 +88,64 @@ package app.view
 					titleWindowStand.iframe.setFocus();
 					titleWindowStand._ropeway = ropeway;
 					titleWindowStand._standId = standid;
+					
+					var ids:String = "";
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
+					{									
+						switch(standid)
+						{
+							case 0:
+								ids = "驱";
+								break;
+							case 8:
+								ids = "8A";
+								break;
+							case 9:
+								ids = "8B";
+								break;
+							case 10:
+								ids = "9";
+								break;
+							case 11:
+								ids = "10";
+								break;
+							case 12:
+								ids = "11A";
+								break;
+							case 13:
+								ids = "11B";
+								break;
+							case 14:
+								ids = "11C";
+								break;
+							case 15:
+								ids = "回";
+								break;
+							default:
+								ids = standid.toString();
+								break;
+						}	
+					}
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+					{
+						if(standid == 0)
+							ids = "驱";
+						else if(standid == 9)
+							ids = "回";
+						else
+							ids = standid.toString();							
+					}
+					else
+					{						
+						if(standid == 0)
+							ids = "驱";
+						else if(standid == 12)
+							ids = "回";
+						else
+							ids = standid.toString();	
+					}
+					titleWindowStand._titleId = ids;
+					
 					/*var standBaseinfoProxy:StandBaseinfoProxy = facade.retrieveProxy(StandBaseinfoProxy.NAME) as StandBaseinfoProxy;
 					standBaseinfoProxy.InitStandInfo(standid);*/
 					sendNotification(ApplicationFacade.NOTIFY_INIT_STANDINFO);

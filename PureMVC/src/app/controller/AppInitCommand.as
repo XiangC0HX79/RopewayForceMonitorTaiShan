@@ -5,7 +5,9 @@ package app.controller
 	
 	import spark.components.Application;
 	
+	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
+	import app.model.vo.AreaWheelVO;
 	
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
@@ -21,11 +23,6 @@ package app.controller
 			
 			Alert.yesLabel = "是";
 			Alert.noLabel = "否";
-			/*var unit:String = application.parameters.unit;
-			IFDEF::Debug
-			{
-				unit = "中天门";
-			}*/
 						
 			var ds:String = application.parameters.DepIds;
 			IFDEF::Debug

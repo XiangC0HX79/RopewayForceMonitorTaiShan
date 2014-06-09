@@ -14,20 +14,28 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			
 			import spark.components.Image;
 			import spark.components.supportClasses.ItemRenderer;
 			
+			import app.model.vo.HolderMgVO;
 			import app.model.vo.WheelHistoryVO;
 			
 			import custom.itemRenderer.ItemRendererAreaDetection;
 			
 			[Bindable]public var _id:String = "";
 			[Bindable]public var colMaintain:ArrayCollection = new ArrayCollection();
+			[Bindable]public var colProject:ArrayCollection;
+			
 			public static const MAINTAIN_ADD:String = "MaintainAdd";
 			public static const MAINTAIN_EDIT:String = "MaintainEdit";
 			public static const MAINTAIN_DELETE:String = "MaintainDelete";
+			
+			public static const PROJECT_ADD:String = "ProjectAdd";
+			public static const PROJECT_EDIT:String = "ProjectEdit";
+			public static const PROJECT_DELETE:String = "ProjectDelete";
 			
 			private function closewindow():void
 			{
@@ -42,7 +50,8 @@
 				for(var i:Number = 0;i<datagroup.numElements;i++)
 				{
 					var ele:ItemRenderer = datagroup.getElementAt(i) as ItemRenderer;
-					ele.invalidateDisplayList();
+					if(ele != null)
+						ele.invalidateDisplayList();
 				}
 			
 			}
@@ -74,7 +83,47 @@
 					return dateF.format(wheelHistoryVO.MaintainTime);
 				else
 					return "未处置";
-			}
+			}		
+			
+			private function labelProjectMaintainHourRange(item:HolderMgVO,column:GridColumn):String
+			{
+				var r:String = "";
+				
+				if(item.IsHour)
+					r += item.HourNum + "小时";
+				
+				return r;
+			}			
+			
+			private function labelProjectMaintainDayRange(item:HolderMgVO,column:GridColumn):String
+			{
+				var r:String = "";
+				
+				if(item.IsDay)
+					r += item.DayNum + "天";
+				
+				return r;
+			}		
+			
+			private function labelProjectChangeHourRange(item:HolderMgVO,column:GridColumn):String
+			{
+				var r:String = "";
+				
+				if(item.IsChangeHour)
+					r += item.ChangeHourNum + "小时";
+				
+				return r;
+			}		
+			
+			private function labelProjectChangeDayRange(item:HolderMgVO,column:GridColumn):String
+			{
+				var r:String = "";
+				
+				if(item.IsChangeDay)
+					r += item.ChangeDayNum + "天";
+				
+				return r;
+			}	
 		]]>
 	</fx:Script>
 	<s:Label y="-35" horizontalCenter="0" text="{_id+'号滚轮历史维护明细'}" fontSize="20"/>
@@ -88,54 +137,116 @@
 	</s:Scroller>
 	<s:HGroup left="5" width="100%" top="160">
 		<s:Button id="wheelmanagebn" label="滚轮管理"/>
-		<s:Button id="addbn" label="新增维护信息"/>
+		<s:Button label="维护信息" buttonDown="vsGrid.selectedIndex=0"/>
+		<s:Button label="维护计划" buttonDown="vsGrid.selectedIndex=1"/>
 		<!--<s:Button id="editbn" label="编辑"/>
 		<s:Button id="deletebn" label="删除"/>-->
 	</s:HGroup>
-	<s:HGroup height="20" top="180" width="100%" verticalAlign="middle">
-		<s:Line stroke="{lStroke}" width="100%"/>
-		<s:Label text="{'维护信息（'+colMaintain.length+'）'}" fontSize="14" fontWeight="bold"/>
-		<s:Line stroke="{lStroke}" width="100%"/>
-	</s:HGroup>
-	<s:DataGrid id="datagrid" width="100%" top="200" height="100%" 
-				borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
-				alternatingRowColors="[#FFFFFF,#CFEDF7]">
-		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn headerText="滚轮编号" dataField="WheelId" width="70"/>
-				<s:GridColumn headerText="维护类型" dataField="MaintainType" width="70"/>
-				<s:GridColumn headerText="维护时间" dataField="MaintainTime"  labelFunction="dealDateLabelFunction" width="120"/>
-				<s:GridColumn headerText="维护人" dataField="MaintainUser" width="70"/>
-				<s:GridColumn headerText="维护内容" dataField="MaintainInfo" width="200" dataTipField="MaintainInfo" labelFunction="dealDataLabelFunction" showDataTips="true"/>		
-				<s:GridColumn headerText="备注" dataField="Memo" width="320" dataTipField="Memo" labelFunction="dealMemoDataLabelFunction" showDataTips="true"/>
-				<s:GridColumn headerText="操作">
-					<s:itemRenderer>
-						<fx:Component>
-							<s:GridItemRenderer>										
-								<fx:Script>
-									<![CDATA[
-										protected function button_down(event:Event):void
-										{
-											dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_EDIT,true));
-										}
-										protected function button_down2(event:Event):void
-										{
-											dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_DELETE,true));
-										}
-									]]>
-								</fx:Script>
-								
-								<s:layout>
-									<s:HorizontalLayout horizontalAlign="center"/>
-								</s:layout>
-								
-								<s:Button label="编辑" width="50" buttonDown="button_down(event)"/>
-								<s:Button label="删除" width="50" buttonDown="button_down2(event)"/>
-							</s:GridItemRenderer>
-						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-			</s:ArrayList>				
-		</s:columns>
-	</s:DataGrid>
+	<mx:ViewStack id="vsGrid" top="180" height="100%" width="100%">
+		<!--维护信息-->
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:HGroup height="20" width="100%" verticalAlign="middle">
+				<s:Line stroke="{lStroke}" width="100%"/>
+				<s:Label text="{'维护信息（'+colMaintain.length+'）'}" fontSize="14" fontWeight="bold"/>
+				<s:Line stroke="{lStroke}" width="100%"/>
+				<s:Button label="新增维护信息" buttonDown="dispatchEvent(new Event(MAINTAIN_ADD))"/>
+			</s:HGroup>
+			<s:DataGrid id="datagrid" width="100%" height="100%" dataProvider="{colMaintain}" 
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="滚轮编号" dataField="WheelId" width="70"/>
+						<s:GridColumn headerText="维护类型" dataField="MaintainType" width="70"/>
+						<s:GridColumn headerText="维护时间" dataField="MaintainTime"  labelFunction="dealDateLabelFunction" width="120"/>
+						<s:GridColumn headerText="维护人" dataField="MaintainUser" width="70"/>
+						<s:GridColumn headerText="维护内容" dataField="MaintainInfo" width="200" dataTipField="MaintainInfo" labelFunction="dealDataLabelFunction" showDataTips="true"/>		
+						<s:GridColumn headerText="备注" dataField="Memo" width="320" dataTipField="Memo" labelFunction="dealMemoDataLabelFunction" showDataTips="true"/>
+						<s:GridColumn headerText="操作">
+							<s:itemRenderer>
+								<fx:Component>
+									<s:GridItemRenderer>										
+										<fx:Script>
+											<![CDATA[
+												protected function button_down(event:Event):void
+												{
+													dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_EDIT,true));
+												}
+												protected function button_down2(event:Event):void
+												{
+													dispatchEvent(new Event(AreaTitleWindow.MAINTAIN_DELETE,true));
+												}
+											]]>
+										</fx:Script>
+										
+										<s:layout>
+											<s:HorizontalLayout horizontalAlign="center"/>
+										</s:layout>
+										
+										<s:Button label="编辑" width="50" buttonDown="button_down(event)"/>
+										<s:Button label="删除" width="50" buttonDown="button_down2(event)"/>
+									</s:GridItemRenderer>
+								</fx:Component>
+							</s:itemRenderer>
+						</s:GridColumn>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:NavigatorContent>
+		<!--维护计划-->
+		<s:NavigatorContent>	
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:HGroup height="20" width="100%" verticalAlign="middle">
+				<s:Line stroke="{lStroke}" width="100%"/>
+				<s:Label text="{'维护计划（'+colProject.length+'）'}" fontSize="14" fontWeight="bold"/>
+				<s:Line stroke="{lStroke}" width="100%"/>
+				<s:Button label="新增维护计划" buttonDown="dispatchEvent(new Event(PROJECT_ADD))"/>
+			</s:HGroup>
+			<s:DataGrid width="100%" height="100%" dataProvider="{colProject}"
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="维护项目" dataField="TypeObject.DicValue" width="120"/>
+						<s:GridColumn headerText="维护周期（小时）" width="180" labelFunction="labelProjectMaintainHourRange"/>
+						<s:GridColumn headerText="维护周期（天）" width="180" labelFunction="labelProjectMaintainDayRange"/>
+						<s:GridColumn headerText="更换周期（小时）" width="180" labelFunction="labelProjectChangeHourRange"/>
+						<s:GridColumn headerText="更换周期（天）" width="180" labelFunction="labelProjectChangeDayRange"/>
+						<s:GridColumn headerText="操作">
+							<s:itemRenderer>
+								<fx:Component>
+									<s:GridItemRenderer>										
+										<fx:Script>
+											<![CDATA[
+												protected function button_down(event:Event):void
+												{
+													dispatchEvent(new Event(AreaTitleWindow.PROJECT_EDIT,true));
+												}
+												protected function button_down2(event:Event):void
+												{
+													dispatchEvent(new Event(AreaTitleWindow.PROJECT_DELETE,true));
+												}
+											]]>
+										</fx:Script>
+										
+										<s:layout>
+											<s:HorizontalLayout horizontalAlign="center"/>
+										</s:layout>
+										
+										<s:Button label="编辑" width="50" buttonDown="button_down(event)"/>
+										<s:Button label="删除" width="50" buttonDown="button_down2(event)"/>
+									</s:GridItemRenderer>
+								</fx:Component>
+							</s:itemRenderer>
+						</s:GridColumn>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
 </s:TitleWindow>

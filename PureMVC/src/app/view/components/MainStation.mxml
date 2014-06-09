@@ -41,7 +41,12 @@
 					
 					if(FlexGlobals.topLevelApplication.Station == "中天门")
 					{
-						for(var i:int = 0;i<=28;i++)
+						for(var i:int = 0;i<=32;i++)
+							colArea.addItem(i);
+					}
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+					{
+						for(i = 0;i<=20;i++)
 							colArea.addItem(i);
 					}
 					else
@@ -65,8 +70,13 @@
 				
 				if(FlexGlobals.topLevelApplication.Station == "中天门")
 				{
-					for(var i:int = 0;i<=28;i++)
+					for(var i:int = 0;i<=32;i++)
 						colArea.addItem(i);
+				}
+				else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+				{
+					for(i = 0;i<=20;i++)
+						colArea.addItem(i);					
 				}
 				else
 				{
@@ -103,13 +113,40 @@
 					r = "所有区域";
 				}
 				else if(FlexGlobals.topLevelApplication.Station == "中天门")
-				{					
-					if(id == 0)
-						ids = "驱";
-					else if(id == 13)
-						ids = "回";
-					else
-						ids = id.toString();	
+				{									
+					switch(id)
+					{
+						case 0:
+							ids = "驱";
+							break;
+						case 8:
+							ids = "8A";
+							break;
+						case 9:
+							ids = "8B";
+							break;
+						case 10:
+							ids = "9#支架";
+							break;
+						case 11:
+							ids = "10#支架";
+							break;
+						case 12:
+							ids = "11A";
+							break;
+						case 13:
+							ids = "11B";
+							break;
+						case 14:
+							ids = "11C";
+							break;
+						case 15:
+							ids = "回";
+							break;
+						default:
+							ids = id.toString();
+							break;
+					}	
 					
 					if((areaid % 2) == 0)
 					{			
@@ -118,6 +155,24 @@
 					else
 					{			
 						r = ids + "#下";			
+					}
+				}
+				else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+				{			
+					if(id == 0)
+						ids = "驱";
+					else if(id == 9)
+						ids = "回";
+					else
+						ids = id.toString();	
+					
+					if((areaid % 2) == 0)
+					{			
+						r = ids + "#下";					
+					}
+					else
+					{
+						r = ids + "#上";					
 					}
 				}
 				else

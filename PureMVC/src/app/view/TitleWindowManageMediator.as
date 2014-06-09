@@ -156,7 +156,7 @@ package app.view
 					
 					var w:WheelInsertVO = new WheelInsertVO(wm);
 					w.WheelType = (titleWindowManage.listStandType.selectedIndex + 1).toString();
-					//w.WheelId = titleWindowManage.t_wheelId.text;
+					w.WheelId = titleWindowManage.t_wheelId.text;
 					var wheelManageProxy:WheelManageProxy = facade.retrieveProxy(WheelManageProxy.NAME) as WheelManageProxy;
 					wheelManageProxy.DeleteWheelManage(w);
 					titleWindowManage.t_wheelId.text = "";

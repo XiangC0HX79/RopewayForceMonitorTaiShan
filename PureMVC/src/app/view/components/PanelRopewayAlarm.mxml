@@ -42,21 +42,61 @@
 			{
 				var id:int = int((item.areaid - 1) / 2);
 				var ids:String;
-				if(id == 0)
-					ids = "驱动站支架";
 				
 				if(FlexGlobals.topLevelApplication.Station == "中天门")
-				{				
-					if(id == 13)
+				{													
+					switch(id)
+					{
+						case 0:
+							ids = "驱动站支架";
+							break;
+						case 8:
+							ids = "8A#支架";
+							break;
+						case 9:
+							ids = "8B#支架";
+							break;
+						case 10:
+							ids = "9#支架";
+							break;
+						case 11:
+							ids = "10#支架";
+							break;
+						case 12:
+							ids = "11A#支架";
+							break;
+						case 13:
+							ids = "11B#支架";
+							break;
+						case 14:
+							ids = "11C#支架";
+							break;
+						case 15:
+							ids = "回转站支架";
+							break;
+						default:
+							ids = id.toString() + "#支架";
+							break;
+					}	
+					
+					var up:String = (item.areaid % 2) == 0?"上行":"下行";
+				}
+				else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+				{		
+					if(id == 0)
+						ids = "驱动站支架";
+					else if(id == 9)
 						ids = "回转站支架";
 					else
 						ids = id.toString() + "#支架";
 					
-					var up:String = (item.areaid % 2) == 0?"上行":"下行";
+					up = (item.areaid % 2) == 0?"下行":"上行";
 				}
 				else
 				{
-					if(id == 12)
+					if(id == 0)
+						ids = "驱动站支架";
+					else if(id == 12)
 						ids = "回转站支架";
 					else
 						ids = id.toString() + "#支架";

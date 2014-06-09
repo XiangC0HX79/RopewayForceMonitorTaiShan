@@ -1,5 +1,17 @@
 package app.view
 {
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	
+	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
+	import mx.managers.PopUpManager;
+	
+	import spark.components.Application;
+	import spark.components.Image;
+	
 	import app.ApplicationFacade;
 	import app.model.vo.AreaWheelVO;
 	import app.model.vo.StandVO;
@@ -12,22 +24,9 @@ package app.view
 	import app.view.components.TitleWindowStand;
 	import app.view.components.contentcomponents.StandStation;
 	
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.managers.PopUpManager;
-	import mx.utils.*;
-	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-	
-	import spark.components.Application;
-	import spark.components.Image;
 	
 	public class MainConentMediator extends Mediator implements IMediator
 	{
@@ -89,6 +88,10 @@ package app.view
 		private var n26:NumStatus = new NumStatus();
 		private var n27:NumStatus = new NumStatus();
 		private var n28:NumStatus = new NumStatus();
+		private var n29:NumStatus = new NumStatus();
+		private var n30:NumStatus = new NumStatus();
+		private var n31:NumStatus = new NumStatus();
+		private var n32:NumStatus = new NumStatus();
 		
 		
 		override public function handleNotification(notification:INotification):void
@@ -98,6 +101,8 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
 					if(FlexGlobals.topLevelApplication.Station == "中天门")
 						mainContent.currentState = "twelve";
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+						mainContent.currentState = "eight";
 					else
 						mainContent.currentState = "eleven";
 					break;
@@ -105,6 +110,8 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_STATION_CHANGE:
 					if(FlexGlobals.topLevelApplication.Station == "中天门")
 						mainContent.currentState = "twelve";
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+						mainContent.currentState = "eight";
 					else
 						mainContent.currentState = "eleven";
 					break;
@@ -125,7 +132,8 @@ package app.view
 					break;
 				case ApplicationFacade.NOTIFY_LOCATE_AREA:			
 					var areaid:int = notification.getBody() as int;
-					locatearea(areaid);
+					var wheelId:String = notification.getType();
+					locatearea(areaid,wheelId);
 					break;
 				case ApplicationFacade.NOTIFY_LOCATE_WHEEL:			
 					var wheelid:String = notification.getBody() as String;
@@ -135,7 +143,7 @@ package app.view
 						if(wm2.WheelId == wheelid)
 						{
 							ishave++;
-							sendNotification(ApplicationFacade.NOTIFY_LOCATE_AREA,wm2.LineAreaId);
+							sendNotification(ApplicationFacade.NOTIFY_LOCATE_AREA,wm2.LineAreaId,wm2.WheelId);
 						}
 					}
 					if(ishave == 0)
@@ -153,7 +161,13 @@ package app.view
 			warntypearr = FlexGlobals.topLevelApplication.WarnArr;
 			var warntip:ArrayCollection = new ArrayCollection();
 			
-			var numWheel:Number = (FlexGlobals.topLevelApplication.Station == "中天门")?28:26;
+			if(FlexGlobals.topLevelApplication.Station == "中天门")
+				var numWheel:Number = 32;
+			else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+				numWheel = 20;
+			else
+				numWheel = 26;
+			
 			for(var i:int=1;i<=numWheel;i++)
 			{
 				var aw:AreaWheelVO = new AreaWheelVO();
@@ -175,30 +189,6 @@ package app.view
 						aw2.Wheelarr.addItem(w);
 					}
 				}
-				/*for each(var wm:WheelManageVO in standArr)
-				{
-					if(w.WheelId == wm.WheelId)
-					{
-						for each(var wt:WarnTypeVO in warntypearr)
-						{
-							if(w.MaintainType == wt.type)
-							{
-								if(w.HourDiff >= wt.rhour)
-								{
-									wm.Status = "red";
-									var obj:Object = new Object();
-									obj.areaid = wm.LineAreaId;
-									obj.wheelid = wm.WheelId;
-									warntip.addItem(obj);
-								}
-								else if(w.HourDiff >= wt.yhour && wm.Status != "red")
-								{
-									wm.Status = "yellow";
-								}
-							}
-						}
-					}
-				}*/
 			}
 			for each(var wm:WheelManageVO in standArr)
 			{
@@ -228,13 +218,48 @@ package app.view
 					}
 				}
 			}
-					
-			if(numWheel == 26)
+			
+			if(FlexGlobals.topLevelApplication.Station == "后石坞")
+			{				
+				if(mainContent.containsElement(n21))
+					mainContent.removeElement(n21);
+				if(mainContent.containsElement(n22))
+					mainContent.removeElement(n22);
+				if(mainContent.containsElement(n23))
+					mainContent.removeElement(n23);
+				if(mainContent.containsElement(n24))
+					mainContent.removeElement(n24);
+				if(mainContent.containsElement(n25))
+					mainContent.removeElement(n25);
+				if(mainContent.containsElement(n26))
+					mainContent.removeElement(n26);
+				if(mainContent.containsElement(n27))
+					mainContent.removeElement(n27);
+				if(mainContent.containsElement(n28))
+					mainContent.removeElement(n28);	
+				if(mainContent.containsElement(n29))
+					mainContent.removeElement(n29);	
+				if(mainContent.containsElement(n30))
+					mainContent.removeElement(n30);	
+				if(mainContent.containsElement(n31))
+					mainContent.removeElement(n31);	
+				if(mainContent.containsElement(n32))
+					mainContent.removeElement(n32);	
+			}
+			else if(FlexGlobals.topLevelApplication.Station == "桃花源")
 			{
 				if(mainContent.containsElement(n27))
 					mainContent.removeElement(n27);
 				if(mainContent.containsElement(n28))
 					mainContent.removeElement(n28);	
+				if(mainContent.containsElement(n29))
+					mainContent.removeElement(n29);	
+				if(mainContent.containsElement(n30))
+					mainContent.removeElement(n30);	
+				if(mainContent.containsElement(n31))
+					mainContent.removeElement(n31);	
+				if(mainContent.containsElement(n32))
+					mainContent.removeElement(n32);	
 			}
 			
 			for(var r:int = 0;r<wheeltotelarr.length;r++)
@@ -400,19 +425,37 @@ package app.view
 						break;
 					}
 					case 19:
-					{
-						mainContent.l19.source = source;
+					{			
+						if(FlexGlobals.topLevelApplication.Station == "后石坞")
+						{							
+							mainContent.l19.source = source2;
+							n19.move(mainContent.l19.x+1,23);
+						}
+						else
+						{
+							mainContent.l19.source = source;
+							n19.move(1853+55,mainContent.l17.y+2);
+						}
+						
 						n19.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n19);
-						n19.move(mainContent.l19.x+55,mainContent.l19.y+2);
 						break;
 					}
 					case 20:
 					{
-						mainContent.l20.source = source;
+						if(FlexGlobals.topLevelApplication.Station == "后石坞")
+						{							
+							mainContent.l20.source = source2;
+							n20.move(mainContent.l20.x+1,248);
+						}
+						else
+						{
+							mainContent.l20.source = source;
+							n20.move(1853+55,mainContent.l18.y+2);
+						}
+						
 						n20.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n20);
-						n20.move(mainContent.l20.x+55,mainContent.l20.y+2);
 						break;
 					}
 					case 21:
@@ -449,15 +492,15 @@ package app.view
 					}
 					case 25:
 					{						
-						if(numWheel == 26)
+						if(FlexGlobals.topLevelApplication.Station == "桃花源")
 						{							
 							mainContent.l25.source = source2;
-							n25.move(mainContent.l25.x+1,mainContent.l27.y+8);
+							n25.move(mainContent.l25.x+1,23);
 						}
 						else
 						{
 							mainContent.l25.source = source;
-							n25.move(mainContent.l25.x+55,mainContent.l23.y+2);
+							n25.move(2477+55,mainContent.l23.y+2);
 						}
 						
 						n25.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
@@ -466,15 +509,15 @@ package app.view
 					}
 					case 26:
 					{
-						if(numWheel == 26)
+						if(FlexGlobals.topLevelApplication.Station == "桃花源")
 						{					
 							mainContent.l26.source = source2;
-							n26.move(mainContent.l26.x+1,mainContent.l28.y+8);
+							n26.move(mainContent.l26.x+1,248);
 						}
 						else
 						{					
 							mainContent.l26.source = source;
-							n26.move(mainContent.l26.x+55,mainContent.l24.y+2);
+							n26.move(2477+55,mainContent.l24.y+2);
 						}
 						
 						n26.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
@@ -483,18 +526,50 @@ package app.view
 					}						
 					case 27:
 					{
-						mainContent.l27.source = source2;
+						mainContent.l27.source = source;
 						n27.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n27);
-						n27.move(mainContent.l27.x+1,mainContent.l27.y+8);
+						n27.move(mainContent.l27.x+55,mainContent.l27.y+2);
 						break;
 					}
 					case 28:
 					{
-						mainContent.l28.source = source2;
+						mainContent.l28.source = source;
 						n28.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
 						mainContent.addElement(n28);
-						n28.move(mainContent.l28.x+1,mainContent.l28.y+8);
+						n28.move(mainContent.l28.x+55,mainContent.l28.y+2);
+						break;
+					}					
+					case 29:
+					{
+						mainContent.l29.source = source;
+						n29.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n29);
+						n29.move(mainContent.l29.x+55,mainContent.l29.y+2);
+						break;
+					}
+					case 30:
+					{
+						mainContent.l30.source = source;
+						n30.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n30);
+						n30.move(mainContent.l30.x+55,mainContent.l30.y+2);
+						break;
+					}					
+					case 31:
+					{
+						mainContent.l31.source = source2;
+						n31.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n31);
+						n31.move(mainContent.l31.x+1,mainContent.l31.y+8);
+						break;
+					}
+					case 32:
+					{
+						mainContent.l32.source = source2;
+						n32.init(aw4.Red,aw4.Yellow,aw4.Black,aw4.AreaId,aw4.WheelDate);
+						mainContent.addElement(n32);
+						n32.move(mainContent.l32.x+1,mainContent.l32.y+8);
 						break;
 					}
 				}
@@ -515,7 +590,7 @@ package app.view
 			sendNotification(ApplicationFacade.NOTIFY_ADD_AREA_WINDOWS,aw);
 		}
 		
-		private function locatearea(areaid:int):void
+		private function locatearea(areaid:int,wheelId:String):void
 		{
 			var areaTitleWindow:AreaTitleWindow = facade.retrieveMediator(AreaTitleWindowMediator.NAME).getViewComponent() as AreaTitleWindow;
 			PopUpManager.addPopUp(areaTitleWindow, mainContent, true);
@@ -523,6 +598,7 @@ package app.view
 			areaTitleWindow.move(FlexGlobals.topLevelApplication.width/2-areaTitleWindow.width/2,FlexGlobals.topLevelApplication.main.height/2-areaTitleWindow.height/2 + 100);
 			var aw:AreaWheelVO = wheeltotelarr[areaid-1] as AreaWheelVO;
 			aw.StandId = (areaid-1)/2;
+			aw.WheelId = wheelId;
 			sendNotification(ApplicationFacade.NOTIFY_ADD_AREA_WINDOWS,aw);
 		}
 		

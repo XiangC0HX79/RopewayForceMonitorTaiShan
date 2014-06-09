@@ -81,6 +81,8 @@ package app
 		 * 	</tr>
 		 * </table>
 		 **/
+		public static const NOTIFY_INIT_MAINTAINTYPE_COMPLETE:String				= "InitMaintainTypeComplete";
+		
 		public static const NOTIFY_INIT_STATION_CHANGE:String				= "InitStationChange";
 		
 		/**程序初始化完成
@@ -114,6 +116,8 @@ package app
 		 * 	</tr>
 		 * </table>
 		 **/
+		public static const NOTIFY_NEW_AREA_WINDOWS:String  = "NewAreaWindow";
+		
 		public static const NOTIFY_ADD_AREA_WINDOWS:String  = "AddAreaWindow";
 		/**读取区域滚轮数据完成
 		 * <p></p>
@@ -306,6 +310,8 @@ package app
 		 * </table>
 		 **/
 		public static const NOTIFY_ADD_MAINTAINDATA:String  = "AddMaintainData";
+		
+		public static const NOTIFY_TITLEWINDOW_PROJECT_SHOW:String  = "TitleWindowProjectShow";
 		
 		public static function getInstance() : ApplicationFacade 
 		{

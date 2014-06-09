@@ -46,7 +46,7 @@ package app.model
 				}
 				
 				config.stations = new Array;
-				config.stationsid = new Array;
+				//config.stationsid = new Array;
 				
 				for each(var s:String in xml.Stations.Station)
 				{
@@ -56,7 +56,7 @@ package app.model
 						if(strid == arr[1])
 						{
 							config.stations.push(arr[0]);
-							config.stationsid.push(arr[1]);
+							config.dictStationIdByName[arr[0]] = arr[1];
 						}
 					}
 				}

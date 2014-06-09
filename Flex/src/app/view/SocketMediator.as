@@ -1,12 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.RopewayAlarmProxy;
-	import app.model.RopewayProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
-	
 	import com.adobe.utils.DateUtil;
 	
 	import flash.events.Event;
@@ -24,6 +17,13 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
+	
+	import app.ApplicationFacade;
+	import app.model.RopewayAlarmProxy;
+	import app.model.RopewayProxy;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayForceVO;
+	import app.model.vo.RopewayVO;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -48,7 +48,7 @@ package app.view
 			socket.addEventListener(Event.CLOSE,onConnectError);		
 			socket.addEventListener(IOErrorEvent.IO_ERROR,onConnectError);			
 			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onConnectError);
-						
+			
 			var timer:Timer = new Timer(30000);
 			timer.addEventListener(TimerEvent.TIMER,onTimer);
 			timer.start();
@@ -122,6 +122,9 @@ package app.view
 			var d:String = socketData.readMultiByte(socketData.length,"gb2312");
 			
 			trace(d);
+			
+			//var reg:RegExp = /&{2}.*?@{2}/g;
+			//var colS:Array = d.match(reg);
 			
 			var colS:Array = d.split("@");
 			
@@ -276,7 +279,7 @@ package app.view
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					connect();
+					//connect();
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET:

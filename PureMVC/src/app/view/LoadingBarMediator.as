@@ -1,17 +1,18 @@
 package app.view
 {	
-	import app.ApplicationFacade;
-	import app.model.StandProxy;
-	import app.model.WheelManageProxy;
-	import app.model.WheelProxy;
-	import app.model.vo.ConfigVO;
-	import app.view.components.LoadingBar;
-	
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
+	
+	import app.ApplicationFacade;
+	import app.model.MaintainTypeProxy;
+	import app.model.StandProxy;
+	import app.model.WheelManageProxy;
+	import app.model.WheelProxy;
+	import app.model.vo.ConfigVO;
+	import app.view.components.LoadingBar;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -41,7 +42,8 @@ package app.view
 				
 				ApplicationFacade.NOTIFY_INIT_STAND_COMPLETE,
 				ApplicationFacade.NOTIFY_INIT_WHEEL_COMPLETE,
-						
+				ApplicationFacade.NOTIFY_INIT_MAINTAINTYPE_COMPLETE,		
+				
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				ApplicationFacade.NOTIFY_INIT_STATION_CHANGE
 			];
@@ -79,6 +81,13 @@ package app.view
 				
 				case ApplicationFacade.NOTIFY_INIT_WHEEL_COMPLETE:	
 					loadingBar.loadingInfo = "初始化：滚轮信息加载完成...";		
+					
+					var maintainTypeProxy:MaintainTypeProxy = facade.retrieveProxy(MaintainTypeProxy.NAME) as MaintainTypeProxy;
+					maintainTypeProxy.InitMaintainType();
+					break;
+				
+				case ApplicationFacade.NOTIFY_INIT_MAINTAINTYPE_COMPLETE:
+					loadingBar.loadingInfo = "初始化：维护信息加载完成...";		
 					sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
 					break;
 				

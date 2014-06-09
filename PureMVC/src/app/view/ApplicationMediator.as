@@ -1,17 +1,22 @@
 package app.view
 {	
-	import app.ApplicationFacade;
-	import app.model.StandProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.WarnTypeVO;
-	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
 	import mx.events.ResizeEvent;
+	import mx.managers.PopUpManager;
+	
+	import app.ApplicationFacade;
+	import app.model.StandProxy;
+	import app.model.vo.AreaWheelVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.WarnTypeVO;
+	import app.view.components.AreaTitleWindow;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -83,18 +88,38 @@ package app.view
 					var depId:String = application.parameters.id;
 					IFDEF::Debug
 					{
-						depId = "4";
+						depId = "2";
 					}
 					
-					for(var i:int = 0;i<config.stationsid.length;i++)
-					{						
-						if(config.stationsid[i] == depId)
-							application.Station = config.stations[i];
-					}
+					application.Station = config.getStationNameById(depId);
 					break;
 				
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 					changeContent(MainConentMediator.NAME);
+										
+					var areaId:String = application.parameters.AreaId;
+					var wheelId:String = application.parameters.WheelId;
+					IFDEF::Debug
+					{
+						areaId = "3";
+						wheelId = "4";
+					}
+					
+					if((areaId != null) && (areaId != "")) 
+					{					
+						var mainContent:DisplayObject = facade.retrieveMediator(MainConentMediator.NAME).getViewComponent() as DisplayObject;			
+						
+						var areaTitleWindow:AreaTitleWindow = facade.retrieveMediator(AreaTitleWindowMediator.NAME).getViewComponent() as AreaTitleWindow;
+						PopUpManager.addPopUp(areaTitleWindow, mainContent, true);
+						areaTitleWindow.move(FlexGlobals.topLevelApplication.width/2-areaTitleWindow.width/2,FlexGlobals.topLevelApplication.main.height/2-areaTitleWindow.height/2 + 100);
+						
+						var aw:AreaWheelVO = new AreaWheelVO;
+						aw.AreaId = Number(areaId);
+						
+						if((wheelId != null) && (wheelId != ""))aw.WheelId = wheelId;
+						
+						sendNotification(ApplicationFacade.NOTIFY_NEW_AREA_WINDOWS,aw);
+					}
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_MAINCONENT:

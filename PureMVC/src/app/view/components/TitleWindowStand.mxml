@@ -4,7 +4,9 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ckeditor="be.aboutme.as3.ckeditor.*"
 			   width="640" height="500" close="closewindow()"
-			   skinClass="custom.skin.SkinTitleWindow" title="{_ropeway+'第'+_standId+'号支架'}" focusIn="dispatchEvent(new Event(IFRAME_FOCUSOUT));" xmlns:ns="http://code.google.com/p/flex-iframe/">
+			   skinClass="custom.skin.SkinTitleWindow" 
+			   title="{_ropeway + '第' + _titleId + '号支架'}" 
+			   focusIn="dispatchEvent(new Event(IFRAME_FOCUSOUT));" xmlns:ns="http://code.google.com/p/flex-iframe/">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>	
@@ -38,8 +40,8 @@
 			[Bindable]public var num:Number;
 			[Bindable]public var _ropeway:String = "";
 			[Bindable]public var _standId:int;
+			[Bindable]public var _titleId:String = "";
 			[Bindable]public var attach:AttachVO;
-			
 			
 			private function closewindow():void
 			{

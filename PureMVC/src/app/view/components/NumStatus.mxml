@@ -39,13 +39,40 @@
 				var id:int = int((areaid - 1) / 2);
 				var ids:String;				
 				if(FlexGlobals.topLevelApplication.Station == "中天门")
-				{					
-					if(id == 0)
-						ids = "驱";
-					else if(id == 13)
-						ids = "回";
-					else
-						ids = id.toString();	
+				{									
+					switch(id)
+					{
+						case 0:
+							ids = "驱";
+							break;
+						case 8:
+							ids = "8A";
+							break;
+						case 9:
+							ids = "8B";
+							break;
+						case 10:
+							ids = "9";
+							break;
+						case 11:
+							ids = "10";
+							break;
+						case 12:
+							ids = "11A";
+							break;
+						case 13:
+							ids = "11B";
+							break;
+						case 14:
+							ids = "11C";
+							break;
+						case 15:
+							ids = "回";
+							break;
+						default:
+							ids = id.toString();
+							break;
+					}	
 										
 					if((areaid % 2) == 0)
 					{			
@@ -66,6 +93,36 @@
 						img.source = downArrow;
 						
 						areaId.text = ids + "#下";			
+					}
+				}
+				else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+				{						
+					if(id == 0)
+						ids = "驱";
+					else if(id == 9)
+						ids = "回";
+					else
+						ids = id.toString();	
+					
+					if((areaid % 2) == 0)
+					{			
+						areaStatus.y = 50;
+						lastDate.y = 70;
+						areaId.y = 15;
+						
+						img.source = downArrow;
+						
+						areaId.text = ids + "#下";					
+					}
+					else
+					{
+						areaStatus.y = -20;
+						lastDate.y = -40;
+						areaId.y = 20;
+						
+						img.source = upArrow;
+						
+						areaId.text = ids + "#上";					
 					}
 				}
 				else

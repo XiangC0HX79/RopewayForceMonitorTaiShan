@@ -17,11 +17,14 @@ package app.view
 	
 	import app.ApplicationFacade;
 	import app.model.AreaWheelProxy;
+	import app.model.HolderMgProxy;
 	import app.model.MaintainTypeProxy;
 	import app.model.WheelHistoryProxy;
 	import app.model.WheelManageProxy;
 	import app.model.WheelProxy;
 	import app.model.vo.AreaWheelVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.HolderMgVO;
 	import app.model.vo.WheelHistoryVO;
 	import app.model.vo.WheelManageVO;
 	import app.model.vo.WheelVO;
@@ -41,15 +44,31 @@ package app.view
 	{
 		public static const NAME:String = "AreaTitleWindowMediator";
 		
+		private var wheelHistoryProxy:WheelHistoryProxy;
+		private var holderMgProxy:HolderMgProxy;
+		
 		public function AreaTitleWindowMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 			
 			areaTitleWindow.addElement(facade.retrieveMediator(WheelGroupMediator.NAME).getViewComponent() as IVisualElement);
-			areaTitleWindow.addbn.addEventListener(FlexEvent.BUTTON_DOWN,OnAdd);
+			
+			//areaTitleWindow.addbn.addEventListener(FlexEvent.BUTTON_DOWN,OnAdd);
+			
+			areaTitleWindow.addEventListener(AreaTitleWindow.MAINTAIN_ADD,OnAdd);
 			areaTitleWindow.addEventListener(AreaTitleWindow.MAINTAIN_EDIT,OnEdit);
 			areaTitleWindow.addEventListener(AreaTitleWindow.MAINTAIN_DELETE,OnDelete);
+			
+			areaTitleWindow.addEventListener(AreaTitleWindow.PROJECT_ADD,OnProjectAdd);
+			areaTitleWindow.addEventListener(AreaTitleWindow.PROJECT_EDIT,OnProjectEdit);
+			areaTitleWindow.addEventListener(AreaTitleWindow.PROJECT_DELETE,OnProjectDelete);
+			
 			areaTitleWindow.wheelmanagebn.addEventListener(FlexEvent.BUTTON_DOWN,OnWheelManage);
+						
+			wheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
+			holderMgProxy = facade.retrieveProxy(HolderMgProxy.NAME) as HolderMgProxy;
+			
+			areaTitleWindow.colProject = holderMgProxy.list;
 		}
 		
 		protected function get areaTitleWindow():AreaTitleWindow
@@ -60,6 +79,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
+				ApplicationFacade.NOTIFY_NEW_AREA_WINDOWS,
 				ApplicationFacade.NOTIFY_ADD_AREA_WINDOWS,
 				ApplicationFacade.NOTIFY_AREAWHEEL_COMPLETE,
 				ApplicationFacade.NOTIFY_INIT_WHEEL_COMPLETE,
@@ -81,15 +101,100 @@ package app.view
 		{
 			switch(notification.getName())
 			{
+				case ApplicationFacade.NOTIFY_NEW_AREA_WINDOWS:
+					areaTitleWindow.colMaintain = new ArrayCollection();
+					if(notification.getBody() != null)
+						aw = notification.getBody() as AreaWheelVO;	
+					if(areaTitleWindow.colMaintain != null)
+						areaTitleWindow.colMaintain.removeAll();
+					areaTitleWindow._id = "";
+					areaTitleWindow.title =  aw.shortName + "区域";
+					//areaTitleWindow.addbn.enabled = false;
+					/*areaTitleWindow.editbn.enabled = false;
+					areaTitleWindow.deletebn.enabled = false;
+					if(areaTitleWindow.datagroup.dataProvider != null)
+					areaTitleWindow.datagroup.dataProvider.removeAll();*/
+					var wmarr:ArrayCollection = new ArrayCollection;
+					for each(var wm:WheelManageVO in arr3)
+					{
+						if(wm.LineAreaId == aw.AreaId)
+							wmarr.addItem(wm);
+					}
+					for each(var wm2:WheelManageVO in wmarr)
+					{
+						wm2.wheelHis.WheelDate = null;
+						for each(var w:WheelVO in wheelArr)
+						{
+							if(wm2.WheelId == w.WheelId && w.MaintainType == 55)
+							{
+								wm2.wheelHis.WheelDate = w.MaintainTime;
+								wm2.wheelHis.Wheelhour = w.HourDiff;
+							}
+							if(wm2.WheelId == w.WheelId && w.MaintainType == 60)
+							{
+								wm2.wheelHis.StandDate = w.MaintainTime;
+								wm2.wheelHis.Standhour = w.HourDiff;
+							}
+						}
+					}
+					
+					areaTitleWindow.datagroup.dataProvider = wmarr;
+					/*var wheelManageProxy:WheelManageProxy = facade.retrieveProxy(WheelManageProxy.NAME) as WheelManageProxy;
+					wheelManageProxy.InitWheel(aw.AreaId);
+					var maintainTypeProxy:MaintainTypeProxy = facade.retrieveProxy(MaintainTypeProxy.NAME) as MaintainTypeProxy;
+					maintainTypeProxy.InitMaintainType();*/
+					areaTitleWindow.datagroup.addEventListener(MouseEvent.CLICK,onclick);
+					areaTitleWindow.addEventListener(CloseEvent.CLOSE,OnClose);
+					var chooseid:String = FlexGlobals.topLevelApplication.WheelId;
+					if(chooseid != "")
+					{
+						areaTitleWindow.imgclick(chooseid);
+						wheelHistoryProxy.InitWheelHistory(chooseid);
+						FlexGlobals.topLevelApplication.WheelId = "";
+					}
+					
+					if(FlexGlobals.topLevelApplication.Station == "中天门")
+					{
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 31) || (aw.AreaId == 32))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);							
+					}
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+					{								
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 19) || (aw.AreaId == 20))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);		
+					}
+					else
+					{
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 25) || (aw.AreaId == 26))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);								
+					}
+					
+					var config:ConfigVO = FlexGlobals.topLevelApplication.Config;					
+					holderMgProxy.InitHolderMg(config.dictStationIdByName[FlexGlobals.topLevelApplication.Station],String(aw.AreaId));
+					
+					if(aw.WheelId != null)
+					{
+						areaTitleWindow.imgclick(aw.WheelId);						
+						wheelHistoryProxy.InitWheelHistory(aw.WheelId);						
+						OnAdd(null);
+					}
+					break;
+				
 				case ApplicationFacade.NOTIFY_ADD_AREA_WINDOWS:
 					areaTitleWindow.colMaintain = new ArrayCollection();
 					if(notification.getBody() != null)
 						aw = notification.getBody() as AreaWheelVO;	
-					if(areaTitleWindow.datagrid.dataProvider != null)
-						areaTitleWindow.datagrid.dataProvider.removeAll();
+					if(areaTitleWindow.colMaintain != null)
+						areaTitleWindow.colMaintain.removeAll();
 					areaTitleWindow._id = "";
 					areaTitleWindow.title =  aw.shortName + "区域";
-					areaTitleWindow.addbn.enabled = false;
+					//areaTitleWindow.addbn.enabled = false;
 					/*areaTitleWindow.editbn.enabled = false;
 					areaTitleWindow.deletebn.enabled = false;
 					if(areaTitleWindow.datagroup.dataProvider != null)
@@ -120,29 +225,32 @@ package app.view
 						
 					areaTitleWindow.datagroup.dataProvider = wmarr;
 					/*var wheelManageProxy:WheelManageProxy = facade.retrieveProxy(WheelManageProxy.NAME) as WheelManageProxy;
-					wheelManageProxy.InitWheel(aw.AreaId);*/
+					wheelManageProxy.InitWheel(aw.AreaId);
 					var maintainTypeProxy:MaintainTypeProxy = facade.retrieveProxy(MaintainTypeProxy.NAME) as MaintainTypeProxy;
-					maintainTypeProxy.InitMaintainType();
+					maintainTypeProxy.InitMaintainType();*/
 					areaTitleWindow.datagroup.addEventListener(MouseEvent.CLICK,onclick);
 					areaTitleWindow.addEventListener(CloseEvent.CLOSE,OnClose);
 					var chooseid:String = FlexGlobals.topLevelApplication.WheelId;
 					if(chooseid != "")
 					{
 						areaTitleWindow.imgclick(chooseid);
-						areaTitleWindow.addbn.enabled = true;
-						/*areaTitleWindow.editbn.enabled = true;
-						areaTitleWindow.deletebn.enabled = true;*/
-						var wheelHistoryProxy2:WheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
-						wheelHistoryProxy2.InitWheelHistory(chooseid);
+						wheelHistoryProxy.InitWheelHistory(chooseid);
 						FlexGlobals.topLevelApplication.WheelId = "";
 					}
 					
 					if(FlexGlobals.topLevelApplication.Station == "中天门")
 					{
-						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 27) || (aw.AreaId == 28))
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 31) || (aw.AreaId == 32))
 							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
 						else
 							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);							
+					}
+					else if(FlexGlobals.topLevelApplication.Station == "后石坞")
+					{								
+						if((aw.AreaId == 1) || (aw.AreaId == 2) || (aw.AreaId == 19) || (aw.AreaId == 20))
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
+						else
+							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);		
 					}
 					else
 					{
@@ -150,6 +258,15 @@ package app.view
 							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetectionSpecial);
 						else
 							areaTitleWindow.datagroup.itemRenderer = new ClassFactory(ItemRendererAreaDetection);								
+					}
+					
+					config = FlexGlobals.topLevelApplication.Config;					
+					holderMgProxy.InitHolderMg(config.dictStationIdByName[FlexGlobals.topLevelApplication.Station],String(aw.AreaId));
+					
+					if(aw.WheelId != null)
+					{
+						areaTitleWindow.imgclick(aw.WheelId);						
+						wheelHistoryProxy.InitWheelHistory(aw.WheelId);
 					}
 					break;
 				case ApplicationFacade.NOTIFY_WHEELLIST_COMPLETE:
@@ -168,18 +285,16 @@ package app.view
 					break;
 				case ApplicationFacade.NOTIFY_WHEELHISTORY_COMPLETE:
 					arr2 = notification.getBody() as ArrayCollection;
-					areaTitleWindow.colMaintain = arr2;
-					areaTitleWindow.datagrid.dataProvider = arr2;
+					areaTitleWindow.colMaintain.removeAll();
+					areaTitleWindow.colMaintain.addAll(arr2);
+					//areaTitleWindow.colMaintain = arr2;
+					//areaTitleWindow.datagrid.dataProvider = arr2;
 					break;
 				case ApplicationFacade.NOTIFY_ADD_MAINTAIN:
 					id = areaTitleWindow._id;
-					var wheelHistoryProxy:WheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
 					wheelHistoryProxy.InitWheelHistory(id);
 					break;
 				case ApplicationFacade.NOTIFY_DELETE_MAINTAIN:
-					/*id = areaTitleWindow._id;
-					wheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
-					wheelHistoryProxy.InitWheelHistory(id);*/
 					FlexGlobals.topLevelApplication.WheelId = areaTitleWindow._id;
 					sendNotification(ApplicationFacade.NOTIFY_INIT_STATION_CHANGE);
 					break;
@@ -192,25 +307,22 @@ package app.view
 		
 		private function onclick(event:MouseEvent):void
 		{
-			/*if(id != new int(areaTitleWindow._id))
-			{*/
-				id = areaTitleWindow._id;
-				if(id != "")
-				{
-					areaTitleWindow.addbn.enabled = true;
-					/*areaTitleWindow.editbn.enabled = true;
-					areaTitleWindow.deletebn.enabled = true;*/
-					
-					
-					var wheelHistoryProxy:WheelHistoryProxy = facade.retrieveProxy(WheelHistoryProxy.NAME) as WheelHistoryProxy;
-					wheelHistoryProxy.InitWheelHistory(id);
-				}
-			/*}*/
+			id = areaTitleWindow._id;
+			if(id != "")
+			{
+				wheelHistoryProxy.InitWheelHistory(id);
+			}
 		}
 		
 		private var datenow:Date = new Date();
-		private function OnAdd(event:FlexEvent):void
+		private function OnAdd(event:Event):void
 		{
+			if(areaTitleWindow._id == "")
+			{
+				Alert.show("请选择轮子！","提示");
+				return;
+			}
+			
 			var titleWindowBaseInfo:TitleWindowBaseInfo = facade.retrieveMediator(TitleWindowBaseInfoMediator.NAME).getViewComponent() as TitleWindowBaseInfo;
 			
 			var wh:WheelHistoryVO = new WheelHistoryVO({});
@@ -234,6 +346,38 @@ package app.view
 			titleWindowBaseInfo.listMaintainType.selectedIndex = 0;
 			titleWindowBaseInfo.type = "ADD";
 		}
+		
+		private function OnProjectAdd(event:Event):void
+		{
+			var config:ConfigVO = FlexGlobals.topLevelApplication.Config;
+			var ropewayId:int = int(config.dictStationIdByName[FlexGlobals.topLevelApplication.Station]);
+			
+			var h:HolderMgVO = new HolderMgVO;
+			h.LineAreaId = aw.AreaId;
+			h.LineAreaLable = aw.shortName;			
+			h.RopeWay = ropewayId;
+			h.RopeWayName = FlexGlobals.topLevelApplication.Station;
+			
+			sendNotification(ApplicationFacade.NOTIFY_TITLEWINDOW_PROJECT_SHOW,[areaTitleWindow,h]);
+		}
+		
+		private function OnProjectEdit(event:Event):void
+		{
+			var h:HolderMgVO = event.target.data as HolderMgVO; 
+			h.LineAreaLable = aw.shortName;		
+			h.RopeWayName = FlexGlobals.topLevelApplication.Station;
+			
+			var o:HolderMgVO = new HolderMgVO();
+			o.copy(h);
+			
+			sendNotification(ApplicationFacade.NOTIFY_TITLEWINDOW_PROJECT_SHOW,[areaTitleWindow,o]);
+		}
+		
+		private function OnProjectDelete(event:Event):void
+		{			
+			holderMgProxy.Del(event.target.data);
+		}		
+		
 		private function OnEdit(event:Event):void
 		{
 			if(areaTitleWindow.datagrid.selectedItem != null)

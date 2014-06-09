@@ -49,12 +49,7 @@ package app.model
 			}
 			var station:String = FlexGlobals.topLevelApplication.Station;
 			var config:ConfigVO = FlexGlobals.topLevelApplication.Config;
-			var stationid:int;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(station == config.stations[i])
-					stationid = config.stationsid[i];
-			}
+			var stationid:int = config.dictStationIdByName[station];
 			var where:String = "RopeWay = '" + stationid + "'";
 			send("T_ME_DayRecord_GetModelList",onInitDiffhour,where);
 			

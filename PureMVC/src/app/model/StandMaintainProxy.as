@@ -37,13 +37,8 @@ package app.model
 		{
 			StandId = standid;
 			var station:String = FlexGlobals.topLevelApplication.Station;
-			var stationid:int;
 			config = FlexGlobals.topLevelApplication.Config;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(station == config.stations[i])
-					stationid = config.stationsid[i];
-			}
+			var stationid:int = config.dictStationIdByName[station];
 			var where:String = "RopeWay = " + stationid + "";
 			send("T_ME_HolderlCheckItem_GetModelList",onStandconfig,where);
 		}
@@ -80,13 +75,8 @@ package app.model
 		{
 			StandId = standid;
 			var station:String = FlexGlobals.topLevelApplication.Station;
-			var stationid:int;
 			config = FlexGlobals.topLevelApplication.Config;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(station == config.stations[i])
-					stationid = config.stationsid[i];
-			}
+			var stationid:int = config.dictStationIdByName[station];
 			var where:String = "BracketId = " + standid + " and RopeWay = " + stationid + "";
 			send("T_ME_HolderMaintain_GetModelList",onInitStandDict,where);
 		}
@@ -95,13 +85,8 @@ package app.model
 		{
 			StandId = standid;
 			var station:String = FlexGlobals.topLevelApplication.Station;
-			var stationid:int;
 			config = FlexGlobals.topLevelApplication.Config;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(station == config.stations[i])
-					stationid = config.stationsid[i];
-			}
+			var stationid:int = config.dictStationIdByName[station];
 			var where:String = "BracketId = " + standid + " and RopeWay = " + stationid + " and " + DateWhere;
 			send("T_ME_HolderMaintain_GetModelList",onInitStandDict,where);
 		}
@@ -113,11 +98,7 @@ package app.model
 			for each(var obj:* in r)
 			{
 				var sb:StandMaintainVO = new StandMaintainVO(obj);
-				for(var i:int = 0;i < config.stations.length;i++)
-				{
-					if(sb.RopeWay == config.stationsid[i].toString())
-						sb.RopeWay = config.stations[i];
-				}
+				sb.RopeWay = config.getStationNameById(sb.RopeWay);
 				arr.addItem(sb);
 			}
 			sendNotification(ApplicationFacade.NOTIFY_INIT_STANDMAINTAIN,arr);
@@ -127,11 +108,7 @@ package app.model
 		{
 			var o:Object = new Object();
 			o.BracketId = sm.BracketId;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(sm.RopeWay == config.stations[i])
-					o.RopeWay = Number(config.stationsid[i]);
-			}
+			o.RopeWay = Number(config.dictStationIdByName[sm.RopeWay]);
 			var dateFormatter:DateFormatter = new DateFormatter();
 			dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
 			o.MDate = dateFormatter.format(sm.MDate);
@@ -183,11 +160,7 @@ package app.model
 		{
 			var o:Object = new Object();
 			o.BracketId = sm.BracketId;
-			for(var i:int = 0;i < config.stations.length;i++)
-			{
-				if(sm.RopeWay == config.stations[i])
-					o.RopeWay = config.stationsid[i];
-			}
+			o.RopeWay = config.dictStationIdByName[sm.RopeWay];
 			var dateFormatter:DateFormatter = new DateFormatter();
 			dateFormatter.formatString = "YYYY-MM-DD JJ:NN:SS";
 			o.MDate = dateFormatter.format(sm.MDate);

@@ -1,8 +1,11 @@
 package app.controller
 {	
 	
+	import spark.components.Application;
+	
 	import app.model.AreaWheelProxy;
 	import app.model.ConfigProxy;
+	import app.model.HolderMgProxy;
 	import app.model.MaintainTypeProxy;
 	import app.model.StandBaseinfoProxy;
 	import app.model.StandMaintainProxy;
@@ -14,8 +17,6 @@ package app.controller
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
-	
-	import spark.components.Application;
 	
 	public class ModelPreCommand extends SimpleCommand
 	{
@@ -31,6 +32,7 @@ package app.controller
 			facade.registerProxy(new WheelManageProxy);
 			facade.registerProxy(new StandBaseinfoProxy);
 			facade.registerProxy(new StandMaintainProxy);
+			facade.registerProxy(new HolderMgProxy);
 		}
 	}
 }

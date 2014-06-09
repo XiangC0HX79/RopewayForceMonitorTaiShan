@@ -48,7 +48,7 @@ package app.view
 		private function onAlarmDeal(event:Event):void
 		{
 			var obj:Object = panelRopewayAlarm.listAlarm.selectedItem;
-			sendNotification(ApplicationFacade.NOTIFY_LOCATE_AREA,obj.areaid);
+			sendNotification(ApplicationFacade.NOTIFY_LOCATE_AREA,obj.areaid,obj.wheelid);
 		}
 		
 		override public function listNotificationInterests():Array

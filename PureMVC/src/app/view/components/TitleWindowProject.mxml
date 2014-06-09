@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   skinClass="custom.skin.SkinTitleWindow"
+			   close="PopUpManager.removePopUp(this)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import app.model.dict.MaintainTypeDict;
+			import app.model.vo.HolderMgVO;
+			
+			public static const SAVE:String = "save";
+			
+			[Bindable]public var holderMgVO:HolderMgVO;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout rowHeight="36" variableRowHeight="false" gap="-1"/>
+	</s:layout>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="114">
+			<s:Label text="维护项目："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="442">
+			<s:ComboBox width="80" dataProvider="{MaintainTypeDict.list}" selectedItem="@{holderMgVO.TypeObject}" labelField="DicValue"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="114">
+			<s:Label text="所属索道："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+			<s:Label text="{holderMgVO.RopeWayName}"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="162">
+			<s:Label text="区域编号："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="147">
+			<s:Label text="{holderMgVO.LineAreaLable}"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="114">
+			<s:Label text="维护周期："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="162">
+			<s:Label text="提示开始时间设置："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="147">
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="114">
+			<s:CheckBox selected="@{holderMgVO.IsHour}"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+			<s:TextInput width="80" text="@{holderMgVO.HourNum}" restrict="0-9"/>
+			<s:Label text="小时"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="308">
+			<s:TextInput width="80" text="@{holderMgVO.HourPoint}" restrict="0-9"/>
+			<s:Label text="小时"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="114">
+			<s:CheckBox selected="@{holderMgVO.IsDay}"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+			<s:TextInput width="80" text="@{holderMgVO.DayNum}" restrict="0-9"/>
+			<s:Label text="天"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="308">
+			<s:TextInput width="80" text="@{holderMgVO.DayPoint}" restrict="0-9"/>
+			<s:Label text="天"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="114">
+			<s:Label text="更换周期："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupHighLight" width="162">
+			<s:Label text="提示开始时间设置："/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="147">
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="114">
+			<s:CheckBox selected="@{holderMgVO.IsChangeHour}"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+			<s:TextInput width="80" text="@{holderMgVO.ChangeHourNum}" restrict="0-9"/>
+			<s:Label text="小时"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="308">
+			<s:TextInput width="80" text="@{holderMgVO.ChangeHourPoint}" restrict="0-9"/>
+			<s:Label text="小时"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="contentJustify" gap="-1">
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="114">
+			<s:CheckBox selected="@{holderMgVO.IsChangeDay}"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="135">
+			<s:TextInput width="80" text="@{holderMgVO.ChangeDayNum}" restrict="0-9"/>
+			<s:Label text="天"/>
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinGroupLowLight" width="308">
+			<s:TextInput width="80" text="@{holderMgVO.ChangeDayPoint}" restrict="0-9"/>
+			<s:Label text="天"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="center" paddingTop="10" gap="100">
+		<s:Button label="保存" buttonDown="dispatchEvent(new Event(SAVE))"/>
+		<s:Button label="取消" buttonDown="PopUpManager.removePopUp(this)"/>
+	</s:HGroup>
+</s:TitleWindow>
