@@ -1,6 +1,6 @@
 package custom.itemRenderer
 {
-	import app.model.vo.RopewayForceVO;
+	import app.model.vo.ForceVO;
 	
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
@@ -143,7 +143,7 @@ package custom.itemRenderer
 					break;
 			}*/
 												
-			if((_data.item is RopewayForceVO) && (_data.item.alarm > 0))
+			if((_data.item is ForceVO) && (_data.item.alarm > 0))
 				fill = new SolidColor(0xFF0000);
 			else
 				fill = new SolidColor(0x02C462);

@@ -1,12 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.RopewaySwitchFreqTotalProxy;
-	import app.model.WebServiceProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewaySwitchFreqTotalVO;
-	import app.view.components.PanelAnalysisOpenCountTotal;
-	
 	import com.adobe.serialization.json.JSON;
 	
 	import flash.display.BitmapData;
@@ -28,6 +21,14 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
+	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewaySwitchFreqTotalProxy;
+	import app.model.WebServiceProxy;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewaySwitchFreqTotalVO;
+	import app.view.components.PanelAnalysisOpenCountTotal;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -144,7 +145,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
 		
@@ -152,8 +153,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					var config:ConfigVO = notification.getBody() as ConfigVO;	
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					var config:ConfigVO = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).config;
 					
 					panelAnalysisOpenCountTotal.colStations = config.stations;	
 					

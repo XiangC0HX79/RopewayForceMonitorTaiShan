@@ -8,17 +8,17 @@
 		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.ForceVO;
 			
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			
-			private var _ropewayForce:RopewayForceVO;
-			public function get ropewayForce():RopewayForceVO
+			private var _ropewayForce:ForceVO;
+			public function get ropewayForce():ForceVO
 			{
 				return _ropewayForce;
 			}			
 			
-			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:RopewayForceVO = null):void
+			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:ForceVO = null):void
 			{				
 				if(ropewayForce)
 				{

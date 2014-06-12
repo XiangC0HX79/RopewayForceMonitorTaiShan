@@ -1,11 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.RopewayBaseinfoHisProxy;
-	import app.model.RopewayBaseinfoProxy;
-	import app.model.vo.RopewayBaseinfoVO;
-	import app.view.components.PanelManagerBaseInfo;
-	
 	import com.adobe.utils.StringUtil;
 	
 	import flash.events.Event;
@@ -13,49 +7,57 @@ package app.view
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
 	
+	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
+	import app.model.CarriageEditHisProxy;
+	import app.model.dict.RopewayDict;
+	import app.model.vo.CarriageVO;
+	import app.view.components.PanelForceManagerBaseInfo;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelManagerBaseInfoMediator extends Mediator implements IMediator
+	public class PanelForceManagerBaseInfoMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelManagerBaseInfoMediator";
+		public static const NAME:String = "PanelForceManagerBaseInfoMediator";
 		
-		private var _ropewayBaseinfoProxy:RopewayBaseinfoProxy;
-		private var _ropewayBaseinfoHisProxy:RopewayBaseinfoHisProxy;
+		private var _ropewayBaseinfoProxy:CarriageProxy;
+		private var _ropewayBaseinfoHisProxy:CarriageEditHisProxy;
 		
-		public function PanelManagerBaseInfoMediator()
+		public function PanelForceManagerBaseInfoMediator()
 		{
-			super(NAME, new PanelManagerBaseInfo);
+			super(NAME, new PanelForceManagerBaseInfo);
 			
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.ROPEWAY_CHANGE,onRopewayChange);
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.ROPEWAY_RELA_CHANGE,onRopewayRelaChange);
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.ROPEWAY_CHANGE,onRopewayChange);
 			
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.BASEINFO_NEW,onBaseInfoNew);
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.BASEINFO_EDIT,onBaseInfoEdit);
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.BASEINFO_DEL,onBaseInfoUse);
-			panelManagerBaseInfo.addEventListener(PanelManagerBaseInfo.BASEINFO_USE,onBaseInfoUse);
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.ROPEWAY_RELA_CHANGE,onRopewayRelaChange);
 			
-			_ropewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
-			panelManagerBaseInfo.colBaseInfo = _ropewayBaseinfoProxy.colBaseinfo;
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.BASEINFO_NEW,onBaseInfoNew);
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.BASEINFO_EDIT,onBaseInfoEdit);
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.BASEINFO_DEL,onBaseInfoUse);
+			panelManagerBaseInfo.addEventListener(PanelForceManagerBaseInfo.BASEINFO_USE,onBaseInfoUse);
 			
-			_ropewayBaseinfoHisProxy = facade.retrieveProxy(RopewayBaseinfoHisProxy.NAME) as RopewayBaseinfoHisProxy;
+			_ropewayBaseinfoProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
+			//panelManagerBaseInfo.colBaseInfo = _ropewayBaseinfoProxy.colBaseinfo;
+			
+			_ropewayBaseinfoHisProxy = facade.retrieveProxy(CarriageEditHisProxy.NAME) as CarriageEditHisProxy;
 			panelManagerBaseInfo.colBaseInfoHis = _ropewayBaseinfoHisProxy.colBaseinfoHis;
 		}
 		
-		protected function get panelManagerBaseInfo():PanelManagerBaseInfo
+		protected function get panelManagerBaseInfo():PanelForceManagerBaseInfo
 		{
-			return viewComponent as PanelManagerBaseInfo;
+			return viewComponent as PanelForceManagerBaseInfo;
 		}
 				
 		private function onRopewayChange(event:Event):void
 		{
-			_ropewayBaseinfoProxy.GetBaseInfo(panelManagerBaseInfo.listRopeway.selectedItem);
+			panelManagerBaseInfo.colBaseInfo = _ropewayBaseinfoProxy.GetCarriage(panelManagerBaseInfo.listRopeway.selectedItem);
 		}
 		
 		private function onRopewayRelaChange(event:Event):void
 		{
-			var info:RopewayBaseinfoVO = panelManagerBaseInfo.gridRela.selectedItem as RopewayBaseinfoVO;
+			var info:CarriageVO = panelManagerBaseInfo.gridRela.selectedItem as CarriageVO;
 			if(info)
 			{
 				panelManagerBaseInfo.lbUse.label = info.isUse?"禁用":"启用";
@@ -71,7 +73,7 @@ package app.view
 		
 		private function onBaseInfoEdit(event:Event):void
 		{
-			var info:RopewayBaseinfoVO = panelManagerBaseInfo.gridRela.selectedItem as RopewayBaseinfoVO;
+			var info:CarriageVO = panelManagerBaseInfo.gridRela.selectedItem as CarriageVO;
 			if(info)
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_BASEINFO_EDIT,info);
@@ -86,7 +88,7 @@ package app.view
 		{
 			event.stopPropagation();
 			
-			var info:RopewayBaseinfoVO = panelManagerBaseInfo.gridRela.selectedItem as RopewayBaseinfoVO;
+			var info:CarriageVO = panelManagerBaseInfo.gridRela.selectedItem as CarriageVO;
 			if(info)
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,["请确认是否更改抱索器的可用信息？",onBaseInfoUseConfirm,Alert.YES | Alert.NO]);
@@ -99,7 +101,7 @@ package app.view
 		
 		private function onBaseInfoUseConfirm(event:CloseEvent):void
 		{
-			var info:RopewayBaseinfoVO = panelManagerBaseInfo.gridRela.selectedItem as RopewayBaseinfoVO;
+			var info:CarriageVO = panelManagerBaseInfo.gridRela.selectedItem as CarriageVO;
 			if(event.detail == Alert.YES)
 			{
 				info.isUse = !info.isUse;
@@ -135,7 +137,9 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET
 			];
 		}
 		
@@ -143,8 +147,15 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
-					_ropewayBaseinfoProxy.GetBaseInfo("桃花源索道");	
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+					panelManagerBaseInfo.colRopeway = RopewayDict.list;
+					
+					panelManagerBaseInfo.colBaseInfo = _ropewayBaseinfoProxy.GetCarriage(panelManagerBaseInfo.colRopeway[0]);
+					break;
+				
+				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET:
+					if(notification.getBody() != "Update")
+						panelManagerBaseInfo.colBaseInfo = _ropewayBaseinfoProxy.GetCarriage(panelManagerBaseInfo.listRopeway.selectedItem);					
 					break;
 			}
 		}

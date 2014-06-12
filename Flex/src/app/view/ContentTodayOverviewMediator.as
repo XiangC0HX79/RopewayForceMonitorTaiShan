@@ -4,7 +4,7 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.ContentTodayOverview;
 	
 	import custom.itemRenderer.ItemRendererTodayOverview;
@@ -88,10 +88,10 @@ package app.view
 		{						
 			contentTodayOverview.arrDp = [];
 			
-			for each(var r:RopewayVO in _ropewayProxy.colRopeway)
+			for each(var r:RopewayStationForceVO in _ropewayProxy.colRopeway)
 			{
-				if((r.ropewayStation == station) && (r.deteDate.toDateString() == (new Date).toDateString()))
-					contentTodayOverview.arrDp.push(r);
+				//if((r.ropewayStation == station) && (r.deteDate.toDateString() == (new Date).toDateString()))
+				//	contentTodayOverview.arrDp.push(r);
 			}
 			
 			contentTodayOverview.arrDp.sortOn("ropewayCarId");
@@ -122,7 +122,7 @@ package app.view
 				
 		private function reCalcuY():void
 		{			
-			var rw:RopewayVO = contentTodayOverview.ropeway;
+			var rw:RopewayStationForceVO = contentTodayOverview.ropeway;
 			
 			var max:Number = Math.max(rw.yesterdayMax,rw.maxValue);
 			var min:Number = Math.min(rw.yesterdayMin,rw.minValue);
@@ -163,7 +163,7 @@ package app.view
 		
 		private function reCalcuX():void
 		{			
-			var rw:RopewayVO = contentTodayOverview.ropeway;
+			var rw:RopewayStationForceVO = contentTodayOverview.ropeway;
 			
 			var min:Number = rw.ropewayHistory[0].ropewayTime.time;	
 			min = Math.floor(min / ONE_MIN) * ONE_MIN;
@@ -205,7 +205,7 @@ package app.view
 		
 		private function drawYesterday():void
 		{
-			var rw:RopewayVO = contentTodayOverview.ropeway;
+			var rw:RopewayStationForceVO = contentTodayOverview.ropeway;
 			
 			if(rw && rw.yesterdayMax && rw.yesterdayMin)
 			{					
@@ -282,12 +282,13 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
 				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,
 				
 				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
 				
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME
+				ApplicationFacade.NOTIFY_SOCKET_FORCE
 			];
 		}
 		
@@ -296,14 +297,14 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 					changeStation(configProxy.config.station);
 					break;
 				
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
-					var rw:RopewayVO = notification.getBody() as RopewayVO;					
+				case ApplicationFacade.NOTIFY_SOCKET_FORCE:
+					var rw:RopewayStationForceVO = notification.getBody() as RopewayStationForceVO;					
 					if(rw == contentTodayOverview.ropeway)
 						reCalcuXY();
 					break;

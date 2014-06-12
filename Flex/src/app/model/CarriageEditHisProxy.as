@@ -1,8 +1,8 @@
 package app.model
 {
 	import app.ApplicationFacade;
-	import app.model.vo.RopewayBaseinfoHisVO;
-	import app.model.vo.RopewayBaseinfoVO;
+	import app.model.vo.CarriageEditHisVO;
+	import app.model.vo.CarriageVO;
 	
 	import mx.collections.ArrayCollection;
 	import mx.formatters.DateFormatter;
@@ -14,11 +14,11 @@ package app.model
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class RopewayBaseinfoHisProxy extends WebServiceProxy implements IProxy
+	public class CarriageEditHisProxy extends WebServiceProxy implements IProxy
 	{
-		public static const NAME:String = "RopewayBaseinfoHisProxy";
+		public static const NAME:String = "CarriageEditHisProxy";
 		
-		public function RopewayBaseinfoHisProxy()
+		public function CarriageEditHisProxy()
 		{
 			super(NAME, new ArrayCollection);
 		}
@@ -28,7 +28,7 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function GetHistory(baseinfo:RopewayBaseinfoVO):void
+		public function GetHistory(baseinfo:CarriageVO):void
 		{
 			var where:String = "RopeCode = '" + baseinfo.ropewayId + "'";
 			
@@ -40,7 +40,7 @@ package app.model
 			var source:Array = [];
 			for each(var o:ObjectProxy in event.result)
 			{
-				source.push(new RopewayBaseinfoHisVO(o));
+				source.push(new CarriageEditHisVO(o));
 			}
 			colBaseinfoHis.source = source;
 		}

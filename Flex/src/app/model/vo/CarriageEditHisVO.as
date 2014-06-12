@@ -2,11 +2,12 @@ package app.model.vo
 {
 	import com.adobe.serialization.json.JSON;
 	
-	import mx.collections.ArrayCollection;
 	import mx.utils.ObjectProxy;
-
+	
+	import app.model.dict.RopewayDict;
+	
 	[Bindable]
-	public class RopewayBaseinfoVO
+	public class CarriageEditHisVO
 	{
 		/**
 		 * 主键
@@ -59,39 +60,15 @@ package app.model.vo
 		/**
 		 * 所属索道
 		 **/
-		public function get fromRopeWay():String	
+		public function get ropeway():RopewayDict	
 		{
-			return _source.FromRopeWay;
+			return RopewayDict.GetRopewayByLable(String(_source.RopeWay));
 		}
-		public function set fromRopeWay(value:String):void	
+		public function set ropeway(value:RopewayDict):void	
 		{
-			_source.FromRopeWay = value;
-		}
-		
-		/**
-		 * 是否使用
-		 * */
-		public function get isUse():Boolean
-		{
-			return _source.IsUse == 0;
-		}
-		public function set isUse(value:Boolean):void
-		{
-			_source.IsUse = value?0:1;
+			_source.RopeWay = value.fullName;
 		}
 		
-		/**
-		 * RFID电量
-		 **/
-		public function get eletric():Boolean	
-		{
-			return _source.RFIDDL == 0;
-		}
-		public function set eletric(value:Boolean):void	
-		{
-			_source.RFIDDL = value?0:1;
-		}
-				
 		/**
 		 * 备注
 		 **/
@@ -105,43 +82,41 @@ package app.model.vo
 		}
 		
 		/**
-		 * 最后更新人
+		 * 更新人
 		 **/
-		public function get lastUpdateUser():String	
+		public function get updateUser():String	
 		{
-			return _source.lastUpdateUser;
+			return _source.UpdateUser;
 		}
-		public function set lastUpdateUser(value:String):void	
+		public function set updateUser(value:String):void	
 		{
-			_source.lastUpdateUser = value;
+			_source.UpdateUser = value;
 		}
 		
 		/**
-		 * 最后更新时间
+		 * 更新时间
 		 **/
-		public function get lastUpdateDatetime():Date	
+		public function get updateDatetime():Date	
 		{
-			return _source.lastUpdateDatetime;
+			return _source.UpdateDatetime;
 		}
-		public function set lastUpdateDatetime(value:Date):void	
+		public function set updateDatetime(value:Date):void	
 		{
-			_source.lastUpdateDatetime = value;
+			_source.UpdateDatetime = value;
 		}
 				
 		private var _source:ObjectProxy;
 		
-		public function RopewayBaseinfoVO(source:ObjectProxy = null)
+		public function CarriageEditHisVO(source:ObjectProxy = null)
 		{
 			if(source)
 				_source = source;	
 			else
 			{
 				_source = new ObjectProxy({});
-				this.isUse = true;
-				this.eletric = true;
 				this.memo = "";
-				this.lastUpdateUser = "";
-				this.lastUpdateDatetime = new Date;
+				this.updateUser = "";
+				this.updateDatetime = new Date;
 			}
 		}
 		

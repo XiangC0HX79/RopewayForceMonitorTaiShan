@@ -1,8 +1,8 @@
 package app.model
 {
 	import app.ApplicationFacade;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayStationForceVO;
 	
 	import com.adobe.serialization.json.JSON;
 	import com.adobe.utils.DateUtil;
@@ -57,7 +57,7 @@ package app.model
 			var arr:Array = [];
 			for each(var o:Object in event.result)
 			{
-				arr.push(new RopewayForceVO(o));
+				arr.push(new ForceVO(o));
 			}
 			this.col.source = arr;
 			
@@ -73,7 +73,7 @@ package app.model
 			var arr:Array = [];
 			for each(var o:Object in jd.table)
 			{
-				arr.push(new RopewayForceVO(o));
+				arr.push(new ForceVO(o));
 			}
 			this.col.source = arr;
 			

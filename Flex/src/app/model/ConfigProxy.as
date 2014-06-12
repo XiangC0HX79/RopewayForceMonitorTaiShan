@@ -1,8 +1,5 @@
 package app.model
 {
-	import app.ApplicationFacade;
-	import app.model.vo.ConfigVO;
-	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
@@ -11,6 +8,10 @@ package app.model
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
+	
+	import app.ApplicationFacade;
+	import app.model.dict.RopewayDict;
+	import app.model.vo.ConfigVO;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
@@ -29,13 +30,15 @@ package app.model
 			return data as ConfigVO;
 		}
 		
-		public function InitConfig(station:String,ropeway:String):void
+		public function InitConfig(station:String,resultHandle:Function):void
 		{			
 			config.station = station;
-			config.ropeway = ropeway;
 			
-			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));			
-			load.addEventListener(Event.COMPLETE,onLocaleConfigResult);
+			var load:URLLoader = new URLLoader(new URLRequest("config.xml"));		
+			
+			load.addEventListener(Event.COMPLETE,onLocaleConfigResult);		
+			load.addEventListener(Event.COMPLETE,resultHandle);
+			
 			load.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
 		}
 		
@@ -71,10 +74,10 @@ package app.model
 				else if((config.station == "3") && (s.indexOf("后石坞") < 0))
 					b = false;
 				
-				if((config.ropeway == "0") && (s.indexOf("驱动站") < 0))
-					b = false;
-				else if((config.ropeway == "1") && (s.indexOf("回转站") < 0))
-					b = false;
+				//if((config.ropeway == "0") && (s.indexOf("驱动站") < 0))
+				//	b = false;
+				//else if((config.ropeway == "1") && (s.indexOf("回转站") < 0))
+				//	b = false;
 				
 				if(b)
 				{
@@ -110,8 +113,6 @@ package app.model
 			config.stations.source = col;*/
 			
 			config.station = config.stations[0];
-						
-			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,config);
 		}
 	}
 }

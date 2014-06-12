@@ -7,7 +7,7 @@ package app.model.vo
 	import mx.utils.object_proxy;
 
 	[Bindable]
-	public class RopewayForceVO
+	public class ForceVO
 	{				
 		/**
 		 * 抱索器编号
@@ -116,9 +116,6 @@ package app.model.vo
 		 **/
 		public var alarm:Number = 0;
 				
-		/**
-		 * 所属索道站
-		 **/
 		public function get fromRopeStation():String	
 		{
 			return _source.FromRopeStation;
@@ -128,10 +125,6 @@ package app.model.vo
 			_source.FromRopeStation = value;
 		}
 		
-		/**
-		 * 索道站类型
-		 * 0 - 未知,1 - 驱动站,2-回转站
-		 **/
 		public function get fromRopeStationType():Number	
 		{
 			var s:String = String(_source.FromRopeStation);
@@ -147,9 +140,6 @@ package app.model.vo
 		{
 		}
 		
-		/**
-		 * 所属索道
-		 **/
 		public function get fromRopeWay():String	
 		{
 			var s:String = String(_source.FromRopeStation);
@@ -164,7 +154,7 @@ package app.model.vo
 		
 		private var _source:Object;
 		
-		public function RopewayForceVO(source:Object)
+		public function ForceVO(source:Object)
 		{
 			_source = source;			
 		}

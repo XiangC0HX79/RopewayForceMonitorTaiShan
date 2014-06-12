@@ -1,6 +1,9 @@
 package app.model.vo
 {	
 	import com.adobe.serialization.json.JSON;
+	
+	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
 
 	[Bindable]
 	/**
@@ -14,25 +17,25 @@ package app.model.vo
 		/**
 		 * 所属索道站
 		 **/
-		public function get fromRopeStation():String
+		public function get ropewayStation():RopewayStationDict	
 		{
-			return _source.FromRopeStation;
+			return RopewayStationDict.GetRopewayStationByLable(String(_source.FromRopeStation));
 		}
-		public function set fromRopeStation(value:String):void
+		public function set ropewayStation(value:RopewayStationDict):void	
 		{
-			_source.FromRopeStation = value;
+			_source.FromRopeStation = value.fullName;
 		}
 		
 		/**
 		 * 所属索道
 		 **/
-		public function get fromRoapWay():String
+		public function get ropeway():RopewayDict	
 		{
-			return _source.FromRoapWay;
+			return RopewayDict.GetRopewayByLable(String(_source.FromRoapWay));
 		}
-		public function set fromRoapWay(value:String):void
+		public function set ropeway(value:RopewayDict):void	
 		{
-			_source.FromRoapWay = value;
+			_source.FromRoapWay = value.fullName;
 		}
 				
 		/**

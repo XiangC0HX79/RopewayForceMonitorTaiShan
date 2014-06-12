@@ -19,11 +19,18 @@ package app.view
 	import mx.utils.ObjectProxy;
 	
 	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
+	import app.model.ConfigProxy;
+	import app.model.EngineTempProxy;
 	import app.model.RopewayAlarmProxy;
 	import app.model.RopewayProxy;
+	import app.model.dict.RopewayDict;
+	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.EngineTempVO;
+	import app.model.vo.EngineVO;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayStationForceVO;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -123,74 +130,130 @@ package app.view
 			
 			trace(d);
 			
-			//var reg:RegExp = /&{2}.*?@{2}/g;
-			//var colS:Array = d.match(reg);
+			var reg:RegExp = /&{2}.*?@{2}/g;
+			var colS:Array = d.match(reg);
 			
-			var colS:Array = d.split("@");
+			//var colS:Array = d.split("@");
 			
 			for each(var s:String in colS)
 			{				
-				if(s == "")
+				var content:String = s.substr(2,s.length - 4);
+				
+				if(content == "")
 					continue;
 				
-				var a:Array = s.split('|');
+				var a:Array = content.split('|');
 				
-				if(a[0] == "ALARM")
-				{
-					if(a[1] == _config.station)
-						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
-				}
-				else
-				{					
-					var rf:RopewayForceVO = new RopewayForceVO(new ObjectProxy({}));			
-					var sd:String = String(a[0]).replace(/-/g,"/");
-					rf.ropewayTime = new Date(Date.parse(sd));
-					rf.ropewayId =  a[1];	
-					rf.ropewayForce = Number(a[2]);
-					rf.ropewayUnit = a[3];
-					rf.ropewayTemp = a[4];
-					rf.ropewayHumidity = a[5];
-					rf.fromRopeStation = a[7];
+				var sd:String = String(a[1]).replace(/-/g,"/");
+				var dt:Date = new Date(Date.parse(sd));
+				
+				var ropeway:RopewayDict = RopewayDict.GetRopewayByLable(a[2]);
+				
+				switch(a[0])
+				{	
+					case "FC":
+						//decodeRopewayForce(a.slice(1));
+						break;
 					
-					var eletric:Boolean = (a[6] == "0");
+					case "ET":
+						break;
 					
-					var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
-					if(rw)
-					{
-						rw.ropewayRFIDEletric = eletric;
+					case "TE":
+						var et:EngineTempVO = new EngineTempVO;
+						et.date = dt;
+						et.temp = Number(a[5]);
 						
-						if(rw.ropewayHistory)
-						{					
-							_ropewayProxy.PushRopewayForce(rw,rf);
-							
-							if(rw.ropewayStation == _config.station)
-								sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-						}
-						else
+						var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;						
+						var e:EngineVO = engineTempProxy.getEngine(ropeway,int(a[4]));
+						e.AddItem(et);
+						
+						if(e.history.length == 1)
 						{
-							var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
-							token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
-							token.ropeway = rw;
-							token.ropewayForce = rf;
+							engineTempProxy.InitHistory(e);
 						}
-					}
-					else
-					{				
-						token = _ropewayProxy.FindRopewayByForce(rf);
-						token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
-						token.ropewayForce = rf;
-						token.eletric = eletric;
-					}
+						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,e);
+						break;
+					
+					case "ALARM":
+						if(a[1] == _config.station)
+							sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
+						break;
 				}
 			}
 		}
 		
-		private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
+		private function decodeRopewayForce(a:Array):void
+		{
+			var station:String = a[7];
+			var ropeCode:String = a[1];
+			
+			var rw:RopewayDict;
+			
+			for each(var item:RopewayDict in RopewayDict.dict)
+			{
+				if(station.indexOf(item.lable) >= 0)
+				{
+					rw = item;
+					break;
+				}					
+			}
+			
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
+			var carriage:CarriageVO;// = carriageProxy.getCarriage(ropeCode,rw);
+			
+			if(!carriage)return;
+			carriage.eletric = (a[6] == "0");
+			
+			var rf:ForceVO = new ForceVO(new ObjectProxy({}));			
+			var sd:String = String(a[0]).replace(/-/g,"/");
+			rf.ropewayTime = new Date(Date.parse(sd));
+			rf.ropewayId =  a[1];	
+			rf.ropewayForce = Number(a[2]);
+			rf.ropewayUnit = a[3];
+			rf.ropewayTemp = a[4];
+			rf.ropewayHumidity = a[5];
+			rf.fromRopeStation = a[7];
+						
+			/*if(station.indexOf("驱动站") >= 0)
+				carriage.fstHistory.addItem(rf);
+			else if(station.indexOf("回转站") >= 0)
+				carriage.sndHistory.addItem(rf);*/
+			
+			sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE,carriage);
+			/*var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
+			if(rw)
+			{
+				rw.ropewayRFIDEletric = eletric;
+				
+				if(rw.ropewayHistory)
+				{					
+					_ropewayProxy.PushRopewayForce(rw,rf);
+					
+					if(rw.ropewayStation == _config.station)
+						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+				}
+				else
+				{
+					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
+					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
+					token.ropeway = rw;
+					token.ropewayForce = rf;
+				}
+			}
+			else
+			{				
+				token = _ropewayProxy.FindRopewayByForce(rf);
+				token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
+				token.ropewayForce = rf;
+				token.eletric = eletric;
+			}*/
+		}
+		
+		
+		/*private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
 		{			
 			var rw:RopewayVO = event.token.ropeway;
-			//var rf:RopewayForceVO = event.token.ropewayForce;
-			
-			//_ropewayProxy.PushRopewayForce(rw,rf);
 			
 			if(rw.ropewayStation == _config.station)
 				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
@@ -198,17 +261,15 @@ package app.view
 		
 		private function onFindRopewayByForce(event:ResultEvent,t:Object):void
 		{			
-			//var rf:RopewayForceVO = event.token.ropewayForce;
 			if(event.result)
 			{
 				var rw:RopewayVO =  event.token.ropeway as RopewayVO;
 				rw.ropewayRFIDEletric = event.token.eletric;
-				//_ropewayProxy.PushRopewayForce(rw,rf);
 				
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 			}
-		}
+		}*/
 		
 	/*	private function onAddRopewayResult(event:ResultEvent,t:Object):void
 		{						
@@ -239,7 +300,7 @@ package app.view
 			
 			if(_oldTime.toLocaleDateString() != now.toLocaleDateString())
 			{
-				for each(var r:RopewayVO in _ropewayProxy.colRopeway)
+				for each(var r:RopewayStationForceVO in _ropewayProxy.colRopeway)
 				{
 					r.ropewayHistory = [];
 				}
@@ -262,8 +323,6 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
-				
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
 				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET
@@ -274,12 +333,10 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					_config = notification.getBody() as ConfigVO;
-					break;
-				
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					//connect();
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
+					_config = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).config;
+					
+					connect();
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET:

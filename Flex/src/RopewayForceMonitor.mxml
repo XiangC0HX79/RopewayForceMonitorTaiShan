@@ -60,14 +60,9 @@
 			 scaleMode="stretch"
 			 source="{titleBack}"/>
 		
-	<s:Group y="75" height="100%" left="0" right="0">
-		<components:MainMenu id="mainMenu" width="130"/>		
-		<s:VGroup left="130" right="0" top="0" bottom="0" 
-				  paddingTop="10" paddingBottom="10" paddingLeft="5" paddingRight="10" gap="0">
-			<components:MainStation id="mainStation" height="31" width="100%"/>		
-			<s:SkinnableContainer id="mainContent" width="100%" height="100%" skinClass="custom.skin.SkinMainContent"/>
-		</s:VGroup>
-	</s:Group>
+	<components:ToolbarTop id="toolbarTop" y="75" height="20" left="0" right="0"/>
+	
+	<s:Group id="mainContent" y="95" height="100%" left="0" right="0"/>
 	
 	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
 </s:Application>

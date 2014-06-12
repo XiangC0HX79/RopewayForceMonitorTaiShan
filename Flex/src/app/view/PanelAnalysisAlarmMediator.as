@@ -1,15 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopewayAlarmAnalysisProxy;
-	import app.model.RopewayProxy;
-	import app.model.WebServiceProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayAlarmVO;
-	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisAlarm;
-	
 	import com.adobe.serialization.json.JSON;
 	
 	import flash.display.BitmapData;
@@ -31,6 +21,17 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
+	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewayAlarmAnalysisProxy;
+	import app.model.RopewayProxy;
+	import app.model.WebServiceProxy;
+	import app.model.vo.CarriageVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayAlarmVO;
+	import app.model.vo.RopewayStationForceVO;
+	import app.view.components.PanelAnalysisAlarm;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -68,10 +69,10 @@ package app.view
 		
 		private function onGetRopewayList(event:ResultEvent,t:Object):void
 		{
-			var arr:Array = [RopewayVO.ALL];
+			var arr:Array = [CarriageVO.ALL];
 			for each(var o:ObjectProxy in event.result)
 			{
-				var rw:RopewayVO = new RopewayVO(o);
+				var rw:RopewayStationForceVO = new RopewayStationForceVO(o);
 				arr.push(rw);
 			}
 			panelAnalysisAlarm.colRopeway = new ArrayCollection(arr);
@@ -98,9 +99,9 @@ package app.view
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
+				for each(var r:RopewayStationForceVO in proxy.colRopeway)
 				{
-					if(r.ropewayStation == station)
+					//if(r.ropewayStation == station)
 					{
 						arr.push(r);
 					}
@@ -109,7 +110,7 @@ package app.view
 			
 			arr.sortOn("ropewayCarId");
 			
-			arr.unshift(RopewayVO.ALL);
+			arr.unshift(CarriageVO.ALL);
 			
 			panelAnalysisAlarm.colRopeway.source = arr;
 		}	
@@ -179,7 +180,7 @@ package app.view
 					
 					panelAnalysisAlarm.colStations = proxy.config.stations;	
 					
-					panelAnalysisAlarm.colRopeway.source = [RopewayVO.ALL];
+					panelAnalysisAlarm.colRopeway.source = [CarriageVO.ALL];
 					
 					panelAnalysisAlarm.rbgStation.selectedValue = proxy.config.stations[0];
 					

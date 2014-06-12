@@ -8,11 +8,11 @@ package app.view
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class MainMenuMediator extends Mediator implements IMediator
+	public class MainMenuMediator_Old extends Mediator implements IMediator
 	{
 		public static const NAME:String = "MainMenuMediator";
 		
-		public function MainMenuMediator(viewComponent:Object=null)
+		public function MainMenuMediator_Old(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 			

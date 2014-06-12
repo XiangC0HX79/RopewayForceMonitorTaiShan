@@ -10,16 +10,16 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayVO;
+			import app.model.vo.RopewayStationForceVO;
 			
 			import mx.graphics.ImageSnapshot;
 			
-			[Bindable]private var _ropeway:RopewayVO;
-			public function get ropeway():RopewayVO
+			[Bindable]private var _ropeway:RopewayStationForceVO;
+			public function get ropeway():RopewayStationForceVO
 			{
 				return _ropeway;
 			}
-			public function set ropeway(rw:RopewayVO):void
+			public function set ropeway(rw:RopewayStationForceVO):void
 			{				
 				_ropeway = rw;
 				if(_ropeway)

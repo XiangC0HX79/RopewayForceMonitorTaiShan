@@ -92,12 +92,12 @@ package app
 		 * 	</tr>
 		 * </table>
 		 **/
-		public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
+		//public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
 		
 		/**
 		 * 索道信息初始化完成
 		 **/
-		public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
+		//public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
 				
 		/**
 		 * 程序初始化完成
@@ -105,16 +105,14 @@ package app
 		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
 				
 		/**
-		 * 抱索器实时信息
-		 * <p></p>
-		 * <table>
-		 * 	<th>参数类型</th><th>参数说明</th>
-		 * 	<tr>
-		 *    <td>RopewayVO</td><td>抱索器信息</td>
-		 * 	</tr>
-		 * </table>
+		 * 抱索力实时信息
 		 **/
-		public static const NOTIFY_ROPEWAY_INFO_REALTIME:String 	= "RopewayInfoRealtime";
+		public static const NOTIFY_SOCKET_FORCE:String 				= "SocketForce";
+		
+		/**
+		 * 动力室温度
+		 **/
+		public static const NOTIFY_SOCKET_ENGINE_TEMP:String 		= "SocketEngineTemp";
 		
 		/**
 		 * 报警实时信息
@@ -126,6 +124,8 @@ package app
 		 **/
 		public static const NOTIFY_MAIN_STATION_CHANGE:String 		= "MainGroupChange";
 		
+		public static const NOTIFY_ROPEWAY_CHANGE:String 			= "MainRopewayChange";
+		
 		/**
 		 * 分析表改变
 		 **/
@@ -134,12 +134,42 @@ package app
 		/**
 		 * 设置改变
 		 **/
-		public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
+		//public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
+		
+		/**
+		 * 主菜单-监测概览
+		 **/
+		public static const NOTIFY_MENU_MAIN_OVERVIEW:String 		= "MenuMainOverview";
+		
+		/**
+		 * 主菜单-抱索力
+		 **/
+		public static const NOTIFY_MENU_MAIN_FORCE:String 			= "MenuMainForce";
+		
+		/**
+		 * 主菜单-动力室电机温度
+		 **/
+		public static const NOTIFY_MENU_MAIN_ENGINE_TEMP:String 	= "MenuMainEngineTemp";
+		
+		/**
+		 * 主菜单-张紧小尺
+		 **/
+		public static const NOTIFY_MENU_MAIN_INCH:String 			= "MenuMainInch";
+		
+		/**
+		 * 主菜单-风速风向
+		 **/
+		public static const NOTIFY_MENU_MAIN_WIND:String 			= "MenuMainWind";
 		
 		/**
 		 * 菜单-实时检测
 		 **/
 		public static const NOTIFY_MENU_REALTIME_DETECTION:String 	= "MenuRealtimeDetection";
+		
+		/**
+		 * 菜单-实时检测
+		 **/
+		public static const NOTIFY_MENU_ENGINE_TEMP_REALTIME_DETECTION:String 	= "MenuEngineTempRealtimeDetection";
 		
 		/**
 		 * 菜单-今日概览

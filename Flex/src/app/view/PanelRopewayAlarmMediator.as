@@ -4,8 +4,8 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayAlarmDealProxy;
 	import app.model.RopewayForceAverageProxy;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.PanelRopewayAlarm;
 	
 	import flash.events.Event;
@@ -36,9 +36,9 @@ package app.view
 		
 		private var _ropewayAlarmDealProxy:RopewayAlarmDealProxy;
 		
-		public function PanelRopewayAlarmMediator()
+		public function PanelRopewayAlarmMediator(viewComponent:Object = null)
 		{
-			super(NAME, new PanelRopewayAlarm);
+			super(NAME, viewComponent);
 			
 			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.VOICE_CHANGE,onVoiceChange);
 			panelRopewayAlarm.addEventListener(PanelRopewayAlarm.ALARM_DEAL,onAlarmDeal);

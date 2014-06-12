@@ -3,7 +3,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.ChartImage;
 	import app.view.components.ChartRealtimeDetection;
 	
@@ -81,8 +81,8 @@ package app.view
 				}
 				else
 				{
-					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(chartRealtimeDetection.ropeway);
-					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
+					//var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(chartRealtimeDetection.ropeway);
+					//token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
 				}
 			}
 			else
@@ -107,7 +107,7 @@ package app.view
 		
 		private function reCalcuY():void
 		{			
-			var rw:RopewayVO = chartRealtimeDetection.ropeway;
+			var rw:RopewayStationForceVO = chartRealtimeDetection.ropeway;
 			
 			if(!rw)
 				return;
@@ -151,7 +151,7 @@ package app.view
 		
 		private function reCalcuX():void
 		{			
-			var rw:RopewayVO = chartRealtimeDetection.ropeway;
+			var rw:RopewayStationForceVO = chartRealtimeDetection.ropeway;
 			
 			if(!rw)
 				return;			
@@ -196,7 +196,7 @@ package app.view
 		
 		private function drawYesterday():void
 		{
-			var rw:RopewayVO = chartRealtimeDetection.ropeway;
+			var rw:RopewayStationForceVO = chartRealtimeDetection.ropeway;
 			
 			if(rw && rw.yesterdayMax && rw.yesterdayMin)
 			{					
@@ -278,8 +278,10 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_SOCKET_FORCE,
+				
 				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
 			];
 		}
@@ -292,11 +294,11 @@ package app.view
 					changeStation(String(notification.getBody()));
 					break;
 					
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+				case ApplicationFacade.NOTIFY_SOCKET_FORCE:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 					
-					var rw:RopewayVO = notification.getBody() as RopewayVO;		
+					var rw:RopewayStationForceVO = notification.getBody() as RopewayStationForceVO;		
 					
 					if(!rw)
 					{

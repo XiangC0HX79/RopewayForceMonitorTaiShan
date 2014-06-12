@@ -1,12 +1,13 @@
 package app.model.vo
 {
 	import mx.utils.ObjectProxy;
+	
+	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
 
 	[Bindable]
-	public class RopewayVO
+	public class RopewayStationForceVO
 	{
-		public static const ALL:RopewayVO = new RopewayVO(new ObjectProxy({RopeCode:"所有抱索器",CarriageCode:"所有吊箱"}));
-		
 		/**
 		 * 抱索器编号
 		 * */
@@ -57,25 +58,25 @@ package app.model.vo
 		/**
 		 * 所属索道站
 		 **/
-		public function get ropewayStation():String
+		public function get ropewayStation():RopewayStationDict
 		{
-			return _source.FromRopeStation;
+			return RopewayStationDict.GetRopewayStationByLable(_source.FromRopeStation);
 		}
-		public function set ropewayStation(value:String):void
+		public function set ropewayStation(value:RopewayStationDict):void
 		{
-			_source.FromRopeStation = value;
+			_source.FromRopeStation = value.fullName;
 		}
 		
 		/**
 		 * 所属索道
 		 **/
-		public function get fromRopeWay():String
+		public function get ropeway():RopewayDict
 		{
-			return _source.FromRopeWay;
+			return RopewayDict.GetRopewayByLable(_source.FromRopeWay);
 		}
-		public function set fromRopeWay(value:String):void
+		public function set ropeway(value:RopewayDict):void
 		{
-			_source.FromRopeWay = value;
+			_source.FromRopeWay = value.fullName;
 		}
 		
 		/**
@@ -269,7 +270,7 @@ package app.model.vo
 		
 		private var _source:ObjectProxy;
 		
-		public function RopewayVO(source:ObjectProxy)
+		public function RopewayStationForceVO(source:ObjectProxy)
 		{					
 			_source = source;
 		}

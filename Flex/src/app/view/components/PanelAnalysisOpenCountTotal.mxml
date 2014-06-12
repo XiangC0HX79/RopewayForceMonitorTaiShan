@@ -17,7 +17,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.ForceVO;
 			import app.model.vo.RopewaySwitchFreqTotalVO;
 			
 			import com.adobe.utils.DateUtil;

@@ -1,6 +1,6 @@
 package custom.components
 {
-	import app.model.vo.RopewayForceVO;
+	import app.model.vo.ForceVO;
 	
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
@@ -64,8 +64,8 @@ package custom.components
 			var alternate:Boolean = true;
 			for(var i:int = 0;i<len;i++)
 			{
-				var pre:RopewayForceVO = (i > 0)?chart.dataProvider[i-1]:null;
-				var rf:RopewayForceVO = chart.dataProvider[i];
+				var pre:ForceVO = (i > 0)?chart.dataProvider[i-1]:null;
+				var rf:ForceVO = chart.dataProvider[i];
 				if(pre && (pre.ropewayTime.toDateString() != rf.ropewayTime.toDateString()))
 				{
 					alternate = !alternate;

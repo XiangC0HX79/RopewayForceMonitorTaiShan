@@ -18,8 +18,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
-			import app.model.vo.RopewayVO;
+			import app.model.vo.ForceVO;
+			import app.model.vo.RopewayStationForceVO;
 			
 			import flash.utils.setTimeout;
 			
@@ -40,11 +40,11 @@
 			public static const CONTAINER_CREATE:String = "ContainerCreate";
 			public static const CONTAINER_RESIZE:String = "ContainerResize";
 			
-			[Bindable]public var ropeway:RopewayVO; 
+			[Bindable]public var ropeway:RopewayStationForceVO; 
 						
 			public function RefreshChart():void
 			{					
-				var rw:RopewayVO = ropeway;
+				var rw:RopewayStationForceVO = ropeway;
 				
 				//添加折线\点
 				var len:int = groupPoint.numElements;
@@ -89,7 +89,7 @@
 			
 			public function ContinueChart():void
 			{							
-				var rw:RopewayVO = ropeway;
+				var rw:RopewayStationForceVO = ropeway;
 				
 				var animates:Array = new Array;							
 				for(var i:Number = 0;i<groupPoint.numElements;i++)
@@ -135,7 +135,7 @@
 			
 			public function MoveChart():void
 			{				
-				var rw:RopewayVO = ropeway;
+				var rw:RopewayStationForceVO = ropeway;
 				
 				var animates:Array = new Array;
 				for(var i:Number = 0;i<groupPoint.numElements;i++)

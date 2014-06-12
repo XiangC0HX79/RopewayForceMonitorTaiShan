@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import spark.components.RadioButton;
+			import spark.events.RendererExistenceEvent;
+			
+			import app.model.dict.RopewayDict;
+			import app.model.vo.ConfigVO;
+			
+			public static const STATION:String = "Station";
+			
+			public static const OVERVIEW:String = "Overview";
+			public static const FORCE:String = "Force";
+			public static const ENGINETEMP:String = "EngineTemp";
+			public static const INCH:String = "Inch";
+			public static const WIND:String = "Wind";
+			
+			[Bindable]public var config:ConfigVO;
+			
+			protected function groupStation_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				// TODO Auto-generated method stub
+				var rb:RadioButton = (event.renderer as Object).radioButton as RadioButton;				
+				rb.group = radioGroupStation;
+				
+				if(event.data == RopewayDict.ZHONG_TIAN_MEN)
+					rb.selected = true;
+			}			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="radioGroupStation" selectedValue="@{config.ropeway}" change="dispatchEvent(new Event(STATION))"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
+	</s:layout>
+	
+	<s:DataGroup id="groupStation"
+				 rendererAdd="groupStation_rendererAddHandler(event)">
+		<s:layout>
+			<s:HorizontalLayout gap="20"/>
+		</s:layout>
+		<s:itemRenderer>
+			<fx:Component>
+				<s:ItemRenderer>
+					<s:RadioButton id="radioButton" label="{data.lable}" value="{data}"/>
+				</s:ItemRenderer>				
+			</fx:Component>
+		</s:itemRenderer>
+	</s:DataGroup>
+	
+	<s:Spacer width="100%"/>
+	
+	<s:Button label="监测概览" buttonDown="dispatchEvent(new Event(OVERVIEW))"/>
+	<s:Button label="抱索力" buttonDown="dispatchEvent(new Event(FORCE))"/>
+	<s:Button label="动力室电机温度" buttonDown="dispatchEvent(new Event(ENGINETEMP))"/>
+	<s:Button label="张紧小尺" buttonDown="dispatchEvent(new Event(INCH))"/>
+	<s:Button label="风速风向" buttonDown="dispatchEvent(new Event(WIND))"/>
+</s:Group>

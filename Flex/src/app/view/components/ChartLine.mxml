@@ -4,18 +4,18 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx" stroke="{lineStroke}">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.ForceVO;
 			
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			
 			import spark.effects.animation.MotionPath;
 			import spark.effects.animation.SimpleMotionPath;
 			
-			private var _ropewayForceS:RopewayForceVO;
+			private var _ropewayForceS:ForceVO;
 			
-			private var _ropewayForceE:RopewayForceVO;
+			private var _ropewayForceE:ForceVO;
 			
-			public function SetValue(dataCanvas:CartesianDataCanvas,rws:RopewayForceVO = null,rwe:RopewayForceVO = null):void
+			public function SetValue(dataCanvas:CartesianDataCanvas,rws:ForceVO = null,rwe:ForceVO = null):void
 			{				
 				if(rws && rwe)
 				{

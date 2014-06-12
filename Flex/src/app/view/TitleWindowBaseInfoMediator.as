@@ -1,10 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.RopewayBaseinfoProxy;
-	import app.model.vo.RopewayBaseinfoVO;
-	import app.view.components.TitleWindowBaseInfo;
-	
 	import com.adobe.utils.StringUtil;
 	
 	import flash.display.DisplayObject;
@@ -14,6 +9,12 @@ package app.view
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
 	
+	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
+	import app.model.dict.RopewayDict;
+	import app.model.vo.CarriageVO;
+	import app.view.components.TitleWindowBaseInfo;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -22,7 +23,7 @@ package app.view
 	{
 		public static const NAME:String = "TitleWindowBaseInfoMediator";
 		
-		private var _ropewayBaseinfoProxy:RopewayBaseinfoProxy;
+		private var _ropewayBaseinfoProxy:CarriageProxy;
 		
 		public function TitleWindowBaseInfoMediator()
 		{
@@ -33,7 +34,7 @@ package app.view
 			titleWindowBaseInfo.addEventListener(TitleWindowBaseInfo.BASEINFO_NEW,onBaseInfoNew);
 			titleWindowBaseInfo.addEventListener(TitleWindowBaseInfo.BASEINFO_EDIT,onBaseInfoEdit);
 			
-			_ropewayBaseinfoProxy = facade.retrieveProxy(RopewayBaseinfoProxy.NAME) as RopewayBaseinfoProxy;
+			_ropewayBaseinfoProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 		}
 		
 		protected function get titleWindowBaseInfo():TitleWindowBaseInfo
@@ -74,7 +75,7 @@ package app.view
 				return;
 			}
 			
-			for each(var r:RopewayBaseinfoVO in _ropewayBaseinfoProxy.colBaseinfo)
+			for each(var r:CarriageVO in _ropewayBaseinfoProxy.GetCarriage(titleWindowBaseInfo.baseInfo.ropeWay))
 			{
 				if(r.ropewayCarId == ropewayCarId)
 				{
@@ -95,11 +96,11 @@ package app.view
 				}
 			}
 			
-			var info:RopewayBaseinfoVO = titleWindowBaseInfo.baseInfo;	
+			var info:CarriageVO = titleWindowBaseInfo.baseInfo;	
 			info.ropewayId = ropewayId;
 			info.ropewayCarId = ropewayCarId;
 			info.ropewayRFID = ropewayRFID;
-			info.fromRopeWay = titleWindowBaseInfo.listRopeway.selectedItem;
+			info.ropeWay = titleWindowBaseInfo.listRopeway.selectedItem;
 			info.memo = StringUtil.trim(titleWindowBaseInfo.textMemo.text);
 			
 			_ropewayBaseinfoProxy.NewBaseInfo(info);
@@ -130,7 +131,7 @@ package app.view
 				return;
 			}
 			
-			for each(var r:RopewayBaseinfoVO in _ropewayBaseinfoProxy.colBaseinfo)
+			for each(var r:CarriageVO in _ropewayBaseinfoProxy.GetCarriage(titleWindowBaseInfo.baseInfo.ropeWay))
 			{
 				if(r.ropewayId == ropewayId)
 					continue;
@@ -148,7 +149,7 @@ package app.view
 				}
 			}
 			
-			var info:RopewayBaseinfoVO = titleWindowBaseInfo.baseInfo;			
+			var info:CarriageVO = titleWindowBaseInfo.baseInfo;			
 			info.ropewayCarId = StringUtil.trim(titleWindowBaseInfo.textCarId.text);
 			info.ropewayId = StringUtil.trim(titleWindowBaseInfo.textId.text);
 			info.ropewayRFID = StringUtil.trim(titleWindowBaseInfo.textRfId.text);
@@ -174,8 +175,8 @@ package app.view
 				case ApplicationFacade.NOTIFY_ROPEWAY_BASEINFO_NEW:
 					titleWindowBaseInfo.currentState = "New";
 					
-					titleWindowBaseInfo.baseInfo = new RopewayBaseinfoVO;
-					titleWindowBaseInfo.baseInfo.fromRopeWay = String(notification.getBody());
+					titleWindowBaseInfo.baseInfo = new CarriageVO;
+					titleWindowBaseInfo.baseInfo.ropeWay = notification.getBody() as RopewayDict;
 					
 					PopUpManager.addPopUp(titleWindowBaseInfo,FlexGlobals.topLevelApplication as DisplayObject,true);
 					PopUpManager.centerPopUp(titleWindowBaseInfo);
@@ -184,7 +185,7 @@ package app.view
 				case ApplicationFacade.NOTIFY_ROPEWAY_BASEINFO_EDIT:
 					titleWindowBaseInfo.currentState = "Edit";
 					
-					titleWindowBaseInfo.baseInfo = notification.getBody() as RopewayBaseinfoVO;
+					titleWindowBaseInfo.baseInfo = notification.getBody() as CarriageVO;
 					
 					PopUpManager.addPopUp(titleWindowBaseInfo,FlexGlobals.topLevelApplication as DisplayObject,true);
 					PopUpManager.centerPopUp(titleWindowBaseInfo);

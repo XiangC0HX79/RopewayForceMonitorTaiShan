@@ -19,7 +19,7 @@
 	<fx:Script>
 		<![CDATA[
 			import app.model.vo.RopewayAlarmVO;
-			import app.model.vo.RopewayForceVO;
+			import app.model.vo.ForceVO;
 			
 			import com.adobe.utils.DateUtil;
 			

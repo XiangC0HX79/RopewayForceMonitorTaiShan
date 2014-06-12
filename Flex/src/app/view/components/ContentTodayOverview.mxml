@@ -15,7 +15,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayVO;
+			import app.model.vo.RopewayStationForceVO;
 			
 			import custom.itemRenderer.ItemRendererLineChartForce;
 			import custom.itemRenderer.ItemRendererTodayOverview;
@@ -40,7 +40,7 @@
 			
 			[Bindable]public var colDp:ArrayCollection = new ArrayCollection;
 			
-			[Bindable]public var ropeway:RopewayVO; 
+			[Bindable]public var ropeway:RopewayStationForceVO; 
 			
 			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
 			{
@@ -50,7 +50,7 @@
 			private function onRendererClick(event:Event):void
 			{
 				var renderer:ItemRendererTodayOverview = event.currentTarget as ItemRendererTodayOverview;
-				ropeway = renderer.data as RopewayVO;
+				ropeway = renderer.data as RopewayStationForceVO;
 				
 				dispatchEvent(new Event(ITEM_CLICK));
 			}

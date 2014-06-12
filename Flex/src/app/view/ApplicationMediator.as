@@ -1,13 +1,8 @@
 package app.view
 {	
-	import app.ApplicationFacade;
-	import app.model.vo.ConfigVO;
-	
-	import flash.events.Event;
-	import flash.utils.Timer;
-	
 	import mx.core.IVisualElement;
-	import mx.events.ResizeEvent;
+	
+	import app.ApplicationFacade;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -16,9 +11,7 @@ package app.view
 	public class ApplicationMediator extends Mediator implements IMediator
 	{
 		public static const NAME:String = "ApplicationMediator";
-		
-		private var _config:ConfigVO;
-		
+				
 		public function ApplicationMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
@@ -40,17 +33,10 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
-				
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
-				
-				ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION,
-				
-				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
-				
-				ApplicationFacade.NOTIFY_MENU_ANALYSIS,
-				
-				ApplicationFacade.NOTIFY_MENU_MANAGE
+				ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW,
+				ApplicationFacade.NOTIFY_MENU_MAIN_FORCE,
+				ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP
 			];
 		}
 		
@@ -58,27 +44,17 @@ package app.view
 		{			
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					_config = notification.getBody() as ConfigVO;
-					
-					changeContent(ContentRealtimeDetectionMediator.NAME);
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+				case ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW:
+					changeContent(MainPanelOverviewMediator.NAME);
 					break;
 				
-				//case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
-					changeContent(ContentRealtimeDetectionMediator.NAME);
+				case ApplicationFacade.NOTIFY_MENU_MAIN_FORCE:
+					changeContent(MainPanelForceMediator.NAME);
 					break;
 				
-				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
-					changeContent(ContentTodayOverviewMediator.NAME);
-					break;
-				
-				case ApplicationFacade.NOTIFY_MENU_ANALYSIS:
-					changeContent(ContentAnalysisMediator.NAME);
-					break;
-				
-				case ApplicationFacade.NOTIFY_MENU_MANAGE:
-					changeContent(ContentManageMediator.NAME);
+				case ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP:
+					changeContent(MainPanelEngineTempMediator.NAME);
 					break;
 			}
 		}		

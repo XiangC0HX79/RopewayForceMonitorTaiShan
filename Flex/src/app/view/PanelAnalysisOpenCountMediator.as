@@ -1,15 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopewayProxy;
-	import app.model.RopewaySwitchFreqProxy;
-	import app.model.WebServiceProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewaySwitchFreqVO;
-	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisOpenCount;
-	
 	import com.adobe.serialization.json.JSON;
 	
 	import flash.display.BitmapData;
@@ -31,6 +21,17 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
+	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewayProxy;
+	import app.model.RopewaySwitchFreqProxy;
+	import app.model.WebServiceProxy;
+	import app.model.vo.CarriageVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayStationForceVO;
+	import app.model.vo.RopewaySwitchFreqVO;
+	import app.view.components.PanelAnalysisOpenCount;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -99,9 +100,9 @@ package app.view
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
+				for each(var r:RopewayStationForceVO in proxy.colRopeway)
 				{
-					if(r.ropewayStation == station)
+					//if(r.ropewayStation == station)
 					{
 						arr.push(r);
 					}
@@ -110,7 +111,7 @@ package app.view
 			
 			arr.sortOn("ropewayCarId");
 			
-			arr.unshift(RopewayVO.ALL);
+			arr.unshift(CarriageVO.ALL);
 			
 			panelAnalysisOpenCount.colRopeway.source = arr;
 		}		
@@ -199,7 +200,7 @@ package app.view
 					
 					panelAnalysisOpenCount.colStations = proxy.config.stations;	
 					
-					panelAnalysisOpenCount.colRopeway.source = [RopewayVO.ALL];
+					panelAnalysisOpenCount.colRopeway.source = [CarriageVO.ALL];
 					
 					panelAnalysisOpenCount.rbgStation.selectedValue = proxy.config.stations[0];
 					

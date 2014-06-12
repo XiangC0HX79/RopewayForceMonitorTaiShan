@@ -15,17 +15,18 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayAlarmVO;
-			import app.model.vo.RopewayBaseinfoVO;
-			
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
+			
+			import app.model.dict.RopewayDict;
+			import app.model.vo.CarriageVO;
+			import app.model.vo.RopewayAlarmVO;
 						
 			public static const BASEINFO_NEW:String = "BaseInfoNew";	
 			
 			public static const BASEINFO_EDIT:String = "BaseInfoEdit";	
 			
-			[Bindable]public var baseInfo:RopewayBaseinfoVO;
+			[Bindable]public var baseInfo:CarriageVO;
 			
 			protected function button_buttonDownHandler(event:FlexEvent):void
 			{
@@ -47,13 +48,9 @@
 	
 	<s:HGroup verticalAlign="middle">
 		<s:Label text="　所属索道：" fontWeight="bold"/>	
-		<s:DropDownList id="listRopeway" enabled="false" selectedItem="{baseInfo.fromRopeWay}"
-						requireSelection="true" width="100%">
-			<s:ArrayCollection>
-				<fx:String>桃花源索道</fx:String>
-				<fx:String>中天门索道</fx:String>
-			</s:ArrayCollection>
-		</s:DropDownList>		
+		<s:DropDownList id="listRopeway" enabled="false" selectedItem="{baseInfo.ropeWay}" 
+						dataProvider="{RopewayDict.list}" labelField="fullName"
+						requireSelection="true" width="100%"/>		
 	</s:HGroup>
 	
 	<s:HGroup verticalAlign="middle">

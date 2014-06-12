@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
+		 left="0" right="0" top="0" bottom="0">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function rbgAnalysis_changeHandler(event:Event):void
+			{
+				viewStatck.selectedIndex = int(rbgAnalysis.selectedValue);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="rbgAnalysis" change="rbgAnalysis_changeHandler(event)"/>		
+	</fx:Declarations>	
+		
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
+	
+	<s:HGroup verticalAlign="middle" height="31" paddingLeft="15" paddingRight="60" gap="30" color="white">		
+		<s:Label text="分析查询"/>
+		
+		<s:Spacer width="100%"/>
+		
+		<s:RadioButton label="历史抱索力" groupName="rbgAnalysis" value="0" selected="true"/>
+		<s:RadioButton label="平均抱索力" groupName="rbgAnalysis" value="1"/>
+		<s:RadioButton label="开合次数" groupName="rbgAnalysis" value="2"/>
+		<s:RadioButton label="总开合次数" groupName="rbgAnalysis" value="3"/>
+		<s:RadioButton label="报警信息" groupName="rbgAnalysis" value="4"/>
+	</s:HGroup>
+	
+	<mx:ViewStack id="viewStatck" height="100%"/>
+</s:Group>

@@ -2,8 +2,8 @@ package app.model
 {
 	import app.ApplicationFacade;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayStationForceVO;
 	
 	import flash.utils.Dictionary;
 	
@@ -45,9 +45,9 @@ package app.model
 			var arr:Array = [];
 			for each(var o:ObjectProxy in event.result)
 			{
-				var rw:RopewayVO = new RopewayVO(o);		
+				var rw:RopewayStationForceVO = new RopewayStationForceVO(o);		
 				
-				var callback:Function = function(item:RopewayVO, index:int, array:Array):Boolean
+				var callback:Function = function(item:RopewayStationForceVO, index:int, array:Array):Boolean
 				{
 					return (item.ropewayId != rw.ropewayId) || (item.ropewayStation != rw.ropewayStation);
 				};
@@ -75,13 +75,13 @@ package app.model
 			}
 			else
 			{
-				sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);				
+				//sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);				
 			}
 		}
 		
 		private function onInitRopewayComplete(event:ResultEvent,t:Object):void
 		{			
-			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,event.token.ropeway);
+			//sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,event.token.ropeway);
 		}
 		
 		/*private function onRopeDeteValueHis_GetList(event:ResultEvent):void
@@ -95,21 +95,21 @@ package app.model
 			sendNotification(ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE);
 		}*/
 		
-		public function GetRopewayByForce(ropewayForce:RopewayForceVO):RopewayVO
+		public function GetRopewayByForce(ropewayForce:ForceVO):RopewayStationForceVO
 		{
-			for each(var r:RopewayVO in colRopeway)
+			/*for each(var r:RopewayStationForceVO in colRopeway)
 			{
 				if((r.ropewayId == ropewayForce.ropewayId)
 					&& (r.ropewayStation == ropewayForce.fromRopeStation))	
 				{				
 					return r;
 				}
-			}
+			}*/
 			
 			return null;
 		}
 		
-		public function PushRopewayForce(ropeway:RopewayVO,ropewayForce:RopewayForceVO):void
+		public function PushRopewayForce(ropeway:RopewayStationForceVO,ropewayForce:ForceVO):void
 		{			
 			ropewayForce.alarm = 0;
 			ropeway.alarm = 0;
@@ -122,7 +122,7 @@ package app.model
 			
 			if(ropeway.ropewayHistory.length > 0)
 			{						
-				var prerf:RopewayForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
+				var prerf:ForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
 				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > dictAlarmValue[ropeway.ropewayStation])
 				{
 					ropewayForce.alarm |= 2;
@@ -152,13 +152,13 @@ package app.model
 			ropeway.ropewayHistory.push(ropewayForce);
 		}
 		
-		public function GetRopewayByStation(station:String):RopewayVO
+		public function GetRopewayByStation(station:String):RopewayStationForceVO
 		{
-			var rt:RopewayVO = null;
-			for each(var r:RopewayVO in colRopeway)
+			var rt:RopewayStationForceVO = null;
+			for each(var r:RopewayStationForceVO in colRopeway)
 			{
-				if((r.ropewayStation == station)
-					&& (r.deteDate.toDateString() == (new Date).toDateString()))
+				/*if((r.ropewayStation == station)
+					&& (r.deteDate.toDateString() == (new Date).toDateString()))*/
 				{
 					if(!rt)
 					{
@@ -174,7 +174,7 @@ package app.model
 			return rt;
 		}
 		
-		public function LoadRopeWayForceHis(ropeway:RopewayVO):AsyncToken
+		public function LoadRopeWayForceHis(ropeway:RopewayStationForceVO):AsyncToken
 		{
 			var where:String = "RopeCode = '" + ropeway.ropewayId + "' AND FromRopeStation = '" + ropeway.ropewayStation + "' AND DATEDIFF(D,DeteDate,GETDATE()) = 0";
 			
@@ -185,12 +185,12 @@ package app.model
 		
 		private function onLoadRopeWayForceHis(event:ResultEvent):void
 		{			
-			var ropeway:RopewayVO = event.token.ropeway;
+			var ropeway:RopewayStationForceVO = event.token.ropeway;
 			ropeway.ropewayHistory = [];
 			
 			for each(var o:ObjectProxy in event.result)
 			{
-				var rf:RopewayForceVO = new RopewayForceVO(o);
+				var rf:ForceVO = new ForceVO(o);
 				PushRopewayForce(ropeway,rf);
 				/*rf.alarm = 0;
 				ropeway.alarm = 0;
@@ -218,7 +218,7 @@ package app.model
 			}
 		}
 		
-		public function FindRopewayByForce(ropewayForce:RopewayForceVO):AsyncToken
+		public function FindRopewayByForce(ropewayForce:ForceVO):AsyncToken
 		{
 			return send("RopeDeteInfoToday_GetModel",onFindRopewayByForce,ropewayForce.toString());
 		}
@@ -227,10 +227,10 @@ package app.model
 		{
 			if(event.result)
 			{
-				var ropeway:RopewayVO = new RopewayVO(event.result as ObjectProxy);
+				var ropeway:RopewayStationForceVO = new RopewayStationForceVO(event.result as ObjectProxy);
 				ropeway.ropewayHistory = [];
 				
-				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
+				var rf:ForceVO = event.token.ropewayForce as ForceVO;
 				PushRopewayForce(ropeway,rf);
 				
 				colRopeway.addItem(ropeway);
@@ -242,9 +242,9 @@ package app.model
 		public function GetRopewayCount(station:String):Number
 		{
 			var count:Number = 0;
-			for each(var r:RopewayVO in colRopeway)
+			for each(var r:RopewayStationForceVO in colRopeway)
 			{
-				if(r.ropewayStation == station)
+				//if(r.ropewayStation == station)
 				{
 					count++;
 				}

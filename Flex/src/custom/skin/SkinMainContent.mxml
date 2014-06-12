@@ -61,15 +61,30 @@
         <s:State name="normal" />
         <s:State name="disabled" />
     </s:states>
-    
+	
+	<!--- Defines the appearance of the SkinnableContainer class's title. -->
+	<s:Image left="0" top="0" height="31" scaleMode="stretch"
+			 source="assets/image/top_left.png"/>
+	<s:Rect left="11" right="10" top="0" height="31">
+		<s:fill>
+			<s:BitmapFill fillMode="repeat" source="@Embed('assets/image/top_bg.png')"/>
+		</s:fill>
+	</s:Rect>
+	<s:Image right="0" top="0" height="31" scaleMode="stretch"
+			 source="assets/image/top_right.png"/>
+	
+	<s:HGroup height="31" verticalAlign="middle" paddingLeft="10">		
+		<s:Image source="assets/image/top_icon.png"/>
+	</s:HGroup>
+	
     <!--- Defines the appearance of the SkinnableContainer class's background. -->
-    <s:Rect id="background" left="0" right="0" height="400">
+    <s:Rect id="background" left="0" right="0" top="31" bottom="0">
         <s:fill>
-           <s:BitmapFill source="@Embed('assets/image/content_bg.png')" fillMode="repeat"/>
+           <s:BitmapFill source="@Embed('assets/image/content_bg.png')" fillMode="scale"/>
         </s:fill>
     </s:Rect>
 	
-	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+	<s:Rect id="border" left="0" right="0" top="31" bottom="0">
 		<s:stroke>
 			<s:SolidColorStroke color="#499db9"/>
 		</s:stroke>
@@ -81,7 +96,7 @@
         more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
     -->
     <!--- @copy spark.components.SkinnableContainer#contentGroup -->
-    <s:Group id="contentGroup" left="10" right="10" top="10" bottom="10" minWidth="0" minHeight="0">
+    <s:Group id="contentGroup" left="10" right="10" top="0" bottom="10" minWidth="0" minHeight="0">
     </s:Group>
 
 </s:Skin>

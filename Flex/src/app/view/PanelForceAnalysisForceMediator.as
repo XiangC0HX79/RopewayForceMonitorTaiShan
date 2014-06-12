@@ -25,73 +25,62 @@ package app.view
 	import mx.utils.ObjectProxy;
 	
 	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.RopewayForceProxy;
 	import app.model.RopewayProxy;
 	import app.model.WebServiceProxy;
+	import app.model.dict.RopewayStationDict;
+	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisForce;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayStationForceVO;
+	import app.view.components.PanelForceAnalysisForce;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelAnalysisForceMediator extends Mediator implements IMediator
+	public class PanelForceAnalysisForceMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelAnalysisForceMediator";
+		public static const NAME:String = "PanelForceAnalysisForceMediator";
 		
 		private var _whereClause:String = "";
 		
-		public function PanelAnalysisForceMediator()
+		private var ropewayForceProxy:RopewayForceProxy;
+		
+		public function PanelForceAnalysisForceMediator()
 		{
-			super(NAME, new PanelAnalysisForce);
+			super(NAME, new PanelForceAnalysisForce);
 						
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.TABLE,onTable);
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.TABLE_PAGE,onTablePage);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.TABLE,onTable);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.TABLE_PAGE,onTablePage);
 			
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.CHART,onChart);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.CHART,onChart);
 			
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.EXPORT,onExport);
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.STATION_CHANGE,onStationChange);
-			panelAnalysisForce.addEventListener(PanelAnalysisForce.SELECT_ONE,onSelectOne);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.EXPORT,onExport);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.STATION_CHANGE,onStationChange);
+			panelAnalysisForce.addEventListener(PanelForceAnalysisForce.SELECT_ONE,onSelectOne);
 			
-			var ropewayForceProxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
+			ropewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
 			panelAnalysisForce.colRopewayHis = ropewayForceProxy.col;
 		}
 		
-		protected function get panelAnalysisForce():PanelAnalysisForce
+		protected function get panelAnalysisForce():PanelForceAnalysisForce
 		{
-			return viewComponent as PanelAnalysisForce;
+			return viewComponent as PanelForceAnalysisForce;
 		}
 					
 		private function onStationChange(event:Event):void
 		{
-			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
-			
-			changeStation(station);
+			changeStation(panelAnalysisForce.rbgStation.selectedValue as RopewayStationDict);
 		}
 		
-		private function changeStation(station:String):void
+		private function changeStation(station:RopewayStationDict):void
 		{
-			var arr:Array = [];
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
-				{
-					if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
-			}
-			arr.sortOn("ropewayCarId");
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 			
-			arr.unshift(RopewayVO.ALL);
-			
-			panelAnalysisForce.colRopeway.source = arr;
+			panelAnalysisForce.colCarriage = carriageProxy.GetCarriageWithForce(station);
 		}
 		
 		private function onChart(event:Event):void
@@ -124,7 +113,7 @@ package app.view
 			
 			var dateS:Date = panelAnalysisForce.dateS;
 			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
+			var station:String = panelAnalysisForce.rbgStation.selectedValue.fullName;
 			var tempMin:String = panelAnalysisForce.numTempMin.text;
 			var tempMax:String = panelAnalysisForce.numTempMax.text;
 			
@@ -145,9 +134,8 @@ package app.view
 				where += " AND Temperature <= " + Number(tempMax);
 			
 			_whereClause =  where;
-			
-			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			var token:AsyncToken = proxy.GetForceHistory(this._whereClause);
+						
+			var token:AsyncToken = ropewayForceProxy.GetForceHistory(this._whereClause);
 			token.addResponder(new AsyncResponder(onChartResultHandle,function (error:FaultEvent, token:Object = null):void{}));
 		}
 		
@@ -185,7 +173,7 @@ package app.view
 			
 			var dateS:Date = panelAnalysisForce.dateS;
 			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
+			var station:String = panelAnalysisForce.rbgStation.selectedValue.fullName;
 			var ropewayId:String = panelAnalysisForce.listRopewayId.selectedItem.ropewayId;
 			var tempMin:String = panelAnalysisForce.numTempMin.text;
 			var tempMax:String = panelAnalysisForce.numTempMax.text;
@@ -208,8 +196,7 @@ package app.view
 			
 			_whereClause =  where;
 			
-			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			var token:AsyncToken = proxy.GetForceHistory(this._whereClause,1);
+			var token:AsyncToken = ropewayForceProxy.GetForceHistory(this._whereClause,1);
 			token.addResponder(new AsyncResponder(onTableResponder,function(event:FaultEvent,t:Object):void{}));
 		}
 		
@@ -223,8 +210,7 @@ package app.view
 		
 		private function onTablePage(event:Event):void
 		{						
-			var proxy:RopewayForceProxy = facade.retrieveProxy(RopewayForceProxy.NAME) as RopewayForceProxy;
-			proxy.GetForceHistory(this._whereClause,panelAnalysisForce.pageIndex);
+			ropewayForceProxy.GetForceHistory(this._whereClause,panelAnalysisForce.pageIndex);
 		}
 		
 		private function onSelectOne(event:Event):void
@@ -347,15 +333,11 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					panelAnalysisForce.colStations = RopewayStationDict.list;	
 					
-					panelAnalysisForce.colStations = proxy.config.stations;	
+					panelAnalysisForce.rbgStation.selectedValue = RopewayStationDict.list[0].fullName;
 					
-					panelAnalysisForce.colRopeway.source = [RopewayVO.ALL];
-					
-					panelAnalysisForce.rbgStation.selectedValue = proxy.config.stations[0];
-					
-					changeStation(proxy.config.stations[0]);
+					changeStation(RopewayStationDict.list[0]);
 					break;
 			}
 		}

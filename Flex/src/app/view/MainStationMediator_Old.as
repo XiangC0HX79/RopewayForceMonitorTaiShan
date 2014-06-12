@@ -1,27 +1,27 @@
 package app.view
 {
+	import flash.events.Event;
+	
+	import mx.collections.ArrayCollection;
+	
+	import spark.components.Group;
+	
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.MainStation;
-	
-	import flash.events.Event;
-	
-	import mx.collections.ArrayCollection;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import spark.components.Group;
-	
-	public class MainStationMediator extends Mediator implements IMediator
+	public class MainStationMediator_Old extends Mediator implements IMediator
 	{
 		public static const NAME:String = "MainStationMediator";
 		
-		public function MainStationMediator(viewComponent:Object=null)
+		public function MainStationMediator_Old(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 			
@@ -57,11 +57,9 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
-				
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+								
+				//ApplicationFacade.NOTIFY_SOCKET_FORCE,
 				
 				ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION,
 				
@@ -77,15 +75,18 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 					mainStation.contentName = "实时监测";
-					mainStation.config = notification.getBody() as ConfigVO;
-					break;
-				
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:	
+					
+					var config:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					mainStation.config = config.config;
+					
 					updateCarCount();
 					break;
+				
+				//case ApplicationFacade.NOTIFY_SOCKET_FORCE:	
+				//	updateCarCount();
+				//	break;
 				
 				case ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION:
 					mainStation.contentName = "实时监测";

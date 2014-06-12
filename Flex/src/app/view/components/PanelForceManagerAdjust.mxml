@@ -16,7 +16,7 @@
 			public static const AJUST:String = "Ajust";	
 			
 			public static const STATION_CHANGE:String = "StationChange";	
-						
+									
 			[Bindable]public var colStations:ArrayCollection;
 						
 			[Bindable]public var colAjustmentHis:ArrayCollection;
@@ -29,7 +29,7 @@
 	<s:HGroup width="100%" verticalAlign="middle">	
 		<s:Label text="索道站：" fontWeight="bold"/>
 		
-		<s:DropDownList id="listRopewayStation" change="dispatchEvent(new Event(STATION_CHANGE));" 
+		<s:DropDownList id="listRopewayStation" change="dispatchEvent(new Event(STATION_CHANGE));" labelField="fullName"
 						requireSelection="true" dataProvider="{colStations}" width="150"/>
 		
 		<s:Label text="时间：" fontWeight="bold"/>
@@ -50,7 +50,7 @@
 				alternatingRowColors="[#FFFFFF,#CFEDF7]">
 		<s:columns>
 			<s:ArrayList>
-				<s:GridColumn headerText="所属索道站" dataField="fromRopeStation" width="200"/>		
+				<s:GridColumn headerText="所属索道站" dataField="ropewayStation.fullName" width="200"/>		
 				<s:GridColumn headerText="校准时间" dataField="checkDatetime" formatter="{dfDate}" width="100"/>
 				<s:GridColumn headerText="更新人" dataField="lastUpdateUser" width="100"/>
 				<s:GridColumn headerText="更新时间" dataField="lastUpdateDatetime" formatter="{df}" />

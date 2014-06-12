@@ -1,16 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopewayForceAverageProxy;
-	import app.model.RopewayProxy;
-	import app.model.WebServiceProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayForceAverageVO;
-	import app.model.vo.RopewayForceVO;
-	import app.model.vo.RopewayVO;
-	import app.view.components.PanelAnalysisForceAverage;
-	
 	import com.adobe.serialization.json.JSON;
 	
 	import flash.display.BitmapData;
@@ -32,6 +21,18 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
+	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopewayForceAverageProxy;
+	import app.model.RopewayProxy;
+	import app.model.WebServiceProxy;
+	import app.model.vo.CarriageVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayForceAverageVO;
+	import app.model.vo.RopewayStationForceVO;
+	import app.view.components.PanelAnalysisForceAverage;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -99,9 +100,9 @@ package app.view
 			if(station != "所有索道站")
 			{
 				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayVO in proxy.colRopeway)
+				for each(var r:RopewayStationForceVO in proxy.colRopeway)
 				{
-					if(r.ropewayStation == station)
+					//if(r.ropewayStation == station)
 					{
 						arr.push(r);
 					}
@@ -110,7 +111,7 @@ package app.view
 			
 			arr.sortOn("ropewayCarId");
 			
-			arr.unshift(RopewayVO.ALL);
+			arr.unshift(CarriageVO.ALL);
 			
 			panelAnalysisForceAverage.colRopeway.source = arr;
 		}	
@@ -199,7 +200,7 @@ package app.view
 					
 					panelAnalysisForceAverage.colStations = proxy.config.stations;	
 					
-					panelAnalysisForceAverage.colRopeway.source = [RopewayVO.ALL];
+					panelAnalysisForceAverage.colRopeway.source = [CarriageVO.ALL];
 					
 					panelAnalysisForceAverage.rbgStation.selectedValue = proxy.config.stations[0];
 					

@@ -22,20 +22,20 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.ConfigVO;
-			import app.model.vo.RopewayVO;
-			
 			import mx.binding.utils.BindingUtils;
 			import mx.graphics.ImageSnapshot;
 			
+			import app.model.vo.ConfigVO;
+			import app.model.vo.RopewayStationForceVO;
+			
 			[Bindable]private var _color:int;
 			
-			[Bindable]private var _ropeway:RopewayVO;
-			public function get ropeway():RopewayVO
+			[Bindable]private var _ropeway:RopewayStationForceVO;
+			public function get ropeway():RopewayStationForceVO
 			{
 				return _ropeway;
 			}
-			public function set ropeway(rw:RopewayVO):void
+			public function set ropeway(rw:RopewayStationForceVO):void
 			{			
 				_ropeway = rw;
 				
@@ -77,12 +77,10 @@
 				}
 			}
 			
-			[Bindable]public var config:ConfigVO;
+			[Bindable]public var station:String;
 		]]>
 	</fx:Script>
-	
-	<fx:Binding source="config.pin" destination="btnPin.selected" twoWay="true"/>
-		
+			
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
 		<s:Label text="吊箱信息 - {_ropeway.ropewayId}" fontWeight="bold"/>
 		<s:Spacer width="100%"/>

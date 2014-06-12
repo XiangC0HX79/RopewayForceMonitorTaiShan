@@ -3,6 +3,8 @@ package app.model.vo
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	
+	import app.model.dict.RopewayDict;
 
 	[Bindable]
 	public class ConfigVO
@@ -11,7 +13,15 @@ package app.model.vo
 				
 		public var station:String;
 		
-		public var ropeway:String;
+		private var _ropeway:RopewayDict;
+		public function get ropeway():RopewayDict
+		{
+			return _ropeway;
+		}
+		public function set ropeway(value:*):void
+		{
+			_ropeway = value as RopewayDict;
+		}
 		
 		public var stations:ArrayCollection;
 		

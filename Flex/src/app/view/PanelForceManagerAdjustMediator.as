@@ -1,39 +1,41 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopeForceAjustProxy;
-	import app.view.components.PanelManagerAdjust;
-	
 	import flash.events.Event;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
 	
+	import app.ApplicationFacade;
+	import app.model.ConfigProxy;
+	import app.model.RopeForceAjustProxy;
+	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
+	import app.view.components.PanelForceManagerAdjust;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelManagerAdjustMediator extends Mediator implements IMediator
+	public class PanelForceManagerAdjustMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanalManagerAdjustMediator";
+		public static const NAME:String = "PanalForceManagerAdjustMediator";
 		
 		private var _ropeForceAjustProxy:RopeForceAjustProxy;
 		
-		public function PanelManagerAdjustMediator()
+		public function PanelForceManagerAdjustMediator()
 		{
-			super(NAME, new PanelManagerAdjust);
+			super(NAME, new PanelForceManagerAdjust);
 			
-			panelManagerAdjust.addEventListener(PanelManagerAdjust.AJUST,onAjust);
-			panelManagerAdjust.addEventListener(PanelManagerAdjust.STATION_CHANGE,onStationChange);
+			panelManagerAdjust.addEventListener(PanelForceManagerAdjust.AJUST,onAjust);
+			panelManagerAdjust.addEventListener(PanelForceManagerAdjust.STATION_CHANGE,onStationChange);
 			
 			_ropeForceAjustProxy = facade.retrieveProxy(RopeForceAjustProxy.NAME) as RopeForceAjustProxy;
 			panelManagerAdjust.colAjustmentHis = _ropeForceAjustProxy.colRopeForceAjust;
 		}
 		
-		protected function get panelManagerAdjust():PanelManagerAdjust
+		protected function get panelManagerAdjust():PanelForceManagerAdjust
 		{
-			return viewComponent as PanelManagerAdjust;
+			return viewComponent as PanelForceManagerAdjust;
 		}
 		
 		private function onAjust(event:Event):void
@@ -66,9 +68,9 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;					
-					panelManagerAdjust.colStations = proxy.config.stations;	
-					_ropeForceAjustProxy.GetRopeForceAjustCol(proxy.config.stations[0]);
+					panelManagerAdjust.colStations = RopewayStationDict.list;	
+					
+					_ropeForceAjustProxy.GetRopeForceAjustCol(panelManagerAdjust.colStations[0]);
 					break;
 			}
 		}

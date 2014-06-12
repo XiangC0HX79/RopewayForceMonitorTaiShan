@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			public static const REALTIME_DETECTION:String = "RealtimeDetection";
+			public static const TODAY_OVERVIEW:String = "TodayOverview";
+			public static const ANALYSIS:String = "Analysis";
+			public static const MANAGE:String = "Manage";
+			
+			protected function buttonBar_buttonDownHandler(event:FlexEvent,type:String):void
+			{
+				for(var i:Number = 0;i < buttonBar.numElements;i++)
+				{
+					var btn:Button = buttonBar.getElementAt(i) as Button;
+					if(btn)
+						btn.enabled = true;
+				}
+				
+				btn = event.currentTarget as Button;
+				btn.enabled = false;
+				
+				dispatchEvent(new Event(type));
+			}			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:VGroup id="buttonBar" paddingTop="10" paddingBottom="10" gap="10" 
+			  horizontalAlign="center" height="100%" width="100%">
+		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
+				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
+		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="117" height="148" buttonMode="true"
+				  buttonDown="buttonBar_buttonDownHandler(event,TODAY_OVERVIEW)"/>
+		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
+				  buttonDown="buttonBar_buttonDownHandler(event,ANALYSIS)"/>
+		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
+				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
+	</s:VGroup>
+</s:Group>

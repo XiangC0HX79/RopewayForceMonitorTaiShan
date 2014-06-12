@@ -1,10 +1,11 @@
 package app.model
 {
-	import app.model.vo.RopeForceAjustVO;
-	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.ResultEvent;
+	
+	import app.model.dict.RopewayStationDict;
+	import app.model.vo.RopeForceAjustVO;
 	
 	import org.puremvc.as3.interfaces.IProxy;
 	
@@ -22,9 +23,9 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function GetRopeForceAjustCol(station:String):AsyncToken
+		public function GetRopeForceAjustCol(station:RopewayStationDict):AsyncToken
 		{
-			var where:String = "FromRopeStation = '" + station + "'";
+			var where:String = "FromRopeStation = '" + station.fullName + "'";
 			return send("RopeDete_RopeCheck_GetList",onGetRopeForceCol,where);
 		}
 		
@@ -38,11 +39,11 @@ package app.model
 			colRopeForceAjust.source = source;
 		}
 		
-		public function NewRopeForceAjust(station:String,adjustDate:Date):AsyncToken
+		public function NewRopeForceAjust(station:RopewayStationDict,adjustDate:Date):AsyncToken
 		{
 			var ajust:RopeForceAjustVO = new RopeForceAjustVO({});
-			ajust.fromRopeStation = station;
-			ajust.fromRoapWay = "";
+			ajust.ropewayStation = station;
+			ajust.ropeway = station.ropeway;
 			ajust.checkDatetime = adjustDate;
 			ajust.lastUpdateDatetime = new Date;
 			ajust.lastUpdateUser = "";

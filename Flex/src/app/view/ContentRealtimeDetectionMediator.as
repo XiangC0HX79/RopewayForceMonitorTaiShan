@@ -3,7 +3,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.RopewayAlarmProxy;
 	import app.model.vo.RopewayAlarmVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.ContentRealtimeDetection;
 	
 	import mx.collections.ArrayCollection;
@@ -22,11 +22,11 @@ package app.view
 		{
 			super(NAME, viewComponent);
 			
-			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayForceMediator.NAME).getViewComponent() as IVisualElement);
-			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayTempMediator.NAME).getViewComponent() as IVisualElement);
-			contentRealtimeDetection.groupTop.addElement(facade.retrieveMediator(PanelRopewayAlarmMediator.NAME).getViewComponent() as IVisualElement);
+			facade.registerMediator(new PanelRopewayForceMediator(contentRealtimeDetection.panelForce));
 			
-			contentRealtimeDetection.addElement(facade.retrieveMediator(ChartRealtimeDetectionMediator.NAME).getViewComponent() as IVisualElement);
+			facade.registerMediator(new PanelRopewayTempMediator(contentRealtimeDetection.panelTemp));
+			
+			facade.registerMediator(new PanelRopewayAlarmMediator(contentRealtimeDetection.panelAlarm));
 		}
 		
 		protected function get contentRealtimeDetection():ContentRealtimeDetection

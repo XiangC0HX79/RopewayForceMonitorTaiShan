@@ -1,15 +1,40 @@
 package app.controller
 {	
-	import app.view.*;
-	import app.view.components.ContentAnalysis;
-	import app.view.components.ContentManage;
+	import spark.components.Application;
+	
+	import app.view.AlertMediator;
+	import app.view.ApplicationMediator;
+	import app.view.ChartRealtimeDetectionMediator;
+	import app.view.ContentForceAnalysisMediator;
+	import app.view.ContentEngineTempRealtimeDetectionMediator;
+	import app.view.ContentForceManageMediator;
+	import app.view.ContentRealtimeDetectionMediator;
+	import app.view.ContentTodayOverviewMediator;
+	import app.view.LoadingBarMediator;
+	import app.view.MainPanelEngineTempMediator;
+	import app.view.MainPanelForceMediator;
+	import app.view.MainPanelOverviewMediator;
+	import app.view.PanelAnalysisAlarmMediator;
+	import app.view.PanelAnalysisForceAverageMediator;
+	import app.view.PanelForceAnalysisForceMediator;
+	import app.view.PanelAnalysisOpenCountMediator;
+	import app.view.PanelAnalysisOpenCountTotalMediator;
+	import app.view.PanelForceManagerAdjustMediator;
+	import app.view.PanelForceManagerBaseInfoMediator;
+	import app.view.PanelRopewayAlarmMediator;
+	import app.view.PanelRopewayForceMediator;
+	import app.view.PanelRopewayTempMediator;
+	import app.view.SocketMediator;
+	import app.view.TitleWindowAlarmDealMediator;
+	import app.view.TitleWindowBaseInfoMediator;
+	import app.view.ToolbarTopMediator;
+	import app.view.components.ContentForceAnalysis;
+	import app.view.components.ContentForceManage;
 	import app.view.components.ContentRealtimeDetection;
 	import app.view.components.ContentTodayOverview;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
-	
-	import spark.components.Application;
 	
 	public class ViewPreCommand extends SimpleCommand
 	{
@@ -24,24 +49,30 @@ package app.controller
 			facade.registerMediator(new ApplicationMediator(application));
 			
 			facade.registerMediator(new LoadingBarMediator(application.mainLoading));
-				
-			facade.registerMediator(new MainMenuMediator(application.mainMenu));
 			
-			facade.registerMediator(new MainStationMediator(application.mainStation));
+			facade.registerMediator(new ToolbarTopMediator(application.toolbarTop));
+			
+			facade.registerMediator(new MainPanelOverviewMediator);
+			
+			facade.registerMediator(new MainPanelForceMediator);
+			
+			facade.registerMediator(new MainPanelEngineTempMediator);
+			
+			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
 						
-			facade.registerMediator(new PanelRopewayForceMediator);
+			//facade.registerMediator(new PanelRopewayForceMediator);
 			
-			facade.registerMediator(new PanelRopewayTempMediator);
+			//facade.registerMediator(new PanelRopewayTempMediator);
 			
-			facade.registerMediator(new PanelRopewayAlarmMediator);
+			//facade.registerMediator(new PanelRopewayAlarmMediator);
 			
-			facade.registerMediator(new ChartRealtimeDetectionMediator);
+			//facade.registerMediator(new ChartRealtimeDetectionMediator);
 			
 			facade.registerMediator(new ContentRealtimeDetectionMediator(new ContentRealtimeDetection));
 			
 			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));
 			
-			facade.registerMediator(new PanelAnalysisForceMediator);		
+			facade.registerMediator(new PanelForceAnalysisForceMediator);		
 			
 			facade.registerMediator(new PanelAnalysisForceAverageMediator);		
 			
@@ -51,13 +82,13 @@ package app.controller
 			
 			facade.registerMediator(new PanelAnalysisAlarmMediator);			
 			
-			facade.registerMediator(new ContentAnalysisMediator(new ContentAnalysis));
+			facade.registerMediator(new ContentForceAnalysisMediator(new ContentForceAnalysis));
 			
-			facade.registerMediator(new PanelManagerBaseInfoMediator);	
+			facade.registerMediator(new PanelForceManagerBaseInfoMediator);	
 			
-			facade.registerMediator(new PanelManagerAdjustMediator);			
+			facade.registerMediator(new PanelForceManagerAdjustMediator);			
 			
-			facade.registerMediator(new ContentManageMediator(new ContentManage));
+			facade.registerMediator(new ContentForceManageMediator(new ContentForceManage));
 			
 			facade.registerMediator(new TitleWindowAlarmDealMediator);
 			

@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:components="app.view.components.*"
 		 width="100%" height="100%">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+		<s:RadioButtonGroup id="rbgStation" change="rbGroupStation_changeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayVO;
+			[Bindable]public var carCount:Number = 0;
 			
-			[Bindable]public var ropeway:RopewayVO; 
+			protected function rbGroupStation_changeHandler(event:Event):void
+			{
+				
+			}			
 		]]>
 	</fx:Script>
+		
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
 	
-	<s:HGroup id="groupTop" width="100%"/>
-</s:VGroup>
+	<s:HGroup verticalAlign="middle" height="31" paddingLeft="15" gap="30" color="white">		
+		<s:Label text="实时监测"/>
+		
+		<s:Spacer width="100%"/>
+		
+		<s:RadioButton label="驱动站" groupName="rbgStation" selected="true"/>
+				
+		<s:RadioButton label="回转站" groupName="rbgStation"/>
+		
+		<s:Spacer width="60"/>
+		
+		<s:Group height="100%">
+			<s:Rect top="5" bottom="5" left="0" right="0" radiusX="5" radiusY="5">
+				<s:fill>
+					<s:SolidColor color="white"/>
+				</s:fill>
+			</s:Rect> 
+			<s:Label color="black" fontWeight="bold" height="100%" text="吊箱总数：{carCount}" verticalAlign="middle"
+					 paddingTop="3" paddingLeft="5" paddingRight="5"/>
+		</s:Group>
+	</s:HGroup>
+	
+	<s:HGroup>		
+		<components:PanelRopewayForce id="panelForce"/>
+		
+		<components:PanelRopewayTemp id="panelTemp"/>
+		
+		<components:PanelRopewayAlarm id="panelAlarm"/>
+	</s:HGroup>
+</s:Group>

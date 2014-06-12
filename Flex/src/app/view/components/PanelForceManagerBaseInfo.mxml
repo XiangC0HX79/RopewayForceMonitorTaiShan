@@ -21,6 +21,8 @@
 			public static const ROPEWAY_CHANGE:String = "RopewayChange";	
 			public static const ROPEWAY_RELA_CHANGE:String = "RopewayRelaChange";
 			
+			[Bindable]public var colRopeway:ArrayCollection;
+			
 			[Bindable]public var colBaseInfo:ArrayCollection;
 			
 			[Bindable]public var colBaseInfoHis:ArrayCollection;
@@ -33,22 +35,9 @@
 	
 	<s:HGroup width="100%" verticalAlign="middle">	
 		<s:Label text="索道：" fontWeight="bold"/>
-		<s:DropDownList id="listRopeway" change="dispatchEvent(new Event(ROPEWAY_CHANGE));" 
-						requireSelection="true">
-			<s:ArrayCollection>
-				<fx:String>桃花源索道</fx:String>
-				<fx:String>中天门索道</fx:String>
-			</s:ArrayCollection>
-		</s:DropDownList>
-		
-		<!--<s:Label text="吊箱编号：" fontWeight="bold"/>
-		<s:TextInput id="textCarId" text="{gridRela.selectedItem.ropewayCarId}" width="100"/>
-		
-		<s:Label text="报索器编号：" fontWeight="bold"/>
-		<s:TextInput id="textId" text="{gridRela.selectedItem.ropewayId}" width="100"/>
-		
-		<s:Label text="RFID：" fontWeight="bold"/>
-		<s:TextInput id="textRfId" text="{gridRela.selectedItem.ropewayRFID}" width="100"/>-->
+		<s:DropDownList id="listRopeway" dataProvider="{colRopeway}" labelField="fullName"
+						change="dispatchEvent(new Event(ROPEWAY_CHANGE));" 
+						requireSelection="true"/>
 		
 		<s:Button label="新增" buttonDown="dispatchEvent(new Event(BASEINFO_NEW))"/>
 		<s:Button label="编辑" buttonDown="dispatchEvent(new Event(BASEINFO_EDIT))"/>
@@ -70,7 +59,7 @@
 				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
 				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
-				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="200"/>
+				<s:GridColumn headerText="所属索道" dataField="ropeWay.fullName" width="200"/>
 				<s:GridColumn headerText="备注" dataField="memo"/>
 				<s:GridColumn headerText="是否使用" dataField="isUse" width="80">
 					<s:itemRenderer>
@@ -80,7 +69,7 @@
 									<![CDATA[
 										protected function checkbox_changeHandler(event:Event):void
 										{
-											dispatchEvent(new Event(PanelManagerBaseInfo.BASEINFO_USE,true));
+											dispatchEvent(new Event(PanelForceManagerBaseInfo.BASEINFO_USE,true));
 										}
 									]]>
 								</fx:Script>
@@ -112,7 +101,7 @@
 				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
 				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
 				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
-				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="100"/>
+				<s:GridColumn headerText="所属索道" dataField="ropeway.fullName" width="100"/>
 				<s:GridColumn headerText="更新人员" dataField="updateUser" width="200"/>
 				<s:GridColumn headerText="更新日期" formatter="{df}" dataField="updateDatetime" width="200"/>
 				<s:GridColumn headerText="更新信息" dataField="memo"/>

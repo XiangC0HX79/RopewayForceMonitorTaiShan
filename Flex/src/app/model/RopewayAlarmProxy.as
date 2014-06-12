@@ -2,7 +2,7 @@ package app.model
 {
 	import app.model.RopewayProxy;
 	import app.model.vo.RopewayAlarmVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.AbstractConsumer;
@@ -34,7 +34,7 @@ package app.model
 			
 		}
 		
-		public function IsRopewayAlarm(ropeway:RopewayVO):void
+		public function IsRopewayAlarm(ropeway:RopewayStationForceVO):void
 		{
 			/*var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			var r:RopewayVO = proxy.ropewayDict[ropeway.ropewayId] as RopewayVO;

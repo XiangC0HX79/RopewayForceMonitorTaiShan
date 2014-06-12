@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="app.view.components.*" 
+		 width="100%" height="100%">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			public static const REALTIME_DETECTION:String = "RealtimeDetection";
-			public static const TODAY_OVERVIEW:String = "TodayOverview";
-			public static const ANALYSIS:String = "Analysis";
-			public static const MANAGE:String = "Manage";
+			import custom.skin.SkinButtonAnalysis;
+			import custom.skin.SkinButtonManager;
+			import custom.skin.SkinButtonRealtimeDetection;
+			import custom.skin.SkinButtonTodayOverview;
+			import custom.skin.SkinMainContent;
+			
+			public static const REALTIME_DETECTION:String = "实时监测";
+			public static const TODAY_OVERVIEW:String = "当天概览";
+			public static const ANALYSIS:String = "分析查询";
+			public static const MANAGE:String = "参数设置";
 			
 			protected function buttonBar_buttonDownHandler(event:FlexEvent,type:String):void
 			{
@@ -30,14 +38,9 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<!--<s:Rect left="0" right="0" top="0" bottom="0">
-		<s:fill>
-			<s:SolidColor color="#4173ad"/>
-		</s:fill>
-	</s:Rect>-->
 	
-	<s:VGroup id="buttonBar" paddingTop="10" paddingBottom="10" gap="10" 
-			  horizontalAlign="center" height="100%" width="100%">
+	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
+			  horizontalAlign="center">
 		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
 		<s:Button skinClass="custom.skin.SkinButtonTodayOverview" width="117" height="148" buttonMode="true"
@@ -47,4 +50,8 @@
 		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
 				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
 	</s:VGroup>
+		
+	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 
+						  skinClass="custom.skin.SkinMainContent">		
+	</s:SkinnableContainer>
 </s:Group>

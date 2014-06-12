@@ -4,7 +4,7 @@ package app.view
 	import app.model.ConfigProxy;
 	import app.model.RopewayProxy;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.PanelRopewayForce;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -15,12 +15,11 @@ package app.view
 	{
 		public static const NAME:String = "PanelRopewayForceMediator";
 		
-		public function PanelRopewayForceMediator()
+		public function PanelRopewayForceMediator(viewComponent:Object = null)
 		{
-			super(NAME, new PanelRopewayForce);
+			super(NAME, viewComponent);
 			
 			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-			panelRopewayForce.config = configProxy.config;
 		}
 		
 		protected function get panelRopewayForce():PanelRopewayForce
@@ -31,8 +30,10 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE,
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,
+				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				
+				ApplicationFacade.NOTIFY_SOCKET_FORCE,
+				
 				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE
 			];
 		}
@@ -41,10 +42,10 @@ package app.view
 		{
 			switch(notification.getName())
 			{				
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:
-				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME:
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+				case ApplicationFacade.NOTIFY_SOCKET_FORCE:
 					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-					var rw:RopewayVO = notification.getBody() as RopewayVO;		
+					var rw:RopewayStationForceVO = notification.getBody() as RopewayStationForceVO;		
 					if(configProxy.config.pin)
 					{
 						if(panelRopewayForce.ropeway == rw)
