@@ -11,15 +11,12 @@
 		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>
 		
 		<mx:WipeRight id="wipeShow" duration="1000"/>
+		
+		<s:RadioButtonGroup id="rbgStation" change="dispatchEvent(new Event(STATION_CHANGE))" selectedValue="@{selStation}"/>
 	</fx:Declarations>	
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayStationForceVO;
-			
-			import custom.itemRenderer.ItemRendererLineChartForce;
-			import custom.itemRenderer.ItemRendererTodayOverview;
-			
 			import mx.charts.events.ChartItemEvent;
 			import mx.collections.ArrayCollection;
 			import mx.core.UIComponent;
@@ -28,9 +25,24 @@
 			
 			import spark.events.RendererExistenceEvent;
 			
+			import app.model.dict.RopewayStationDict;
+			import app.model.vo.RopewayStationForceVO;
+			
+			import custom.itemRenderer.ItemRendererGroup;
+			import custom.itemRenderer.ItemRendererLineChartForce;
+			import custom.itemRenderer.ItemRendererTodayOverview;
+			
+			public static const STATION_CHANGE:String = "StaionChange";
+			
 			public static const ITEM_CLICK:String = "ItemClick";
 			
 			public static const CONTAINER_RESIZE:String = "ContainerResize";
+						
+			[Bindable]public var selStation:*;
+			
+			[Bindable]public var colStations:ArrayCollection;
+			
+			[Bindable]public var carCount:Number = 0;
 			
 			[Bindable]public var pageIndex:Number = 0;
 			
@@ -78,10 +90,42 @@
 				var a:Number = pageIndex * pageSize;
 				var b:Number = Math.min((pageIndex + 1) * pageSize,arrDp.length);
 				colDp.source = arrDp.slice(a,b);
-			}					
+			}			
+			
+			protected function datagroupCol_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:ItemRendererGroup = event.renderer as ItemRendererGroup;
+				renderer.rb.group = rbgStation;
+			}		
 		]]>
-	</fx:Script>
-	<s:DataGroup id="dataGroup" left="0" right="30" height="335" dataProvider="{colDp}" 
+	</fx:Script>	
+	<s:HGroup verticalAlign="middle" height="31" paddingLeft="15" gap="30" color="white" left="0" right="0">		
+		<s:Label text="实时监测"/>
+		
+		<s:Spacer width="100%"/>
+		
+		<s:SkinnableDataContainer dataProvider="{colStations}" height="100%"
+								  rendererAdd="datagroupCol_rendererAddHandler(event)"
+								  itemRenderer="custom.itemRenderer.ItemRendererGroup">
+			<s:layout>
+				<s:HorizontalLayout gap="20" verticalAlign="middle"/>
+			</s:layout>
+		</s:SkinnableDataContainer>
+		
+		<s:Spacer width="20"/>
+		
+		<s:Group height="100%">
+			<s:Rect top="5" bottom="5" left="0" right="0" radiusX="5" radiusY="5">
+				<s:fill>
+					<s:SolidColor color="white"/>
+				</s:fill>
+			</s:Rect> 
+			<s:Label color="black" fontWeight="bold" height="100%" text="吊箱总数：{carCount}" verticalAlign="middle"
+					 paddingTop="3" paddingLeft="5" paddingRight="5"/>
+		</s:Group>
+	</s:HGroup>
+	
+	<s:DataGroup id="dataGroup" top="31" left="0" right="30" height="335" dataProvider="{colDp}" 
 				 clipAndEnableScrolling="true"
 				 rendererAdd="datagroup_rendererAddHandler(event)"
 				 itemRenderer="custom.itemRenderer.ItemRendererTodayOverview">
@@ -90,18 +134,36 @@
 		</s:layout>		
 	</s:DataGroup>
 		
-	<s:VGroup right="0" height="335" width="30" verticalAlign="middle">
+	<s:VGroup right="0" top="31" height="335" width="30" verticalAlign="middle">
 		<s:Image buttonMode="true" source="assets/image/btn_up.png" click="buttonUp_buttonDownHandler(event)"/>
 		<s:Image buttonMode="true" source="assets/image/btn_down.png" click="buttonDown_buttonDownHandler(event)"/>
 	</s:VGroup>
 	
-	<s:SkinnableContainer left="0" right="0" top="335" bottom="0" fontSize="12">		
+	<s:SkinnableContainer left="0" right="0" top="366" bottom="0" fontSize="12">		
 		<s:Rect id="border" left="0" right="0" top="0" bottom="0">
 			<s:stroke>
 				<s:SolidColorStroke weight="1" color="#63c3d6"/>
 			</s:stroke>
 		</s:Rect>	
 				
+		<s:Group id="groupChart" left="59" right="55" bottom="47" top="50">				
+			<s:Rect id="lineMax" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineMin" height="1" left="10" right="10" visible="false">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>		
+		</s:Group>
+		
 		<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTip"
 					  left="20" right="40" bottom="20" top="40" dataProvider="{ropeway.ropewayHistory}">
 			<mx:seriesFilters>
@@ -147,30 +209,6 @@
 				</mx:LineSeries>
 			</mx:series>
 		</mx:LineChart>		
-		
-		<s:Group id="groupChart" left="59" right="55" bottom="47" top="50">	
-			<!--<s:Rect left="0" right="0" top="0" bottom="0">
-				<s:stroke>
-					<s:SolidColorStroke weight="1" color="red"/>
-				</s:stroke>
-			</s:Rect>	-->
-			
-			<s:Rect id="lineMax" height="1" left="10" right="10" visible="false">
-				<s:fill>
-					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
-				</s:fill>
-			</s:Rect>
-			<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
-				<s:fill>
-					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
-				</s:fill>
-			</s:Rect>
-			<s:Rect id="lineMin" height="1" left="10" right="10" visible="false">
-				<s:fill>
-					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
-				</s:fill>
-			</s:Rect>		
-		</s:Group>
 				
 		<s:Label right="45" y="{lineMax.y + 35}" id="lbMax" text="{ropeway.yesterdayMax} {ropeway.valueUnit}" textAlign="center"
 				 verticalAlign="middle"/> 	

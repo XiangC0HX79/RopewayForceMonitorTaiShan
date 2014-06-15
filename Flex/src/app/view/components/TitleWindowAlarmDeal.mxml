@@ -29,7 +29,7 @@
 		
 		<s:HGroup>
 			<s:Label text="　索道站："/>
-			<s:Label text="{ropewayAlarm.fromRopeStation}"/>		
+			<s:Label text="{ropewayAlarm.ropeStation.fullName}"/>		
 		</s:HGroup>
 		
 		<s:HGroup>

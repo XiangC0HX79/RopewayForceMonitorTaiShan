@@ -19,7 +19,7 @@ package app.model.vo
 		 **/
 		public function get ropewayStation():RopewayStationDict	
 		{
-			return RopewayStationDict.GetRopewayStationByLable(String(_source.FromRopeStation));
+			return RopewayStationDict.dict[_source.FromRopeStation];
 		}
 		public function set ropewayStation(value:RopewayStationDict):void	
 		{
@@ -83,7 +83,7 @@ package app.model.vo
 		
 		public function toString():String
 		{
-			return JSON.encode(_source);
+			return com.adobe.serialization.json.JSON.encode(_source);
 		}
 	}
 }

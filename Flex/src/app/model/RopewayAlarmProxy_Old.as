@@ -10,11 +10,11 @@ package app.model
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class RopewayAlarmProxy extends WebServiceProxy implements IProxy
+	public class RopewayAlarmProxy_Old extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayAlarmProxy";
 		
-		public function RopewayAlarmProxy()
+		public function RopewayAlarmProxy_Old()
 		{
 			super(NAME, new ArrayCollection);
 		}

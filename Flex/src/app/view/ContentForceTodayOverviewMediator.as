@@ -1,14 +1,5 @@
 package app.view
 {
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.RopewayProxy;
-	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayStationForceVO;
-	import app.view.components.ContentTodayOverview;
-	
-	import custom.itemRenderer.ItemRendererTodayOverview;
-	
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.setTimeout;
@@ -22,38 +13,51 @@ package app.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
+	import spark.collections.Sort;
+	
+	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
+	import app.model.ConfigProxy;
+	import app.model.dict.RopewayStationDict;
+	import app.model.vo.CarriageVO;
+	import app.model.vo.ConfigVO;
+	import app.model.vo.RopewayStationForceVO;
+	import app.view.components.ContentForceTodayOverview;
+	
+	import custom.itemRenderer.ItemRendererTodayOverview;
+	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import spark.collections.Sort;
-	
-	public class ContentTodayOverviewMediator extends Mediator implements IMediator
+	public class ContentForceTodayOverviewMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "ContentTodayOverviewMediator";
+		public static const NAME:String = "ContentForceTodayOverviewMediator";
 				
 		public static const ONE_MIN:Number = 60 * 1000;
 		public static const TEN_MIN:Number = 10 * 60 * 1000;
 		public static const HALF_HOUR:Number = 30 * 60 * 1000;
 		public static const ONE_HOUR:Number = 60 * 60 * 1000;
 		
-		private var _ropewayProxy:RopewayProxy;
-		
-		public function ContentTodayOverviewMediator(viewComponent:Object=null)
+		public function ContentForceTodayOverviewMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 			
-			//contentTodayOverview.addEventListener(FlexEvent.CREATION_COMPLETE,onCreate);
+			contentTodayOverview.addEventListener(ContentForceTodayOverview.STATION_CHANGE,onStationChange);
+			
 			contentTodayOverview.addEventListener(ResizeEvent.RESIZE,onResize);
 			
-			contentTodayOverview.addEventListener(ContentTodayOverview.ITEM_CLICK,onItemCLick);
-			
-			_ropewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;				
+			contentTodayOverview.addEventListener(ContentForceTodayOverview.ITEM_CLICK,onItemCLick);
 		}
 		
-		protected function get contentTodayOverview():ContentTodayOverview
+		protected function get contentTodayOverview():ContentForceTodayOverview
 		{
-			return viewComponent as ContentTodayOverview;
+			return viewComponent as ContentForceTodayOverview;
+		}
+		
+		private function onStationChange(event:Event):void
+		{			
+			changeStation(contentTodayOverview.selStation);
 		}
 		
 		private function onCreate(event:FlexEvent):void
@@ -84,18 +88,15 @@ package app.view
 			flash.utils.setTimeout(drawYesterday,200);
 		}
 		
-		private function changeStation(station:String):void
+		private function changeStation(station:RopewayStationDict):void
 		{						
 			contentTodayOverview.arrDp = [];
 			
-			for each(var r:RopewayStationForceVO in _ropewayProxy.colRopeway)
-			{
-				//if((r.ropewayStation == station) && (r.deteDate.toDateString() == (new Date).toDateString()))
-				//	contentTodayOverview.arrDp.push(r);
-			}
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
+			contentTodayOverview.arrDp = carriageProxy.GetRopewayStationForce(station);
 			
-			contentTodayOverview.arrDp.sortOn("ropewayCarId");
-			
+			contentTodayOverview.carCount = contentTodayOverview.arrDp.length;
+						
 			contentTodayOverview.pageIndex = 0;
 			
 			contentTodayOverview.colDp.source = contentTodayOverview.arrDp.slice(0
@@ -104,19 +105,6 @@ package app.view
 		
 		private function onItemCLick(event:Event):void
 		{
-			if(!contentTodayOverview.ropeway.ropewayHistory)
-			{				
-				var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(contentTodayOverview.ropeway);
-				token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
-			}
-			else
-			{
-				reCalcuXY();
-			}
-		}
-		
-		private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
-		{			
 			reCalcuXY();
 		}
 				
@@ -124,8 +112,8 @@ package app.view
 		{			
 			var rw:RopewayStationForceVO = contentTodayOverview.ropeway;
 			
-			var max:Number = Math.max(rw.yesterdayMax,rw.maxValue);
-			var min:Number = Math.min(rw.yesterdayMin,rw.minValue);
+			var max:Number = rw.yesterdayMax?Math.max(rw.yesterdayMax,rw.maxValue):rw.maxValue;
+			var min:Number = rw.yesterdayMin?Math.min(rw.yesterdayMin,rw.minValue):rw.minValue;
 			
 			var df:Number = max - min;
 			var ave:Number = (max + min) / 2;
@@ -284,10 +272,6 @@ package app.view
 			return [
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
-				ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE,
-				
-				ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW,
-				
 				ApplicationFacade.NOTIFY_SOCKET_FORCE
 			];
 		}
@@ -296,17 +280,36 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_MAIN_STATION_CHANGE:
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-				case ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW:
-					var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-					changeStation(configProxy.config.station);
+				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
+					contentTodayOverview.colStations = RopewayStationDict.list;	
+					
+					contentTodayOverview.selStation = contentTodayOverview.colStations[0];
+					
+					changeStation(contentTodayOverview.colStations[0]);
 					break;
 				
 				case ApplicationFacade.NOTIFY_SOCKET_FORCE:
-					var rw:RopewayStationForceVO = notification.getBody() as RopewayStationForceVO;					
-					if(rw == contentTodayOverview.ropeway)
-						reCalcuXY();
+					var rsf:RopewayStationForceVO = notification.getBody() as RopewayStationForceVO;		
+					
+					if(rsf.ropewayStation == contentTodayOverview.selStation)
+					{
+						if(contentTodayOverview.arrDp.indexOf(rsf) < 0)
+						{
+							contentTodayOverview.arrDp.push(rsf);
+							
+							contentTodayOverview.arrDp.sortOn("ropewayCarId");
+							
+							contentTodayOverview.carCount = contentTodayOverview.arrDp.length;
+														
+							var a:Number = contentTodayOverview.pageIndex * contentTodayOverview.pageSize;
+							var b:Number = Math.min((contentTodayOverview.pageIndex + 1) * contentTodayOverview.pageSize,contentTodayOverview.arrDp.length);
+							
+							contentTodayOverview.colDp.source = contentTodayOverview.arrDp.slice(a,b);
+						}						
+										
+						if(rsf == contentTodayOverview.ropeway)
+							reCalcuXY();
+					}
 					break;
 			}
 		}

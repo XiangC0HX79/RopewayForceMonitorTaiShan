@@ -9,6 +9,8 @@ package app.model.vo
 		
 		public var temp:Number;
 		
+		public var alarm:int = 0;
+		
 		public function EngineTempVO()
 		{
 		}

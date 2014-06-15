@@ -76,7 +76,7 @@ package app.model.vo
 		
 		public function toString():String
 		{
-			return JSON.encode(_source.valueOf());
+			return com.adobe.serialization.json.JSON.encode(_source.valueOf());
 		}
 	}
 }

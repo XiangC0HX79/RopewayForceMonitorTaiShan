@@ -66,7 +66,7 @@ package app.model
 		
 		private function onGetForceHistoryPage(event:ResultEvent):void
 		{			
-			var jd:Object = JSON.decode(String(event.result));
+			var jd:Object = com.adobe.serialization.json.JSON.decode(String(event.result));
 			
 			event.token.totalCount = jd.totalCount;
 			

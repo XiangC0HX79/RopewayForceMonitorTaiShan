@@ -1,5 +1,7 @@
 package app.model.dict
 {
+	import flash.utils.Dictionary;
+	
 	import mx.collections.ArrayCollection;
 
 	[Bindable]
@@ -11,46 +13,39 @@ package app.model.dict
 		
 		public var ropeway:RopewayDict;
 		
+		public var ropewayId:int;
+		
 		public var station:int;
+		
+		public var alarmForce:Number = 50;
+		
+		public static var dict:Dictionary;
 		
 		public function get fullName():String
 		{
 			return ropeway.lable + (station == FIRST?"驱动站":"回转站");
+		}		
+		public function set fullName(value:String):void
+		{
+			//return ropeway.lable + (station == FIRST?"驱动站":"回转站");
 		}
 		
 		public static function get list():ArrayCollection
 		{
 			var r:Array = [];
 			
-			for each(var rw:RopewayDict in RopewayDict.list)
+			for each(var rs:RopewayStationDict in RopewayStationDict.dict)
 			{				
-				var s:RopewayStationDict = new RopewayStationDict;			
-				s.ropeway = rw;
-				s.station = RopewayStationDict.FIRST;	
-				r.push(s);
-				
-				s = new RopewayStationDict();
-				s.ropeway = rw;
-				s.station = RopewayStationDict.SECOND;	
-				r.push(s);
+				r.push(rs);
 			}
+			
+			r.sortOn(["ropewayId","station"],[Array.NUMERIC,Array.NUMERIC]);
 			
 			return new ArrayCollection(r);
 		}
 		
 		public function RopewayStationDict()
 		{
-		}
-		
-		public static function GetRopewayStationByLable(l:String):RopewayStationDict
-		{
-			for each(var rw:RopewayStationDict in list)
-			{
-				if(l == rw.fullName)
-					return rw;
-			}
-			
-			return null;
 		}
 	}
 }

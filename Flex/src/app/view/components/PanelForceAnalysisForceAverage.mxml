@@ -7,7 +7,7 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
-		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
+		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)" selectedValue="@{selStation}"/>
 		
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
@@ -28,25 +28,26 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.RopewayForceAverageVO;
-			
 			import com.adobe.utils.DateUtil;
+			
+			import mx.charts.HitData;
+			import mx.charts.chartClasses.IAxis;
+			import mx.charts.series.items.LineSeriesItem;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.RendererExistenceEvent;
+			
+			import app.model.vo.RopewayForceAverageVO;
 			
 			import custom.itemRenderer.ItemRendererGroup;
 			import custom.itemRenderer.ItemRendererLineChartAve;
 			import custom.itemRenderer.ItemRendererLineChartForce;
 			
-			import mx.charts.HitData;
-			import mx.charts.chartClasses.IAxis;
-			import mx.charts.series.items.LineSeriesItem;
-			import mx.events.FlexEvent;
-			
 			import org.puremvc.as3.interfaces.IMediator;
 			import org.puremvc.as3.interfaces.INotification;
 			import org.puremvc.as3.patterns.mediator.Mediator;
-			
-			import spark.events.IndexChangeEvent;
-			import spark.events.RendererExistenceEvent;
 			
 			public static var ONE_HOUR:Number = 60 * 60 * 1000;
 			
@@ -58,11 +59,17 @@
 			
 			public static var EXPORT:String = "Export";
 			
+			[Bindable]public var selStation:*;
+			
 			[Bindable]public var colStations:ArrayCollection;
 			
-			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
+			[Bindable]public var colCarriage:ArrayCollection;
 			
 			[Bindable]public var colRopewayHis:ArrayCollection;
+						
+			[Bindable]public var mDateS:Date;
+			
+			[Bindable]public var mDateE:Date;
 			
 			public var selectOne:Boolean = false;
 			
@@ -76,7 +83,7 @@
 			{
 				dispatchEvent(new Event(STATION_CHANGE));
 			}
-						
+			
 			public function get dateS():Date
 			{		
 				if(comboTime.selectedIndex == 0)
@@ -185,7 +192,7 @@
 			private function labelTimeAxis(labelValue:Object, previousValue:Object, axis:IAxis):String 
 			{
 				return dateF.format(labelValue);
-			}
+			}			
 		]]>
 	</fx:Script>
 	
@@ -225,15 +232,11 @@
 					</s:layout>
 					<s:HGroup width="100%" verticalAlign="middle">
 						<s:Label text="开始日期："/>
-						<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"
-									  dayNames="['日','一','二','三','四','五','六']"
-									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+						<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
 					</s:HGroup>
 					<s:HGroup width="100%" verticalAlign="middle">
 						<s:Label text="结束日期："/>
-						<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"
-									  dayNames="['日','一','二','三','四','五','六']"
-									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+						<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
 					</s:HGroup>
 				</s:NavigatorContent>
 				<s:NavigatorContent width="100%">
@@ -241,16 +244,12 @@
 						<s:VerticalLayout/>
 					</s:layout>
 					<s:HGroup width="100%" verticalAlign="middle">
-						<s:Label text="开始月份："/>
-						<mx:DateField id="dateMonthS" width="100%" formatString="YYYY-MM" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"
-									  dayNames="['日','一','二','三','四','五','六']"
-									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+						<s:Label text="开始月份："/>	
+						<mx:DateField id="dateMonthS" formatString="YYYY-MM-DD" width="100%" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
 					</s:HGroup>
 					<s:HGroup width="100%" verticalAlign="middle">
 						<s:Label text="结束月份："/>
-						<mx:DateField id="dateMonthE" width="100%" formatString="YYYY-MM" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"
-									  dayNames="['日','一','二','三','四','五','六']"
-									  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+						<mx:DateField id="dateMonthE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
 					</s:HGroup>
 				</s:NavigatorContent>
 			</mx:ViewStack>
@@ -259,12 +258,12 @@
 		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="220" title="统计条件">
 			<s:HGroup verticalAlign="middle" width="100%">
 				<s:Label text="　吊箱编号："/>
-				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
+				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colCarriage}" labelField="ropewayCarId"
 								width="100%" change="listCarId_changeHandler(event)"/>
 			</s:HGroup>	
 			<s:HGroup verticalAlign="middle" width="100%">
 				<s:Label text="抱索器编号："/>
-				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
+				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colCarriage}" labelField="ropewayId"
 								width="100%" change="listRopewayId_changeHandler(event)"/>
 			</s:HGroup>	
 		</components:SkinnableTitleContainer>	

@@ -6,13 +6,11 @@ package app.controller
 	import app.model.EngineTempProxy;
 	import app.model.RopeForceAjustProxy;
 	import app.model.RopewayAlarmAnalysisProxy;
-	import app.model.RopewayAlarmDealProxy;
-	import app.model.RopewayAlarmProxy;
+	import app.model.ForceRealtimeDetectionAlarmProxy;
 	import app.model.CarriageEditHisProxy;
 	import app.model.CarriageProxy;
 	import app.model.RopewayForceAverageProxy;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayProxy;
 	import app.model.RopewaySwitchFreqProxy;
 	import app.model.RopewaySwitchFreqTotalProxy;
 	
@@ -24,9 +22,7 @@ package app.controller
 		override public function execute(note:INotification):void
 		{
 			facade.registerProxy(new ConfigProxy);
-			facade.registerProxy(new RopewayProxy);
-			facade.registerProxy(new RopewayAlarmDealProxy);
-			facade.registerProxy(new RopewayAlarmProxy);
+			facade.registerProxy(new ForceRealtimeDetectionAlarmProxy);
 			facade.registerProxy(new RopewayForceProxy);
 			facade.registerProxy(new RopewayForceAverageProxy);
 			facade.registerProxy(new RopewaySwitchFreqProxy);

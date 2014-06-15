@@ -34,15 +34,17 @@ package app.view
 				
 		private function onMenu(event:Event):void
 		{
+			mainPanelForce.btnSelected = event.type;
+			
 			switch(event.type)
 			{
-				case MainPanelEngineTemp.REALTIME_DETECTION:
-					var mediatorName:String = ContentRealtimeDetectionMediator.NAME;
+				case MainPanelForce.REALTIME_DETECTION:
+					var mediatorName:String = ContentForceRealtimeDetectionMediator.NAME;
 					sendNotification(ApplicationFacade.NOTIFY_MENU_REALTIME_DETECTION);
 					break;
 				
 				case MainPanelForce.TODAY_OVERVIEW:
-					mediatorName = ContentTodayOverviewMediator.NAME;
+					mediatorName = ContentForceTodayOverviewMediator.NAME;
 					sendNotification(ApplicationFacade.NOTIFY_MENU_TODAY_OVERVIEW);
 					break;
 				

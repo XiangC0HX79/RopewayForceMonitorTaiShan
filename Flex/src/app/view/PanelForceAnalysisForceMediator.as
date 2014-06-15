@@ -28,7 +28,6 @@ package app.view
 	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayProxy;
 	import app.model.WebServiceProxy;
 	import app.model.dict.RopewayStationDict;
 	import app.model.vo.CarriageVO;
@@ -73,14 +72,14 @@ package app.view
 					
 		private function onStationChange(event:Event):void
 		{
-			changeStation(panelAnalysisForce.rbgStation.selectedValue as RopewayStationDict);
+			changeStation();
 		}
 		
-		private function changeStation(station:RopewayStationDict):void
+		private function changeStation():void
 		{
 			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 			
-			panelAnalysisForce.colCarriage = carriageProxy.GetCarriageWithForce(station);
+			panelAnalysisForce.colCarriage = carriageProxy.GetCarriageWithForceAll(panelAnalysisForce.selStation);
 		}
 		
 		private function onChart(event:Event):void
@@ -113,7 +112,7 @@ package app.view
 			
 			var dateS:Date = panelAnalysisForce.dateS;
 			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = panelAnalysisForce.rbgStation.selectedValue.fullName;
+			var station:String = panelAnalysisForce.selStation.fullName;
 			var tempMin:String = panelAnalysisForce.numTempMin.text;
 			var tempMax:String = panelAnalysisForce.numTempMax.text;
 			
@@ -173,7 +172,7 @@ package app.view
 			
 			var dateS:Date = panelAnalysisForce.dateS;
 			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = panelAnalysisForce.rbgStation.selectedValue.fullName;
+			var station:String = panelAnalysisForce.selStation.fullName;
 			var ropewayId:String = panelAnalysisForce.listRopewayId.selectedItem.ropewayId;
 			var tempMin:String = panelAnalysisForce.numTempMin.text;
 			var tempMax:String = panelAnalysisForce.numTempMax.text;
@@ -262,7 +261,7 @@ package app.view
 			
 			var dateS:Date = panelAnalysisForce.dateS;
 			var dateE:Date= panelAnalysisForce.dateE;
-			var station:String = String(panelAnalysisForce.rbgStation.selectedValue);
+			var station:String = panelAnalysisForce.selStation.fullName;
 			var tempMin:String = panelAnalysisForce.numTempMin.text;
 			var tempMax:String = panelAnalysisForce.numTempMax.text;
 			
@@ -335,9 +334,9 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 					panelAnalysisForce.colStations = RopewayStationDict.list;	
 					
-					panelAnalysisForce.rbgStation.selectedValue = RopewayStationDict.list[0].fullName;
+					panelAnalysisForce.selStation = panelAnalysisForce.colStations[0];
 					
-					changeStation(RopewayStationDict.list[0]);
+					changeStation();
 					break;
 			}
 		}

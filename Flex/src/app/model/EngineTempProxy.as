@@ -36,6 +36,24 @@ package app.model
 			return null;
 		}
 		
+		public function Init():void
+		{
+			list.removeAll();
+			
+			for each(var rw:RopewayDict in RopewayDict.dict)
+			{
+				var e:EngineVO = new EngineVO;
+				e.ropeway = rw;
+				e.pos = EngineVO.FIRST;
+				list.addItem(e);
+				
+				e = new EngineVO;
+				e.ropeway = rw;
+				e.pos = EngineVO.SECOND;
+				list.addItem(e);
+			}
+		}
+		
 		public function InitHistory(e:EngineVO):void
 		{
 			

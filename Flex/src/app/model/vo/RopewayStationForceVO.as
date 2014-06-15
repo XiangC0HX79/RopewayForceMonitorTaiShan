@@ -60,7 +60,7 @@ package app.model.vo
 		 **/
 		public function get ropewayStation():RopewayStationDict
 		{
-			return RopewayStationDict.GetRopewayStationByLable(_source.FromRopeStation);
+			return RopewayStationDict.dict[_source.FromRopeStation];
 		}
 		public function set ropewayStation(value:RopewayStationDict):void
 		{
@@ -164,7 +164,7 @@ package app.model.vo
 		 **/
 		public function get switchFreq():Number
 		{
-			return _source.SwitchFreq;
+			return isNaN(_source.SwitchFreq)?0:_source.SwitchFreq;
 		}
 		public function set switchFreq(value:Number):void
 		{
@@ -200,7 +200,7 @@ package app.model.vo
 		 **/
 		public function get totalValue():Number
 		{
-			return _source.TotalValue;
+			return _source.TotalValue?_source.TotalValue:0;
 		}
 		public function set totalValue(value:Number):void
 		{

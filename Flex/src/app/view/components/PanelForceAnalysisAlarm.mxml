@@ -7,7 +7,7 @@
 		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>
 		
 		<s:SolidColorStroke id="lineStoke" weight="1"/>
-		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
+		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)" selectedValue="@{selStation}"/>
 		
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
@@ -44,9 +44,11 @@
 			
 			public static var STATION_CHANGE:String = "StaionChange";
 			
+			[Bindable]public var selStation:*;
+			
 			[Bindable]public var colStations:ArrayCollection;
 			
-			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
+			[Bindable]public var colCarriage:ArrayCollection = new ArrayCollection;
 			
 			[Bindable]public var colRopewayHis:ArrayCollection;
 			
@@ -137,18 +139,14 @@
 		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="280" title="查询时间">
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="开始时间："/>
-				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-							  dayNames="['日','一','二','三','四','五','六']"
-							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"/>
 				<s:TextInput id="textHourS" width="30" restrict="0-9"/>
 				<s:Label text=":"/>
 				<s:TextInput id="textMinS" width="30" restrict="0-9"/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="结束时间："/>
-				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"
-							  dayNames="['日','一','二','三','四','五','六']"
-							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{new Date}"/>
 				<s:TextInput id="textHourE" width="30" restrict="0-9"/>
 				<s:Label text=":"/>
 				<s:TextInput id="textMinE" width="30" restrict="0-9"/>
@@ -158,12 +156,12 @@
 		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="220" title="查询条件">
 			<s:HGroup verticalAlign="middle" width="100%">
 				<s:Label text="　吊箱编号："/>
-				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
+				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colCarriage}" labelField="ropewayCarId"
 								width="100%" change="listCarId_changeHandler(event)"/>
 			</s:HGroup>	
 			<s:HGroup verticalAlign="middle" width="100%">
 				<s:Label text="抱索器编号："/>
-				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
+				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colCarriage}" labelField="ropewayId"
 								width="100%" change="listRopewayId_changeHandler(event)"/>
 			</s:HGroup>	
 		</components:SkinnableTitleContainer>	

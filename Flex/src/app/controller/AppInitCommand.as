@@ -1,6 +1,7 @@
 package app.controller
 {
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.AsyncResponder;
@@ -13,7 +14,9 @@ package app.controller
 	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
+	import app.model.ForceRealtimeDetectionAlarmProxy;
 	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
 	import app.model.vo.EngineVO;
 	
 	import org.puremvc.as3.interfaces.ICommand;
@@ -22,30 +25,27 @@ package app.controller
 	
 	public class AppInitCommand extends SimpleCommand implements ICommand
 	{
-		private static const INITCOUNT:Number = 2;
+		private static const INITCOUNT:Number = 3;
 		
-		private static var _init:Number = 0;
-		
-		private static var _ropewayId:int = 0;
-		
+		private static var _init:Number;
+				
 		override public function execute(note:INotification):void
 		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"初始化数据...");
+			
+			_init = 0;
+			
 			var application:Application = note.getBody() as Application;
-			
-			_ropewayId = int(application.parameters.station);
-			
+						
 			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			
-			configProxy.InitConfig(application.parameters.station,onLocaleConfigResult);
+			configProxy.InitConfig(onLocaleConfigResult);
 		}
 		
 		private function appInit():void
 		{
 			if(++_init == INITCOUNT)
-			{							
-				var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;	
-				configProxy.config.ropeway = RopewayDict.dict[_ropewayId]?RopewayDict.dict[_ropewayId]:RopewayDict.list[0];
-				
+			{											
 				sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
 				
 				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
@@ -60,28 +60,39 @@ package app.controller
 		private function onLocaleConfigResult(event:Event):void
 		{			
 			//初始化索道
+			RopewayDict.dict = new Dictionary;			
 			RopewayDict.dict[RopewayDict.ZHONG_TIAN_MEN.id] = RopewayDict.ZHONG_TIAN_MEN;
 			RopewayDict.dict[RopewayDict.TAO_HUA_YUAN.id] = RopewayDict.TAO_HUA_YUAN;
-						
+			
+			//初始化索道站			
+			RopewayStationDict.dict = new Dictionary;
+			for each(var rw:RopewayDict in RopewayDict.list)
+			{				
+				var s:RopewayStationDict = new RopewayStationDict;			
+				s.ropeway = rw;
+				s.ropewayId = rw.id;
+				s.station = RopewayStationDict.FIRST;	
+				RopewayStationDict.dict[s.fullName] = s;
+				
+				s = new RopewayStationDict();
+				s.ropeway = rw;
+				s.ropewayId = rw.id;
+				s.station = RopewayStationDict.SECOND;	
+				RopewayStationDict.dict[s.fullName] = s;
+			}
+			
 			//初始化动力室
 			var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;
-			for each(var rw:RopewayDict in RopewayDict.dict)
-			{
-				var e:EngineVO = new EngineVO;
-				e.ropeway = rw;
-				e.pos = EngineVO.FIRST;
-				engineTempProxy.list.addItem(e);
-				
-				e = new EngineVO;
-				e.ropeway = rw;
-				e.pos = EngineVO.SECOND;
-				engineTempProxy.list.addItem(e);
-			}
+			engineTempProxy.Init();
 			
 			//初始化吊箱
 			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 			carriageProxy.Init().addResponder(new AsyncResponder(onCarriageInit,onFault));
 			
+			//初始化报警列表
+			var ropewayAlarmDealProxy:ForceRealtimeDetectionAlarmProxy = facade.retrieveProxy(ForceRealtimeDetectionAlarmProxy.NAME) as ForceRealtimeDetectionAlarmProxy;
+			ropewayAlarmDealProxy.Init().addResponder(new AsyncResponder(onForceAlarmInit,onFault));
+						
 			appInit();
 		}
 		
@@ -95,6 +106,10 @@ package app.controller
 		{		
 			appInit();
 		}
-
+		
+		private function onForceAlarmInit(result:Object, token:Object = null):void
+		{						
+			appInit();	
+		}
 	}
 }

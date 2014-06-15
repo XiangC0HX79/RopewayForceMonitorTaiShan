@@ -24,9 +24,7 @@ package app.view
 			toolbarTop.addEventListener(ToolbarTop.OVERVIEW,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.FORCE,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.ENGINETEMP,onMenu);
-			
-			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-			toolbarTop.config = configProxy.config;
+			toolbarTop.addEventListener(ToolbarTop.INCH,onMenu);
 		}
 		
 		protected function get toolbarTop():ToolbarTop
@@ -36,7 +34,7 @@ package app.view
 		
 		private function onStation(event:Event):void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_CHANGE);
+			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_CHANGE,toolbarTop.selRopeway);
 		}
 		
 		private function onMenu(event:Event):void
@@ -54,6 +52,9 @@ package app.view
 				case ToolbarTop.ENGINETEMP:
 					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP);
 					break;
+				
+				case ToolbarTop.INCH:
+					break;
 			}
 		}
 		
@@ -69,9 +70,11 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					toolbarTop.groupStation.dataProvider = RopewayDict.list;
+					toolbarTop.colRopeway = RopewayDict.list;
 					
-					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_CHANGE);
+					toolbarTop.selRopeway = toolbarTop.colRopeway[0];
+					
+					onStation(null);
 					break;
 			}
 		}		

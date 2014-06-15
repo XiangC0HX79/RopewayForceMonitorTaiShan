@@ -23,50 +23,49 @@ package app.view
 	import mx.utils.ObjectProxy;
 	
 	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
-	import app.model.RopewayProxy;
 	import app.model.RopewaySwitchFreqProxy;
 	import app.model.WebServiceProxy;
+	import app.model.dict.RopewayStationDict;
 	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.RopewayStationForceVO;
 	import app.model.vo.RopewaySwitchFreqVO;
-	import app.view.components.PanelAnalysisOpenCount;
+	import app.view.components.PanelForceAnalysisOpenCount;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelAnalysisOpenCountMediator extends Mediator implements IMediator
+	public class PanelForceAnalysisOpenCountMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelAnalysisOpenCountMediator";
+		public static const NAME:String = "PanelForceAnalysisOpenCountMediator";
 		
 		private var _ropewaySwitchFreqProxy:RopewaySwitchFreqProxy;
 		
-		public function PanelAnalysisOpenCountMediator()
+		public function PanelForceAnalysisOpenCountMediator()
 		{
-			super(NAME, new PanelAnalysisOpenCount);
+			super(NAME, new PanelForceAnalysisOpenCount);
 			
-			panelAnalysisOpenCount.addEventListener(PanelAnalysisOpenCount.QUERY,onQuery);
-			panelAnalysisOpenCount.addEventListener(PanelAnalysisOpenCount.STATION_CHANGE,onStationChange);
-			panelAnalysisOpenCount.addEventListener(PanelAnalysisOpenCount.SELECT_ONE,onSelectOne);
+			panelAnalysisOpenCount.addEventListener(PanelForceAnalysisOpenCount.QUERY,onQuery);
+			panelAnalysisOpenCount.addEventListener(PanelForceAnalysisOpenCount.STATION_CHANGE,onStationChange);
+			panelAnalysisOpenCount.addEventListener(PanelForceAnalysisOpenCount.SELECT_ONE,onSelectOne);
 			
-			panelAnalysisOpenCount.addEventListener(PanelAnalysisOpenCount.EXPORT,onExport);
+			panelAnalysisOpenCount.addEventListener(PanelForceAnalysisOpenCount.EXPORT,onExport);
 			
 			_ropewaySwitchFreqProxy = facade.retrieveProxy(RopewaySwitchFreqProxy.NAME) as RopewaySwitchFreqProxy;
 			panelAnalysisOpenCount.colSwitchFreq = _ropewaySwitchFreqProxy.colSwitchFreq;
 		}
 		
-		protected function get panelAnalysisOpenCount():PanelAnalysisOpenCount
+		protected function get panelAnalysisOpenCount():PanelForceAnalysisOpenCount
 		{
-			return viewComponent as PanelAnalysisOpenCount;
+			return viewComponent as PanelForceAnalysisOpenCount;
 		}
 		
 		private function onStationChange(event:Event):void
 		{
-			var station:String = String(panelAnalysisOpenCount.rbgStation.selectedValue);
-			
-			changeStation(station);
+			changeStation();
 		}
 		
 		private function onQuery(event:Event):void
@@ -82,7 +81,7 @@ package app.view
 			_ropewaySwitchFreqProxy.GetSwitchFreqCol(
 				panelAnalysisOpenCount.dateS
 				,panelAnalysisOpenCount.dateE
-				,String(panelAnalysisOpenCount.rbgStation.selectedValue)
+				,panelAnalysisOpenCount.selStation.fullName
 				,panelAnalysisOpenCount.listRopewayId.selectedItem.ropewayId
 				,panelAnalysisOpenCount.comboTime.selectedIndex
 			);
@@ -93,27 +92,11 @@ package app.view
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号再切换至图形。");
 		}			
 		
-		private function changeStation(station:String):void
+		private function changeStation():void
 		{
-			var arr:Array = [];
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 			
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayStationForceVO in proxy.colRopeway)
-				{
-					//if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
-			}
-			
-			arr.sortOn("ropewayCarId");
-			
-			arr.unshift(CarriageVO.ALL);
-			
-			panelAnalysisOpenCount.colRopeway.source = arr;
+			panelAnalysisOpenCount.colCarriage = carriageProxy.GetCarriageWithForceAll(panelAnalysisOpenCount.selStation);
 		}		
 		
 		private const xltname:String = "开合次数";	
@@ -196,15 +179,11 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					panelAnalysisOpenCount.colStations = RopewayStationDict.list;	
 					
-					panelAnalysisOpenCount.colStations = proxy.config.stations;	
+					panelAnalysisOpenCount.selStation = panelAnalysisOpenCount.colStations[0];
 					
-					panelAnalysisOpenCount.colRopeway.source = [CarriageVO.ALL];
-					
-					panelAnalysisOpenCount.rbgStation.selectedValue = proxy.config.stations[0];
-					
-					changeStation(proxy.config.stations[0]);
+					changeStation();
 					break;
 			}
 		}

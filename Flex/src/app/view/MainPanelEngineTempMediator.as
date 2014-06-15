@@ -31,6 +31,8 @@ package app.view
 		
 		private function onMenu(event:Event):void
 		{
+			mainPanelEngineTemp.btnSelected = event.type;
+			
 			switch(event.type)
 			{
 				case MainPanelEngineTemp.REALTIME_DETECTION:

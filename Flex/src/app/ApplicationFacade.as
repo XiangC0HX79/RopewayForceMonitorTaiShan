@@ -1,11 +1,12 @@
 package app
 {
+	import spark.components.Application;
+	
+	import app.controller.AppInitCommand;
 	import app.controller.StartupCommand;
 	
 	import org.puremvc.as3.interfaces.IFacade;
 	import org.puremvc.as3.patterns.facade.Facade;
-	
-	import spark.components.Application;
 	
 	public class ApplicationFacade extends Facade implements IFacade
 	{
@@ -98,7 +99,10 @@ package app
 		 * 索道信息初始化完成
 		 **/
 		//public static const NOTIFY_INIT_ROPEWAY_COMPLETE:String 	= "InitRopewayComplete";
-				
+		
+		
+		public static const NOTIFY_INIT_APP:String 					= "InitApp";
+		
 		/**
 		 * 程序初始化完成
 		 **/
@@ -204,6 +208,11 @@ package app
 		public static const NOTIFY_ROPEWAY_INFO_SET:String 		= "RopewayInfoSet";
 		
 		/**
+		 * Socket同步
+		 **/
+		public static const NOTIFY_SOCKET_KEEP:String 			= "SocketKeep";
+		
+		/**
 		 * 新建抱索器
 		 * <p></p>
 		 * <table>
@@ -252,6 +261,8 @@ package app
 			super.initializeController();
 			
 			registerCommand( STARTUP, StartupCommand );	
+			
+			registerCommand( NOTIFY_INIT_APP, AppInitCommand);
 		}
 	}
 }

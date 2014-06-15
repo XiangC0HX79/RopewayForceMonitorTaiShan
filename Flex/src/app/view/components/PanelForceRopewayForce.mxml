@@ -27,6 +27,8 @@
 			
 			import app.model.vo.ConfigVO;
 			import app.model.vo.RopewayStationForceVO;
+						
+			[Bindable]public var pin:Boolean;
 			
 			[Bindable]private var _color:int;
 			
@@ -85,7 +87,7 @@
 		<s:Label text="吊箱信息 - {_ropeway.ropewayId}" fontWeight="bold"/>
 		<s:Spacer width="100%"/>
 		<s:ToggleButton id="btnPin" width="20" height="20" buttonMode="true"
-						skinClass="custom.skin.SkinToggleButtonPin"/>		
+						skinClass="custom.skin.SkinToggleButtonPin" selected="@{pin}"/>		
 	</s:HGroup>
 	
 	<s:Group left="20" right="15" top="35" bottom="10" clipAndEnableScrolling="true" color="{_color}">			

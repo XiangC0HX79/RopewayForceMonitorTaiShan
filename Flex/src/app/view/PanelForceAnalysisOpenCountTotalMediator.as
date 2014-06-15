@@ -24,98 +24,58 @@ package app.view
 	
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
-	import app.model.RopewayAlarmAnalysisProxy;
-	import app.model.RopewayProxy;
+	import app.model.RopewaySwitchFreqTotalProxy;
 	import app.model.WebServiceProxy;
-	import app.model.vo.CarriageVO;
+	import app.model.dict.RopewayStationDict;
 	import app.model.vo.ConfigVO;
-	import app.model.vo.RopewayAlarmVO;
-	import app.model.vo.RopewayStationForceVO;
-	import app.view.components.PanelAnalysisAlarm;
+	import app.model.vo.RopewaySwitchFreqTotalVO;
+	import app.view.components.PanelForceAnalysisOpenCountTotal;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelAnalysisAlarmMediator extends Mediator implements IMediator
+	public class PanelForceAnalysisOpenCountTotalMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelAnalysisAlarmMediator";
+		public static const NAME:String = "PanelForceAnalysisOpenCountTotalMediator";
 		
-		private var _ropewayAlarmAnalysisProxy:RopewayAlarmAnalysisProxy;
+		private var _ropewaySwitchFreqTotalProxy:RopewaySwitchFreqTotalProxy;
 		
-		public function PanelAnalysisAlarmMediator()
+		public function PanelForceAnalysisOpenCountTotalMediator()
 		{
-			super(NAME,new PanelAnalysisAlarm);
+			super(NAME, new PanelForceAnalysisOpenCountTotal);
 			
-			panelAnalysisAlarm.addEventListener(PanelAnalysisAlarm.QUERY,onQuery);
-			panelAnalysisAlarm.addEventListener(PanelAnalysisAlarm.STATION_CHANGE,onStationChange);
+			panelAnalysisOpenCountTotal.addEventListener(PanelForceAnalysisOpenCountTotal.QUERY,onQuery);
 			
-			panelAnalysisAlarm.addEventListener(PanelAnalysisAlarm.EXPORT,onExport);
+			panelAnalysisOpenCountTotal.addEventListener(PanelForceAnalysisOpenCountTotal.EXPORT,onExport);
 			
-			_ropewayAlarmAnalysisProxy = facade.retrieveProxy(RopewayAlarmAnalysisProxy.NAME) as RopewayAlarmAnalysisProxy;
-			panelAnalysisAlarm.colRopewayHis = _ropewayAlarmAnalysisProxy.colAlarm;
+			_ropewaySwitchFreqTotalProxy = facade.retrieveProxy(RopewaySwitchFreqTotalProxy.NAME) as RopewaySwitchFreqTotalProxy;
+			panelAnalysisOpenCountTotal.colSwitchFreq = _ropewaySwitchFreqTotalProxy.colSwitchFreq;
 		}
 		
-		protected function get panelAnalysisAlarm():PanelAnalysisAlarm
+		protected function get panelAnalysisOpenCountTotal():PanelForceAnalysisOpenCountTotal
 		{
-			return viewComponent as PanelAnalysisAlarm;
-		}
-		
-		private function onStationChange(event:Event):void
-		{			
-			var station:String = String(panelAnalysisAlarm.rbgStation.selectedValue);
-			changeStation(station);
-		}
-		
-		private function onGetRopewayList(event:ResultEvent,t:Object):void
-		{
-			var arr:Array = [CarriageVO.ALL];
-			for each(var o:ObjectProxy in event.result)
-			{
-				var rw:RopewayStationForceVO = new RopewayStationForceVO(o);
-				arr.push(rw);
-			}
-			panelAnalysisAlarm.colRopeway = new ArrayCollection(arr);
+			return viewComponent as PanelForceAnalysisOpenCountTotal;
 		}
 		
 		private function onQuery(event:Event):void
 		{
-			if(panelAnalysisAlarm.dateE.time < panelAnalysisAlarm.dateS.time)
+			if(panelAnalysisOpenCountTotal.checkDatetime.selected
+				&& (panelAnalysisOpenCountTotal.dateE.time < panelAnalysisOpenCountTotal.dateS.time))
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"查询时间段结束时间不能小于开始时间。");
 				return;
-			}			
-			var token:AsyncToken = _ropewayAlarmAnalysisProxy.GetAlarmCol(
-				panelAnalysisAlarm.dateS
-				,panelAnalysisAlarm.dateE
-				,String(panelAnalysisAlarm.rbgStation.selectedValue)
-				,panelAnalysisAlarm.listRopewayId.selectedItem.ropewayId
-			);;
-		}	
-		
-		private function changeStation(station:String):void
-		{
-			var arr:Array = [];
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayStationForceVO in proxy.colRopeway)
-				{
-					//if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
 			}
 			
-			arr.sortOn("ropewayCarId");
-			
-			arr.unshift(CarriageVO.ALL);
-			
-			panelAnalysisAlarm.colRopeway.source = arr;
-		}	
+			_ropewaySwitchFreqTotalProxy.GetSwitchFreqCol(
+				panelAnalysisOpenCountTotal.dateS
+				,panelAnalysisOpenCountTotal.dateE
+				,panelAnalysisOpenCountTotal.selStation.fullName
+				,panelAnalysisOpenCountTotal.checkDatetime.selected
+			);
+		}
 				
-		private const xltname:String = "报警信息";	
+		private const xltname:String = "总开合次数";	
 		
 		private function onExport(event:Event):void
 		{			
@@ -126,13 +86,32 @@ package app.view
 			urlVar.xltname = xltname;
 			
 			var data:String = "[";
-			for each(var rf:RopewayAlarmVO in panelAnalysisAlarm.colRopewayHis)
+			for each(var rf:RopewaySwitchFreqTotalVO in panelAnalysisOpenCountTotal.colSwitchFreq)
 			{
 				data += rf.toString() + ",";
 			}
 			data = data.substr(0,data.length - 1) + "]";
 			urlVar.data = data;
-						
+			
+			if(panelAnalysisOpenCountTotal.btnBar.selectedIndex == 0)
+			{					
+				var imgBD:BitmapData = new BitmapData(panelAnalysisOpenCountTotal.containerChart.width,panelAnalysisOpenCountTotal.containerChart.height,false,0xFFFFFF);
+				imgBD.draw(panelAnalysisOpenCountTotal.containerChart);
+				
+				var jpegEncoder:JPEGEncoder = new JPEGEncoder;
+				var ba:ByteArray = jpegEncoder.encode(imgBD);
+				ba.position = 0;
+				
+				var image:String = "";
+				while(ba.bytesAvailable)
+				{
+					var n:Number = ba.readUnsignedByte();
+					image += (n <= 0xF)?"0" + n.toString(16):n.toString(16);
+				}
+				
+				urlVar.image = image;
+			}
+			
 			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
 			downloadURL.method = URLRequestMethod.POST;
 			downloadURL.contentType = "text/plain";	
@@ -176,15 +155,9 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					panelAnalysisOpenCountTotal.colStations = RopewayStationDict.list;	
 					
-					panelAnalysisAlarm.colStations = proxy.config.stations;	
-					
-					panelAnalysisAlarm.colRopeway.source = [CarriageVO.ALL];
-					
-					panelAnalysisAlarm.rbgStation.selectedValue = proxy.config.stations[0];
-					
-					changeStation(proxy.config.stations[0]);
+					panelAnalysisOpenCountTotal.selStation = panelAnalysisOpenCountTotal.colStations[0];
 					break;
 			}
 		}

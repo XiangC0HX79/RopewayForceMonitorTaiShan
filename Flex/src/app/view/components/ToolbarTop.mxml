@@ -4,6 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
 			import spark.components.RadioButton;
 			import spark.events.RendererExistenceEvent;
 			
@@ -18,30 +20,29 @@
 			public static const INCH:String = "Inch";
 			public static const WIND:String = "Wind";
 			
-			[Bindable]public var config:ConfigVO;
+			[Bindable]public var selRopeway:*;
+			
+			[Bindable]public var colRopeway:ArrayCollection;
 			
 			protected function groupStation_rendererAddHandler(event:RendererExistenceEvent):void
 			{
 				// TODO Auto-generated method stub
 				var rb:RadioButton = (event.renderer as Object).radioButton as RadioButton;				
 				rb.group = radioGroupStation;
-				
-				if(event.data == RopewayDict.ZHONG_TIAN_MEN)
-					rb.selected = true;
 			}			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:RadioButtonGroup id="radioGroupStation" selectedValue="@{config.ropeway}" change="dispatchEvent(new Event(STATION))"/>
+		<s:RadioButtonGroup id="radioGroupStation" selectedValue="@{selRopeway}" change="dispatchEvent(new Event(STATION))"/>
 	</fx:Declarations>
 	
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
 	</s:layout>
 	
-	<s:DataGroup id="groupStation"
+	<s:DataGroup dataProvider="{colRopeway}"
 				 rendererAdd="groupStation_rendererAddHandler(event)">
 		<s:layout>
 			<s:HorizontalLayout gap="20"/>

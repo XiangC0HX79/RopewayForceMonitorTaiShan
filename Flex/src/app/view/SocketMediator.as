@@ -10,6 +10,7 @@ package app.view
 	import flash.net.Socket;
 	import flash.system.Security;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
 	import mx.rpc.AsyncResponder;
@@ -22,9 +23,8 @@ package app.view
 	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
-	import app.model.RopewayAlarmProxy;
-	import app.model.RopewayProxy;
 	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
 	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.EngineTempVO;
@@ -41,11 +41,7 @@ package app.view
 		public static const NAME:String = "SocketMediator";
 		
 		private var _errorCount:Number = 0;
-		
-		private var _config:ConfigVO;
-		
-		private var _ropewayProxy:RopewayProxy;
-		
+				
 		public function SocketMediator()
 		{
 			super(NAME, new Socket);			
@@ -56,11 +52,9 @@ package app.view
 			socket.addEventListener(IOErrorEvent.IO_ERROR,onConnectError);			
 			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onConnectError);
 			
-			var timer:Timer = new Timer(30000);
+		/*	var timer:Timer = new Timer(30000);
 			timer.addEventListener(TimerEvent.TIMER,onTimer);
-			timer.start();
-			
-			_ropewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			timer.start();*/
 		}
 		
 		protected function get socket():Socket
@@ -71,10 +65,12 @@ package app.view
 		private function connect():void
 		{
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
+			
+			var config:ConfigVO = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).config;
+			
+			socket.connect(config.serverIp,config.serverPort);
 				
-			socket.connect(_config.serverIp,_config.serverPort);
-				
-			Security.loadPolicyFile("xmlsocket://" + _config.serverIp + ":" + _config.serverPort);
+			Security.loadPolicyFile("xmlsocket://" + config.serverIp + ":" + config.serverPort);
 			
 			_errorCount ++;
 			
@@ -113,13 +109,7 @@ package app.view
 				//如出现Error: Error #2030: 遇到文件尾错误，请用：str=socket.readUTFBytes(socket.bytesAvailable);				
 			}
 			
-			if(!_rec)
-			{
-				//if(!ConfigVO.debug)
-				//	_rec = true;
-				
-				decodeSocketData(bytesArray);
-			}
+			decodeSocketData(bytesArray);
 			
 			bytesArray= new ByteArray;
 		}  
@@ -152,7 +142,7 @@ package app.view
 				switch(a[0])
 				{	
 					case "FC":
-						//decodeRopewayForce(a.slice(1));
+						decodeRopewayForce(a.slice(1));
 						break;
 					
 					case "ET":
@@ -175,36 +165,19 @@ package app.view
 						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,e);
 						break;
 					
-					case "ALARM":
-						if(a[1] == _config.station)
-							sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME);
+					case "AL":
+						var rs:RopewayStationDict = RopewayStationDict.dict[a[1]];
+						if(rs)
+						{
+							sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_ALARM_REALTIME,rs);
+						}
 						break;
 				}
 			}
 		}
 		
 		private function decodeRopewayForce(a:Array):void
-		{
-			var station:String = a[7];
-			var ropeCode:String = a[1];
-			
-			var rw:RopewayDict;
-			
-			for each(var item:RopewayDict in RopewayDict.dict)
-			{
-				if(station.indexOf(item.lable) >= 0)
-				{
-					rw = item;
-					break;
-				}					
-			}
-			
-			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
-			var carriage:CarriageVO;// = carriageProxy.getCarriage(ropeCode,rw);
-			
-			if(!carriage)return;
-			carriage.eletric = (a[6] == "0");
-			
+		{			
 			var rf:ForceVO = new ForceVO(new ObjectProxy({}));			
 			var sd:String = String(a[0]).replace(/-/g,"/");
 			rf.ropewayTime = new Date(Date.parse(sd));
@@ -214,103 +187,12 @@ package app.view
 			rf.ropewayTemp = a[4];
 			rf.ropewayHumidity = a[5];
 			rf.fromRopeStation = a[7];
-						
-			/*if(station.indexOf("驱动站") >= 0)
-				carriage.fstHistory.addItem(rf);
-			else if(station.indexOf("回转站") >= 0)
-				carriage.sndHistory.addItem(rf);*/
 			
-			sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE,carriage);
-			/*var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
-			if(rw)
-			{
-				rw.ropewayRFIDEletric = eletric;
-				
-				if(rw.ropewayHistory)
-				{					
-					_ropewayProxy.PushRopewayForce(rw,rf);
-					
-					if(rw.ropewayStation == _config.station)
-						sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-				}
-				else
-				{
-					var token:AsyncToken = _ropewayProxy.LoadRopeWayForceHis(rw);
-					token.addResponder(new AsyncResponder(onLoadRopeWayForceHis,function(fault:FaultEvent,t:Object):void{}));
-					token.ropeway = rw;
-					token.ropewayForce = rf;
-				}
-			}
-			else
-			{				
-				token = _ropewayProxy.FindRopewayByForce(rf);
-				token.addResponder(new AsyncResponder(onFindRopewayByForce,function(fault:FaultEvent,t:Object):void{}));
-				token.ropewayForce = rf;
-				token.eletric = eletric;
-			}*/
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
+			carriageProxy.AddForce(rf,a[6]);
+			
 		}
-		
-		
-		/*private function onLoadRopeWayForceHis(event:ResultEvent,t:Object):void
-		{			
-			var rw:RopewayVO = event.token.ropeway;
-			
-			if(rw.ropewayStation == _config.station)
-				sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-		}
-		
-		private function onFindRopewayByForce(event:ResultEvent,t:Object):void
-		{			
-			if(event.result)
-			{
-				var rw:RopewayVO =  event.token.ropeway as RopewayVO;
-				rw.ropewayRFIDEletric = event.token.eletric;
 				
-				if(rw.ropewayStation == _config.station)
-					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-			}
-		}*/
-		
-	/*	private function onAddRopewayResult(event:ResultEvent,t:Object):void
-		{						
-			if(event.result)
-			{
-				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
-				
-				var rw:RopewayVO = new RopewayVO(event.result as ObjectProxy);
-				
-				rw.lastRopewayForce = rf;
-				
-				_ropewayProxy.colRopeway.addItem(rw);
-				
-				if(rw.ropewayStation == _config.station)
-					sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
-			}
-		}*/
-		
-		private var _rec:Boolean = false;
-		
-		private var _oldTime:Date = new Date;
-		
-		private function onTimer(event:Event):void
-		{			
-			_rec = false;
-			
-			var now:Date = new Date;
-			
-			if(_oldTime.toLocaleDateString() != now.toLocaleDateString())
-			{
-				for each(var r:RopewayStationForceVO in _ropewayProxy.colRopeway)
-				{
-					r.ropewayHistory = [];
-				}
-			}
-							
-			_oldTime = now;
-			
-			sendSocketData("KEEP");
-		}
-		
 		private function sendSocketData(socketData:String):void
 		{
 			if(socket.connected)
@@ -325,7 +207,9 @@ package app.view
 			return [
 				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
-				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET
+				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET,
+				
+				ApplicationFacade.NOTIFY_SOCKET_KEEP
 			];
 		}
 		
@@ -334,13 +218,15 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
-					_config = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).config;
-					
 					connect();
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET:
 					sendSocketData("RFID");
+					break;
+				
+				case ApplicationFacade.NOTIFY_SOCKET_KEEP:
+					sendSocketData("KEEP");
 					break;
 			}
 		}

@@ -1,5 +1,8 @@
 package app.model
 {
+	import com.adobe.serialization.json.JSON;
+	import com.adobe.utils.DateUtil;
+	
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
@@ -34,6 +37,33 @@ package app.model
 		{
 			return data as Dictionary;
 		}
+		
+		public function GetRopewayStationForce(rs:RopewayStationDict):Array
+		{			
+			var r:Array = [];
+			
+			for each(var c:CarriageVO in dict)
+			{
+				if((c.ropeWay == rs.ropeway) && (c.isUse))
+				{
+					if(c.fstForce 
+						&& (rs.station == RopewayStationDict.FIRST)
+						&& (c.fstForce.deteDate.toDateString() == (new Date).toDateString())
+					)
+						r.push(c.fstForce);
+					
+					if(c.sndForce 
+						&& (rs.station == RopewayStationDict.SECOND)
+						&& (c.sndForce.deteDate.toDateString() == (new Date).toDateString())
+					)
+						r.push(c.sndForce);
+				}
+			}	
+			
+			r.sortOn("ropewayCarId");
+			
+			return r;
+		}
 				
 		public function GetCarriage(ropeway:RopewayDict):ArrayCollection
 		{
@@ -47,14 +77,14 @@ package app.model
 			
 			return new ArrayCollection(r);
 		}
-		
-		public function GetCarriageWithForce(rs:RopewayStationDict):ArrayCollection
+				
+		public function GetCarriageWithForceAll(rs:RopewayStationDict):ArrayCollection
 		{
 			var r:Array = [];
 			
 			for each(var c:CarriageVO in dict)
 			{
-				if((c.ropeWay == rs.ropeway) 
+				if((c.ropeWay == rs.ropeway) && (c.isUse)
 					&& (
 						(c.fstForce && (rs.station == RopewayStationDict.FIRST))
 						||
@@ -72,17 +102,20 @@ package app.model
 		
 		public function Init():AsyncToken
 		{
-			//var where:String = "FromRopeWay = '" + ropeway.fullName + "'";
-			
 			return send2("RopeDete_RopeCarriageRela_GetList",onInit,"");
 		}
 		
 		private function onInit(event:ResultEvent):void
 		{
+			setData(new Dictionary);
+			
 			for each(var o:ObjectProxy in event.result)
 			{
 				var c:CarriageVO = new CarriageVO(o);
-				dict[c.id] = c;
+				
+				var key:String = c.ropeWay.fullName + "|" + c.ropewayId;
+				
+				dict[key] = c;
 			}
 		}
 		
@@ -197,6 +230,145 @@ package app.model
 			{
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"吊箱'" + info.ropewayCarId + "'信息删除失败。");				
 			}
+		}
+		
+		public function AddForce(force:ForceVO,eletric:String):void
+		{
+			var rws:RopewayStationDict = RopewayStationDict.dict[force.fromRopeStation];
+			if(!rws)return;
+			
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;			
+			var key:String = rws.ropeway.fullName + "|" + force.ropewayId;			
+			var carriage:CarriageVO = carriageProxy.dict[key];			
+			if(!carriage)return;
+			
+			carriage.eletric = (eletric == "0");
+			
+			if(rws.station == RopewayStationDict.FIRST)
+			{
+				if(carriage.fstForce)
+				{
+					if(!carriage.fstForce.ropewayHistory)
+					{
+						var where:String = "RopeCode = '" + carriage.ropewayId + "' AND FromRopeStation = '" + rws.fullName + "' AND DATEDIFF(D,DeteDate,GETDATE()) = 0 AND DeteDate < '" + DateUtil.toLocaleW3CDTF(force.ropewayTime) + "'";						
+						var token:AsyncToken = send2("RopeDeteValueHis_GetList",onLoadRopeWayForceHis,where);
+						token.ropewayForce = carriage.fstForce;
+						token.force = force;
+					}
+					else
+					{
+						pushRopewayForce(carriage.fstForce,force);
+					}
+				}
+				else
+				{
+					var rsf:RopewayStationForceVO = new RopewayStationForceVO(new ObjectProxy);
+					rsf.ropeway = rws.ropeway;
+					rsf.ropewayStation = rws;
+					rsf.ropewayCarId = carriage.ropewayCarId;
+					rsf.ropewayId = carriage.ropewayId;
+					rsf.ropewayRFId = carriage.ropewayRFID;
+					rsf.ropewayHistory = [];
+					
+					carriage.fstForce = rsf;
+					pushRopewayForce(carriage.fstForce,force);
+				}
+			}
+			else if(rws.station == RopewayStationDict.SECOND)
+			{
+				if(carriage.sndForce)
+				{
+					if(!carriage.sndForce.ropewayHistory)
+					{
+						where = "RopeCode = '" + carriage.ropewayId + "' AND FromRopeStation = '" + rws.fullName + "' AND DATEDIFF(D,DeteDate,GETDATE()) = 0 AND DeteDate < '" + DateUtil.toLocaleW3CDTF(force.ropewayTime) + "'";						
+						token = send2("RopeDeteValueHis_GetList",onLoadRopeWayForceHis,where);
+						token.ropewayForce = carriage.sndForce;
+						token.force = force;
+					}
+					else
+					{
+						pushRopewayForce(carriage.sndForce,force);
+					}
+				}
+				else
+				{
+					rsf = new RopewayStationForceVO(new ObjectProxy);
+					rsf.ropeway = rws.ropeway;
+					rsf.ropewayStation = rws;
+					rsf.ropewayCarId = carriage.ropewayCarId;
+					rsf.ropewayId = carriage.ropewayId;
+					rsf.ropewayRFId = carriage.ropewayRFID;
+					rsf.ropewayHistory = [];
+					carriage.sndForce = rsf;
+					
+					pushRopewayForce(carriage.sndForce,force);
+				}
+			}
+			
+		}
+		
+		private function onLoadRopeWayForceHis(event:ResultEvent):void
+		{			
+			var ropewayForce:RopewayStationForceVO = event.token.ropewayForce;
+			var force:ForceVO = event.token.force;
+			
+			ropewayForce.ropewayHistory = [];
+			
+			for each(var o:ObjectProxy in event.result)
+			{
+				var rf:ForceVO = new ForceVO(o);
+				pushRopewayForce(ropewayForce,rf,false);
+			}
+			
+			pushRopewayForce(ropewayForce,force);
+		}
+		
+		private function pushRopewayForce(ropeway:RopewayStationForceVO,ropewayForce:ForceVO,notify:Boolean = true):void
+		{			
+			ropewayForce.alarm = 0;
+			ropeway.alarm = 0;
+			
+			if(ropewayForce.ropewayForce < 400)
+			{						
+				ropewayForce.alarm |= 4;
+				ropeway.alarm |= 4;
+			}
+			
+			if(ropeway.ropewayHistory.length > 0)
+			{						
+				var prerf:ForceVO = ropeway.ropewayHistory[ropeway.ropewayHistory.length-1];
+				if(Math.abs(ropewayForce.ropewayForce - prerf.ropewayForce) > ropeway.ropewayStation.alarmForce)
+				{
+					ropewayForce.alarm |= 2;
+					ropeway.alarm |= 2;
+				}
+			}
+			
+			if(ropeway.yesterdayAve > 0)
+			{						
+				if(Math.abs(ropewayForce.ropewayForce - ropeway.yesterdayAve) > ropeway.ropewayStation.alarmForce)
+				{
+					ropewayForce.alarm |= 1;
+					ropeway.alarm |= 1;
+				}
+			}
+			
+			ropeway.deteValue = ropewayForce.ropewayForce;
+			ropeway.minValue = ropeway.minValue?Math.min(ropeway.minValue,ropeway.deteValue):ropeway.deteValue;
+			ropeway.maxValue = ropeway.maxValue?Math.max(ropeway.maxValue,ropeway.deteValue):ropeway.deteValue;
+			ropeway.humidity = ropewayForce.ropewayHumidity;
+			ropeway.temperature = ropewayForce.ropewayTemp;
+			ropeway.deteDate = ropewayForce.ropewayTime;
+			ropeway.valueUnit = ropewayForce.ropewayUnit;
+			ropeway.switchFreq++;
+			ropeway.switchFreqTotal ++;
+			ropeway.totalValue += ropewayForce.ropewayForce;
+			ropeway.aveValue = Math.round(ropeway.totalValue / ropeway.switchFreq);
+			
+			ropeway.ropewayHistory.push(ropewayForce);
+			
+			if(notify)
+				sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE,ropeway);
 		}
 	}
 }

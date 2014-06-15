@@ -5,7 +5,6 @@ package app.view
 	import app.model.CarriageEditHisProxy;
 	import app.model.CarriageProxy;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayProxy;
 	import app.model.vo.CarriageVO;
 	import app.model.vo.ForceVO;
 	import app.model.vo.RopewayStationForceVO;

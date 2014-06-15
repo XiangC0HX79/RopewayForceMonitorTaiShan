@@ -21,6 +21,46 @@ package app.model.vo
 			return (history.length > 0)?history[history.length - 1]:null;
 		}
 		
+		public function get maxTemp():Number
+		{
+			var r:EngineTempVO;
+			for each(var item:EngineTempVO in history)
+			{
+				if(!r || (r.temp < item.temp))
+					r = item;
+			}
+			
+			return r.temp;
+		}
+		
+		public function get minTemp():Number
+		{
+			var r:EngineTempVO;
+			for each(var item:EngineTempVO in history)
+			{
+				if(!r || (r.temp > item.temp))
+					r = item;
+			}
+			
+			return r.temp;
+		}
+		
+		public function get aveTemp():Number
+		{
+			if(history.length == 0)
+				return NaN;
+			
+			var r:Number = 0;
+			for each(var item:EngineTempVO in history)
+			{
+				r += item.temp;
+			}
+			
+			r /= history.length;
+			
+			return Math.round(r * 10) / 10;
+		}
+		
 		public function EngineVO()
 		{
 		}

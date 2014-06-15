@@ -18,7 +18,7 @@ package app.model.dict
 			return lable + "索道";
 		}
 		
-		public static var dict:Dictionary = new Dictionary;
+		public static var dict:Dictionary;
 		
 		public function RopewayDict(o:*)
 		{

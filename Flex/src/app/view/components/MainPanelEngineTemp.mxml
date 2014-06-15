@@ -9,26 +9,21 @@
 			
 			import custom.skin.SkinMainContent;
 			
-			public static const REALTIME_DETECTION:String = "实时监测";
-			public static const ANALYSIS:String = "分析查询";
-			public static const MANAGE:String = "参数设置";
+			public static const REALTIME_DETECTION:String 	= "0";
+			public static const ANALYSIS:String 			= "1";
+			public static const MANAGE:String 				= "2";
 			
-			protected function buttonBar_buttonDownHandler(event:FlexEvent,type:String):void
-			{
-				for(var i:Number = 0;i < menu.numElements;i++)
+			public function set btnSelected(value:String):void
+			{				
+				for(var i:Number = 0;i < buttonBar.numElements;i++)
 				{
-					var btn:Button = menu.getElementAt(i) as Button;
+					var btn:Button = buttonBar.getElementAt(i) as Button;
 					if(btn)
-						btn.enabled = true;
+					{
+						btn.enabled = (i != int(value));
+					}
 				}
-				
-				btn = event.currentTarget as Button;
-				btn.enabled = false;
-				
-				lbContent.text = type;
-				
-				dispatchEvent(new Event(type));
-			}			
+			}
 		]]>
 	</fx:Script>
 	
@@ -36,19 +31,17 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
-	<s:VGroup id="menu" width="130" paddingTop="10" paddingBottom="10" gap="10" 
+	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
 			  horizontalAlign="center">	
 		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
-				  buttonDown="buttonBar_buttonDownHandler(event,REALTIME_DETECTION)"/>
+				  buttonDown="dispatchEvent(new Event(REALTIME_DETECTION))"/>
 		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
-				  buttonDown="buttonBar_buttonDownHandler(event,ANALYSIS)"/>
+				  buttonDown="dispatchEvent(new Event(ANALYSIS))"/>
 		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
-				  buttonDown="buttonBar_buttonDownHandler(event,MANAGE)"/>
+				  buttonDown="dispatchEvent(new Event(MANAGE))"/>
 	</s:VGroup>
 	
 	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 
 						  skinClass="custom.skin.SkinMainContent">		
 	</s:SkinnableContainer>
-	
-	<s:Label left="160" top="20" id="lbContent" text="{REALTIME_DETECTION}" color="0xFFFFFF"/>
 </s:Group>

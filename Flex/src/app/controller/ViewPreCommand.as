@@ -4,34 +4,31 @@ package app.controller
 	
 	import app.view.AlertMediator;
 	import app.view.ApplicationMediator;
-	import app.view.ChartRealtimeDetectionMediator;
-	import app.view.ContentForceAnalysisMediator;
 	import app.view.ContentEngineTempRealtimeDetectionMediator;
+	import app.view.ContentForceAnalysisMediator;
 	import app.view.ContentForceManageMediator;
-	import app.view.ContentRealtimeDetectionMediator;
-	import app.view.ContentTodayOverviewMediator;
+	import app.view.ContentForceRealtimeDetectionMediator;
+	import app.view.ContentForceTodayOverviewMediator;
 	import app.view.LoadingBarMediator;
 	import app.view.MainPanelEngineTempMediator;
 	import app.view.MainPanelForceMediator;
 	import app.view.MainPanelOverviewMediator;
-	import app.view.PanelAnalysisAlarmMediator;
-	import app.view.PanelAnalysisForceAverageMediator;
+	import app.view.PanelForceAnalysisAlarmMediator;
+	import app.view.PanelForceAnalysisForceAverageMediator;
 	import app.view.PanelForceAnalysisForceMediator;
-	import app.view.PanelAnalysisOpenCountMediator;
-	import app.view.PanelAnalysisOpenCountTotalMediator;
+	import app.view.PanelForceAnalysisOpenCountMediator;
+	import app.view.PanelForceAnalysisOpenCountTotalMediator;
 	import app.view.PanelForceManagerAdjustMediator;
 	import app.view.PanelForceManagerBaseInfoMediator;
-	import app.view.PanelRopewayAlarmMediator;
-	import app.view.PanelRopewayForceMediator;
-	import app.view.PanelRopewayTempMediator;
 	import app.view.SocketMediator;
+	import app.view.SyncTimerMediator;
 	import app.view.TitleWindowAlarmDealMediator;
 	import app.view.TitleWindowBaseInfoMediator;
 	import app.view.ToolbarTopMediator;
 	import app.view.components.ContentForceAnalysis;
 	import app.view.components.ContentForceManage;
-	import app.view.components.ContentRealtimeDetection;
-	import app.view.components.ContentTodayOverview;
+	import app.view.components.ContentForceRealtimeDetection;
+	import app.view.components.ContentForceTodayOverview;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -45,6 +42,8 @@ package app.controller
 			facade.registerMediator(new AlertMediator);
 			
 			facade.registerMediator(new SocketMediator);
+			
+			facade.registerMediator(new SyncTimerMediator);			
 			
 			facade.registerMediator(new ApplicationMediator(application));
 			
@@ -60,27 +59,27 @@ package app.controller
 			
 			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
 						
-			//facade.registerMediator(new PanelRopewayForceMediator);
+			//facade.registerMediator(new PanelForceRopewayForceMediator);
 			
-			//facade.registerMediator(new PanelRopewayTempMediator);
+			//facade.registerMediator(new PanelForceRopewayTempMediator);
 			
-			//facade.registerMediator(new PanelRopewayAlarmMediator);
+			//facade.registerMediator(new PanelForceRopewayAlarmMediator);
 			
 			//facade.registerMediator(new ChartRealtimeDetectionMediator);
 			
-			facade.registerMediator(new ContentRealtimeDetectionMediator(new ContentRealtimeDetection));
+			facade.registerMediator(new ContentForceRealtimeDetectionMediator(new ContentForceRealtimeDetection));
 			
-			facade.registerMediator(new ContentTodayOverviewMediator(new ContentTodayOverview));
+			facade.registerMediator(new ContentForceTodayOverviewMediator(new ContentForceTodayOverview));
 			
 			facade.registerMediator(new PanelForceAnalysisForceMediator);		
 			
-			facade.registerMediator(new PanelAnalysisForceAverageMediator);		
+			facade.registerMediator(new PanelForceAnalysisForceAverageMediator);		
 			
-			facade.registerMediator(new PanelAnalysisOpenCountMediator);	
+			facade.registerMediator(new PanelForceAnalysisOpenCountMediator);	
 			
-			facade.registerMediator(new PanelAnalysisOpenCountTotalMediator);	
+			facade.registerMediator(new PanelForceAnalysisOpenCountTotalMediator);	
 			
-			facade.registerMediator(new PanelAnalysisAlarmMediator);			
+			facade.registerMediator(new PanelForceAnalysisAlarmMediator);			
 			
 			facade.registerMediator(new ContentForceAnalysisMediator(new ContentForceAnalysis));
 			

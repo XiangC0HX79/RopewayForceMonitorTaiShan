@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.DateUtil;
+			
+			import mx.collections.ArrayCollection;
+			
+			import app.model.vo.EngineTempVO;
+			import app.model.vo.EngineVO;
+			
+			import custom.itemRenderer.ItemRendererLineChartTemp;
+			
+			//Y轴为0度
+			private const MAX_ANGLE:Number = 120;
+			
+			private const MIN_ANGLE:Number = -120;
+			
+			private const MAX_TEMP:Number = 50;
+			
+			private const MIN_TEMP:Number = -30;
+			
+			private const IMG_SIZE:Number = 195;
+			
+			private const SIZE:Number = 200;
+			
+			private const NIDDLE:Vector.<Number> = new <Number>[101,15,101,48,102,48,102,51,101,51,101,53,103,53,103,58,102,58,102,60,103,60,103,62,102,62,102,95,105,95,105,105
+				,95,105,95,95,98,95,98,62,97,62,97,60,98,60,98,58,97,58,97,53,99,53,99,51,98,51,98,48,99,48,99,15];
+			
+			private function get command():Vector.<int>
+			{
+				var r:Vector.<int> = new Vector.<int>;
+				r.push(1);
+				for(var i:int = 0;i<(NIDDLE.length / 2) -1;i++)
+					r.push(2);
+				
+				return r;
+			}
+			
+			[Bindable]public var maxTime:Date;			
+			[Bindable]public var minTime:Date;			
+			
+			[Bindable]private var _engine:EngineVO;			
+			public function get engine():EngineVO
+			{
+				return _engine;
+			}
+			public function set engine(value:EngineVO):void
+			{
+				_engine = value;
+				
+				_engineTemp = _engine.lastTemp;
+								
+				watch.graphics.clear();
+				
+				if(!_engineTemp)
+					return;
+				
+				_maxTemp = _engine.maxTemp;
+				_aveTemp = _engine.aveTemp;
+				_minTemp = _engine.minTemp;
+								
+				var pt:Point = dataCanvas.dataToLocal(0,_maxTemp);		
+				lineMax.y = pt.y;
+				
+				pt = dataCanvas.dataToLocal(0,_aveTemp);		
+				lineAve.y = pt.y;
+				
+				pt = dataCanvas.dataToLocal(0,_minTemp);		
+				lineMin.y = pt.y;
+				
+				
+				watch.graphics.beginFill(0x0);	
+				watch.graphics.drawPath(command,rotatePath(_engineTemp.temp,NIDDLE));
+				watch.graphics.endFill();
+			}
+			
+			[Bindable]private var _engineTemp:EngineTempVO;
+			
+			[Bindable]private var _maxTemp:Number;
+			[Bindable]private var _aveTemp:Number;
+			[Bindable]private var _minTemp:Number;
+			
+			private function rotatePath(in_temp:Number,in_path:Vector.<Number>):Vector.<Number>
+			{
+				var path:Vector.<Number> = new Vector.<Number>;
+				for each(var n:Number in in_path)
+				{
+					path.push(n * IMG_SIZE / SIZE);
+				}
+				
+				var temp:Number = in_temp;
+				if(temp > MAX_TEMP)temp = MAX_TEMP;
+				else if(temp < MIN_TEMP)temp = MIN_TEMP;
+				
+				var ag:Number = - ((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE)/180 * Math.PI;
+				
+				var center:Point = new Point(IMG_SIZE / 2,IMG_SIZE / 2);				
+				var pt:Point = new Point;
+				var rPt:Point = new Point;
+				var rPath:Vector.<Number> = new Vector.<Number>;
+				for(var i:int=0;i<path.length;i++)
+				{
+					if(i % 2 == 0)
+					{
+						pt.x = path[i];
+					}
+					else
+					{
+						pt.y = path[i];
+						
+						pt.x -= center.x;
+						pt.y = center.y - pt.y;
+						
+						rPt.x = pt.x * Math.cos(ag) - pt.y * Math.sin(ag);
+						rPt.y = pt.x * Math.sin(ag) + pt.y * Math.cos(ag);
+						
+						pt.x = rPt.x + center.x;
+						pt.y = center.y - rPt.y;
+						
+						rPath.push(pt.x,pt.y);
+					}
+				}
+				
+				return rPath;
+			}			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="justify"/>
+	</s:layout>
+	
+	<s:Group width="300">
+		<s:Label text="温度1"/>
+		<s:Group height="{IMG_SIZE}" width="{IMG_SIZE}" verticalCenter="0" x="50">
+			<s:Image source="assets/image/engine_temp.png" width="100%" height="100%"/>
+			<s:Group id="watch" width="100%" height="100%"/>			
+		</s:Group>		
+		<s:TextInput editable="false" horizontalCenter="0" y="170" text="{_engineTemp.temp}℃" width="50"/>
+	</s:Group>
+		
+	<s:VGroup width="150" horizontalAlign="justify">
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="最高"/>
+			<s:TextInput editable="false" text="{_maxTemp}℃" width="100%"/>
+		</s:HGroup>
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="平均"/>
+			<s:TextInput editable="false" text="{_aveTemp}℃" width="100%"/>
+		</s:HGroup>
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="最低"/>
+			<s:TextInput editable="false" text="{_minTemp}℃" width="100%"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:SkinnableContainer width="100%" top="0" bottom="0" fontSize="12">		
+		<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+			<s:stroke>
+				<s:SolidColorStroke weight="1" color="#63c3d6"/>
+			</s:stroke>
+		</s:Rect>	
+				
+		<s:Group id="groupChart" left="59" right="55" bottom="47" top="50">				
+			<s:Rect id="lineMax" height="1" left="10" right="10">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineAve" height="1" left="10" right="10">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="lineMin" height="1" left="10" right="10">
+				<s:fill>
+					<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>		
+		</s:Group>
+		
+		<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="app.view.components.ChartTipTemp"
+					  left="20" right="40" bottom="20" top="40" dataProvider="{_engine.history}">
+			<mx:seriesFilters>
+				<fx:Array/>
+			</mx:seriesFilters>
+			<mx:backgroundElements>
+				<fx:Array>						
+					<mx:GridLines gridDirection="both" 
+								  horizontalStroke="{gridStroke}"
+								  verticalStroke="{gridStroke}"/>
+				</fx:Array>
+			</mx:backgroundElements>
+			
+			<mx:annotationElements>
+				<mx:CartesianDataCanvas id="dataCanvas"/>
+			</mx:annotationElements>
+			
+			<mx:verticalAxis>
+				<mx:LinearAxis id="verticalAxis" maximum="{MAX_TEMP}" minimum="{MIN_TEMP}"/>
+			</mx:verticalAxis>
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis displayLocalTime="true" maximum="{maxTime}" minimum="{minTime}"
+								 alignLabelsToUnits="true" 
+								 id="horizontalAxis"/>
+			</mx:horizontalAxis>
+			
+			<mx:verticalAxisRenderers>					
+				<mx:AxisRenderer axis="{verticalAxis}" 
+								 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+								 minorTickPlacement="none"/>
+			</mx:verticalAxisRenderers>
+			
+			<mx:horizontalAxisRenderers>			
+				<mx:AxisRenderer axis="{horizontalAxis}"
+								 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+								 minorTickPlacement="none"/>					
+			</mx:horizontalAxisRenderers>
+			
+			<mx:series>
+				<mx:LineSeries yField="temp" xField="date" lineStroke="{lStroke}" form="curve" 
+							   itemRenderer="{new ClassFactory(ItemRendererLineChartTemp)}" >
+				</mx:LineSeries>
+			</mx:series>
+		</mx:LineChart>	
+				
+		<s:Label right="45" y="{lineMax.y + 35}" id="lbMax" text="{_maxTemp} ℃" textAlign="center"
+				 verticalAlign="middle"/> 	
+		<s:Label right="45" y="{lineMin.y + 35}" id="lbMin" text="{_minTemp} ℃" textAlign="center"
+				 verticalAlign="middle"/> 	
+		<s:Label right="45" y="{lineAve.y + 35}" id="lbAve" text="{_aveTemp} ℃" textAlign="center"
+				 verticalAlign="middle"/> 
+		
+		<s:Label left="10" top="20" text="温度（ ℃）"/>
+		<s:Label right="15" bottom="40" text="时间"/>
+		<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+				 text="温度1 - 日变换曲线"/>
+	</s:SkinnableContainer>
+</s:Group>

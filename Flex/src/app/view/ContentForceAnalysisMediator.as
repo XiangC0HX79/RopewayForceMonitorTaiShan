@@ -2,7 +2,6 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.RopewayForceProxy;
-	import app.model.RopewayProxy;
 	import app.model.vo.ForceVO;
 	import app.model.vo.RopewayStationForceVO;
 	import app.view.components.ContentForceAnalysis;
@@ -34,10 +33,10 @@ package app.view
 			super(NAME, viewComponent);
 			
 			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelForceAnalysisForceMediator.NAME).getViewComponent() as NavigatorContent);
-			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelAnalysisForceAverageMediator.NAME).getViewComponent() as NavigatorContent);
-			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelAnalysisOpenCountMediator.NAME).getViewComponent() as NavigatorContent);
-			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelAnalysisOpenCountTotalMediator.NAME).getViewComponent() as NavigatorContent);
-			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelAnalysisAlarmMediator.NAME).getViewComponent() as NavigatorContent);
+			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelForceAnalysisForceAverageMediator.NAME).getViewComponent() as NavigatorContent);
+			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelForceAnalysisOpenCountMediator.NAME).getViewComponent() as NavigatorContent);
+			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelForceAnalysisOpenCountTotalMediator.NAME).getViewComponent() as NavigatorContent);
+			contentAnalysis.viewStatck.addChild(facade.retrieveMediator(PanelForceAnalysisAlarmMediator.NAME).getViewComponent() as NavigatorContent);
 		}
 		
 		protected function get contentAnalysis():ContentForceAnalysis

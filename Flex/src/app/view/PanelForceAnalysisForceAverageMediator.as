@@ -23,51 +23,51 @@ package app.view
 	import mx.utils.ObjectProxy;
 	
 	import app.ApplicationFacade;
+	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.RopewayForceAverageProxy;
-	import app.model.RopewayProxy;
 	import app.model.WebServiceProxy;
+	import app.model.dict.RopewayDict;
+	import app.model.dict.RopewayStationDict;
 	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.ForceVO;
 	import app.model.vo.RopewayForceAverageVO;
 	import app.model.vo.RopewayStationForceVO;
-	import app.view.components.PanelAnalysisForceAverage;
+	import app.view.components.PanelForceAnalysisForceAverage;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	public class PanelAnalysisForceAverageMediator extends Mediator implements IMediator
+	public class PanelForceAnalysisForceAverageMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelAnalysisForceAverageMediator";
+		public static const NAME:String = "PanelForceAnalysisForceAverageMediator";
 		
 		private var ropewayForceAverageProxy:RopewayForceAverageProxy;
 		
-		public function PanelAnalysisForceAverageMediator()
+		public function PanelForceAnalysisForceAverageMediator()
 		{
-			super(NAME, new PanelAnalysisForceAverage);
+			super(NAME, new PanelForceAnalysisForceAverage);
 			
-			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.QUERY,onQuery);
-			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.STATION_CHANGE,onStationChange);
-			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.SELECT_ONE,onSelectOne);
+			panelAnalysisForceAverage.addEventListener(PanelForceAnalysisForceAverage.QUERY,onQuery);
+			panelAnalysisForceAverage.addEventListener(PanelForceAnalysisForceAverage.STATION_CHANGE,onStationChange);
+			panelAnalysisForceAverage.addEventListener(PanelForceAnalysisForceAverage.SELECT_ONE,onSelectOne);
 			
-			panelAnalysisForceAverage.addEventListener(PanelAnalysisForceAverage.EXPORT,onExport);
+			panelAnalysisForceAverage.addEventListener(PanelForceAnalysisForceAverage.EXPORT,onExport);
 			
 			ropewayForceAverageProxy = facade.retrieveProxy(RopewayForceAverageProxy.NAME) as RopewayForceAverageProxy;
 			panelAnalysisForceAverage.colRopewayHis = ropewayForceAverageProxy.col;
 		}
 		
-		protected function get panelAnalysisForceAverage():PanelAnalysisForceAverage
+		protected function get panelAnalysisForceAverage():PanelForceAnalysisForceAverage
 		{
-			return viewComponent as PanelAnalysisForceAverage;
+			return viewComponent as PanelForceAnalysisForceAverage;
 		}
 		
 		private function onStationChange(event:Event):void
-		{
-			var station:String = String(panelAnalysisForceAverage.rbgStation.selectedValue);
-			
-			changeStation(station);
+		{			
+			changeStation();
 		}
 		
 		private function onQuery(event:Event):void
@@ -83,7 +83,7 @@ package app.view
 			ropewayForceAverageProxy.GetForceAveCol(
 				panelAnalysisForceAverage.dateS
 				,panelAnalysisForceAverage.dateE
-				,String(panelAnalysisForceAverage.rbgStation.selectedValue)
+				,panelAnalysisForceAverage.selStation.fullName
 				,panelAnalysisForceAverage.listRopewayId.selectedItem.ropewayId
 				,panelAnalysisForceAverage.comboTime.selectedIndex
 				);
@@ -94,26 +94,11 @@ package app.view
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ALARM,"图形只能显示单一吊箱的数据，请先选择吊箱编号统计再切换至图形。");
 		}		
 		
-		private function changeStation(station:String):void
+		private function changeStation():void
 		{
-			var arr:Array = [];
-			if(station != "所有索道站")
-			{
-				var proxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-				for each(var r:RopewayStationForceVO in proxy.colRopeway)
-				{
-					//if(r.ropewayStation == station)
-					{
-						arr.push(r);
-					}
-				}
-			}
+			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
 			
-			arr.sortOn("ropewayCarId");
-			
-			arr.unshift(CarriageVO.ALL);
-			
-			panelAnalysisForceAverage.colRopeway.source = arr;
+			panelAnalysisForceAverage.colCarriage = carriageProxy.GetCarriageWithForceAll(panelAnalysisForceAverage.selStation);
 		}	
 		
 		private const xltname:String = "平均抱索力";
@@ -196,15 +181,11 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					var proxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+					panelAnalysisForceAverage.colStations = RopewayStationDict.list;	
 					
-					panelAnalysisForceAverage.colStations = proxy.config.stations;	
+					panelAnalysisForceAverage.selStation = panelAnalysisForceAverage.colStations[0];
 					
-					panelAnalysisForceAverage.colRopeway.source = [CarriageVO.ALL];
-					
-					panelAnalysisForceAverage.rbgStation.selectedValue = proxy.config.stations[0];
-					
-					changeStation(proxy.config.stations[0]);
+					changeStation();
 					break;
 			}
 		}

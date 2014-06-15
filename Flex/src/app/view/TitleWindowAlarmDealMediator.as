@@ -1,7 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
-	import app.model.RopewayAlarmDealProxy;
+	import app.model.ForceRealtimeDetectionAlarmProxy;
 	import app.model.vo.RopewayAlarmVO;
 	import app.view.components.TitleWindowAlarmDeal;
 	
@@ -47,7 +47,7 @@ package app.view
 			
 			titleWindowAlarmDeal.ropewayAlarm.dealDesc = titleWindowAlarmDeal.textDeal.text;
 			titleWindowAlarmDeal.ropewayAlarm.dealDatetime = new Date;
-			var proxy:RopewayAlarmDealProxy = facade.retrieveProxy(RopewayAlarmDealProxy.NAME) as RopewayAlarmDealProxy;
+			var proxy:ForceRealtimeDetectionAlarmProxy = facade.retrieveProxy(ForceRealtimeDetectionAlarmProxy.NAME) as ForceRealtimeDetectionAlarmProxy;
 			var token:AsyncToken = proxy.UpdateAlarmDeal(titleWindowAlarmDeal.ropewayAlarm);
 			token.addResponder(new AsyncResponder(onUpdateAlarmDeal,function(e:FaultEvent,t:Object):void{}));
 		}

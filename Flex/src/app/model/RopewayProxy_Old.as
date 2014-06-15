@@ -19,13 +19,13 @@ package app.model
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
-	public class RopewayProxy extends WebServiceProxy implements IProxy
+	public class RopewayProxy_Old extends WebServiceProxy implements IProxy
 	{
 		public static const NAME:String = "RopewayProxy";
 		
 		public static var dictAlarmValue:Dictionary;
 				
-		public function RopewayProxy()
+		public function RopewayProxy_Old()
 		{
 			super(NAME, new ArrayCollection);
 		}

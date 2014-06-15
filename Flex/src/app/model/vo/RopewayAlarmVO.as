@@ -1,6 +1,8 @@
 package app.model.vo
 {
 	import com.adobe.serialization.json.JSON;
+	
+	import app.model.dict.RopewayStationDict;
 
 	[Bindable]
 	public class RopewayAlarmVO
@@ -80,27 +82,15 @@ package app.model.vo
 		/**
 		 * 所属索道站
 		 **/
-		public function get fromRopeStation():String	
+		public function get ropeStation():RopewayStationDict	
 		{
-			return _source.FromRopeStation;
+			return RopewayStationDict.dict[_source.FromRopeStation];
 		}
-		public function set fromRopeStation(value:String):void	
+		public function set ropeStation(value:RopewayStationDict):void	
 		{
-			_source.FromRopeStation = value;
+			_source.FromRopeStation = value.fullName;
 		}
-		
-		/**
-		 * 所属索道
-		 **/
-		public function get fromRopeWay():String	
-		{
-			return _source.FromRopeWay;
-		}
-		public function set fromRopeWay(value:String):void	
-		{
-			_source.FromRopeWay = value;
-		}
-		
+				
 		/**
 		 * 处置人
 		 **/
@@ -158,7 +148,7 @@ package app.model.vo
 		
 		public function toString():String
 		{
-			return JSON.encode(_source);
+			return com.adobe.serialization.json.JSON.encode(_source);
 		}
 	}
 }

@@ -11,7 +11,7 @@ package app.model.vo
 	{
 		public var user:String;
 				
-		public var station:String;
+		/*public var station:String;
 		
 		private var _ropeway:RopewayDict;
 		public function get ropeway():RopewayDict
@@ -23,13 +23,13 @@ package app.model.vo
 			_ropeway = value as RopewayDict;
 		}
 		
-		public var stations:ArrayCollection;
+		public var stations:ArrayCollection;*/
 		
 		public var serverIp:String;
 		
 		public var serverPort:int;
 		
-		public var pin:Boolean = false;
+		//public var pin:Boolean = false;
 		
 		//public static var debug:Boolean = true;
 	}

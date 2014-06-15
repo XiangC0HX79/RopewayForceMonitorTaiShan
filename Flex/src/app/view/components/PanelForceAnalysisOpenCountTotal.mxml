@@ -8,7 +8,7 @@
 		
 		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>
 		
-		<s:RadioButtonGroup id="rbgStation"/>
+		<s:RadioButtonGroup id="rbgStation" selectedValue="@{selStation}"/>
 		
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
 		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
@@ -40,9 +40,11 @@
 			
 			public static var EXPORT:String = "Export";
 			
+			[Bindable]public var selStation:*;
+			
 			[Bindable]public var colStations:ArrayCollection;
 						
-			[Bindable]public var colRopeway:ArrayCollection;
+			[Bindable]public var colSwitchFreq:ArrayCollection;
 			
 			protected function datagroupStations_rendererAddHandler(event:RendererExistenceEvent):void
 			{
@@ -73,7 +75,7 @@
 				checkDatetime.selected = false;
 				dateDayS.selectedDate = DateUtil.addDateTime('d',-1,new Date);
 				dateDayE.selectedDate = DateUtil.addDateTime('d',-1,new Date);
-				colRopeway.source = [];
+				colSwitchFreq.source = [];
 			}			
 			
 			private function dataTipFunction(hitData:HitData):String
@@ -104,15 +106,11 @@
 			<s:CheckBox id="checkDatetime" selected="false" label="选定时间"/>
 			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
 				<s:Label text="开始日期："/>
-				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"
-							  dayNames="['日','一','二','三','四','五','六']" height="21"
-							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
 				<s:Label text="结束日期："/>
-				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"
-							  dayNames="['日','一','二','三','四','五','六']" height="21"
-							  monthNames="['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']"/>
+				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"/>
 			</s:HGroup>
 		</components:SkinnableTitleContainer>	
 				
@@ -145,7 +143,7 @@
 				</s:Rect>	
 				
 				<mx:ColumnChart left="20" right="40" bottom="20" top="40" showDataTips="true"
-								dataTipFunction="dataTipFunction" dataProvider="{colRopeway}">
+								dataTipFunction="dataTipFunction" dataProvider="{colSwitchFreq}">
 					<mx:backgroundElements>
 						<fx:Array>						
 							<mx:GridLines gridDirection="both" 
@@ -176,7 +174,7 @@
 				<s:Label left="10" top="20" text="开合次数"/>
 				<s:Label right="15" bottom="40" text="吊箱"/>
 				<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-						 text="{rbgStation.selectedValue}总开合次数统计"/>
+						 text="{rbgStation.selectedValue.fullName}总开合次数统计"/>
 			</s:SkinnableContainer>
 		</s:NavigatorContent>
 		<s:NavigatorContent>
@@ -186,11 +184,11 @@
 			
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Line stroke="{gapStroke}" width="100%"/>
-				<s:Label text="总开合次数统计（{colRopeway.length}）" fontWeight="bold"/>
+				<s:Label text="总开合次数统计（{colSwitchFreq.length}）" fontWeight="bold"/>
 				<s:Line stroke="{gapStroke}" width="100%"/>
 			</s:HGroup>
 			
-			<s:DataGrid width="100%" height="100%" dataProvider="{colRopeway}"
+			<s:DataGrid width="100%" height="100%" dataProvider="{colSwitchFreq}"
 						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid" 
 						alternatingRowColors="[#FFFFFF,#CFEDF7]">
 				<s:columns>
