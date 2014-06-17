@@ -4,27 +4,21 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx" stroke="{lineStroke}">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.ForceVO;
-			
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			
 			import spark.effects.animation.MotionPath;
 			import spark.effects.animation.SimpleMotionPath;
 			
-			private var _ropewayForceS:ForceVO;
-			
-			private var _ropewayForceE:ForceVO;
-			
-			public function SetValue(dataCanvas:CartesianDataCanvas,rws:ForceVO = null,rwe:ForceVO = null):void
+			private var _args:Array;
+						
+			public function SetValue(dataCanvas:CartesianDataCanvas,...args):void
 			{				
-				if(rws && rwe)
+				if(args.length == 4)
 				{
-					_ropewayForceS = rws;
-					_ropewayForceE = rwe;
+					_args = args;
 					
-					var ptS:Point = dataCanvas.dataToLocal(_ropewayForceS.ropewayTime,_ropewayForceS.ropewayForce);	
-					
-					var ptE:Point = dataCanvas.dataToLocal(_ropewayForceE.ropewayTime,_ropewayForceE.ropewayForce);	
+					var ptS:Point = dataCanvas.dataToLocal(_args[0],_args[1]);						
+					var ptE:Point = dataCanvas.dataToLocal(_args[2],_args[3]);	
 					
 					this.xFrom = ptS.x;
 					this.yFrom = ptS.y;
@@ -42,8 +36,8 @@
 				}
 				else
 				{					
-					ptS = dataCanvas.dataToLocal(_ropewayForceS.ropewayTime,_ropewayForceS.ropewayForce);	
-					ptE = dataCanvas.dataToLocal(_ropewayForceE.ropewayTime,_ropewayForceE.ropewayForce);	
+					ptS = dataCanvas.dataToLocal(_args[0],_args[1]);	
+					ptE = dataCanvas.dataToLocal(_args[2],_args[3]);	
 					
 					motionPaths = new Vector.<MotionPath>;
 					motionPaths.push(new SimpleMotionPath("xFrom",this.xFrom,ptS.x));

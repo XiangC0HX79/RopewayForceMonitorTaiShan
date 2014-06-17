@@ -23,6 +23,8 @@ package app.model
 		public function ConfigProxy()
 		{
 			super(NAME, new ConfigVO);
+			
+			config.ropeway = RopewayDict.list[0];
 		}
 		
 		public function get config():ConfigVO

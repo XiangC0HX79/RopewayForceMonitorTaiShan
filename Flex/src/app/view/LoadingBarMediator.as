@@ -53,18 +53,6 @@ package app.view
 					loadingBar.loadingInfo = notification.getBody() as String;
 					loadingBar.visible = true;
 					break;
-				
-				/*case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:
-					loadingBar.loadingInfo = "初始化：本地配置加载完成...";			
-										
-					var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-					ropewayProxy.InitRopewayDict();		
-					break;
-				
-				case ApplicationFacade.NOTIFY_INIT_ROPEWAY_COMPLETE:	
-					loadingBar.loadingInfo = "初始化：索道信息加载完成...";		
-					sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
-					break;*/
 			}
 		}
 	}

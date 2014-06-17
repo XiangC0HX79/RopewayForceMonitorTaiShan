@@ -9,9 +9,13 @@ package app.controller
 	import app.view.ContentForceManageMediator;
 	import app.view.ContentForceRealtimeDetectionMediator;
 	import app.view.ContentForceTodayOverviewMediator;
+	import app.view.ContentInchAnalysisMediator;
+	import app.view.ContentInchManageMediator;
+	import app.view.ContentInchRealtimeMediator;
 	import app.view.LoadingBarMediator;
 	import app.view.MainPanelEngineTempMediator;
 	import app.view.MainPanelForceMediator;
+	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
 	import app.view.PanelForceAnalysisAlarmMediator;
 	import app.view.PanelForceAnalysisForceAverageMediator;
@@ -20,6 +24,12 @@ package app.controller
 	import app.view.PanelForceAnalysisOpenCountTotalMediator;
 	import app.view.PanelForceManagerAdjustMediator;
 	import app.view.PanelForceManagerBaseInfoMediator;
+	import app.view.PanelInchRealtimeAlarmMediator;
+	import app.view.PanelInchRealtimeChartMediator;
+	import app.view.PanelInchRealtimeTempMediator;
+	import app.view.PanelInchRealtimeValueMediator;
+	import app.view.PanelOverviewInchMediator;
+	import app.view.PanelOverviewSurroundingTempMediator;
 	import app.view.SocketMediator;
 	import app.view.SyncTimerMediator;
 	import app.view.TitleWindowAlarmDealMediator;
@@ -51,22 +61,36 @@ package app.controller
 			
 			facade.registerMediator(new ToolbarTopMediator(application.toolbarTop));
 			
+			//监测概览			
 			facade.registerMediator(new MainPanelOverviewMediator);
+			
+			//facade.registerMediator(new PanelOverviewSurroundingTempMediator);
+			
+			//facade.registerMediator(new PanelOverviewInchMediator);
 			
 			facade.registerMediator(new MainPanelForceMediator);
 			
 			facade.registerMediator(new MainPanelEngineTempMediator);
 			
-			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
+			//张紧小尺
+			facade.registerMediator(new MainPanelInchMediator);
+			
+			facade.registerMediator(new ContentInchRealtimeMediator);
+			
+			facade.registerMediator(new ContentInchAnalysisMediator);
+			
+			facade.registerMediator(new ContentInchManageMediator);
 						
-			//facade.registerMediator(new PanelForceRopewayForceMediator);
+			//facade.registerMediator(new PanelInchTempMediator);
 			
-			//facade.registerMediator(new PanelForceRopewayTempMediator);
+			//facade.registerMediator(new PanelInchValueMediator);
 			
-			//facade.registerMediator(new PanelForceRopewayAlarmMediator);
+			//facade.registerMediator(new PanelInchAlarmMediator);
 			
-			//facade.registerMediator(new ChartRealtimeDetectionMediator);
+			//facade.registerMediator(new PanelInchChartMediator);			
 			
+			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
+									
 			facade.registerMediator(new ContentForceRealtimeDetectionMediator(new ContentForceRealtimeDetection));
 			
 			facade.registerMediator(new ContentForceTodayOverviewMediator(new ContentForceTodayOverview));

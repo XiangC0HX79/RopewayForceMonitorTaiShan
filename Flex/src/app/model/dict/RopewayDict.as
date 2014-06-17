@@ -20,35 +20,12 @@ package app.model.dict
 		
 		public static var dict:Dictionary;
 		
+		public static var list:ArrayCollection;
+		
 		public function RopewayDict(o:*)
 		{
 			this.id = o.id;
 			this.lable = o.lable;
-		}
-		
-		public static function get list():ArrayCollection
-		{
-			var r:Array = [];
-			
-			for each(var rw:RopewayDict in dict)
-			{
-				r.push(rw);
-			}
-			
-			r.sortOn("id",Array.NUMERIC);
-			
-			return new ArrayCollection(r);
-		}
-		
-		public static function GetRopewayByLable(l:String):RopewayDict
-		{
-			for each(var rw:RopewayDict in dict)
-			{
-				if((l == rw.fullName) || (l == rw.lable))
-					return rw;
-			}
-			
-			return null;
 		}
 	}
 }

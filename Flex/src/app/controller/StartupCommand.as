@@ -13,7 +13,7 @@ package app.controller
 			
 			addSubCommand(ViewPreCommand);
 			
-			addSubCommand(AppInitCommand);
+			addSubCommand(NotifyInitAppCommand);
 		}
 	}
 }

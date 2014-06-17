@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 left="10" right="10" top="10" bottom="10"
+		 skinClass="custom.skin.SkinMainContent" xmlns:components="app.view.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-</s:Group>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
+	
+	<s:HGroup verticalAlign="middle" height="31" paddingLeft="15" gap="30" color="white">		
+		<s:Label text="监测概览"/>
+	</s:HGroup>
+	
+	<s:HGroup>
+		<components:PanelOverviewSurroundingTemp id="panelTemp"/>
+		<components:PanelOverviewInch id="panelInch"/>
+	</s:HGroup>
+</s:SkinnableContainer>

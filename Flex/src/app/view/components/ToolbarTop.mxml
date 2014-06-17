@@ -9,7 +9,6 @@
 			import spark.components.RadioButton;
 			import spark.events.RendererExistenceEvent;
 			
-			import app.model.dict.RopewayDict;
 			import app.model.vo.ConfigVO;
 			
 			public static const STATION:String = "Station";
@@ -26,7 +25,6 @@
 			
 			protected function groupStation_rendererAddHandler(event:RendererExistenceEvent):void
 			{
-				// TODO Auto-generated method stub
 				var rb:RadioButton = (event.renderer as Object).radioButton as RadioButton;				
 				rb.group = radioGroupStation;
 			}			

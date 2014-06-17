@@ -5,7 +5,7 @@ package app.view
 	import app.model.EngineTempProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.vo.EngineVO;
-	import app.view.components.ContentEngineTempRealtimeDetection;
+	import app.view.components.ContentEngineTempRealtime;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -16,15 +16,15 @@ package app.view
 		public static const NAME:String = "ContentEngineTempRealtimeDetectionMediator";
 		
 		public function ContentEngineTempRealtimeDetectionMediator()
-		{
-			super(NAME, new ContentEngineTempRealtimeDetection);
+		{ 
+			super(NAME, new ContentEngineTempRealtime);
 			
 			facade.registerMediator(new PanelEngineFirstTempRealtimeMediator(contentEngineTempRealtimeDetection.panelFst));
 		}
 		
-		protected function get contentEngineTempRealtimeDetection():ContentEngineTempRealtimeDetection
+		protected function get contentEngineTempRealtimeDetection():ContentEngineTempRealtime
 		{
-			return viewComponent as ContentEngineTempRealtimeDetection;
+			return viewComponent as ContentEngineTempRealtime;
 		}
 	}
 }

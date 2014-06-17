@@ -65,7 +65,7 @@ package app.model.vo
 		 **/
 		public function get ropeWay():RopewayDict	
 		{
-			return RopewayDict.GetRopewayByLable(String(_source.FromRopeWay));
+			return RopewayDict.dict[_source.FromRopeWay];
 		}
 		public function set ropeWay(value:RopewayDict):void	
 		{

@@ -17,9 +17,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.ForceVO;
-			import app.model.vo.RopewayStationForceVO;
-			
 			import flash.utils.setTimeout;
 			
 			import mx.events.FlexEvent;
@@ -35,6 +32,9 @@
 			import spark.effects.animation.MotionPath;
 			import spark.effects.animation.SimpleMotionPath;
 			import spark.primitives.Line;
+			
+			import app.model.vo.ForceVO;
+			import app.model.vo.RopewayStationForceVO;
 			
 			public static const ONE_MIN:Number = 60 * 1000;
 			public static const TEN_MIN:Number = 10 * 60 * 1000;
@@ -273,7 +273,9 @@
 					{						
 					 	var line:ChartLine = new ChartLine;
 						
-						line.SetValue(dataCanvas,rw.ropewayHistory[i],rw.ropewayHistory[i+1]);
+						var sForce:ForceVO = rw.ropewayHistory[i];
+						var eForce:ForceVO = rw.ropewayHistory[i+1];
+						line.SetValue(dataCanvas,sForce.ropewayTime,sForce.ropewayForce,eForce.ropewayTime,eForce.ropewayForce);
 						
 						groupLine.addElement(line);
 						
@@ -364,9 +366,9 @@
 				var off:Number = 10;
 				
 				var img:ChartImage = event.currentTarget as ChartImage;				
-				chartTip.data = img.ropewayForce;
+				chartTip.data = img.data;
 				
-				var pt:Point = dataCanvas.dataToLocal(img.ropewayForce.ropewayTime,img.ropewayForce.ropewayForce);
+				var pt:Point = dataCanvas.dataToLocal(img.data.ropewayTime,img.data.ropewayForce);
 				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
 				
 				chartTip.validateNow();

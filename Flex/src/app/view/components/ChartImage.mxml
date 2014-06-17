@@ -8,34 +8,33 @@
 		 mouseOver="group_mouseOverHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.ForceVO;
-			
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			
-			private var _ropewayForce:ForceVO;
-			public function get ropewayForce():ForceVO
+			private var _arg:Array;
+						
+			public function get data():*
 			{
-				return _ropewayForce;
+				return _arg[0];
 			}			
 			
-			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:ForceVO = null):void
+			public function SetValue(dataCanvas:CartesianDataCanvas,...arg):void
 			{				
-				if(ropewayForce)
+				if(arg.length == 4)
 				{
-					_ropewayForce = ropewayForce;
+					_arg = arg;
 					
-					if(_ropewayForce.alarm > 0)
+					if(_arg[3] > 0)
 						fillColor.color = 0xFF0000;
 					else
 						fillColor.color = 0x02C462;
 					
-					var pt:Point = dataCanvas.dataToLocal(_ropewayForce.ropewayTime,_ropewayForce.ropewayForce);					
+					var pt:Point = dataCanvas.dataToLocal(_arg[1],_arg[2]);					
 					this.x = pt.x - this.width / 2;
 					this.y = pt.y - this.height / 2;	
 				}
 				else
 				{
-					pt = dataCanvas.dataToLocal(_ropewayForce.ropewayTime,_ropewayForce.ropewayForce);
+					pt = dataCanvas.dataToLocal(_arg[1],_arg[2]);
 					mv.xTo = pt.x - this.width / 2;
 					mv.yTo = pt.y - this.height / 2;	
 				}

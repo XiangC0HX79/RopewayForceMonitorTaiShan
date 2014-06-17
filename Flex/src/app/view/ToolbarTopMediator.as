@@ -1,10 +1,13 @@
 package app.view
 {
 	import flash.events.Event;
+	import flash.utils.setInterval;
+	import flash.utils.setTimeout;
 	
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
 	import app.model.dict.RopewayDict;
+	import app.model.vo.ConfigVO;
 	import app.view.components.ToolbarTop;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -25,6 +28,10 @@ package app.view
 			toolbarTop.addEventListener(ToolbarTop.FORCE,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.ENGINETEMP,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.INCH,onMenu);
+			toolbarTop.addEventListener(ToolbarTop.WIND,onMenu);
+			
+			toolbarTop.colRopeway = RopewayDict.list;
+			toolbarTop.selRopeway = toolbarTop.colRopeway[0];
 		}
 		
 		protected function get toolbarTop():ToolbarTop
@@ -54,29 +61,12 @@ package app.view
 					break;
 				
 				case ToolbarTop.INCH:
+					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_INCH);
+					break;
+				
+				case ToolbarTop.WIND:
 					break;
 			}
 		}
-		
-		override public function listNotificationInterests():Array
-		{
-			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
-			];
-		}
-		
-		override public function handleNotification(notification:INotification):void
-		{
-			switch(notification.getName())
-			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					toolbarTop.colRopeway = RopewayDict.list;
-					
-					toolbarTop.selRopeway = toolbarTop.colRopeway[0];
-					
-					onStation(null);
-					break;
-			}
-		}		
 	}
 }

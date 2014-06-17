@@ -31,7 +31,7 @@
 			}
 		]]>
 	</fx:Script>
-	<s:SkinnableContainer skinClass="custom.skin.SkinPanelRealtimeDetection" width="100%" minWidth="240">	
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanel" width="100%" minWidth="240">	
 		<s:layout>
 			<s:VerticalLayout gap="0" horizontalAlign="center"/>
 		</s:layout>

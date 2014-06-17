@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 height="170" minWidth="180" width="100%" skinClass="custom.skin.SkinPanel">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.graphics.ImageSnapshot;
+			
+			import app.model.vo.InchVO;
+			
+			[Bindable]private var _inch:InchVO;
+			public function set inch(value:InchVO):void
+			{
+				_inch = value;
+				
+				if(this.initialized)
+				{
+					var pt:Point = content.contentToGlobal(new Point(0,0));
+					
+					var clipRect:Rectangle = new Rectangle(pt.x,pt.y,content.width,content.height);
+					var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
+					
+					if(!bd.rect.containsRect(clipRect))
+						return;
+					
+					var ba:ByteArray = bd.getPixels(clipRect);
+					ba.position = 0;
+					
+					var fillRect:Rectangle = new Rectangle(0,0,clipRect.width,clipRect.height);
+					var newBd:BitmapData=new BitmapData(clipRect.width, clipRect.height);  			
+					newBd.setPixels(fillRect,ba);
+					
+					imageAnimate.source = new Bitmap(newBd);
+					imageAnimate.visible = true;
+					
+					anima.widthFrom = content.width;
+					anima.widthTo = 0;
+					anima.heightFrom = content.height;
+					anima.heightTo = 0;
+					anima.play([imageAnimate]);
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Resize id="anima">
+			<s:effectEnd>
+				<![CDATA[				
+				imageAnimate.visible = false;
+				]]>
+			</s:effectEnd>			
+		</s:Resize>
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="张紧小尺" fontWeight="bold"/>
+	</s:HGroup>
+	
+	<s:SkinnableContainer left="5" right="5" top="30" bottom="5"
+						  skinClass="custom.skin.SkinPanelContent"
+						  fontWeight="bold">
+		<s:HGroup id="content" color="0x1b5aa2" fontSize="28" 
+				  horizontalCenter="0" verticalCenter="0"
+				  horizontalAlign="center">	
+			<s:Label text="{_inch.value}" width="64"/>		
+			<s:Label text="M"/>	
+		</s:HGroup>
+		
+		<s:Image id="imageAnimate" horizontalCenter="0" verticalCenter="0"
+				 visible="false"/>
+		
+		<s:Label text="{df.format(_inch.date)}" right="0" bottom="0"/>
+	</s:SkinnableContainer>
+</s:SkinnableContainer>

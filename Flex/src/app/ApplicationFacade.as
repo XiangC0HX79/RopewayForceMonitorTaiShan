@@ -2,10 +2,22 @@ package app
 {
 	import spark.components.Application;
 	
-	import app.controller.AppInitCommand;
+	import app.controller.NotifyInchRealtimeAddCommand;
+	import app.controller.NotifyInitAppCommand;
+	import app.controller.NotifyInitAppCompleteCommand;
+	import app.controller.NotifyMainOverviewAddCommand;
+	import app.controller.NotifyMenuInchAnalysisCommand;
+	import app.controller.NotifyMenuInchManagerCommand;
+	import app.controller.NotifyMenuInchRealtimeCommand;
+	import app.controller.NotifyMenuMainInchCommand;
+	import app.controller.NotifyMenuMainOverviewCommand;
+	import app.controller.NotifyRopewayChangeCommand;
+	import app.controller.NotifySocketInchCommand;
+	import app.controller.NotifySocketSurroundingTempCommand;
 	import app.controller.StartupCommand;
 	
 	import org.puremvc.as3.interfaces.IFacade;
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.facade.Facade;
 	
 	public class ApplicationFacade extends Facade implements IFacade
@@ -93,7 +105,7 @@ package app
 		 * 	</tr>
 		 * </table>
 		 **/
-		//public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
+		public static const NOTIFY_INIT_CONFIG_COMPLETE:String 		= "InitConfigComplete";
 		
 		/**
 		 * 索道信息初始化完成
@@ -119,6 +131,23 @@ package app
 		public static const NOTIFY_SOCKET_ENGINE_TEMP:String 		= "SocketEngineTemp";
 		
 		/**
+		 * 张紧小尺
+		 * <p></p>
+		 * <table>
+		 * 	<th>参数类型</th><th>参数说明</th>
+		 * 	<tr>
+		 *    <td>RopewayDict</td><td>索道</td>
+		 * 	</tr>
+		 * 	<tr>
+		 *    <td>InchVO</td><td>张紧小尺数值</td>
+		 * 	</tr>
+		 * </table>
+		 **/
+		public static const NOTIFY_SOCKET_INCH:String 				= "SocketInch";
+		
+		public static const NOTIFY_SOCKET_SURROUDING_TEMP:String 	= "SocketSurroudingTemp";
+				
+		/**
 		 * 报警实时信息
 		 **/
 		public static const NOTIFY_ROPEWAY_ALARM_REALTIME:String 	= "RopewayAlarmRealtime";
@@ -140,10 +169,20 @@ package app
 		 **/
 		//public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
 		
+		
+		public static const ACTION_UPDATE_INCH:String 					= "ActionUpdateInch";		
+		public static const ACTION_UPDATE_INCH_HISTORY:String 			= "ActionUpdateInchHistory";		
+		public static const ACTION_UPDATE_SURROUDING_TEMP_FST:String 	= "ActionUpdateSurroudingTempFst";		
+		public static const ACTION_UPDATE_SURROUDING_TEMP_SND:String 	= "ActionUpdateSurroudingTempSnd";
+		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
+		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
+		
 		/**
 		 * 主菜单-监测概览
 		 **/
 		public static const NOTIFY_MENU_MAIN_OVERVIEW:String 		= "MenuMainOverview";
+		
+		public static const NOTIFY_MAIN_OVERVIEW_ADD:String 		= "MainOverviewAdd";
 		
 		/**
 		 * 主菜单-抱索力
@@ -159,6 +198,15 @@ package app
 		 * 主菜单-张紧小尺
 		 **/
 		public static const NOTIFY_MENU_MAIN_INCH:String 			= "MenuMainInch";
+		
+		public static const NOTIFY_MENU_INCH_REALTIME:String 		= "MenuInchRealtime";
+		
+		public static const NOTIFY_INCH_REALTIME_ADD:String 		= "MainInchRealtimeAdd";
+		
+		public static const NOTIFY_MENU_INCH_ANALYSIS:String 		= "MenuInchAnalysis";
+		
+		public static const NOTIFY_MENU_INCH_MANAGER:String 		= "MenuInchManager";
+		
 		
 		/**
 		 * 主菜单-风速风向
@@ -262,7 +310,29 @@ package app
 			
 			registerCommand( STARTUP, StartupCommand );	
 			
-			registerCommand( NOTIFY_INIT_APP, AppInitCommand);
+			registerCommand( NOTIFY_INIT_APP, NotifyInitAppCommand);
+			
+			registerCommand( NOTIFY_INIT_APP_COMPLETE, NotifyInitAppCompleteCommand);
+			
+			registerCommand( NOTIFY_SOCKET_INCH , NotifySocketInchCommand);
+							 
+			registerCommand( NOTIFY_SOCKET_SURROUDING_TEMP , NotifySocketSurroundingTempCommand);
+			
+			registerCommand( NOTIFY_ROPEWAY_CHANGE , NotifyRopewayChangeCommand);
+			
+			registerCommand( NOTIFY_MENU_MAIN_OVERVIEW , NotifyMenuMainOverviewCommand);
+			
+			registerCommand( NOTIFY_MAIN_OVERVIEW_ADD , NotifyMainOverviewAddCommand);
+			
+			registerCommand( NOTIFY_MENU_MAIN_INCH , NotifyMenuMainInchCommand);	
+			
+			registerCommand( NOTIFY_MENU_INCH_REALTIME , NotifyMenuInchRealtimeCommand);		
+			
+			registerCommand( NOTIFY_INCH_REALTIME_ADD , NotifyInchRealtimeAddCommand);	
+			
+			registerCommand( NOTIFY_MENU_INCH_ANALYSIS , NotifyMenuInchAnalysisCommand);	
+			
+			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);				
 		}
 	}
 }

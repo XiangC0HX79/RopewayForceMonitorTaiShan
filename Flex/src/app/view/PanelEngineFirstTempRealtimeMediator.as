@@ -29,9 +29,9 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				//ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
 				
-				ApplicationFacade.NOTIFY_ROPEWAY_CHANGE,
+				//ApplicationFacade.NOTIFY_ROPEWAY_CHANGE,
 				
 				ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP
 			];
@@ -44,8 +44,8 @@ package app.view
 				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
 					var now:Date = new Date;
 					var tom:Date = DateUtil.addDateTime('d',1,now);
-					panelEngineTempRealtime.minTime = new Date(now.fullYear,now.month,now.date,22); 
-					panelEngineTempRealtime.maxTime = new Date(now.fullYear,now.month,now.date,23);
+					panelEngineTempRealtime.minTime = new Date(now.fullYear,now.month,now.date); 
+					panelEngineTempRealtime.maxTime = new Date(tom.fullYear,tom.month,tom.date);
 					break;
 				
 				case ApplicationFacade.NOTIFY_ROPEWAY_CHANGE:

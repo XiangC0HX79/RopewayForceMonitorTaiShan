@@ -21,8 +21,8 @@ package app.view
 	
 	import app.ApplicationFacade;
 	import app.model.CarriageProxy;
-	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
+	import app.model.InchProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.dict.RopewayStationDict;
 	import app.model.vo.CarriageVO;
@@ -30,7 +30,9 @@ package app.view
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
 	import app.model.vo.ForceVO;
+	import app.model.vo.InchVO;
 	import app.model.vo.RopewayStationForceVO;
+	import app.model.vo.SurroundingTempVO;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -42,6 +44,8 @@ package app.view
 		
 		private var _errorCount:Number = 0;
 				
+		private var _config:ConfigVO;
+		
 		public function SocketMediator()
 		{
 			super(NAME, new Socket);			
@@ -51,10 +55,6 @@ package app.view
 			socket.addEventListener(Event.CLOSE,onConnectError);		
 			socket.addEventListener(IOErrorEvent.IO_ERROR,onConnectError);			
 			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onConnectError);
-			
-		/*	var timer:Timer = new Timer(30000);
-			timer.addEventListener(TimerEvent.TIMER,onTimer);
-			timer.start();*/
 		}
 		
 		protected function get socket():Socket
@@ -66,11 +66,9 @@ package app.view
 		{
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
 			
-			var config:ConfigVO = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).config;
-			
-			socket.connect(config.serverIp,config.serverPort);
+			socket.connect(_config.serverIp,_config.serverPort);
 				
-			Security.loadPolicyFile("xmlsocket://" + config.serverIp + ":" + config.serverPort);
+			Security.loadPolicyFile("xmlsocket://" + _config.serverIp + ":" + _config.serverPort);
 			
 			_errorCount ++;
 			
@@ -137,7 +135,8 @@ package app.view
 				var sd:String = String(a[1]).replace(/-/g,"/");
 				var dt:Date = new Date(Date.parse(sd));
 				
-				var ropeway:RopewayDict = RopewayDict.GetRopewayByLable(a[2]);
+				var ropeway:RopewayDict = RopewayDict.dict[a[2]];
+				var ropewayStation:RopewayStationDict = RopewayStationDict.dict[a[3]];
 				
 				switch(a[0])
 				{	
@@ -146,6 +145,12 @@ package app.view
 						break;
 					
 					case "ET":
+						var st:SurroundingTempVO = new SurroundingTempVO;
+						st.date = dt;
+						st.temp = Number(a[4]);
+						st.humi = Number(a[5]);
+						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_SURROUDING_TEMP,[ropewayStation,st]);
 						break;
 					
 					case "TE":
@@ -164,6 +169,16 @@ package app.view
 						
 						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,e);
 						break;
+					
+					case "ZJ":
+						var inch:InchVO = new InchVO;
+						inch.date = dt;
+						inch.temp = Number(a[4]);
+						inch.humi = Number(a[5]);
+						inch.value = Number(a[6]);
+						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_INCH,[ropeway,inch]);
+						break;						
 					
 					case "AL":
 						var rs:RopewayStationDict = RopewayStationDict.dict[a[1]];
@@ -205,7 +220,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
+				ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,
 				
 				ApplicationFacade.NOTIFY_ROPEWAY_INFO_SET,
 				
@@ -217,7 +232,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
+				case ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE:		
+					_config = notification.getBody() as ConfigVO;
 					connect();
 					break;
 				

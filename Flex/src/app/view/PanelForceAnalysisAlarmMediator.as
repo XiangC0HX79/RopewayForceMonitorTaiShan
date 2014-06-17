@@ -141,7 +141,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+				//ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
 			];
 		}
 		

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  height="170" skinClass="custom.skin.SkinPanel" 
+					  fontWeight="bold">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.InchVO;
+			
+			[Bindable]public var inch:InchVO;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="环境温湿度"/>
+	</s:HGroup>
+	
+	<s:HGroup left="20" right="20" top="35" bottom="20" color="0x1b5aa2"
+			  horizontalAlign="center" verticalAlign="middle" fontSize="38">	
+		<s:Image source="@Embed('assets/image/panel_temp.png')"/>
+		<s:VGroup width="64" horizontalAlign="center">
+			<s:Label text="{inch.temp}"/>	
+			<s:Label text="{inch.humi}"/>				
+		</s:VGroup>
+		<s:VGroup horizontalAlign="center">
+			<s:Label text="℃"/>	
+			<s:Label text="%"/>				
+		</s:VGroup>
+	</s:HGroup>
+	
+	<s:Label text="{df.format(inch.date)}" right="5" bottom="5"/>
+</s:SkinnableContainer>

@@ -3,6 +3,7 @@ package app.view
 	import mx.core.IVisualElement;
 	
 	import app.ApplicationFacade;
+	import app.model.InchProxy;
 	
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
@@ -22,21 +23,16 @@ package app.view
 			return viewComponent as RopewayForceMonitor;
 		}
 		
-		private function changeContent(n:String):void
+		private function changeContent(v:IVisualElement):void
 		{
 			application.mainContent.removeAllElements();
-			
-			var mediator:IMediator = facade.retrieveMediator(n);
-			application.mainContent.addElement(mediator.getViewComponent() as IVisualElement);			
+			application.mainContent.addElement(v);
 		}
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
-				ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW,
-				ApplicationFacade.NOTIFY_MENU_MAIN_FORCE,
-				ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP
+				ApplicationFacade.ACTION_MAIN_PANEL_CHANGE
 			];
 		}
 		
@@ -44,17 +40,8 @@ package app.view
 		{			
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-				case ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW:
-					changeContent(MainPanelOverviewMediator.NAME);
-					break;
-				
-				case ApplicationFacade.NOTIFY_MENU_MAIN_FORCE:
-					changeContent(MainPanelForceMediator.NAME);
-					break;
-				
-				case ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP:
-					changeContent(MainPanelEngineTempMediator.NAME);
+				case ApplicationFacade.ACTION_MAIN_PANEL_CHANGE:
+					changeContent(notification.getBody() as IVisualElement);
 					break;
 			}
 		}		

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 skinClass="custom.skin.SkinPanel" height="100%" width="100%" 
+		 resize="container_resizeHandler(event)" fontWeight="bold">
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			
+			import mx.events.ResizeEvent;
+			
+			import app.model.vo.InchHistoryVO;
+			import app.model.vo.InchVO;
+			
+			[Bindable]public var inchHistory:InchHistoryVO;
+			
+			[Bindable]private var _inch:InchVO;
+			public function set inch(value:InchVO):void
+			{
+				_inch = value;
+				
+				drawNiddle();
+			}
+			
+			protected function container_resizeHandler(event:ResizeEvent):void
+			{
+				flash.utils.setTimeout(drawNiddle,200);
+			}
+			
+			private const MAX_VALUE:Number = 1000;
+			private const MIN_VALUE:Number = 0;
+			private const IMG_WIDTH:Number = 851;
+			private const IMG_MAX:Number = 826;
+			private const IMG_MIN:Number = 5;
+			
+			private function drawNiddle():void
+			{
+				if(!_inch)return;				
+				
+				var value:Number = _inch.value;
+				if(value > MAX_VALUE)value = MAX_VALUE;
+				if(value < MIN_VALUE)value = MIN_VALUE;
+				
+				var grad:Number = (value - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
+				grad *= img.width / IMG_WIDTH;
+				grad -= niddle.width / 2;
+				
+				m.xTo = grad;
+				m.end();
+				m.play([niddle]);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Move id="m"/>
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="张紧小尺"/>
+	</s:HGroup>
+	
+	<s:VGroup id="niddle" y="35" horizontalAlign="center" gap="0" width="40">
+		<s:Label text="{_inch.value}M"/>
+		<s:Image source="assets/image/inch_niddle.png"/>		
+	</s:VGroup>
+	
+	<s:Image id="img" left="0" right="0" y="75" height="50" source="assets/image/back_inch.png" scaleMode="stretch"/>
+	
+	<s:HGroup width="100%" y="125">
+		<s:Spacer width="100%"/>
+		
+		<s:VGroup>
+			<s:Label text="今天平均"/>
+			<s:Label text="同期平均"/>			
+		</s:VGroup>
+				
+		<s:VGroup>
+			<s:Label text="{inchHistory.aveDay.toFixed(2)}"/>
+			<s:Label text="{inchHistory.periodAveDay}"/>			
+		</s:VGroup>
+		
+		<s:Spacer width="100%"/>
+				
+		<s:VGroup>
+			<s:Label text="本月平均"/>
+			<s:Label text="同期月平均"/>			
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:Label text="{inchHistory.aveMon}"/>
+			<s:Label text="{inchHistory.periodAveMon}"/>			
+		</s:VGroup>
+		
+		<s:Spacer width="100%"/>
+		
+		<s:VGroup>
+			<s:Label text="三个月平均"/>
+			<s:Label text="同期三月平均"/>			
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:Label text="{inchHistory.aveThreeMon}"/>
+			<s:Label text="{inchHistory.periodThreeMon}"/>			
+		</s:VGroup>
+		
+		<s:Spacer width="100%"/>
+	</s:HGroup>
+</s:SkinnableContainer>

@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  xmlns:components="app.view.components.*"
+					  width="100%" height="100%" 
+					  resize="dataCanvas_resizeHandler(event)"
+					  fontSize="12">	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:Sequence id="sequence"/>
+		<s:Parallel id="parallel"/>
+		<s:DateTimeFormatter id="dateFormatAve" dateTimePattern="MM.dd"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.graphics.ImageSnapshot;
+			
+			import spark.effects.Animate;
+			import spark.effects.Fade;
+			import spark.effects.Move;
+			import spark.effects.Scale;
+			import spark.effects.Wipe;
+			import spark.effects.WipeDirection;
+			import spark.effects.animation.MotionPath;
+			import spark.effects.animation.SimpleMotionPath;
+			import spark.primitives.Line;
+			
+			import app.model.vo.InchHistoryVO;
+			import app.model.vo.InchVO;
+			
+			public static const ONE_MIN:Number = 60 * 1000;
+			public static const TEN_MIN:Number = 10 * 60 * 1000;
+			public static const HALF_HOUR:Number = 30 * 60 * 1000;
+			public static const ONE_HOUR:Number = 60 * 60 * 1000;
+			
+			[Bindable]private var _ropeway:InchHistoryVO;
+			public function get inchHistory():InchHistoryVO
+			{
+				return _ropeway;
+			}
+			public function set inchHistory(rw:InchHistoryVO):void
+			{			
+				if(!this.initialized)
+					return;
+				
+				if(!rw || !rw.his || (rw.his.length == 0))
+				{
+					_ropeway = rw;		
+					
+					clearChart();
+				}
+				else
+				{
+					if(_ropeway == rw)
+					{						
+						reCalcuXY();
+						
+						ContinueChart();
+					}
+					else
+					{
+						_ropeway = rw;
+						
+						reCalcuXY();
+						
+						RefreshChart();			
+					}
+				}		
+			}
+			
+			private function clearChart():void
+			{			
+				groupPoint.removeAllElements();
+				groupLine.removeAllElements();
+				
+				lineAve.visible = false;
+				lbAve.visible = false;
+			}
+			
+			private function reCalcuY():void
+			{			
+				var rw:InchHistoryVO = _ropeway;
+				
+				if(!rw)
+					return;
+				
+				var max:Number = 1000;
+				var min:Number = 0;
+				
+				var df:Number = max - min;
+				var ave:Number = (max + min) / 2;
+				
+				if(df < 4 * 10)
+				{
+					var interval:Number = 10;
+				}
+				else if(df < 4 * 20)
+				{
+					interval = 20;
+				}
+				else if(df < 4 * 50)
+				{
+					interval = 50;
+				}
+				else if(df < 4 * 100)
+				{
+					interval = 100;
+				}
+				else
+				{				
+					min = Math.floor(min / 200) * 200;
+					max = Math.ceil(max / 200) * 200;
+					
+					interval = (max - min) / 5;
+				}
+				
+				min = Math.floor(ave / interval) * interval - 2 * interval;
+				
+				verticalAxis.interval = interval;
+				verticalAxis.minimum = (min > 0)?min:0;
+				verticalAxis.maximum = min + 5 * interval;
+			}
+			
+			private function reCalcuX():void
+			{			
+				if(!_ropeway)
+					return;			
+				
+				var fstInch:InchVO = _ropeway.his[0];
+				var lstInch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				
+				var min:Number = fstInch.date.time;	
+				min = Math.floor(min / ONE_MIN) * ONE_MIN;
+				
+				var max:Number = lstInch.date.time;	
+				max = Math.floor(max / ONE_MIN) * ONE_MIN + ONE_MIN;		
+				
+				var df:Number = max - min;
+				
+				if(df <= 10 * TEN_MIN)
+				{					
+					var labelUnits:String = "minutes";
+					var interval:Number = Math.ceil(df / TEN_MIN);
+					
+					max = min + interval * TEN_MIN;
+				}
+				else if(df <= 10 * HALF_HOUR)
+				{
+					labelUnits = "minutes";
+					interval = 30;
+					
+					min = Math.floor(min / HALF_HOUR) * HALF_HOUR;
+					max = Math.ceil(max / HALF_HOUR) * HALF_HOUR;				
+				}
+				else
+				{
+					labelUnits = "hours";
+					interval = 1;
+					
+					min = Math.floor(min / ONE_HOUR) * ONE_HOUR;
+					max = Math.ceil(max / ONE_HOUR) * ONE_HOUR;
+				}
+				
+				horizontalAxis.labelUnits = labelUnits;
+				horizontalAxis.interval = interval;
+				horizontalAxis.minimum = new Date(min);
+				horizontalAxis.maximum = new Date(max);
+			}
+			
+			private function drawYesterday():void
+			{				
+				if(_ropeway)
+				{
+					lineAve.visible = true;
+					lbAve.visible = true;
+					
+					var moves:Array = new Array;
+										
+					var pt:Point = dataCanvas.dataToLocal(0,_ropeway.aveDay);
+					var move:Move = new Move(lineAve);
+					move.yTo = pt.y;
+					moves.push(move);
+					
+					move = new Move(lbAve);
+					move.yTo = pt.y + 20;
+					moves.push(move);
+										
+					parallel.end();
+					parallel.children = moves;
+					parallel.play();
+				}
+				else
+				{
+					lineAve.visible = false;
+					lbAve.visible = false;
+				}
+			}
+			
+			private function reCalcuXY():void
+			{			
+				reCalcuY();
+				
+				reCalcuX();
+				
+				drawYesterday();
+			}
+			
+			public function RefreshChart():void
+			{					
+				//添加折线\点
+				var len:int = groupPoint.numElements;
+				for(var i:int = 0;i<len;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;
+					img.removeEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
+					img.removeEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				}
+				
+				groupPoint.removeAllElements();
+				groupLine.removeAllElements();
+				
+				var animates:Array = new Array;								
+				for(i = 0;i<_ropeway.his.length;i++)
+				{
+					img = new ChartImage;					
+					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+					
+					var inch:InchVO = _ropeway.his[i];
+					img.SetValue(dataCanvas,inch,inch.date,inch.value,0);		
+					
+					groupPoint.addElement(img);		
+					
+					animates.push(img.scale);
+					
+					if(i < _ropeway.his.length - 1)
+					{						
+						var line:ChartLine = new ChartLine;
+						
+						var sInch:InchVO = _ropeway.his[i];
+						var eInch:InchVO = _ropeway.his[i+1];
+						line.SetValue(dataCanvas,sInch.date,sInch.value,eInch.date,eInch.value);
+						
+						groupLine.addElement(line);
+						
+						animates.push(line.animate);
+					}
+				}
+				
+				sequence.end();
+				sequence.children = animates;
+				sequence.duration = 3000 / animates.length;
+				sequence.play();				
+			}		
+			
+			public function ContinueChart():void
+			{							
+				var animates:Array = new Array;							
+				for(var i:Number = 0;i<groupPoint.numElements;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;	
+					img.SetValue(dataCanvas);
+					animates.push(img.mv);
+					
+					if(i < groupLine.numElements)
+					{
+						var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
+						line.SetValue(dataCanvas);
+						animates.push(line.animate);
+					}
+				}	
+				
+				var p:Parallel = new Parallel;
+				p.children = animates;
+				
+				animates = new Array;
+				animates.push(p);
+				
+				line = new ChartLine;
+				var sInch:InchVO = _ropeway.his[_ropeway.his.length - 2];
+				var eInch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				line.SetValue(dataCanvas,sInch.date,sInch.value,eInch.date,eInch.value);
+				groupLine.addElement(line);
+				
+				line.animate.duration = 500;
+				animates.push(line.animate);
+				
+				img = new ChartImage;		
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				
+				var inch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				img.SetValue(dataCanvas,inch,inch.date,inch.value,0);		
+				
+				groupPoint.addElement(img);		
+				
+				animates.push(img.scale);
+				
+				sequence.end();
+				sequence.children = animates;
+				sequence.duration = 3000 / animates.length;
+				sequence.play();
+			}
+			
+			public function MoveChart():void
+			{				
+				var animates:Array = new Array;
+				for(var i:Number = 0;i<groupPoint.numElements;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;						
+					img.SetValue(dataCanvas);	
+					animates.push(img.mv);
+					
+					if(i < groupLine.numElements)
+					{
+						var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
+						line.SetValue(dataCanvas);
+						animates.push(line.animate);
+					}
+				}	
+				
+				sequence.end();
+				
+				var p:Parallel = new Parallel;
+				p.children = animates;
+				p.play();
+			}
+			
+			private function onImageMouseOver(event:MouseEvent):void
+			{
+				var off:Number = 10;
+				
+				var img:ChartImage = event.currentTarget as ChartImage;				
+				chartTip.data = img.data;
+				
+				var pt:Point = dataCanvas.dataToLocal(img.data.date,img.data.value);
+				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
+				
+				chartTip.validateNow();
+				
+				var w:Number = chartTip.measuredWidth;
+				var h:Number = chartTip.measuredHeight;
+				
+				var lbrect:Rectangle = new Rectangle(pt.x - off - w,pt.y + off,w,h);
+				var rbrect:Rectangle = new Rectangle(pt.x + off,pt.y + off,w,h);
+				var ltrect:Rectangle = new Rectangle(pt.x - off - w,pt.y - off - h,w,h);
+				var rtrect:Rectangle = new Rectangle(pt.x + off,pt.y - off - h,w,h);
+				
+				if(prect.containsRect(lbrect))
+				{
+					chartTip.x = lbrect.x;
+					chartTip.y = lbrect.y;
+				}
+				else if(prect.containsRect(rbrect))
+				{
+					chartTip.x = rbrect.x;
+					chartTip.y = rbrect.y;
+				}
+				else if(prect.containsRect(ltrect))
+				{
+					chartTip.x = ltrect.x;
+					chartTip.y = ltrect.y;
+				}
+				else
+				{
+					chartTip.x = rtrect.x;
+					chartTip.y = rtrect.y;
+				}
+				
+				chartTip.visible = true;
+			}
+			
+			private function onImageMouseOut(event:MouseEvent):void
+			{
+				chartTip.visible = false;
+			}
+			
+			protected function dataCanvas_resizeHandler(event:ResizeEvent):void
+			{				
+				flash.utils.setTimeout(onResize,200);
+			}			
+			
+			private function onResize():void
+			{
+				if(_ropeway && _ropeway.his)
+				{
+					reCalcuXY();			
+					
+					MoveChart();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+		</s:stroke>
+	</s:Rect>	
+		
+	<mx:LineChart id="lineChart" left="20" right="40" bottom="20" top="40">
+		<mx:backgroundElements>
+			<fx:Array>						
+				<mx:GridLines gridDirection="both" 
+							  horizontalStroke="{gridStroke}"
+							  verticalStroke="{gridStroke}"/>
+			</fx:Array>
+		</mx:backgroundElements>
+		
+		<mx:annotationElements>
+			<mx:CartesianDataCanvas id="dataCanvas"/>
+		</mx:annotationElements>
+		
+		<mx:verticalAxis>
+			<mx:LinearAxis id="verticalAxis"/>
+		</mx:verticalAxis>
+		<mx:horizontalAxis>
+			<mx:DateTimeAxis displayLocalTime="true" 
+							 alignLabelsToUnits="true"
+							 id="horizontalAxis"/>
+		</mx:horizontalAxis>
+		
+		<mx:verticalAxisRenderers>					
+			<mx:AxisRenderer axis="{verticalAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>
+		</mx:verticalAxisRenderers>
+		
+		<mx:horizontalAxisRenderers>			
+			<mx:AxisRenderer axis="{horizontalAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>					
+		</mx:horizontalAxisRenderers>
+		
+		<mx:series>
+			<mx:LineSeries yField="value" xField="date"/>
+		</mx:series>
+	</mx:LineChart>		
+	
+	<s:Group id="groupChart" left="59" right="52" bottom="47" top="50">
+		<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
+			<s:fill>
+				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:Group id="groupLine" width="100%" height="100%"/>
+		<s:Group id="groupPoint" width="100%" height="100%">
+			<s:filters>
+				<s:DropShadowFilter 
+					distance="2" 
+					angle="45" 
+					color="0x0" 
+					alpha="1" 
+					blurX="4" 
+					blurY="4" 
+					strength="1" 
+					quality="1" 
+					hideObject="false"
+					inner="false" 
+					knockout="false"/>
+			</s:filters>
+		</s:Group>
+		<s:Group id="groupLabel" width="100%" height="100%">
+			<components:ChartInchTip id="chartTip" visible="false"/>
+		</s:Group>
+		
+		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>
+	</s:Group>
+	
+	<s:Label right="15" id="lbAve" text="日平均值&#xd;{_ropeway.aveDay.toFixed()} M" textAlign="center"
+			 verticalAlign="middle"/> 
+	
+	<s:Label left="10" top="20" text="张紧小尺（M）"/>
+	<s:Label right="15" bottom="40" text="时间"/>
+	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+			 text="张紧小尺实时监测曲线"/>
+</s:SkinnableContainer>

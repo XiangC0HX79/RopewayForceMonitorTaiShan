@@ -19,8 +19,6 @@ package app.model.dict
 		
 		public var alarmForce:Number = 50;
 		
-		public static var dict:Dictionary;
-		
 		public function get fullName():String
 		{
 			return ropeway.lable + (station == FIRST?"驱动站":"回转站");
@@ -30,19 +28,9 @@ package app.model.dict
 			//return ropeway.lable + (station == FIRST?"驱动站":"回转站");
 		}
 		
-		public static function get list():ArrayCollection
-		{
-			var r:Array = [];
-			
-			for each(var rs:RopewayStationDict in RopewayStationDict.dict)
-			{				
-				r.push(rs);
-			}
-			
-			r.sortOn(["ropewayId","station"],[Array.NUMERIC,Array.NUMERIC]);
-			
-			return new ArrayCollection(r);
-		}
+		public static var dict:Dictionary;
+		
+		public static var list:ArrayCollection;
 		
 		public function RopewayStationDict()
 		{
