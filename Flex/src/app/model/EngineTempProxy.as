@@ -49,8 +49,7 @@ package app.model
 		}
 		
 		public function AddItem(rw:RopewayDict,pos:int,et:EngineTempVO):void
-		{
-			
+		{			
 			for each(var e:EngineVO in list)
 			{
 				if((rw == e.ropeway) && (pos == e.pos))

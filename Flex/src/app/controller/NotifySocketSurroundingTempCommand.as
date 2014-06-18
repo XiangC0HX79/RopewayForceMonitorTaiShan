@@ -6,7 +6,7 @@ package app.controller
 	import app.model.SurroundingTempProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.dict.RopewayStationDict;
-	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	import app.model.vo.SurroundingTempVO;
 	
 	import custom.other.CustomUtil;

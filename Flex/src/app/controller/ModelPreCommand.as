@@ -1,26 +1,12 @@
 package app.controller
 {	
-	import flash.events.TimerEvent;
 	import flash.utils.Dictionary;
-	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
-	
-	import spark.components.Application;
-	
-	import app.model.CarriageEditHisProxy;
-	import app.model.CarriageProxy;
+		
 	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
-	import app.model.ForceRealtimeDetectionAlarmProxy;
-	import app.model.InchHistoryProxy;
 	import app.model.InchProxy;
-	import app.model.RopeForceAjustProxy;
-	import app.model.RopewayAlarmAnalysisProxy;
-	import app.model.RopewayForceAverageProxy;
-	import app.model.RopewayForceProxy;
-	import app.model.RopewaySwitchFreqProxy;
-	import app.model.RopewaySwitchFreqTotalProxy;
 	import app.model.SurroundingTempProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.dict.RopewayStationDict;
@@ -71,7 +57,6 @@ package app.controller
 			facade.registerProxy(new SurroundingTempProxy);
 			facade.registerProxy(new EngineTempProxy);
 			facade.registerProxy(new InchProxy);
-			facade.registerProxy(new InchHistoryProxy);
 			
 			/*facade.registerProxy(new ForceRealtimeDetectionAlarmProxy);
 			facade.registerProxy(new RopewayForceProxy);

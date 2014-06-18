@@ -11,7 +11,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
 			
 			//[Bindable]private var _ropewayForce:RopewayForceVO;	
 			
@@ -35,13 +35,13 @@
 				
 				_data = value;
 					
-				if(_data is InchVO)
+				if(_data is InchValueVO)
 				{
-					var rf:InchVO = _data as InchVO;
+					var rf:InchValueVO = _data as InchValueVO;
 				}
-				else if(_data.item is InchVO)
+				else if(_data.item is InchValueVO)
 				{
-					rf = _data.item as InchVO;
+					rf = _data.item as InchValueVO;
 				}
 				
 				if(rf)

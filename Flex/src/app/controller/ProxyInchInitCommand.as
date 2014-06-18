@@ -2,6 +2,7 @@ package app.controller
 {
 	import app.ApplicationFacade;
 	import app.model.InchProxy;
+	import app.view.ContentInchRealtimeMediator;
 	
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
@@ -9,16 +10,16 @@ package app.controller
 	
 	public class ProxyInchInitCommand extends SimpleCommand implements ICommand
 	{
-		override public function execute(note:INotification):void
+		override public function execute(notification:INotification):void
 		{
-			switch(note.getName())
+			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
+				case ApplicationFacade.NOTIFY_MENU_MAIN_INCH:
 					break;
 			}
 			
-			var inchProxy:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;
-			inchProxy.Init();
+			var inchHistoryProxy:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;
+			inchHistoryProxy.Init();
 		}
 	}
 }

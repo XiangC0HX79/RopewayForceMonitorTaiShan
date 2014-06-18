@@ -16,24 +16,24 @@ package app.controller
 			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;		
 			
 			switch(note.getName())
-			{				
-				case ApplicationFacade.NOTIFY_ROPEWAY_CHANGE:
-					break;
-				
-				case ApplicationFacade.NOTIFY_MAIN_OVERVIEW_ADD:
-					break;
-				
-				case ApplicationFacade.NOTIFY_INCH_REALTIME_ADD:
-					break;
-				
+			{
 				case ApplicationFacade.NOTIFY_SOCKET_INCH:
 					var rw:RopewayDict = note.getBody()[0];
-					if(rw != configProxy.config.ropeway)return;
+					if(rw == configProxy.config.ropeway)
+						updateInchHistory(configProxy.config.ropeway)
+					break;
+				
+				default:
+					updateInchHistory(configProxy.config.ropeway)
 					break;
 			}
 			
-			var inchProxy:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;				
-			sendNotification(ApplicationFacade.ACTION_UPDATE_INCH,inchProxy.dict[configProxy.config.ropeway]);
+		}
+		
+		private function updateInchHistory(rw:RopewayDict):void
+		{
+			var inchProxy:InchProxy =  facade.retrieveProxy(app.model.InchProxy.NAME) as app.model.InchProxy;				
+			sendNotification(ApplicationFacade.ACTION_UPDATE_INCH_HISTORY,inchProxy.dict[rw]);			
 		}
 	}
 }

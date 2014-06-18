@@ -1,5 +1,7 @@
 package app.view
 {
+	import mx.events.FlexEvent;
+	
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
@@ -18,13 +20,24 @@ package app.view
 		public function ContentEngineTempRealtimeDetectionMediator()
 		{ 
 			super(NAME, new ContentEngineTempRealtime);
-			
-			facade.registerMediator(new PanelEngineFirstTempRealtimeMediator(contentEngineTempRealtimeDetection.panelFst));
 		}
 		
 		protected function get contentEngineTempRealtimeDetection():ContentEngineTempRealtime
 		{
 			return viewComponent as ContentEngineTempRealtime;
 		}
+		
+		private function onMediatorAdd(event:FlexEvent):void
+		{
+			facade.registerMediator(new PanelEngineFirstTempRealtimeMediator(contentEngineTempRealtimeDetection.panelFst));
+			
+			//sendNotification(ApplicationFacade.NOTIFY_ENGINE_REALTIME_ADD)
+		}
+		
+		private function onMediatorRemove(event:FlexEvent):void
+		{
+			facade.removeMediator(PanelEngineFirstTempRealtimeMediator.NAME);
+		}
+		
 	}
 }

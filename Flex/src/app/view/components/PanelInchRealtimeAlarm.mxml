@@ -24,7 +24,6 @@
 			import spark.skins.spark.DefaultItemRenderer;
 			
 			import app.model.dict.RopewayStationDict;
-			import app.model.vo.RopewayAlarmVO;
 			
 			public static const VOICE_CHANGE:String = "VoiceChange";
 			
@@ -49,7 +48,7 @@
 				dispatchEvent(new Event(VOICE_CHANGE));
 			}			
 			
-			private function listLabelFunction(item:RopewayAlarmVO):String
+			private function listLabelFunction(item:*):String
 			{
 				return dateTimeF.format(item.alarmDate) + " "
 					+ item.ropeStation.fullName + " "

@@ -36,8 +36,6 @@ package app.view
 			facade.registerMediator(new PanelOverviewSurroundingTempMediator(mainPanelOverview.panelTemp));
 			facade.registerMediator(new PanelOverviewEngineTempMediator(mainPanelOverview.panelEngine));
 			facade.registerMediator(new PanelOverviewInchMediator(mainPanelOverview.panelInch));
-			
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_OVERVIEW_ADD);
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void

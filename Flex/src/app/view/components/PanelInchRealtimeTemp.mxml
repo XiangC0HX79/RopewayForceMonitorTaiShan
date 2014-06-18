@@ -6,9 +6,9 @@
 					  fontWeight="bold">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
 			
-			[Bindable]public var inch:InchVO;
+			[Bindable]public var inch:InchValueVO;
 		]]>
 	</fx:Script>
 	

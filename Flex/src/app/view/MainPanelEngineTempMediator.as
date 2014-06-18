@@ -5,6 +5,7 @@ package app.view
 	import mx.core.IVisualElement;
 	
 	import app.ApplicationFacade;
+	import app.controller.ActionEnginePanelChangeCommand;
 	import app.view.components.MainPanelEngineTemp;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -36,24 +37,29 @@ package app.view
 			switch(event.type)
 			{
 				case MainPanelEngineTemp.REALTIME_DETECTION:
-					var mediatorName:String = ContentEngineTempRealtimeDetectionMediator.NAME;
-					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_TEMP_REALTIME_DETECTION);
+					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_REALTIME);
+					break;
+				
+				case MainPanelEngineTemp.ANALYSIS:
+					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_ANALYSIS);
+					break;
+				
+				case MainPanelEngineTemp.MANAGE:
+					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_MANAGER);
 					break;
 			}
-			
+		}
+		
+		private function changeContent(v:IVisualElement):void
+		{
 			mainPanelEngineTemp.mainContent.removeAllElements();
-			
-			if(mediatorName)
-			{
-				var mediator:IMediator = facade.retrieveMediator(mediatorName);
-				mainPanelEngineTemp.mainContent.addElement(mediator.getViewComponent() as IVisualElement);		
-			}
+			mainPanelEngineTemp.mainContent.addElement(v);
 		}
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				//ApplicationFacade.NOTIFY_INIT_APP_COMPLETE
+				ApplicationFacade.ACTION_ENGINE_PANEL_CHANGE
 			];
 		}
 		
@@ -61,8 +67,8 @@ package app.view
 		{			
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
-					onMenu(new Event(MainPanelEngineTemp.REALTIME_DETECTION));
+				case ApplicationFacade.ACTION_ENGINE_PANEL_CHANGE:
+					changeContent(notification.getBody() as IVisualElement);
 					break;
 			}
 		}		

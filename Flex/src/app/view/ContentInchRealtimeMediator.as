@@ -33,7 +33,7 @@ package app.view
 			facade.registerMediator(new PanelInchRealtimeAlarmMediator(contentInchRealtime.panelAlarm));
 			facade.registerMediator(new PanelInchRealtimeChartMediator(contentInchRealtime.panelChart));
 			
-			sendNotification(ApplicationFacade.NOTIFY_INCH_REALTIME_ADD)
+			//sendNotification(ApplicationFacade.NOTIFY_INCH_REALTIME_ADD)
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void

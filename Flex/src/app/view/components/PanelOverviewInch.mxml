@@ -9,10 +9,10 @@
 			import mx.core.FlexGlobals;
 			import mx.graphics.ImageSnapshot;
 			
-			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
 			
-			[Bindable]private var _inch:InchVO;
-			public function set inch(value:InchVO):void
+			[Bindable]private var _inch:InchValueVO;
+			public function set inch(value:InchValueVO):void
 			{
 				_inch = value;
 				

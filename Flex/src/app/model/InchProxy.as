@@ -1,11 +1,15 @@
 package app.model
-{	
+{
+	import com.adobe.utils.DateUtil;
+	
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
 	
 	import app.model.dict.RopewayDict;
 	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	
 	import custom.other.CustomUtil;
 	
@@ -33,28 +37,27 @@ package app.model
 		
 		public function Init():void
 		{			
-			send2("RopeDete_RopeCarriageRela_GetList",onInit,"");
+			send("RopeDete_RopeCarriageRela_GetList",onInit,"");
 		}
 		
 		private function onInit(event:ResultEvent):void
 		{
-			var inch:InchVO = new InchVO;
-			inch.date = new Date;
+			var inch:InchValueVO = new InchValueVO;
+			inch.date = DateUtil.addDateTime('m',-5, new Date);
 			inch.humi = 50;
 			inch.temp = 25;
 			inch.value = 500;
 			
 			for each(var item:InchVO in dict)
 			{
-				if(!item.date || (item.date.time < inch.date.time))
-					CustomUtil.CopyProperties(inch,item);
+				item.UnshiftInch(inch);
 			}
 		}
 		
-		public function Update(rw:RopewayDict,inch:InchVO):void
+		public function AddInch(rw:RopewayDict,inch:InchValueVO):void
 		{
-			var dest:InchVO = dict[rw] as InchVO;			
-			CustomUtil.CopyProperties(inch,dest);			
+			var inchHistory:InchVO = dict[rw];
+			inchHistory.PushInch(inch);
 		}
 	}
 }

@@ -11,10 +11,8 @@ package app.controller
 	import spark.components.Application;
 	
 	import app.ApplicationFacade;
-	import app.model.CarriageProxy;
 	import app.model.ConfigProxy;
 	import app.model.EngineTempProxy;
-	import app.model.ForceRealtimeDetectionAlarmProxy;
 	import app.model.InchProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.dict.RopewayStationDict;
@@ -79,22 +77,6 @@ package app.controller
 			//ropewayAlarmDealProxy.Init().addResponder(new AsyncResponder(onForceAlarmInit,onFault));
 						
 			appInit();
-		}
-		
-		private function onCarriageInit(result:Object, token:Object = null):void
-		{						
-			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
-			carriageProxy.InitStationForce().addResponder(new AsyncResponder(onStationInit,onFault));			
-		}
-		
-		private function onStationInit(result:Object, token:Object = null):void
-		{		
-			appInit();
-		}
-		
-		private function onForceAlarmInit(result:Object, token:Object = null):void
-		{						
-			appInit();	
 		}
 	}
 }

@@ -2,7 +2,7 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.dict.RopewayDict;
-	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	import app.view.components.PanelOverviewInch;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -35,7 +35,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.ACTION_UPDATE_INCH:
-					panelOverviewInch.inch = notification.getBody() as InchVO;
+					panelOverviewInch.inch = notification.getBody() as InchValueVO;
 					break;
 			}
 		}		

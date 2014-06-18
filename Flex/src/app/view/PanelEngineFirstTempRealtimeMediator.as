@@ -29,11 +29,6 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				//ApplicationFacade.NOTIFY_INIT_APP_COMPLETE,
-				
-				//ApplicationFacade.NOTIFY_ROPEWAY_CHANGE,
-				
-				ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP
 			];
 		}
 		
@@ -41,28 +36,6 @@ package app.view
 		{	
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:					
-					var now:Date = new Date;
-					var tom:Date = DateUtil.addDateTime('d',1,now);
-					panelEngineTempRealtime.minTime = new Date(now.fullYear,now.month,now.date); 
-					panelEngineTempRealtime.maxTime = new Date(tom.fullYear,tom.month,tom.date);
-					break;
-				
-				case ApplicationFacade.NOTIFY_ROPEWAY_CHANGE:
-					var rw:RopewayDict = notification.getBody() as RopewayDict;
-					
-					var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;
-					panelEngineTempRealtime.engine = engineTempProxy.getEngine(rw,EngineVO.FIRST);
-					break;
-				
-				case ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP:
-					var engine:EngineVO = notification.getBody() as EngineVO;
-					
-					if(panelEngineTempRealtime.engine == engine)
-					{
-						panelEngineTempRealtime.engine = engine;
-					}
-					break;
 			}
 		}		
 	}

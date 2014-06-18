@@ -3,7 +3,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.InchProxy;
 	import app.model.dict.RopewayDict;
-	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	import app.view.components.PanelInchRealtimeTemp;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -36,7 +36,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.ACTION_UPDATE_INCH:
-					panelInchTemp.inch = notification.getBody() as InchVO;
+					panelInchTemp.inch = notification.getBody() as InchValueVO;
 					break;
 			}
 		}		

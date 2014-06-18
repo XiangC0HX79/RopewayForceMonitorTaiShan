@@ -1,8 +1,8 @@
 package app.view
 {
 	import app.ApplicationFacade;
-	import app.model.vo.InchHistoryVO;
 	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	import app.view.components.PanelInchRealtimeChart;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -35,7 +35,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.ACTION_UPDATE_INCH_HISTORY:
-					panelInchChart.inchHistory = notification.getBody() as InchHistoryVO;
+					panelInchChart.inchHistory = notification.getBody() as InchVO;
 					break;
 			}
 		}		

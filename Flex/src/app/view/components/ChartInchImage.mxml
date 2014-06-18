@@ -10,15 +10,15 @@
 		<![CDATA[
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			
-			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
 			
-			private var _ropewayForce:InchVO;
-			public function get ropewayForce():InchVO
+			private var _ropewayForce:InchValueVO;
+			public function get ropewayForce():InchValueVO
 			{
 				return _ropewayForce;
 			}			
 			
-			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:InchVO = null):void
+			public function SetValue(dataCanvas:CartesianDataCanvas,ropewayForce:InchValueVO = null):void
 			{				
 				if(ropewayForce)
 				{

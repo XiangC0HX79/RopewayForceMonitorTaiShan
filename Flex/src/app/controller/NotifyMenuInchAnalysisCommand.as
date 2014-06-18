@@ -1,7 +1,7 @@
 package app.controller
 {
 	import app.ApplicationFacade;
-	import app.model.InchHistoryProxy;
+	import app.model.InchProxy;
 	import app.view.ContentInchRealtimeMediator;
 	
 	import org.puremvc.as3.interfaces.ICommand;
@@ -13,7 +13,7 @@ package app.controller
 	{
 		override protected function initializeMacroCommand():void
 		{
-			addSubCommand(ActionInchPanelChangeCommand);
+			//addSubCommand(ActionInchPanelChangeCommand);
 		}
 	}
 }

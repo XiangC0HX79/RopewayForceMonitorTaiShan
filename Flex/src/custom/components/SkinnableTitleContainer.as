@@ -6,7 +6,7 @@ package custom.components
 	public class SkinnableTitleContainer extends SkinnableContainer
 	{
 		[SkinPart(required="true")]  
-		public var lbTitle:Label;  
+		public var skinTitle:Label;  
 		
 		private var _title:String;		
 		public function set title (value:String):void 
@@ -28,8 +28,8 @@ package custom.components
 		{
 			super.partAdded(partName, instance);
 			
-			if( instance == lbTitle )
-				lbTitle.text = _title;
+			if( instance == skinTitle )
+				skinTitle.text = _title;
 		}
 	}
 }

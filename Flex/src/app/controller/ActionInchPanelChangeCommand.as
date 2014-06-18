@@ -1,15 +1,20 @@
 package app.controller
 {
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
+	
 	import app.ApplicationFacade;
 	import app.view.ContentInchAnalysisMediator;
 	import app.view.ContentInchManageMediator;
 	import app.view.ContentInchRealtimeMediator;
 	
+	import org.puremvc.as3.interfaces.IAsyncCommand;
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
+	import org.puremvc.as3.patterns.command.AsyncCommand;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
-	public class ActionInchPanelChangeCommand extends SimpleCommand implements ICommand
+	public class ActionInchPanelChangeCommand extends AsyncCommand implements IAsyncCommand
 	{
 		override public function execute(notification:INotification):void
 		{
@@ -17,7 +22,10 @@ package app.controller
 			{
 				case ApplicationFacade.NOTIFY_MENU_MAIN_INCH:
 				case ApplicationFacade.NOTIFY_MENU_INCH_REALTIME:
-					sendNotification(ApplicationFacade.ACTION_INCH_PANEL_CHANGE,facade.retrieveMediator(ContentInchRealtimeMediator.NAME).getViewComponent());
+					var ui:UIComponent = facade.retrieveMediator(ContentInchRealtimeMediator.NAME).getViewComponent() as UIComponent;
+					ui.addEventListener(FlexEvent.ADD,onUiAdd);
+					
+					sendNotification(ApplicationFacade.ACTION_INCH_PANEL_CHANGE,ui);
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_INCH_ANALYSIS:
@@ -28,6 +36,13 @@ package app.controller
 					sendNotification(ApplicationFacade.ACTION_INCH_PANEL_CHANGE,facade.retrieveMediator(ContentInchManageMediator.NAME).getViewComponent());
 					break;
 			}
+		}
+		
+		private function onUiAdd(event:FlexEvent):void
+		{
+			(event.currentTarget as UIComponent).removeEventListener(FlexEvent.ADD,onUiAdd);
+			
+			commandComplete(); 
 		}
 	}
 }

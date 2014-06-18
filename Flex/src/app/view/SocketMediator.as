@@ -20,18 +20,14 @@ package app.view
 	import mx.utils.ObjectProxy;
 	
 	import app.ApplicationFacade;
-	import app.model.CarriageProxy;
 	import app.model.EngineTempProxy;
 	import app.model.InchProxy;
 	import app.model.dict.RopewayDict;
 	import app.model.dict.RopewayStationDict;
-	import app.model.vo.CarriageVO;
 	import app.model.vo.ConfigVO;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
-	import app.model.vo.ForceVO;
-	import app.model.vo.InchVO;
-	import app.model.vo.RopewayStationForceVO;
+	import app.model.vo.InchValueVO;
 	import app.model.vo.SurroundingTempVO;
 	
 	import org.puremvc.as3.interfaces.IMediator;
@@ -164,7 +160,7 @@ package app.view
 						break;
 					
 					case "ZJ":
-						var inch:InchVO = new InchVO;
+						var inch:InchValueVO = new InchValueVO;
 						inch.date = dt;
 						inch.temp = Number(a[4]);
 						inch.humi = Number(a[5]);
@@ -182,23 +178,6 @@ package app.view
 						break;
 				}
 			}
-		}
-		
-		private function decodeRopewayForce(a:Array):void
-		{			
-			var rf:ForceVO = new ForceVO(new ObjectProxy({}));			
-			var sd:String = String(a[0]).replace(/-/g,"/");
-			rf.ropewayTime = new Date(Date.parse(sd));
-			rf.ropewayId =  a[1];	
-			rf.ropewayForce = Number(a[2]);
-			rf.ropewayUnit = a[3];
-			rf.ropewayTemp = a[4];
-			rf.ropewayHumidity = a[5];
-			rf.fromRopeStation = a[7];
-			
-			var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
-			carriageProxy.AddForce(rf,a[6]);
-			
 		}
 				
 		private function sendSocketData(socketData:String):void

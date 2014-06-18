@@ -33,20 +33,20 @@
 			import spark.effects.animation.SimpleMotionPath;
 			import spark.primitives.Line;
 			
-			import app.model.vo.InchHistoryVO;
 			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
 			
 			public static const ONE_MIN:Number = 60 * 1000;
 			public static const TEN_MIN:Number = 10 * 60 * 1000;
 			public static const HALF_HOUR:Number = 30 * 60 * 1000;
 			public static const ONE_HOUR:Number = 60 * 60 * 1000;
 			
-			[Bindable]private var _ropeway:InchHistoryVO;
-			public function get inchHistory():InchHistoryVO
+			[Bindable]private var _ropeway:InchVO;
+			public function get inchHistory():InchVO
 			{
 				return _ropeway;
 			}
-			public function set inchHistory(rw:InchHistoryVO):void
+			public function set inchHistory(rw:InchVO):void
 			{			
 				if(!this.initialized)
 					return;
@@ -87,7 +87,7 @@
 			
 			private function reCalcuY():void
 			{			
-				var rw:InchHistoryVO = _ropeway;
+				var rw:InchVO = _ropeway;
 				
 				if(!rw)
 					return;
@@ -134,8 +134,8 @@
 				if(!_ropeway)
 					return;			
 				
-				var fstInch:InchVO = _ropeway.his[0];
-				var lstInch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				var fstInch:InchValueVO = _ropeway.his[0];
+				var lstInch:InchValueVO = _ropeway.his[_ropeway.his.length - 1];
 				
 				var min:Number = fstInch.date.time;	
 				min = Math.floor(min / ONE_MIN) * ONE_MIN;
@@ -234,7 +234,7 @@
 					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
 					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
 					
-					var inch:InchVO = _ropeway.his[i];
+					var inch:InchValueVO = _ropeway.his[i];
 					img.SetValue(dataCanvas,inch,inch.date,inch.value,0);		
 					
 					groupPoint.addElement(img);		
@@ -245,8 +245,8 @@
 					{						
 						var line:ChartLine = new ChartLine;
 						
-						var sInch:InchVO = _ropeway.his[i];
-						var eInch:InchVO = _ropeway.his[i+1];
+						var sInch:InchValueVO = _ropeway.his[i];
+						var eInch:InchValueVO = _ropeway.his[i+1];
 						line.SetValue(dataCanvas,sInch.date,sInch.value,eInch.date,eInch.value);
 						
 						groupLine.addElement(line);
@@ -285,8 +285,8 @@
 				animates.push(p);
 				
 				line = new ChartLine;
-				var sInch:InchVO = _ropeway.his[_ropeway.his.length - 2];
-				var eInch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				var sInch:InchValueVO = _ropeway.his[_ropeway.his.length - 2];
+				var eInch:InchValueVO = _ropeway.his[_ropeway.his.length - 1];
 				line.SetValue(dataCanvas,sInch.date,sInch.value,eInch.date,eInch.value);
 				groupLine.addElement(line);
 				
@@ -297,7 +297,7 @@
 				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
 				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
 				
-				var inch:InchVO = _ropeway.his[_ropeway.his.length - 1];
+				var inch:InchValueVO = _ropeway.his[_ropeway.his.length - 1];
 				img.SetValue(dataCanvas,inch,inch.date,inch.value,0);		
 				
 				groupPoint.addElement(img);		

@@ -2,7 +2,7 @@ package app.controller
 {
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
-	import app.model.InchHistoryProxy;
+	import app.model.InchProxy;
 	import app.model.InchProxy;
 	import app.model.SurroundingTempProxy;
 	import app.model.dict.RopewayDict;
@@ -19,8 +19,8 @@ package app.controller
 		{
 			addSubCommand(ProxyConfigUpdateCommand);
 			
+			addSubCommand(ActionUpdateInchValueCommand);
 			addSubCommand(ActionUpdateInchCommand);
-			addSubCommand(ActionUpdateInchHistoryCommand);
 			addSubCommand(ActionUpdateSurroundingTempFstCommand);
 			addSubCommand(ActionUpdateSurroundingTempSndCommand);
 		}

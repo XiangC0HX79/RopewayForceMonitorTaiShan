@@ -65,16 +65,14 @@ package app.controller
 			
 			//监测概览			
 			facade.registerMediator(new MainPanelOverviewMediator);
-			
-			//facade.registerMediator(new PanelOverviewSurroundingTempMediator);
-			
-			//facade.registerMediator(new PanelOverviewInchMediator);
-			
-			//facade.registerMediator(new MainPanelForceMediator);
-			
+						
+			//抱索力
 			facade.registerMediator(new MainPanelForceSWFMediator(new MainPanelForceSWF));
 			
-			//facade.registerMediator(new MainPanelEngineTempMediator);
+			//动力室
+			facade.registerMediator(new MainPanelEngineTempMediator);
+			
+			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
 			
 			//张紧小尺
 			facade.registerMediator(new MainPanelInchMediator);
@@ -84,42 +82,6 @@ package app.controller
 			facade.registerMediator(new ContentInchAnalysisMediator);
 			
 			facade.registerMediator(new ContentInchManageMediator);
-						
-			//facade.registerMediator(new PanelInchTempMediator);
-			
-			//facade.registerMediator(new PanelInchValueMediator);
-			
-			//facade.registerMediator(new PanelInchAlarmMediator);
-			
-			//facade.registerMediator(new PanelInchChartMediator);			
-			
-		/*	facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
-									
-			facade.registerMediator(new ContentForceRealtimeDetectionMediator(new ContentForceRealtimeDetection));
-			
-			facade.registerMediator(new ContentForceTodayOverviewMediator(new ContentForceTodayOverview));
-			
-			facade.registerMediator(new PanelForceAnalysisForceMediator);		
-			
-			facade.registerMediator(new PanelForceAnalysisForceAverageMediator);		
-			
-			facade.registerMediator(new PanelForceAnalysisOpenCountMediator);	
-			
-			facade.registerMediator(new PanelForceAnalysisOpenCountTotalMediator);	
-			
-			facade.registerMediator(new PanelForceAnalysisAlarmMediator);			
-			
-			facade.registerMediator(new ContentForceAnalysisMediator(new ContentForceAnalysis));
-			
-			facade.registerMediator(new PanelForceManagerBaseInfoMediator);	
-			
-			facade.registerMediator(new PanelForceManagerAdjustMediator);			
-			
-			facade.registerMediator(new ContentForceManageMediator(new ContentForceManage));
-			
-			facade.registerMediator(new TitleWindowAlarmDealMediator);
-			
-			facade.registerMediator(new TitleWindowBaseInfoMediator);*/
 		}
 	}
 }

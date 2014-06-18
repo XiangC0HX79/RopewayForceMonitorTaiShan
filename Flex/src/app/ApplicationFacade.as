@@ -2,13 +2,15 @@ package app
 {
 	import spark.components.Application;
 	
-	import app.controller.NotifyInchRealtimeAddCommand;
 	import app.controller.NotifyInitAppCommand;
 	import app.controller.NotifyInitAppCompleteCommand;
-	import app.controller.NotifyMainOverviewAddCommand;
+	import app.controller.NotifyMenuEngineAnalysisCommand;
+	import app.controller.NotifyMenuEngineManagerCommand;
+	import app.controller.NotifyMenuEngineRealtimeCommand;
 	import app.controller.NotifyMenuInchAnalysisCommand;
 	import app.controller.NotifyMenuInchManagerCommand;
 	import app.controller.NotifyMenuInchRealtimeCommand;
+	import app.controller.NotifyMenuMainEngineCommand;
 	import app.controller.NotifyMenuMainForceCommand;
 	import app.controller.NotifyMenuMainInchCommand;
 	import app.controller.NotifyMenuMainOverviewCommand;
@@ -183,13 +185,12 @@ package app
 		
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
+		public static const ACTION_ENGINE_PANEL_CHANGE:String 			= "ActionEnginePanelChange";
 		
 		/**
 		 * 主菜单-监测概览
 		 **/
 		public static const NOTIFY_MENU_MAIN_OVERVIEW:String 		= "MenuMainOverview";
-		
-		public static const NOTIFY_MAIN_OVERVIEW_ADD:String 		= "MainOverviewAdd";
 		
 		/**
 		 * 主菜单-抱索力
@@ -207,9 +208,7 @@ package app
 		public static const NOTIFY_MENU_MAIN_INCH:String 			= "MenuMainInch";
 		
 		public static const NOTIFY_MENU_INCH_REALTIME:String 		= "MenuInchRealtime";
-		
-		public static const NOTIFY_INCH_REALTIME_ADD:String 		= "MainInchRealtimeAdd";
-		
+				
 		public static const NOTIFY_MENU_INCH_ANALYSIS:String 		= "MenuInchAnalysis";
 		
 		public static const NOTIFY_MENU_INCH_MANAGER:String 		= "MenuInchManager";
@@ -228,7 +227,9 @@ package app
 		/**
 		 * 菜单-实时检测
 		 **/
-		public static const NOTIFY_MENU_ENGINE_TEMP_REALTIME_DETECTION:String 	= "MenuEngineTempRealtimeDetection";
+		public static const NOTIFY_MENU_ENGINE_REALTIME:String 		= "MenuEngineRealtime";
+		public static const NOTIFY_MENU_ENGINE_ANALYSIS:String 		= "MenuEngineAnalysis";
+		public static const NOTIFY_MENU_ENGINE_MANAGER:String 		= "MenuEngineManager";
 		
 		/**
 		 * 菜单-今日概览
@@ -330,20 +331,28 @@ package app
 			
 			registerCommand( NOTIFY_ROPEWAY_CHANGE , NotifyRopewayChangeCommand);
 						
+			//概览
 			registerCommand( NOTIFY_MENU_MAIN_OVERVIEW , NotifyMenuMainOverviewCommand);
-			
-			registerCommand( NOTIFY_MAIN_OVERVIEW_ADD , NotifyMainOverviewAddCommand);
-			
+						
+			//张紧小尺
 			registerCommand( NOTIFY_MENU_MAIN_INCH , NotifyMenuMainInchCommand);	
 			
-			registerCommand( NOTIFY_MENU_INCH_REALTIME , NotifyMenuInchRealtimeCommand);		
-			
-			registerCommand( NOTIFY_INCH_REALTIME_ADD , NotifyInchRealtimeAddCommand);	
+			registerCommand( NOTIFY_MENU_INCH_REALTIME , NotifyMenuInchRealtimeCommand);
 			
 			registerCommand( NOTIFY_MENU_INCH_ANALYSIS , NotifyMenuInchAnalysisCommand);	
 			
-			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);		
+			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);				
+						
+			//动力室
+			registerCommand( NOTIFY_MENU_MAIN_ENGINE_TEMP , NotifyMenuMainEngineCommand);
 			
+			registerCommand( NOTIFY_MENU_ENGINE_REALTIME , NotifyMenuEngineRealtimeCommand);
+			
+			registerCommand( NOTIFY_MENU_ENGINE_ANALYSIS , NotifyMenuEngineAnalysisCommand);
+			
+			registerCommand( NOTIFY_MENU_ENGINE_MANAGER , NotifyMenuEngineManagerCommand);
+			
+			//抱索力
 			registerCommand( NOTIFY_MENU_MAIN_FORCE , NotifyMenuMainForceCommand);
 		}
 	}

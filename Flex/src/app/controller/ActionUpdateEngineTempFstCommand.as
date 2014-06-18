@@ -24,15 +24,25 @@ package app.controller
 				case ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP:
 					var rw:RopewayDict = notification.getBody()[0];
 					var pos:int = notification.getBody()[1];
-					if((rw != configProxy.config.ropeway) || (pos != EngineVO.FIRST))return;
+					if((rw == configProxy.config.ropeway) && (pos == EngineVO.FIRST))
+					{
+						updateEngineTemp(configProxy.config.ropeway);						
+					}
+					break;
+				
+				default:
+					updateEngineTemp(configProxy.config.ropeway);
 					break;
 			}
-			
+		}
+		
+		private function updateEngineTemp(rw:RopewayDict):void
+		{
 			var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;		
 			
 			for each(var engine:EngineVO in engineTempProxy.list)
 			{
-				if((engine.ropeway == configProxy.config.ropeway) && (engine.pos == EngineVO.FIRST))
+				if((engine.ropeway == rw) && (engine.pos == EngineVO.FIRST))
 				{
 					sendNotification(ApplicationFacade.ACTION_UPDATE_ENGINE_TEMP_FST,engine.lastTemp);
 				}

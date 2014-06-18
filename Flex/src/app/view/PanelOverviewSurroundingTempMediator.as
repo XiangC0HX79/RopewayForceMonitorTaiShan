@@ -1,7 +1,7 @@
 package app.view
 {
 	import app.ApplicationFacade;
-	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	import app.model.vo.SurroundingTempVO;
 	import app.view.components.PanelOverviewSurroundingTemp;
 	

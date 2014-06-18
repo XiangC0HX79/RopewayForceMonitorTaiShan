@@ -4,11 +4,11 @@ package app.controller
 	
 	import app.ApplicationFacade;
 	import app.model.ConfigProxy;
-	import app.model.InchHistoryProxy;
+	import app.model.InchProxy;
 	import app.model.InchProxy;
 	import app.model.dict.RopewayDict;
-	import app.model.vo.InchHistoryVO;
 	import app.model.vo.InchVO;
+	import app.model.vo.InchValueVO;
 	
 	import custom.other.CustomUtil;
 	
@@ -22,11 +22,11 @@ package app.controller
 	{
 		override protected function initializeMacroCommand():void
 		{
-			addSubCommand(ProxyInchUpdateCommand);
-			addSubCommand(ProxyInchHistoryAddItemCommand);
+			addSubCommand(ProxyInchAddItemCommand);
+			
+			addSubCommand(ActionUpdateInchValueCommand);
 			
 			addSubCommand(ActionUpdateInchCommand);
-			addSubCommand(ActionUpdateInchHistoryCommand);
 		}
 	}
 }
