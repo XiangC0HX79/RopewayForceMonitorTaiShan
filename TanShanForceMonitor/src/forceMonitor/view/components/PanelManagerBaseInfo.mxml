@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lStroke" color="#63c3d6" weight="2"/>		
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[			
+			import mx.collections.ArrayCollection;
+			
+			public static const BASEINFO_NEW:String = "BaseInfoNew";	
+			public static const BASEINFO_EDIT:String = "BaseInfoEdit";	
+			public static const BASEINFO_DEL:String = "BaseInfoDel";	
+			
+			public static const BASEINFO_USE:String = "BaseInfoUse";	
+			
+			public static const ROPEWAY_CHANGE:String = "RopewayChange";	
+			public static const ROPEWAY_RELA_CHANGE:String = "RopewayRelaChange";
+			
+			[Bindable]public var colBaseInfo:ArrayCollection;
+			
+			[Bindable]public var colBaseInfoHis:ArrayCollection;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup width="100%" verticalAlign="middle">	
+		<s:Label text="索道：" fontWeight="bold"/>
+		<s:DropDownList id="listRopeway" change="dispatchEvent(new Event(ROPEWAY_CHANGE));" 
+						requireSelection="true">
+			<s:ArrayCollection>
+				<fx:String>桃花源索道</fx:String>
+				<fx:String>中天门索道</fx:String>
+			</s:ArrayCollection>
+		</s:DropDownList>
+		
+		<!--<s:Label text="吊箱编号：" fontWeight="bold"/>
+		<s:TextInput id="textCarId" text="{gridRela.selectedItem.ropewayCarId}" width="100"/>
+		
+		<s:Label text="报索器编号：" fontWeight="bold"/>
+		<s:TextInput id="textId" text="{gridRela.selectedItem.ropewayId}" width="100"/>
+		
+		<s:Label text="RFID：" fontWeight="bold"/>
+		<s:TextInput id="textRfId" text="{gridRela.selectedItem.ropewayRFID}" width="100"/>-->
+		
+		<s:Button label="新增" buttonDown="dispatchEvent(new Event(BASEINFO_NEW))"/>
+		<s:Button label="编辑" buttonDown="dispatchEvent(new Event(BASEINFO_EDIT))"/>
+		<s:Button id="lbUse" label="禁用" buttonDown="dispatchEvent(new Event(BASEINFO_DEL))"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Line stroke="{lStroke}" width="100%"/>
+		<s:Label text="吊箱基本信息（{colBaseInfo.length}）" fontWeight="bold"/>
+		<s:Line stroke="{lStroke}" width="100%"/>
+	</s:HGroup>
+	
+	<s:DataGrid id="gridRela" width="100%" height="100%" dataProvider="{colBaseInfo}" 
+				selectionChange="dispatchEvent(new Event(ROPEWAY_RELA_CHANGE))"
+				borderColor="#63c3d6" skinClass="forceCustom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]">
+		<s:columns>
+			<s:ArrayList>	
+				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
+				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
+				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="200"/>
+				<s:GridColumn headerText="备注" dataField="memo"/>
+				<s:GridColumn headerText="是否使用" dataField="isUse" width="80">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer mouseChildren="false" click="checkbox_changeHandler(event)">										
+								<fx:Script>
+									<![CDATA[
+										protected function checkbox_changeHandler(event:Event):void
+										{
+											dispatchEvent(new Event(PanelManagerBaseInfo.BASEINFO_USE,true));
+										}
+									]]>
+								</fx:Script>
+								
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</s:layout>
+								
+								<s:CheckBox selected="{data.isUse}" label=""/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Line stroke="{lStroke}" width="100%"/>
+		<s:Label text="吊箱基本信息更新历史（{colBaseInfoHis.length}）" fontWeight="bold"/>
+		<s:Line stroke="{lStroke}" width="100%"/>
+	</s:HGroup>
+	
+	<s:DataGrid id="gridRelaHis" width="100%" height="100%" dataProvider="{colBaseInfoHis}"
+				borderColor="#63c3d6" skinClass="forceCustom.skin.SkinGrid" 
+				alternatingRowColors="[#FFFFFF,#CFEDF7]">
+		<s:columns>
+			<s:ArrayList>	
+				<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+				<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>	
+				<s:GridColumn headerText="RFID编号" dataField="ropewayRFID" width="200"/>
+				<s:GridColumn headerText="所属索道" dataField="fromRopeWay" width="100"/>
+				<s:GridColumn headerText="更新人员" dataField="updateUser" width="200"/>
+				<s:GridColumn headerText="更新日期" formatter="{df}" dataField="updateDatetime" width="200"/>
+				<s:GridColumn headerText="更新信息" dataField="memo"/>
+			</s:ArrayList>				
+		</s:columns>
+	</s:DataGrid>
+</s:NavigatorContent>		

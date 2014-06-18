@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   creationComplete="application_creationCompleteHandler(event)"
+			   preloader="forceCustom.components.AppDownloadProgressBar"
+			   xmlns:components="forceMonitor.view.components.*" 
+			   skinClass="forceCustom.skin.SkinApplication"
+			   width="100%" height="100%" fontSize="14" pageTitle="泰山抱索力实时监测系统">
+		
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		s|Label{
+			font-family: '微软雅黑';
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.utils.UIDUtil;
+			
+			import forceMonitor.ForceMonitorFacade;
+			
+			[Embed(source="assets/image/title_back.png", scaleGridTop="0", scaleGridBottom="94", scaleGridLeft="0", scaleGridRight="120")]
+			[Bindable]public var titleBack:Class;
+			
+			private var moduleID:String = UIDUtil.getUID(this);
+			
+			private var facade:ForceMonitorFacade = ForceMonitorFacade.getInstance(moduleID);
+						
+			protected function title_doubleClickHandler(event:MouseEvent):void
+			{				
+				stage.displayState = (stage.displayState == StageDisplayState.NORMAL)?StageDisplayState.FULL_SCREEN:StageDisplayState.NORMAL;   
+			}					
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{				
+				var contextMenu:ContextMenu=new ContextMenu();
+				contextMenu.hideBuiltInItems(); 
+				
+				var contextMenuItem:ContextMenuItem=new ContextMenuItem("版本：1.2.1");			
+				contextMenu.customItems.push(contextMenuItem);
+				
+				//imageVer.contextMenu=contextMenu;
+				
+				facade.startup(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--<s:Image height="75" doubleClick="title_doubleClickHandler(event)" doubleClickEnabled="true"
+			 horizontalAlign="left" source="assets/image/title.png"/>
+	<s:Image id="imageVer" left="490" right="0" height="75" 
+			 doubleClick="title_doubleClickHandler(event)"
+			 doubleClickEnabled="true"  
+			 scaleMode="stretch"
+			 source="{titleBack}"/>-->
+		
+	<s:Group top="0" bottom="0" left="0" right="0">
+		<components:MainMenu id="mainMenu" width="130"/>		
+		<s:VGroup left="130" right="0" top="0" bottom="0" 
+				  paddingTop="10" paddingBottom="10" paddingLeft="5" paddingRight="10" gap="0">
+			<components:MainStation id="mainStation" height="31" width="100%"/>		
+			<s:SkinnableContainer id="mainContent" width="100%" height="100%" skinClass="forceCustom.skin.SkinMainContent"/>
+		</s:VGroup>
+	</s:Group>
+	
+	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
+</s:Application>

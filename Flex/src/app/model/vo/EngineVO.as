@@ -64,10 +64,5 @@ package app.model.vo
 		public function EngineVO()
 		{
 		}
-		
-		public function AddItem(et:EngineTempVO):void
-		{			
-			history.addItem(et);
-		}
 	}
 }

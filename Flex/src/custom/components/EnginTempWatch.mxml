@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="195" height="195">
+	<fx:Script>
+		<![CDATA[
+			//-X轴为0度
+			private const MAX_ANGLE:Number = 210;
+			
+			private const MIN_ANGLE:Number = -30;
+			
+			private const MAX_TEMP:Number = 50;
+			
+			private const MIN_TEMP:Number = -30;
+			
+			private const IMG_SIZE:Number = 195;
+			
+			private var _temp:Number = 0;
+			
+			[Bindable]
+			public function get temp():Number
+			{
+				return _temp;
+			}
+			
+			public function set temp(value:Number):void
+			{
+				_temp = value;
+				
+				var t:Number = _temp;
+				if(t > MAX_TEMP)t = MAX_TEMP;
+				else if(t < MIN_TEMP)t = MIN_TEMP;
+								
+				var ag:Number = ((t - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE);
+				
+				rotate.transformX = 96;
+				rotate.transformY = 2;
+				rotate.angleTo = ag;
+				rotate.play([niddle1]);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+		<s:Rotate id="rotate"/>
+	</fx:Declarations>
+	
+	<s:Image source="assets/image/engine_temp.png"/>
+	<s:Image id="niddle1" source="assets/image/niddle.png" y="95" x="2"/>
+	
+	<s:Label horizontalCenter="0" bottom="30" text="{temp}℃"
+			 color="0x1b5aa2" fontSize="34"/>
+</s:Group>

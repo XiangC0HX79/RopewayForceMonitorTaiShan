@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" label="总开合次数" xmlns:components="forceCustom.components.*">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lineStoke" weight="1"/>
+		
+		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>
+		
+		<s:RadioButtonGroup id="rbgStation"/>
+		
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.RopewayForceVO;
+			import forceMonitor.model.vo.RopewaySwitchFreqTotalVO;
+			
+			import com.adobe.utils.DateUtil;
+			
+			import forceCustom.itemRenderer.ItemRendererGroup;
+			
+			import mx.charts.HitData;
+			import mx.events.FlexEvent;
+			
+			import org.puremvc.as3.multicore.interfaces.IMediator;
+			import org.puremvc.as3.multicore.interfaces.INotification;
+			import org.puremvc.as3.multicore.patterns.mediator.Mediator;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.RendererExistenceEvent;
+			
+			public static var ONE_HOUR:Number = 60 * 60 * 1000;
+			
+			public static var QUERY:String = "Query";
+			
+			public static var EXPORT:String = "Export";
+			
+			[Bindable]public var colStations:ArrayCollection;
+						
+			[Bindable]public var colRopeway:ArrayCollection;
+			
+			protected function datagroupStations_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:ItemRendererGroup = event.renderer as ItemRendererGroup;
+				renderer.rb.group = rbgStation;
+			}
+						
+			public function get dateS():Date
+			{		
+				if(checkDatetime.selected)
+					return dateDayS.selectedDate;
+				else 
+					return null;
+			}
+			
+			public function get dateE():Date
+			{		
+				if(checkDatetime.selected)
+					return new Date(dateDayE.selectedDate.fullYear,dateDayE.selectedDate.month,dateDayE.selectedDate.date + 1);
+				else 
+					return null;
+			}
+			
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = 0;
+				rbgStation.selectedValue = colStations[0];
+				checkDatetime.selected = false;
+				dateDayS.selectedDate = DateUtil.addDateTime('d',-1,new Date);
+				dateDayE.selectedDate = DateUtil.addDateTime('d',-1,new Date);
+				colRopeway.source = [];
+			}			
+			
+			private function dataTipFunction(hitData:HitData):String
+			{
+				var rs:RopewaySwitchFreqTotalVO = hitData.item as RopewaySwitchFreqTotalVO;
+				return "吊箱编号：" + rs.ropewayCarId + "\n" + "总开合次数：" + rs.switchFreqTotal; 
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">		
+		<components:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" title="索道站">
+			<s:DataGroup width="220" height="100%" dataProvider="{colStations}"
+						 itemRenderer="forceCustom.itemRenderer.ItemRendererGroup" 
+						 rendererAdd="datagroupStations_rendererAddHandler(event)">
+				<s:layout>
+					<s:TileLayout/>
+				</s:layout>
+			</s:DataGroup>
+		</components:SkinnableTitleContainer>	
+		
+		<components:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="200" title="统计时间">
+			<s:CheckBox id="checkDatetime" selected="false" label="选定时间"/>
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
+				<s:Label text="开始日期："/>
+				<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{checkDatetime.selected}">
+				<s:Label text="结束日期："/>
+				<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}"/>
+			</s:HGroup>
+		</components:SkinnableTitleContainer>	
+				
+		<components:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="forceCustom.skin.SkinButtonBarAnalysis" selectedIndex="0">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="dispatchEvent(new Event(QUERY))" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>		
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+	
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%">
+		<s:NavigatorContent>
+			<s:SkinnableContainer id="containerChart" left="0" right="0" top="0" bottom="0">			
+				<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+					<s:stroke>
+						<s:SolidColorStroke weight="1" color="#63c3d6"/>
+					</s:stroke>
+				</s:Rect>	
+				
+				<mx:ColumnChart left="20" right="40" bottom="20" top="40" showDataTips="true"
+								dataTipFunction="dataTipFunction" dataProvider="{colRopeway}">
+					<mx:backgroundElements>
+						<fx:Array>						
+							<mx:GridLines gridDirection="both" 
+										  horizontalStroke="{gridStroke}"
+										  verticalStroke="{gridStroke}"/>
+						</fx:Array>
+					</mx:backgroundElements>
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis categoryField="ropewayCarId"/>
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxis>
+						<mx:LinearAxis id="verticalAxis"/>
+					</mx:verticalAxis>
+					
+					<mx:verticalAxisRenderers>					
+						<mx:AxisRenderer axis="{verticalAxis}" 
+										 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+										 minorTickPlacement="none"/>
+					</mx:verticalAxisRenderers>
+														
+					<mx:series>
+						<mx:ColumnSeries labelField="switchFreqTotal" labelPosition="inside" yField="switchFreqTotal" xField="ropewayCarId"/>
+					</mx:series>
+				</mx:ColumnChart>
+				
+				<s:Label left="10" top="20" text="开合次数"/>
+				<s:Label right="15" bottom="40" text="吊箱"/>
+				<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{rbgStation.selectedValue}总开合次数统计"/>
+			</s:SkinnableContainer>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Line stroke="{gapStroke}" width="100%"/>
+				<s:Label text="总开合次数统计（{colRopeway.length}）" fontWeight="bold"/>
+				<s:Line stroke="{gapStroke}" width="100%"/>
+			</s:HGroup>
+			
+			<s:DataGrid width="100%" height="100%" dataProvider="{colRopeway}"
+						borderColor="#63c3d6" skinClass="forceCustom.skin.SkinGrid" 
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>
+						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+						<s:GridColumn headerText="总开合次数" dataField="switchFreqTotal" width="100"/>	
+						<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</s:NavigatorContent>

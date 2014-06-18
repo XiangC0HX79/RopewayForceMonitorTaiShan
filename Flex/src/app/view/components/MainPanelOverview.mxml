@@ -17,6 +17,7 @@
 	
 	<s:HGroup>
 		<components:PanelOverviewSurroundingTemp id="panelTemp"/>
+		<components:PanelOverviewEngineTemp id="panelEngine"/>
 		<components:PanelOverviewInch id="panelInch"/>
 	</s:HGroup>
 </s:SkinnableContainer>

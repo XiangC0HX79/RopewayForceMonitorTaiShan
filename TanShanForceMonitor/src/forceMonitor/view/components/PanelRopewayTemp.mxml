@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 skinClass="forceCustom.skin.SkinPanelRealtimeDetection"
+		 height="170">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.RopewayVO;
+			
+			import mx.graphics.ImageSnapshot;
+			
+			[Bindable]private var _ropeway:RopewayVO;
+			public function get ropeway():RopewayVO
+			{
+				return _ropeway;
+			}
+			public function set ropeway(rw:RopewayVO):void
+			{				
+				_ropeway = rw;
+				if(_ropeway)
+				{
+					lbTemp.text = String(_ropeway.temperature);
+					lbHumi.text = String(_ropeway.humidity);
+				}
+				else
+				{
+					lbTemp.text = "";
+					lbHumi.text = "";
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="当前温度" fontWeight="bold"/>
+	</s:HGroup>
+	
+	<s:HGroup left="20" right="20" top="35" bottom="10" color="0x1b5aa2"
+			  horizontalAlign="center" verticalAlign="middle">	
+		<s:Image source="@Embed('assets/image/panel_temp.png')"/>
+		<s:VGroup width="64" horizontalAlign="center">
+			<s:Label id="lbTemp" fontSize="38" fontWeight="bold"/>	
+			<s:Label id="lbHumi" fontSize="38" fontWeight="bold"/>				
+		</s:VGroup>
+		<s:VGroup horizontalAlign="center">
+			<s:Label fontSize="38" fontWeight="bold" text="℃"/>	
+			<s:Label fontSize="38" fontWeight="bold" text="%"/>				
+		</s:VGroup>
+	</s:HGroup>
+</s:SkinnableContainer>

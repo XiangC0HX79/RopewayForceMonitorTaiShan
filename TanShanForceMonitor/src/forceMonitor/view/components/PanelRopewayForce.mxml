@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  width="400" height="170" skinClass="forceCustom.skin.SkinPanelRealtimeDetection">
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+		
+		<s:Parallel id="parallel">
+			<s:Move id="moveContent" target="{content}"/>				
+			<s:Move id="moveImage" target="{imageAnimate}"/>
+			<s:effectEnd>
+				<![CDATA[				
+				imageAnimate.visible = false;
+				imageAnimate.includeInLayout = false;
+				]]>
+			</s:effectEnd>
+		</s:Parallel>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.ConfigVO;
+			import forceMonitor.model.vo.RopewayVO;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.graphics.ImageSnapshot;
+			
+			[Bindable]private var _color:int;
+			
+			[Bindable]private var _ropeway:RopewayVO;
+			public function get ropeway():RopewayVO
+			{
+				return _ropeway;
+			}
+			public function set ropeway(rw:RopewayVO):void
+			{			
+				_ropeway = rw;
+				
+				if(rw)
+				{
+					_color = (rw.alarm > 0)?0xFF0000:0x02C462;
+					
+					//lbOpenCount.text = rw.switchFreq + "/" + (rw.switchFreqTotal + rw.switchFreq);
+					
+					lbForce.text = String(rw.deteValue);
+					
+					lbUnit.text = rw.valueUnit;
+					
+					lbTime.text = df.format(rw.deteDate);
+					
+					imgEletrice.source = rw.ropewayRFIDEletric?"assets/image/ele_green.png":"assets/image/ele_red.png";
+									
+					imageAnimate.source = new Bitmap(ImageSnapshot.captureBitmapData(content));
+					imageAnimate.visible = true;
+					imageAnimate.includeInLayout = true;
+					
+					moveContent.xFrom = -content.width;
+					moveContent.xTo = 0;
+					
+					moveImage.xFrom = 0;
+					moveImage.xTo = content.width;
+					
+					parallel.play();
+				}
+				else
+				{					
+					//lbOpenCount.text = "";
+					
+					lbForce.text = "";
+					
+					lbUnit.text = "";
+					
+					lbTime.text = "";
+				}
+			}
+			
+			[Bindable]public var config:ConfigVO;
+		]]>
+	</fx:Script>
+	
+	<fx:Binding source="config.pin" destination="btnPin.selected" twoWay="true"/>
+		
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="吊箱信息 - {_ropeway.ropewayId}" fontWeight="bold"/>
+		<s:Spacer width="100%"/>
+		<s:ToggleButton id="btnPin" width="20" height="20" buttonMode="true"
+						skinClass="forceCustom.skin.SkinToggleButtonPin"/>		
+	</s:HGroup>
+	
+	<s:Group left="20" right="15" top="35" bottom="10" clipAndEnableScrolling="true" color="{_color}">			
+		<s:Group id="content" width="100%" height="100%">
+			
+			<s:Image source="assets/image/panel_car.png"/>	
+			
+			<s:Label text="{_ropeway.switchFreq}/{_ropeway.switchFreqTotal}" fontSize="20" fontWeight="bold" top="0" right="0"/>
+			
+			<s:HGroup x="100" fontSize="34" fontWeight="bold" verticalCenter="0">
+				<s:Label width="120" text="{_ropeway.ropewayCarId}" textAlign="center"
+						 verticalAlign="middle" color="0x1b5aa2"/>
+				<s:Spacer width="10"/>
+				<s:Label id="lbForce" text="260"/>
+				<s:Label id="lbUnit" text="KG"/>
+			</s:HGroup>
+			
+			<s:Image id="imgEletrice" x="15" bottom="0" width="45" height="15" scaleMode="stretch"
+					 source="assets/image/ele_green.png"/>
+			
+			<s:Label id="lbTime" fontSize="20" fontWeight="bold" bottom="0" right="0"/>	
+		</s:Group>
+		
+		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>
+	</s:Group>
+</s:SkinnableContainer>

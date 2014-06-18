@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 color="0xFFFFFF">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="rbGroup" change="rbGroup_changeHandler(event)"/>	
+		<s:RadioButtonGroup id="rbgAnalysis" change="dispatchEvent(new Event(GROUP_ANALYSIS_CHANGE))"/>		
+		<s:RadioButtonGroup id="rbgManager" change="dispatchEvent(new Event(GROUP_MANAGER_CHANGE))"/>		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.ConfigVO;
+			
+			import forceCustom.itemRenderer.ItemRendererMainStation;
+			
+			import spark.events.RendererExistenceEvent;
+			
+			public static const GROUP_CHANGE:String = "GroupChange";
+			public static const GROUP_ANALYSIS_CHANGE:String = "GroupAnalysisChange";
+			public static const GROUP_MANAGER_CHANGE:String = "GroupMangerChange";
+			
+			[Bindable]public var carCount:Number = 0;
+			
+			[Bindable]public var contentName:String = "";
+			
+			[Bindable]public var config:ConfigVO;
+						
+			protected function datagroup_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var render:ItemRendererMainStation = event.renderer as ItemRendererMainStation;
+				render.rb.group = rbGroup;
+				if(event.index == 0)
+					render.rb.selected = true;
+			}
+			
+			protected function rbGroup_changeHandler(event:Event):void
+			{				
+				config.station = String(rbGroup.selectedValue);
+				
+				config.pin = false;
+				
+				dispatchEvent(new Event(GROUP_CHANGE));
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<s:Image left="0" bottom="0" top="0" scaleMode="stretch"
+			 source="assets/image/top_left.png"/>
+	<s:Rect left="11" right="10" bottom="0" top="0">
+		<s:fill>
+			<s:BitmapFill fillMode="repeat" source="@Embed('assets/image/top_bg.png')"/>
+		</s:fill>
+	</s:Rect>
+	<s:Image right="0" bottom="0" top="0" scaleMode="stretch"
+			 source="assets/image/top_right.png"/>
+	
+	<s:HGroup height="100%" verticalAlign="middle" paddingLeft="10">		
+		<s:Image source="assets/image/top_icon.png"/>
+		<s:Label paddingTop="3" id="lbContent" text="{contentName}"/>
+	</s:HGroup>
+	
+	
+	<s:HGroup id="gpStation" height="100%" right="0" verticalAlign="middle" paddingRight="30">	
+		<s:DataGroup id="dgStation" dataProvider="{config.stations}" height="100%"
+					 rendererAdd="datagroup_rendererAddHandler(event)"
+					 itemRenderer="forceCustom.itemRenderer.ItemRendererMainStation">
+			<s:layout>
+				<s:HorizontalLayout gap="40" verticalAlign="middle"/>
+			</s:layout>
+		</s:DataGroup>
+		
+		<s:Spacer width="60"/>
+		
+		<s:Group height="100%">
+			<s:Rect top="5" bottom="5" left="0" right="0" radiusX="5" radiusY="5">
+				<s:fill>
+					<s:SolidColor color="white"/>
+				</s:fill>
+			</s:Rect> 
+			<s:Label color="black" fontWeight="bold" height="100%" text="吊箱总数：{carCount}" verticalAlign="middle"
+					 paddingTop="3" paddingLeft="5" paddingRight="5"/>
+		</s:Group>
+	</s:HGroup>
+	
+	<s:HGroup id="gpAnalysis" height="100%" gap="30" right="0" verticalAlign="middle" paddingRight="60" visible="false">	
+		<s:RadioButton label="历史抱索力" groupName="rbgAnalysis" selected="true"/>
+		<s:RadioButton label="平均抱索力" groupName="rbgAnalysis"/>
+		<s:RadioButton label="开合次数" groupName="rbgAnalysis"/>
+		<s:RadioButton label="总开合次数" groupName="rbgAnalysis"/>
+		<s:RadioButton label="报警信息" groupName="rbgAnalysis"/>
+	</s:HGroup>
+	
+	<s:HGroup id="gpManager" height="100%" gap="30" right="0" verticalAlign="middle" paddingRight="60" visible="false">	
+		<s:RadioButton label="抱索器设置" groupName="rbgManager" selected="true"/>
+		<s:RadioButton label="抱索力校准" groupName="rbgManager"/>
+	</s:HGroup>
+</s:Group>

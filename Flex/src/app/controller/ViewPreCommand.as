@@ -15,6 +15,7 @@ package app.controller
 	import app.view.LoadingBarMediator;
 	import app.view.MainPanelEngineTempMediator;
 	import app.view.MainPanelForceMediator;
+	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
 	import app.view.PanelForceAnalysisAlarmMediator;
@@ -39,6 +40,7 @@ package app.controller
 	import app.view.components.ContentForceManage;
 	import app.view.components.ContentForceRealtimeDetection;
 	import app.view.components.ContentForceTodayOverview;
+	import app.view.components.MainPanelForceSWF;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -47,7 +49,7 @@ package app.controller
 	{
 		override public function execute(note:INotification):void
 		{
-			var application:RopewayForceMonitor = note.getBody() as RopewayForceMonitor;
+			var application:TanShanInfoMonitor = note.getBody() as TanShanInfoMonitor;
 			
 			facade.registerMediator(new AlertMediator);
 			
@@ -68,9 +70,11 @@ package app.controller
 			
 			//facade.registerMediator(new PanelOverviewInchMediator);
 			
-			facade.registerMediator(new MainPanelForceMediator);
+			//facade.registerMediator(new MainPanelForceMediator);
 			
-			facade.registerMediator(new MainPanelEngineTempMediator);
+			facade.registerMediator(new MainPanelForceSWFMediator(new MainPanelForceSWF));
+			
+			//facade.registerMediator(new MainPanelEngineTempMediator);
 			
 			//张紧小尺
 			facade.registerMediator(new MainPanelInchMediator);
@@ -89,7 +93,7 @@ package app.controller
 			
 			//facade.registerMediator(new PanelInchChartMediator);			
 			
-			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
+		/*	facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
 									
 			facade.registerMediator(new ContentForceRealtimeDetectionMediator(new ContentForceRealtimeDetection));
 			
@@ -115,7 +119,7 @@ package app.controller
 			
 			facade.registerMediator(new TitleWindowAlarmDealMediator);
 			
-			facade.registerMediator(new TitleWindowBaseInfoMediator);
+			facade.registerMediator(new TitleWindowBaseInfoMediator);*/
 		}
 	}
 }

@@ -9,9 +9,11 @@ package app
 	import app.controller.NotifyMenuInchAnalysisCommand;
 	import app.controller.NotifyMenuInchManagerCommand;
 	import app.controller.NotifyMenuInchRealtimeCommand;
+	import app.controller.NotifyMenuMainForceCommand;
 	import app.controller.NotifyMenuMainInchCommand;
 	import app.controller.NotifyMenuMainOverviewCommand;
 	import app.controller.NotifyRopewayChangeCommand;
+	import app.controller.NotifySocketEngineTempCommand;
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingTempCommand;
 	import app.controller.StartupCommand;
@@ -171,9 +173,14 @@ package app
 		
 		
 		public static const ACTION_UPDATE_INCH:String 					= "ActionUpdateInch";		
-		public static const ACTION_UPDATE_INCH_HISTORY:String 			= "ActionUpdateInchHistory";		
+		public static const ACTION_UPDATE_INCH_HISTORY:String 			= "ActionUpdateInchHistory";	
+		
 		public static const ACTION_UPDATE_SURROUDING_TEMP_FST:String 	= "ActionUpdateSurroudingTempFst";		
-		public static const ACTION_UPDATE_SURROUDING_TEMP_SND:String 	= "ActionUpdateSurroudingTempSnd";
+		public static const ACTION_UPDATE_SURROUDING_TEMP_SND:String 	= "ActionUpdateSurroudingTempSnd";	
+		
+		public static const ACTION_UPDATE_ENGINE_TEMP_FST:String 	= "ActionUpdateEngineTempFst";		
+		public static const ACTION_UPDATE_ENGINE_TEMP_SND:String 	= "ActionUpdateEngineTempSnd";
+		
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
 		
@@ -283,6 +290,7 @@ package app
 		 * </table>
 		 **/
 		public static const NOTIFY_ROPEWAY_BASEINFO_EDIT:String 	= "RopewayBaseInfoEdit";
+			
 		
 		/**
 		 * Singleton ApplicationFacade Factory Method
@@ -315,11 +323,13 @@ package app
 			registerCommand( NOTIFY_INIT_APP_COMPLETE, NotifyInitAppCompleteCommand);
 			
 			registerCommand( NOTIFY_SOCKET_INCH , NotifySocketInchCommand);
+			
+			registerCommand( NOTIFY_SOCKET_ENGINE_TEMP , NotifySocketEngineTempCommand);
 							 
 			registerCommand( NOTIFY_SOCKET_SURROUDING_TEMP , NotifySocketSurroundingTempCommand);
 			
 			registerCommand( NOTIFY_ROPEWAY_CHANGE , NotifyRopewayChangeCommand);
-			
+						
 			registerCommand( NOTIFY_MENU_MAIN_OVERVIEW , NotifyMenuMainOverviewCommand);
 			
 			registerCommand( NOTIFY_MAIN_OVERVIEW_ADD , NotifyMainOverviewAddCommand);
@@ -332,7 +342,9 @@ package app
 			
 			registerCommand( NOTIFY_MENU_INCH_ANALYSIS , NotifyMenuInchAnalysisCommand);	
 			
-			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);				
+			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);		
+			
+			registerCommand( NOTIFY_MENU_MAIN_FORCE , NotifyMenuMainForceCommand);
 		}
 	}
 }

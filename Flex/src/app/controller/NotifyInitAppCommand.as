@@ -63,8 +63,8 @@ package app.controller
 			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,configProxy.config);
 			
 			//初始化动力室
-			//var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;
-			//engineTempProxy.Init();
+			var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;
+			engineTempProxy.Init();
 			
 			//初始化张紧小尺
 			//var inchProxy:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;

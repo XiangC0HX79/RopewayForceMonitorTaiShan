@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="forceMonitor.view.components.*"
+		 width="100%" height="100%" 
+		 resize="dataCanvas_resizeHandler(event)" 
+		 creationComplete="dispatchEvent(new Event(CONTAINER_CREATE))" 
+		 fontSize="12">	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:Sequence id="sequence"/>
+		<s:Parallel id="parallel"/>
+		<s:DateTimeFormatter id="dateFormatAve" dateTimePattern="MM.dd"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.RopewayForceVO;
+			import forceMonitor.model.vo.RopewayVO;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.graphics.ImageSnapshot;
+			
+			import spark.effects.Animate;
+			import spark.effects.Fade;
+			import spark.effects.Move;
+			import spark.effects.Scale;
+			import spark.effects.Wipe;
+			import spark.effects.WipeDirection;
+			import spark.effects.animation.MotionPath;
+			import spark.effects.animation.SimpleMotionPath;
+			import spark.primitives.Line;
+										
+			public static const CONTAINER_CREATE:String = "ContainerCreate";
+			public static const CONTAINER_RESIZE:String = "ContainerResize";
+			
+			[Bindable]public var ropeway:RopewayVO; 
+						
+			public function RefreshChart():void
+			{					
+				var rw:RopewayVO = ropeway;
+				
+				//添加折线\点
+				var len:int = groupPoint.numElements;
+				for(var i:int = 0;i<len;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;
+					img.removeEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
+					img.removeEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				}
+				
+				groupPoint.removeAllElements();
+				groupLine.removeAllElements();
+				
+				var animates:Array = new Array;								
+				for(i = 0;i<rw.ropewayHistory.length;i++)
+				{
+					img = new ChartImage;					
+					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+					img.SetValue(dataCanvas,rw.ropewayHistory[i]);					
+					groupPoint.addElement(img);		
+					
+					animates.push(img.scale);
+					
+					if(i < rw.ropewayHistory.length - 1)
+					{						
+					 	var line:ChartLine = new ChartLine;
+						
+						line.SetValue(dataCanvas,rw.ropewayHistory[i],rw.ropewayHistory[i+1]);
+						
+						groupLine.addElement(line);
+						
+						animates.push(line.animate);
+					}
+				}
+				
+				sequence.end();
+				sequence.children = animates;
+				sequence.duration = 3000 / animates.length;
+				sequence.play();				
+			}		
+			
+			public function ContinueChart():void
+			{							
+				var rw:RopewayVO = ropeway;
+				
+				var animates:Array = new Array;							
+				for(var i:Number = 0;i<groupPoint.numElements;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;	
+					img.SetValue(dataCanvas);
+					animates.push(img.mv);
+					
+					if(i < groupLine.numElements)
+					{
+						var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
+						line.SetValue(dataCanvas);
+						animates.push(line.animate);
+					}
+				}	
+				
+				var p:Parallel = new Parallel;
+				p.children = animates;
+				
+				animates = new Array;
+				animates.push(p);
+				
+				line = new ChartLine;
+				line.SetValue(dataCanvas,rw.ropewayHistory[rw.ropewayHistory.length - 2],rw.ropewayHistory[rw.ropewayHistory.length - 1]);
+				groupLine.addElement(line);
+				
+				line.animate.duration = 500;
+				animates.push(line.animate);
+				
+				img = new ChartImage;		
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				img.SetValue(dataCanvas,rw.ropewayHistory[rw.ropewayHistory.length - 1]);
+				groupPoint.addElement(img);		
+				
+				animates.push(img.scale);
+				
+				sequence.end();
+				sequence.children = animates;
+				sequence.duration = 3000 / animates.length;
+				sequence.play();
+			}
+			
+			public function MoveChart():void
+			{				
+				var rw:RopewayVO = ropeway;
+				
+				var animates:Array = new Array;
+				for(var i:Number = 0;i<groupPoint.numElements;i++)
+				{
+					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;						
+					img.SetValue(dataCanvas);	
+					animates.push(img.mv);
+					
+					if(i < groupLine.numElements)
+					{
+						var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
+						line.SetValue(dataCanvas);
+						animates.push(line.animate);
+					}
+				}	
+				
+				sequence.end();
+				
+				var p:Parallel = new Parallel;
+				p.children = animates;
+				p.play();
+			}
+			
+			private function onImageMouseOver(event:MouseEvent):void
+			{
+				var off:Number = 10;
+				
+				var img:ChartImage = event.currentTarget as ChartImage;				
+				chartTip.data = img.ropewayForce;
+				
+				var pt:Point = dataCanvas.dataToLocal(img.ropewayForce.ropewayTime,img.ropewayForce.ropewayForce);
+				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
+				
+				chartTip.validateNow();
+				
+				var w:Number = chartTip.measuredWidth;
+				var h:Number = chartTip.measuredHeight;
+				
+				var lbrect:Rectangle = new Rectangle(pt.x - off - w,pt.y + off,w,h);
+				var rbrect:Rectangle = new Rectangle(pt.x + off,pt.y + off,w,h);
+				var ltrect:Rectangle = new Rectangle(pt.x - off - w,pt.y - off - h,w,h);
+				var rtrect:Rectangle = new Rectangle(pt.x + off,pt.y - off - h,w,h);
+				
+				if(prect.containsRect(lbrect))
+				{
+					chartTip.x = lbrect.x;
+					chartTip.y = lbrect.y;
+				}
+				else if(prect.containsRect(rbrect))
+				{
+					chartTip.x = rbrect.x;
+					chartTip.y = rbrect.y;
+				}
+				else if(prect.containsRect(ltrect))
+				{
+					chartTip.x = ltrect.x;
+					chartTip.y = ltrect.y;
+				}
+				else
+				{
+					chartTip.x = rtrect.x;
+					chartTip.y = rtrect.y;
+				}
+									
+				chartTip.visible = true;
+			}
+			
+			private function onImageMouseOut(event:MouseEvent):void
+			{
+				chartTip.visible = false;
+			}
+									
+			protected function dataCanvas_resizeHandler(event:ResizeEvent):void
+			{				
+				flash.utils.setTimeout(dispatchEvent,200,new Event(CONTAINER_RESIZE));
+			}			
+		]]>
+	</fx:Script>
+	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+		</s:stroke>
+	</s:Rect>	
+	
+	<mx:LineChart id="lineChart" left="20" right="40" bottom="20" top="40">
+		<mx:backgroundElements>
+			<fx:Array>						
+				<mx:GridLines gridDirection="both" 
+							  horizontalStroke="{gridStroke}"
+							  verticalStroke="{gridStroke}"/>
+			</fx:Array>
+		</mx:backgroundElements>
+		
+		<mx:annotationElements>
+			<mx:CartesianDataCanvas id="dataCanvas"/>
+		</mx:annotationElements>
+		
+		<mx:verticalAxis>
+			<mx:LinearAxis id="verticalAxis"/>
+		</mx:verticalAxis>
+		<mx:horizontalAxis>
+			<mx:DateTimeAxis displayLocalTime="true" 
+							 alignLabelsToUnits="true"
+							 id="horizontalAxis"/>
+		</mx:horizontalAxis>
+		
+		<mx:verticalAxisRenderers>					
+			<mx:AxisRenderer axis="{verticalAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>
+		</mx:verticalAxisRenderers>
+		
+		<mx:horizontalAxisRenderers>			
+			<mx:AxisRenderer axis="{horizontalAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>					
+		</mx:horizontalAxisRenderers>
+		
+		<mx:series>
+			<mx:LineSeries yField="ropewayForce" xField="ropewayTime"/>
+		</mx:series>
+	</mx:LineChart>		
+		
+	<s:Label right="15" id="lbMax" text="{dateFormatAve.format(ropeway.yesterdayDate)}最大抱索力&#xd;{ropeway.yesterdayMax} {ropeway.valueUnit}" textAlign="center"
+			 verticalAlign="middle"/> 	
+	<s:Label right="15" id="lbMin" text="{dateFormatAve.format(ropeway.yesterdayDate)}最小抱索力&#xd;{ropeway.yesterdayMin} {ropeway.valueUnit}" textAlign="center"
+			 verticalAlign="middle"/> 	
+	<s:Label right="15" id="lbAve" text="{dateFormatAve.format(ropeway.yesterdayDate)}平均抱索力&#xd;{ropeway.yesterdayAve.toFixed()} {ropeway.valueUnit}" textAlign="center"
+			 verticalAlign="middle"/> 
+	
+	<s:Group id="groupChart" left="59" right="52" bottom="47" top="50">
+		<!--<s:Rect left="0" right="0" bottom="0" top="0">
+			<s:stroke>
+				<s:SolidColorStroke color="red"/>
+			</s:stroke>
+		</s:Rect>-->
+		<s:Rect id="lineMax" height="1" left="10" right="10" visible="false">
+			<s:fill>
+				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
+			<s:fill>
+				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		<s:Rect id="lineMin" height="1" left="10" right="10" visible="false">
+			<s:fill>
+				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:Group id="groupLine" width="100%" height="100%"/>
+		<s:Group id="groupPoint" width="100%" height="100%">
+			<s:filters>
+				<s:DropShadowFilter 
+					distance="2" 
+					angle="45" 
+					color="0x0" 
+					alpha="1" 
+					blurX="4" 
+					blurY="4" 
+					strength="1" 
+					quality="1" 
+					hideObject="false"
+					inner="false" 
+					knockout="false"/>
+			</s:filters>
+		</s:Group>
+		<s:Group id="groupLabel" width="100%" height="100%">
+			<components:ChartTip id="chartTip" visible="false"/>
+		</s:Group>
+		
+		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>
+	</s:Group>
+	
+	<s:Label left="10" top="20" text="抱索力（{ropeway.valueUnit}）"/>
+	<s:Label right="15" bottom="40" text="时间"/>
+	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+			 text="{ropeway.ropewayCarId}抱索力实时监测曲线"/>
+</s:SkinnableContainer>

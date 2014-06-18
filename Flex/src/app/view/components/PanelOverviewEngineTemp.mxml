@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  height="170" minWidth="250" width="100%" skinClass="custom.skin.SkinPanel" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.EngineTempVO;
+			
+			[Bindable]public var fstTemp:EngineTempVO
+			
+			[Bindable]public var sndTemp:EngineTempVO;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="动力室主电机温度" fontWeight="bold"/>
+	</s:HGroup>
+	
+	<s:HGroup left="5" right="5" top="30" bottom="5" verticalAlign="contentJustify">		
+		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
+						  fontWeight="bold">			
+			<s:Label text="温度1"/>
+			
+			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{fstTemp.temp}"/>
+			
+			<s:Label text="{df.format(fstTemp.date)}" right="0" bottom="0"/>
+		</s:SkinnableContainer>		
+		
+		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
+							  fontWeight="bold">			
+			<s:Label text="温度2"/>
+			
+			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{sndTemp.temp}"/>
+			
+			<s:Label text="{df.format(sndTemp.date)}" right="0" bottom="0"/>
+		</s:SkinnableContainer>
+	</s:HGroup>
+</s:SkinnableContainer>

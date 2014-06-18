@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 label="历史抱索力" xmlns:components1="forceCustom.components.*">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:SolidColorStroke id="lineStoke" weight="1"/>
+		<s:RadioButtonGroup id="rbgStation" change="rbgStation_changeHandler(event)"/>
+		
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="yesStroke" color="red" weight="2"/>
+		
+		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>		
+		
+		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>
+		
+		<mx:WipeRight id="wipeShow" duration="1000"/>
+		
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			import com.adobe.utils.DateUtil;
+			
+			import mx.charts.HitData;
+			import mx.charts.chartClasses.IAxisRenderer;
+			import mx.charts.events.ChartItemEvent;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.RendererExistenceEvent;
+			import spark.filters.ColorMatrixFilter;
+			
+			import forceMonitor.model.WebServiceProxy;
+			import forceMonitor.model.vo.RopewayForceVO;
+			import forceMonitor.model.vo.RopewayVO;
+			
+			import forceCustom.itemRenderer.ItemRendererGroup;
+			import forceCustom.itemRenderer.ItemRendererLineChartForce;
+			
+			import org.puremvc.as3.multicore.interfaces.IMediator;
+			import org.puremvc.as3.multicore.interfaces.INotification;
+			import org.puremvc.as3.multicore.patterns.mediator.Mediator;
+
+			
+			public static var ONE_HOUR:Number = 60 * 60 * 1000;
+			
+			public static var CHART:String = "Chart";
+			
+			public static var TABLE:String = "Table";		
+			
+			public static var TABLE_PAGE:String = "TablePage";	
+			
+			public static var STATION_CHANGE:String = "StaionChange";
+			
+			public static var SELECT_ONE:String = "SelectOne";
+			
+			public static var EXPORT:String = "Export";
+			
+			[Bindable]public var colStations:ArrayCollection;
+			
+			[Bindable]public var colRopeway:ArrayCollection = new ArrayCollection;
+			
+			[Bindable]public var colRopewayHis:ArrayCollection;
+			
+			[Bindable]public var chartDataPro:ArrayCollection;
+			
+			public var selectOne:Boolean = false;
+			
+			[Bindable]public var pageIndex:Number = 1;		
+			[Bindable]public var totalCount:Number = 0;		
+			[Bindable]public var pageCount:Number = 1;		
+			
+			protected function datagroupStations_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				var renderer:ItemRendererGroup = event.renderer as ItemRendererGroup;
+				renderer.rb.group = rbgStation;
+			}
+						
+			protected function rbgStation_changeHandler(event:Event):void
+			{
+				dispatchEvent(new Event(STATION_CHANGE));
+			}
+						
+			public function get dateS():Date
+			{				
+				return new Date(dateTimeS.selectedDate.time + timeS.time);
+			}
+			
+			public function get dateE():Date
+			{				
+				if(timeE.time != 0)					
+					return new Date(dateTimeE.selectedDate.time +  timeE.time);
+				else	
+					return new Date(dateTimeE.selectedDate.fullYear,dateTimeE.selectedDate.month,dateTimeE.selectedDate.date + 1);
+			}
+			
+			private function labelForce(item:Object, column:GridColumn):String
+			{
+				return item.ropewayForce + " " + item.ropewayUnit;
+			}
+
+			protected function btnBar_changingHandler(event:IndexChangeEvent):void
+			{
+				if((!selectOne) && (event.newIndex == 0))
+				{
+					event.preventDefault();
+					
+					dispatchEvent(new Event(SELECT_ONE));
+				}
+				else if(event.newIndex == 0)
+				{					
+					if(colRopeway[0] == RopewayVO.ALL)
+						colRopeway.removeItemAt(0);
+					
+					dispatchEvent(new Event(CHART));					
+				}
+				else if(event.newIndex == 1)
+				{					
+					if(colRopeway[0] != RopewayVO.ALL)
+						colRopeway.addItemAt(RopewayVO.ALL,0);
+					
+					dispatchEvent(new Event(TABLE));					
+				}
+			}
+			
+			protected function listCarId_changeHandler(event:IndexChangeEvent):void
+			{
+				if(listCarId.selectedIndex == 0)
+					btnBar.selectedIndex = 1;
+				
+				listRopewayId.selectedIndex = listCarId.selectedIndex;
+			}
+			
+			protected function listRopewayId_changeHandler(event:IndexChangeEvent):void
+			{
+				if(listCarId.selectedIndex == 0)
+					btnBar.selectedIndex = 1;
+				
+				listCarId.selectedIndex = listRopewayId.selectedIndex;
+			}
+			
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = 1;
+				rbgStation.selectedValue = colStations[0];
+				dateTimeS.selectedDate = new Date;
+				dateTimeE.selectedDate = new Date;
+				timeS.formatTime = "";
+				timeE.formatTime = "";
+				listCarId.selectedIndex = 0;
+				listRopewayId.selectedIndex = 0;
+				numTempMin.text = "";
+				numTempMax.text = "";
+				colRopewayHis.source = [];
+			}
+			
+			private function labelHorizontalAxis(categoryValue:Object, previousCategoryValue:Object, axis:CategoryAxis, categoryItem:Object):String 
+			{ 				
+				var s:Array = dateF.format(categoryValue).split(" ");
+				return s[0]+ "\n" + s[1];
+			}
+			
+			
+			protected function firstPage_buttonDownHandler(event:FlexEvent):void
+			{
+				if(pageCount <= 0)
+					return;
+				
+				pageIndex = 1;
+				dispatchEvent(new Event(TABLE_PAGE));
+			}
+			
+			protected function prePage_buttonDownHandler(event:FlexEvent):void
+			{
+				if(pageCount <= 0)
+					return;
+				
+				if(pageIndex - 1 < 1)
+					return;
+				
+				pageIndex--;
+				
+				dispatchEvent(new Event(TABLE_PAGE));
+				
+			}
+			
+			protected function nextPage_buttonDownHandler(event:FlexEvent):void
+			{
+				if(pageCount <= 0)
+					return;
+				
+				if(pageIndex + 1 > pageCount)
+					return;
+				
+				pageIndex++;
+				
+				dispatchEvent(new Event(TABLE_PAGE));
+			}
+			
+			protected function lastPage_buttonDownHandler(event:FlexEvent):void
+			{
+				if(pageCount <= 0)
+					return;
+				
+				pageIndex = pageCount;
+				dispatchEvent(new Event(TABLE_PAGE));
+			}
+			
+			protected function buttonGo_buttonDownHandler(event:FlexEvent):void
+			{
+				if(pageCount <= 0)
+					return;
+				
+				if((pageIndex < 1) || (pageIndex > pageCount))
+					return;
+				
+				pageIndex = numPageIndex.value;
+				
+				dispatchEvent(new Event(TABLE_PAGE));
+			}
+			
+			protected function buttonQuery_buttonDownHandler(event:FlexEvent):void
+			{
+				if(btnBar.selectedIndex == 0)
+				{										
+					dispatchEvent(new Event(CHART));					
+				}
+				else if(btnBar.selectedIndex == 1)
+				{										
+					dispatchEvent(new Event(TABLE));					
+				}
+			}
+				
+			private var _chartSize:int;
+			
+			public function UpdateChart():void
+			{				
+				var vAxisMax:Number = 0;	
+				var vAxisMin:Number = 1000;					
+				for each(var rf:RopewayForceVO in colRopewayHis)
+				{
+					vAxisMax = Math.max(vAxisMax,rf.ropewayForce);
+					vAxisMin = Math.min(vAxisMin,rf.ropewayForce);
+				}			
+				
+				vAxisMax = (Math.floor(vAxisMax / 5) + 1) * 5;
+				vAxisMin = (Math.ceil(vAxisMin / 5) - 1) * 5;
+				
+				verticalAxis.maximum = vAxisMax;
+				verticalAxis.minimum = vAxisMin;
+				
+				var arr:Array = [];
+				
+				_chartSize = int(this.width / 30);
+				
+				if(_chartSize < colRopewayHis.length)
+				{
+					chartSlider.visible = true;
+					chartSlider.minimum = 0;
+					chartSlider.maximum = colRopewayHis.length - _chartSize;
+					
+					for(var i:int = 0;i<_chartSize;i++)
+					{
+						arr.push(colRopewayHis[i]);
+					}
+				}
+				else
+				{
+					chartSlider.visible = false;		
+					
+					for each(rf in colRopewayHis)
+					{
+						arr.push(rf);
+					}			
+				}
+				
+				chartDataPro = new ArrayCollection(arr);
+			}		
+			
+			protected function chartSlider_changeEndHandler(event:Event):void
+			{			
+				var arr:Array = [];
+				
+				for(var i:int = chartSlider.value;i<chartSlider.value + _chartSize;i++)
+				{
+					arr.push(colRopewayHis[i]);
+				}
+				
+				chartDataPro = new ArrayCollection(arr);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">			
+		<components1:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" title="索道站">
+			<s:DataGroup width="220" height="100%" dataProvider="{colStations}"
+						 itemRenderer="forceCustom.itemRenderer.ItemRendererGroup" 
+						 rendererAdd="datagroupStations_rendererAddHandler(event)">
+				<s:layout>
+					<s:TileLayout/>
+				</s:layout>
+			</s:DataGroup>
+		</components1:SkinnableTitleContainer>	
+		
+		<components1:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="280" title="统计时间">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="开始时间："/>			
+				<mx:DateField id="dateTimeS" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}"/>	
+				<components1:TimeField id="timeS" width="100%" height="21"/>
+			</s:HGroup>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="结束时间："/>		
+				<mx:DateField id="dateTimeE" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}" />			
+				<components1:TimeField id="timeE" width="100%" height="21"/>
+			</s:HGroup>
+		</components1:SkinnableTitleContainer>	
+		
+		<components1:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="220" title="统计条件">
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="　吊箱编号："/>
+				<s:DropDownList id="listCarId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayCarId"
+								width="100%" change="listCarId_changeHandler(event)"/>
+			</s:HGroup>	
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="抱索器编号："/>
+				<s:DropDownList id="listRopewayId" requireSelection="true" dataProvider="{colRopeway}" labelField="ropewayId"
+								width="100%" change="listRopewayId_changeHandler(event)"/>
+			</s:HGroup>	
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="温度："/>
+				<s:TextInput id="numTempMin" width="100%" height="21"/>
+				<s:Label text=" ℃ - "/>
+				<s:TextInput id="numTempMax" width="100%" height="21"/>
+				<s:Label text="℃"/>
+			</s:HGroup>	
+		</components1:SkinnableTitleContainer>		
+		
+		<components1:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="forceCustom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components1:SkinnableTitleContainer>		
+		
+		<components1:SkinnableTitleContainer skinClass="forceCustom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="buttonQuery_buttonDownHandler(event)" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
+		</components1:SkinnableTitleContainer>	
+	</s:HGroup>
+			
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
+		<s:NavigatorContent>	
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+							
+			<s:Group height="100%" width="100%">
+				<s:Label id="lbTitle" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{listRopewayId.selectedItem.ropewayCarId}#吊箱历史抱索力"/>						
+				<s:Label left="10" top="20" text="抱索力（KG）"/>
+				<s:Label right="15" bottom="40" text="时间"/>
+				
+				<mx:LineChart id="lineChart" showDataTips="true" dataTipRenderer="forceMonitor.view.components.ChartTip" 
+							  left="20" right="40" bottom="20" top="40" dataProvider="{chartDataPro}">
+					<mx:seriesFilters>
+						<fx:Array/>
+					</mx:seriesFilters>
+					
+					<mx:backgroundElements>
+						<fx:Array>						
+							<components1:GridLineAnalyse gridDirection="both"
+										  horizontalStroke="{gridStroke}"
+										  verticalStroke="{gridStroke}">
+								<components1:verticalFill>
+									<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+								</components1:verticalFill>
+							</components1:GridLineAnalyse>
+						</fx:Array>
+					</mx:backgroundElements>
+															
+					<mx:verticalAxis>
+						<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+					</mx:verticalAxis>
+					
+					<mx:horizontalAxis>
+						<mx:CategoryAxis id="horizontalAxis" categoryField="ropewayTime"
+										 ticksBetweenLabels="false" 
+										 labelFunction="labelHorizontalAxis" />
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxisRenderers>					
+						<mx:AxisRenderer axis="{verticalAxis}" 
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"
+										 minorTickPlacement="none"/>
+					</mx:verticalAxisRenderers>
+					
+					<mx:horizontalAxisRenderers>			
+						<mx:AxisRenderer axis="{horizontalAxis}"
+										 textAlign="center"
+										 axisStroke="{tickStroke}" 
+										 tickStroke="{tickStroke}"/>					
+					</mx:horizontalAxisRenderers>
+					
+					<mx:series>
+						<mx:LineSeries yField="ropewayForce" lineStroke="{lStroke}"
+									   itemRenderer="{new ClassFactory(ItemRendererLineChartForce)}">
+						</mx:LineSeries>
+					</mx:series>
+				</mx:LineChart>		
+			</s:Group>
+			
+			<s:HSlider width="100%" id="chartSlider" change="chartSlider_changeEndHandler(event)" showDataTip="false"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Line stroke="{gapStroke}" width="100%"/>
+				<s:Label text="历史抱索力（{totalCount}）" fontWeight="bold"/>
+				<s:Line stroke="{gapStroke}" width="100%"/>
+			</s:HGroup>
+			
+			<s:DataGrid width="100%" height="100%" dataProvider="{colRopewayHis}"
+						borderColor="#63c3d6" skinClass="forceCustom.skin.SkinGrid"
+						alternatingRowColors="[#FFFFFF,#CFEDF7]" 
+						verticalScrollPolicy="off">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="吊箱编号" dataField="ropewayCarId" width="100"/>
+						<s:GridColumn headerText="报索器编号" dataField="ropewayId" width="100"/>
+						<s:GridColumn headerText="时间" dataField="ropewayTime" width="200" formatter="{dateF}"/>			
+						<s:GridColumn headerText="报索力" labelFunction="labelForce" width="100"/>		
+						<s:GridColumn headerText="温度" dataField="ropewayTemp" width="100"/>	
+						<s:GridColumn headerText="湿度" dataField="ropewayHumidity" width="100"/>
+						<s:GridColumn headerText="所属索道站" dataField="fromRopeStation"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+						
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="{pageIndex}/{pageCount}"/>
+				<s:Button label="首页" buttonDown="firstPage_buttonDownHandler(event)"/>
+				<s:Button label="前页" buttonDown="prePage_buttonDownHandler(event)"/>
+				<s:Button label="后页" buttonDown="nextPage_buttonDownHandler(event)"/>
+				<s:Button label="末页" buttonDown="lastPage_buttonDownHandler(event)"/>
+				<s:NumericStepper id="numPageIndex" height="20" minimum="{1}" maximum="{pageCount}"/>
+				<s:Button label="GO" buttonDown="buttonGo_buttonDownHandler(event)"/>
+			</s:HGroup>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</s:NavigatorContent>

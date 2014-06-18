@@ -18,9 +18,9 @@ package app.view
 			super(NAME, viewComponent);
 		}
 		
-		protected function get application():RopewayForceMonitor
+		protected function get application():TanShanInfoMonitor
 		{
-			return viewComponent as RopewayForceMonitor;
+			return viewComponent as TanShanInfoMonitor;
 		}
 		
 		private function changeContent(v:IVisualElement):void

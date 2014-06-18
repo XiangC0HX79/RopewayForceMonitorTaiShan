@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				mouseChildren="false">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+		<s:DateTimeFormatter id="dateFormatAve" dateTimePattern="MM.dd"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.RopewayVO;
+			
+			import mx.formatters.DateFormatter;
+			
+			[Bindable]private var _ropeway:RopewayVO;
+			
+			[Bindable]private var _color:int;
+						
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if(value)
+				{
+					_ropeway = value as RopewayVO;				
+					_color = (_ropeway.alarm > 0)?0xFF0000:0x02C462;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:SkinnableContainer skinClass="forceCustom.skin.SkinPanelRealtimeDetection" width="100%" minWidth="240">	
+		<s:layout>
+			<s:VerticalLayout gap="0" horizontalAlign="center"/>
+		</s:layout>
+		
+		<s:HGroup width="100%" paddingLeft="30" paddingRight="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+			<s:Label text="{_ropeway.ropewayId}" fontWeight="bold"/>
+			<s:Spacer width="100%"/>
+			<s:Label text="开合次数：{_ropeway.switchFreq}"/>
+		</s:HGroup>
+		
+		<s:HGroup paddingTop="5" fontSize="22" fontWeight="bold" color="{_color}">
+			<s:Label text="{_ropeway.ropewayCarId}" color="0x1b5aa2"/>
+			
+			<s:Label text="{_ropeway.deteValue}{_ropeway.valueUnit}"/>			
+		</s:HGroup>
+		
+		<s:Label paddingBottom="5" color="{_color}"
+				 text="{df.format(_ropeway.deteDate)}"
+				 verticalAlign="middle"/>
+		
+		<s:HGroup width="100%" height="25" gap="0" fontWeight="bold" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{dateFormatAve.format(_ropeway.yesterdayDate)}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="今天"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="最大值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMax}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.maxValue}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="平均值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayAve}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.aveValue}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20" gap="0" color="0x1b5aa2">
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="最小值"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.yesterdayMin}"/>
+			</s:SkinnableContainer>
+			<s:SkinnableContainer height="100%" width="100%" skinClass="forceCustom.skin.SkinPanelTodayOverview">
+				<s:Label verticalCenter="0" horizontalCenter="0" text="{_ropeway.minValue}"/>
+			</s:SkinnableContainer>
+		</s:HGroup>
+	</s:SkinnableContainer>
+</s:ItemRenderer>

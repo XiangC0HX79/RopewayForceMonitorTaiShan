@@ -67,7 +67,13 @@ package app.controller
 			RopewayStationDict.list =  new ArrayCollection(r);
 			
 			facade.registerProxy(new ConfigProxy);
-			facade.registerProxy(new ForceRealtimeDetectionAlarmProxy);
+			
+			facade.registerProxy(new SurroundingTempProxy);
+			facade.registerProxy(new EngineTempProxy);
+			facade.registerProxy(new InchProxy);
+			facade.registerProxy(new InchHistoryProxy);
+			
+			/*facade.registerProxy(new ForceRealtimeDetectionAlarmProxy);
 			facade.registerProxy(new RopewayForceProxy);
 			facade.registerProxy(new RopewayForceAverageProxy);
 			facade.registerProxy(new RopewaySwitchFreqProxy);
@@ -75,12 +81,7 @@ package app.controller
 			facade.registerProxy(new RopewayAlarmAnalysisProxy);			
 			facade.registerProxy(new CarriageProxy);			
 			facade.registerProxy(new CarriageEditHisProxy);	
-			facade.registerProxy(new RopeForceAjustProxy);
-			
-			facade.registerProxy(new SurroundingTempProxy);
-			facade.registerProxy(new EngineTempProxy);
-			facade.registerProxy(new InchProxy);
-			facade.registerProxy(new InchHistoryProxy);
+			facade.registerProxy(new RopeForceAjustProxy);*/
 		}
 	}
 }

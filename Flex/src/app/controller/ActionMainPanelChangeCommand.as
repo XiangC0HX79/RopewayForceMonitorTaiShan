@@ -1,6 +1,7 @@
 package app.controller
 {
 	import app.ApplicationFacade;
+	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
 	
@@ -21,6 +22,10 @@ package app.controller
 				
 				case ApplicationFacade.NOTIFY_MENU_MAIN_INCH:
 					sendNotification(ApplicationFacade.ACTION_MAIN_PANEL_CHANGE,facade.retrieveMediator(MainPanelInchMediator.NAME).getViewComponent());
+					break;
+				
+				case ApplicationFacade.NOTIFY_MENU_MAIN_FORCE:
+					sendNotification(ApplicationFacade.ACTION_MAIN_PANEL_CHANGE,facade.retrieveMediator(MainPanelForceSWFMediator.NAME).getViewComponent());
 					break;
 			}
 		}

@@ -140,9 +140,9 @@ package app.view
 				
 				switch(a[0])
 				{	
-					case "FC":
-						decodeRopewayForce(a.slice(1));
-						break;
+					//case "FC":
+					//	decodeRopewayForce(a.slice(1));
+					//	break;
 					
 					case "ET":
 						var st:SurroundingTempVO = new SurroundingTempVO;
@@ -158,16 +158,9 @@ package app.view
 						et.date = dt;
 						et.temp = Number(a[5]);
 						
-						var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;						
-						var e:EngineVO = engineTempProxy.getEngine(ropeway,int(a[4]));
-						e.AddItem(et);
+						var pos:int = int(a[4]);
 						
-						if(e.history.length == 1)
-						{
-							engineTempProxy.InitHistory(e);
-						}
-						
-						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,e);
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,[ropeway,pos,et]);
 						break;
 					
 					case "ZJ":

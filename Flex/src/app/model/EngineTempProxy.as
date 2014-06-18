@@ -25,17 +25,6 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		public function getEngine(ropeway:RopewayDict,pos:int):EngineVO
-		{
-			for each(var e:EngineVO in list)
-			{
-				if((ropeway == e.ropeway) && (pos == e.pos))
-					return e;
-			}
-			
-			return null;
-		}
-		
 		public function Init():void
 		{
 			list.removeAll();
@@ -57,6 +46,19 @@ package app.model
 		public function InitHistory(e:EngineVO):void
 		{
 			
+		}
+		
+		public function AddItem(rw:RopewayDict,pos:int,et:EngineTempVO):void
+		{
+			
+			for each(var e:EngineVO in list)
+			{
+				if((rw == e.ropeway) && (pos == e.pos))
+				{
+					e.history.addItem(et);
+					break;
+				}
+			}			
 		}
 	}
 }

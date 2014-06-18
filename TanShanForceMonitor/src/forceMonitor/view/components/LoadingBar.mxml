@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 creationComplete="init()" 
+		 resize="resizeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+			
+			import org.bytearray.gif.player.GIFPlayer;
+			
+			[Bindable]public var loadingInfo:String = "开始初始化...";
+			
+			protected function init():void
+			{
+				/* backgroudSprite.width = this.width;
+				backgroudSprite.height = this.height;
+				backgroudSprite.graphics.beginFill(0xFFFFFF,0.5);
+				backgroudSprite.graphics.drawRect(0, 0, this.width, this.height);  
+				backgroudSprite.graphics.endFill(); */
+				
+								
+				var player:GIFPlayer = new GIFPlayer();		
+				
+				player.load(new URLRequest("assets/image/loading.gif")); 			
+				
+				imageLoading.addChild(player);
+			}			
+			
+			protected function resizeHandler(event:ResizeEvent):void
+			{				
+				if(spriteBackgroud)
+				{
+					spriteBackgroud.width = this.width;
+					spriteBackgroud.height = this.height;
+					
+					spriteBackgroud.graphics.clear();
+					
+					spriteBackgroud.graphics.beginFill(0xFFFFFF,0.5);
+					spriteBackgroud.graphics.drawRect(0, 0, this.width, this.height);  
+					spriteBackgroud.graphics.endFill();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:SpriteVisualElement width="100%" height="100%" id="spriteBackgroud"/>
+	
+	<s:VGroup horizontalCenter="0" verticalCenter="7">
+		<mx:Image height="14" width="190" id="imageLoading"/>
+		<s:Label backgroundColor="#FFFFFF"
+				 text="{loadingInfo}"/>
+	</s:VGroup>
+</s:Group>

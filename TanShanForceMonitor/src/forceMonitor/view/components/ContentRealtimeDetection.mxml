@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:forceMonitor="forceMonitor.*"
+		 width="100%" height="100%">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import forceMonitor.model.vo.RopewayVO;
+			
+			[Bindable]public var ropeway:RopewayVO; 
+		]]>
+	</fx:Script>
+	
+	<s:HGroup id="groupTop" width="100%"/>
+</s:VGroup>

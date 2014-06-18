@@ -58,9 +58,9 @@ package app.model
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"配置文件损坏，请检查config.xml文件正确性！");
 				return;
 			}
-			config.serverIp = xml.ServerIp;
+			config.serverIp = xml.InfoServerIp;
 			
-			config.serverPort = int(xml.ServerPort);	
+			config.serverPort = int(xml.InfoServerPort);	
 						
 			WebServiceProxy.BASE_URL = xml.WebServiceUrl;
 		}
