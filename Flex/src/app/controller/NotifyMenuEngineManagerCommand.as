@@ -1,10 +1,10 @@
 package app.controller
 {
-	import org.puremvc.as3.patterns.command.MacroCommand;
+	import org.puremvc.as3.multicore.patterns.command.AsyncMacroCommand;
 	
-	public class NotifyMenuEngineManagerCommand extends MacroCommand
+	public class NotifyMenuEngineManagerCommand extends AsyncMacroCommand
 	{		
-		override protected function initializeMacroCommand():void
+		override protected function initializeAsyncMacroCommand():void
 		{
 			addSubCommand(ActionEnginePanelChangeCommand);
 		}

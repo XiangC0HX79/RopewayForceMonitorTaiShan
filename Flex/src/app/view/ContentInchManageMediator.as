@@ -2,8 +2,8 @@ package app.view
 {
 	import app.view.components.ContentInchManage;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class ContentInchManageMediator extends Mediator implements IMediator
 	{

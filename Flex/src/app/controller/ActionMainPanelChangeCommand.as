@@ -4,15 +4,15 @@ package app.controller
 	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
-	import app.view.MainPanelEngineTempMediator;
+	import app.view.MainPanelEngineMediator;
 	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
 	
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.AsyncCommand;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.interfaces.ICommand;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.AsyncCommand;
+	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
 	
 	public class ActionMainPanelChangeCommand extends AsyncCommand
 	{
@@ -20,7 +20,6 @@ package app.controller
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.NOTIFY_INIT_APP_COMPLETE:
 				case ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW:
 					var ui:UIComponent = facade.retrieveMediator(MainPanelOverviewMediator.NAME).getViewComponent() as UIComponent;
 					ui.addEventListener(FlexEvent.ADD,onUiAdd);
@@ -39,10 +38,15 @@ package app.controller
 					break;
 				
 				case ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP:
-					ui = facade.retrieveMediator(MainPanelEngineTempMediator.NAME).getViewComponent() as UIComponent;
+					ui = facade.retrieveMediator(MainPanelEngineMediator.NAME).getViewComponent() as UIComponent;
 					ui.addEventListener(FlexEvent.ADD,onUiAdd);
 					sendNotification(ApplicationFacade.ACTION_MAIN_PANEL_CHANGE,ui);
 					break;
+				
+				default:
+					ui = facade.retrieveMediator(MainPanelOverviewMediator.NAME).getViewComponent() as UIComponent;
+					ui.addEventListener(FlexEvent.ADD,onUiAdd);
+					sendNotification(ApplicationFacade.ACTION_MAIN_PANEL_CHANGE,ui);
 			}
 		}
 		

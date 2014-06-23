@@ -1,13 +1,15 @@
 package app.view
 {
+	import mx.events.FlexEvent;
+	
 	import app.ApplicationFacade;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
 	import app.view.components.PanelInchRealtimeChart;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class PanelInchRealtimeChartMediator extends Mediator implements IMediator
 	{
@@ -23,10 +25,15 @@ package app.view
 			return viewComponent as PanelInchRealtimeChart;
 		}
 		
+		override public function onRemove():void
+		{
+			panelInchChart.inch = null;
+		}
+		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_INCH_HISTORY
+				ApplicationFacade.ACTION_UPDATE_INCH
 			];
 		}
 		
@@ -34,8 +41,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_INCH_HISTORY:
-					panelInchChart.inchHistory = notification.getBody() as InchVO;
+				case ApplicationFacade.ACTION_UPDATE_INCH:
+					panelInchChart.inch = notification.getBody() as InchVO;
 					break;
 			}
 		}		

@@ -1,63 +1,53 @@
 package app.model
 {
-	import com.adobe.utils.DateUtil;
-	
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayCollection;
-	import mx.rpc.events.ResultEvent;
 	
-	import app.model.dict.RopewayDict;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
+	import app.model.vo.RopewayVO;
 	
-	import custom.other.CustomUtil;
+	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	
-	import org.puremvc.as3.interfaces.IProxy;
-	import org.puremvc.as3.patterns.proxy.Proxy;
-	
-	public class InchProxy extends WebServiceProxy implements IProxy
+	public class InchProxy extends Proxy
 	{
 		public static const NAME:String = "InchProxy";
 		
 		public function InchProxy()
 		{
-			super(NAME, new Dictionary);
-			
-			for each(var rw:RopewayDict in RopewayDict.dict)
+			super(NAME, new ArrayCollection);
+		}
+		
+		public function get list():ArrayCollection
+		{
+			return data as ArrayCollection;
+		}
+		
+		override public function onRegister():void
+		{
+			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			for each(var rw:RopewayVO in ropewayProxy.list)
 			{
-				dict[rw] = new InchVO;
+				var inch:InchVO = new InchVO;
+				inch.ropeway = rw;
+				list.addItem(inch);
 			}
 		}
-		
-		public function get dict():Dictionary
+				
+		public function retrieveInch(rw:RopewayVO):InchVO
 		{
-			return data as Dictionary;
+			for each(var item:InchVO in list)
+			{
+				if(item.ropeway.fullName == rw.fullName)
+					return item;
+			}
+			
+			return null;
 		}
 		
-		public function Init():void
+		public function AddInch(rw:RopewayVO,inchValue:InchValueVO):void
 		{			
-			send("RopeDete_RopeCarriageRela_GetList",onInit,"");
-		}
-		
-		private function onInit(event:ResultEvent):void
-		{
-			var inch:InchValueVO = new InchValueVO;
-			inch.date = DateUtil.addDateTime('m',-5, new Date);
-			inch.humi = 50;
-			inch.temp = 25;
-			inch.value = 500;
-			
-			for each(var item:InchVO in dict)
-			{
-				item.UnshiftInch(inch);
-			}
-		}
-		
-		public function AddInch(rw:RopewayDict,inch:InchValueVO):void
-		{
-			var inchHistory:InchVO = dict[rw];
-			inchHistory.PushInch(inch);
+			var inch:InchVO = retrieveInch(rw);
+			inch.PushInch(inchValue);
 		}
 	}
 }

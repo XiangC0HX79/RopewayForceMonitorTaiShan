@@ -3,14 +3,15 @@ package app.view
 	import flash.events.Event;
 	
 	import mx.core.IVisualElement;
+	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
 	import app.view.components.MainPanelEngineTemp;
 	import app.view.components.MainPanelInch;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class MainPanelInchMediator extends Mediator implements IMediator
 	{
@@ -19,15 +20,25 @@ package app.view
 		public function MainPanelInchMediator(mediatorName:String=null, viewComponent:Object=null)
 		{
 			super(NAME, new MainPanelInch);
+		}
+		
+		protected function get mainPanelInch():MainPanelInch
+		{
+			return viewComponent as MainPanelInch;
+		}
+		
+		override public function onRegister():void
+		{
+			mainPanelInch.addEventListener(FlexEvent.REMOVE,onUiRemove);
 			
 			mainPanelInch.addEventListener(MainPanelInch.REALTIME_DETECTION,onMenu);
 			mainPanelInch.addEventListener(MainPanelInch.ANALYSIS,onMenu);
 			mainPanelInch.addEventListener(MainPanelInch.MANAGE,onMenu);
 		}
 		
-		protected function get mainPanelInch():MainPanelInch
+		private function onUiRemove(event:Event):void
 		{
-			return viewComponent as MainPanelInch;
+			mainPanelInch.mainContent.removeAllElements();			
 		}
 		
 		private function onMenu(event:Event):void

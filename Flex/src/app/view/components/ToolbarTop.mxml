@@ -9,7 +9,7 @@
 			import spark.components.RadioButton;
 			import spark.events.RendererExistenceEvent;
 			
-			import app.model.vo.ConfigVO;
+			import app.model.vo.AppConfigVO;
 			
 			public static const STATION:String = "Station";
 			
@@ -48,7 +48,7 @@
 		<s:itemRenderer>
 			<fx:Component>
 				<s:ItemRenderer>
-					<s:RadioButton id="radioButton" label="{data.lable}" value="{data}"/>
+					<s:RadioButton id="radioButton" label="{data.shortName}" value="{data}"/>
 				</s:ItemRenderer>				
 			</fx:Component>
 		</s:itemRenderer>

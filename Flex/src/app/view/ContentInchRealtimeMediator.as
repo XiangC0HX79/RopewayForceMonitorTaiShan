@@ -6,8 +6,8 @@ package app.view
 	import app.ApplicationFacade;
 	import app.view.components.ContentInchRealtime;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class ContentInchRealtimeMediator extends Mediator implements IMediator
 	{
@@ -32,8 +32,6 @@ package app.view
 			facade.registerMediator(new PanelInchRealtimeValueMediator(contentInchRealtime.panelValue));
 			facade.registerMediator(new PanelInchRealtimeAlarmMediator(contentInchRealtime.panelAlarm));
 			facade.registerMediator(new PanelInchRealtimeChartMediator(contentInchRealtime.panelChart));
-			
-			//sendNotification(ApplicationFacade.NOTIFY_INCH_REALTIME_ADD)
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void

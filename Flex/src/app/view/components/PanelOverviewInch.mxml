@@ -11,14 +11,32 @@
 			
 			import app.model.vo.InchValueVO;
 			
+			private const MAX_VALUE:Number = 1000;
+			private const MIN_VALUE:Number = 0;
+			private const IMG_WIDTH:Number = 851;
+			private const IMG_MAX:Number = 826;
+			private const IMG_MIN:Number = 5;
+			
 			[Bindable]private var _inch:InchValueVO;
 			public function set inch(value:InchValueVO):void
 			{
 				_inch = value;
 				
-				if(this.initialized)
+				if(_inch && initialized)
 				{
-					var pt:Point = content.contentToGlobal(new Point(0,0));
+					var v:Number = _inch.value;
+					if(v > MAX_VALUE)v = MAX_VALUE;
+					if(v < MIN_VALUE)v = MIN_VALUE;
+					
+					var grad:Number = (v - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
+					grad *= img.width / IMG_WIDTH;
+					grad -= niddle.width / 2;
+					
+					m.xTo = grad;
+					m.end();
+					m.play([niddle]);
+					
+					/*var pt:Point = content.contentToGlobal(new Point(0,0));
 					
 					var clipRect:Rectangle = new Rectangle(pt.x,pt.y,content.width,content.height);
 					var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
@@ -40,7 +58,7 @@
 					anima.widthTo = 0;
 					anima.heightFrom = content.height;
 					anima.heightTo = 0;
-					anima.play([imageAnimate]);
+					anima.play([imageAnimate]);*/
 				}
 			}
 		]]>
@@ -48,24 +66,31 @@
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Resize id="anima">
+		<s:Move id="m"/>
+		<!--<s:Resize id="anima">
 			<s:effectEnd>
 				<![CDATA[				
 				imageAnimate.visible = false;
 				]]>
 			</s:effectEnd>			
-		</s:Resize>
+		</s:Resize>-->
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
 		<s:Label text="张紧小尺" fontWeight="bold"/>
 	</s:HGroup>
-	
+		
 	<s:SkinnableContainer left="5" right="5" top="30" bottom="5"
 						  skinClass="custom.skin.SkinPanelContent"
 						  fontWeight="bold">
-		<s:HGroup id="content" color="0x1b5aa2" fontSize="28" 
+		<s:VGroup id="niddle" horizontalAlign="center" gap="0" width="40">
+			<s:Label text="{_inch.value}M" color="0x1b5aa2" fontSize="28" />
+			<s:Image source="assets/image/inch_niddle.png"/>		
+		</s:VGroup>
+		
+		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/back_inch.png" scaleMode="stretch"/>
+		<!--<s:HGroup id="content" color="0x1b5aa2" fontSize="28" 
 				  horizontalCenter="0" verticalCenter="0"
 				  horizontalAlign="center">	
 			<s:Label text="{_inch.value}" width="64"/>		
@@ -73,7 +98,7 @@
 		</s:HGroup>
 		
 		<s:Image id="imageAnimate" horizontalCenter="0" verticalCenter="0"
-				 visible="false"/>
+				 visible="false"/>-->
 		
 		<s:Label text="{df.format(_inch.date)}" right="0" bottom="0"/>
 	</s:SkinnableContainer>

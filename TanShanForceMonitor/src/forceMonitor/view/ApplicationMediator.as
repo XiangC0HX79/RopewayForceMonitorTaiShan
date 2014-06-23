@@ -1,13 +1,13 @@
 package forceMonitor.view
 {	
-	import forceMonitor.ForceMonitorFacade;
-	import forceMonitor.model.vo.ConfigVO;
-	
 	import flash.events.Event;
 	import flash.utils.Timer;
 	
 	import mx.core.IVisualElement;
 	import mx.events.ResizeEvent;
+	
+	import forceMonitor.ForceMonitorFacade;
+	import forceMonitor.model.vo.ConfigVO;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;

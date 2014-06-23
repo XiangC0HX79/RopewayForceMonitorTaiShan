@@ -22,14 +22,22 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
+			import mx.managers.HistoryManager;
+			import mx.managers.PopUpManager;
+			
 			import app.ApplicationFacade;
 			
-			import mx.events.FlexEvent;
+			
+			private var _dragManager:DragManager;
+			private var _historyManager:HistoryManager;
+			private var _popupManager:PopUpManager;
 			
 			[Embed(source="assets/image/title_back.png", scaleGridTop="0", scaleGridBottom="94", scaleGridLeft="0", scaleGridRight="120")]
 			[Bindable]public var titleBack:Class;
 			
-			private var facade:ApplicationFacade = ApplicationFacade.getInstance();
+			private var facade:ApplicationFacade = ApplicationFacade.getInstance("TanShanInfoMonitor");
 						
 			protected function title_doubleClickHandler(event:MouseEvent):void
 			{				

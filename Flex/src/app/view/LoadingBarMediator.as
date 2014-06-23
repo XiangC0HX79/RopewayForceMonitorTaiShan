@@ -1,15 +1,16 @@
 package app.view
 {	
-	import app.ApplicationFacade;
-	import app.model.vo.ConfigVO;
-	import app.view.components.LoadingBar;
-	
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import app.ApplicationFacade;
+	import app.model.vo.AppConfigVO;
+	import app.view.components.LoadingBar;
+	
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.utilities.loadup.model.LoadupMonitorProxy;
 	
 	public class LoadingBarMediator extends Mediator implements IMediator
 	{
@@ -36,6 +37,8 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
+				LoadupMonitorProxy.LOADING_COMPLETE,
+				
 				ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,
 				ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE
 			];
@@ -45,6 +48,7 @@ package app.view
 		{
 			switch(notification.getName())
 			{
+				case LoadupMonitorProxy.LOADING_COMPLETE:
 				case ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE:					
 					loadingBar.visible = false;
 					break;

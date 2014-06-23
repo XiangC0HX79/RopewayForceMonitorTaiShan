@@ -3,70 +3,40 @@ package app.controller
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-		
-	import app.model.ConfigProxy;
-	import app.model.EngineTempProxy;
-	import app.model.InchProxy;
-	import app.model.SurroundingTempProxy;
-	import app.model.dict.RopewayDict;
-	import app.model.dict.RopewayStationDict;
 	
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import app.model.AppConfigProxy;
+	import app.model.AppParamProxy;
+	import app.model.EngineProxy;
+	import app.model.ForceProxy;
+	import app.model.InchProxy;
+	import app.model.RopewayProxy;
+	import app.model.RopewayStationProxy;
+	import app.model.SurroundingTempProxy;
+	import app.model.vo.RopewayStationVO;
+	import app.model.vo.RopewayVO;
+	
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
 	
 	public class ModelPreCommand extends SimpleCommand
 	{
 		override public function execute(note:INotification):void
-		{
-			//初始化索道
-			RopewayDict.dict = new Dictionary;			
-			RopewayDict.dict[RopewayDict.ZHONG_TIAN_MEN.fullName] = RopewayDict.ZHONG_TIAN_MEN;
-			RopewayDict.dict[RopewayDict.TAO_HUA_YUAN.fullName] = RopewayDict.TAO_HUA_YUAN;
+		{			
+			facade.registerProxy(new AppParamProxy);
 			
-			var r:Array = [];			
-			for each(var rw:RopewayDict in RopewayDict.dict)
-				r.push(rw);			
-			r.sortOn("id",Array.NUMERIC);			
-			RopewayDict.list = new ArrayCollection(r);
+			//facade.registerProxy(new AppConfigProxy("appconfig.xml"));
 			
-			//初始化索道站			
-			RopewayStationDict.dict = new Dictionary;
-			for each(rw in RopewayDict.dict)
-			{				
-				var rs:RopewayStationDict = new RopewayStationDict;			
-				rs.ropeway = rw;
-				rs.ropewayId = rw.id;
-				rs.station = RopewayStationDict.FIRST;	
-				RopewayStationDict.dict[rs.fullName] = rs;
-				
-				rs = new RopewayStationDict();
-				rs.ropeway = rw;
-				rs.ropewayId = rw.id;
-				rs.station = RopewayStationDict.SECOND;	
-				RopewayStationDict.dict[rs.fullName] = rs;
-			}
+			facade.registerProxy(new RopewayProxy);
 			
-			r = [];			
-			for each(rs in RopewayStationDict.dict)
-				r.push(rs);			
-			r.sortOn(["ropewayId","station"],[Array.NUMERIC,Array.NUMERIC]);			
-			RopewayStationDict.list =  new ArrayCollection(r);
+			facade.registerProxy(new RopewayStationProxy);
 			
-			facade.registerProxy(new ConfigProxy);
+			facade.registerProxy(new EngineProxy);
 			
-			facade.registerProxy(new SurroundingTempProxy);
-			facade.registerProxy(new EngineTempProxy);
 			facade.registerProxy(new InchProxy);
 			
-			/*facade.registerProxy(new ForceRealtimeDetectionAlarmProxy);
-			facade.registerProxy(new RopewayForceProxy);
-			facade.registerProxy(new RopewayForceAverageProxy);
-			facade.registerProxy(new RopewaySwitchFreqProxy);
-			facade.registerProxy(new RopewaySwitchFreqTotalProxy);
-			facade.registerProxy(new RopewayAlarmAnalysisProxy);			
-			facade.registerProxy(new CarriageProxy);			
-			facade.registerProxy(new CarriageEditHisProxy);	
-			facade.registerProxy(new RopeForceAjustProxy);*/
+			facade.registerProxy(new ForceProxy);
+			
+			facade.registerProxy(new SurroundingTempProxy);
 		}
 	}
 }

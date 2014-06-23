@@ -8,14 +8,14 @@ package forceMonitor.controller
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
-	
-	import spark.components.Application;
-	
+		
 	public class ViewPreCommand extends SimpleCommand
 	{
 		override public function execute(note:INotification):void
 		{
 			var application:TanShanForceMonitor = note.getBody() as TanShanForceMonitor;
+			
+			facade.registerMediator(new ForceJunctionMediator);
 			
 			facade.registerMediator(new AlertMediator);
 			

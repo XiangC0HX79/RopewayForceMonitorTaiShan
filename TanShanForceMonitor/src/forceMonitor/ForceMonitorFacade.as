@@ -101,6 +101,8 @@ package forceMonitor
 		 * 程序初始化完成
 		 **/
 		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
+		
+		public static const NOTIFY_UNLOAD_APPE:String 				= "UnloadApp";
 				
 		/**
 		 * 抱索器实时信息
@@ -113,6 +115,8 @@ package forceMonitor
 		 * </table>
 		 **/
 		public static const NOTIFY_ROPEWAY_INFO_REALTIME:String 	= "RopewayInfoRealtime";
+		
+		public static const NOTIFY_PIPE_SEND_FORCE:String 			= "PipeSendForce";
 		
 		/**
 		 * 报警实时信息

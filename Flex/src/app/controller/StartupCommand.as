@@ -1,7 +1,7 @@
 package app.controller
 {	
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.patterns.command.MacroCommand;
+	import org.puremvc.as3.multicore.interfaces.ICommand;
+	import org.puremvc.as3.multicore.patterns.command.MacroCommand;
 	
 	import spark.components.Application;
 	

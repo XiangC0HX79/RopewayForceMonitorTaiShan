@@ -65,6 +65,9 @@ package forceCustom.components
 		private var _addProgressBarSprit:Boolean = false;
 		private function handleProgress(event:ProgressEvent):void 
 		{			
+			if(!this.stage)
+				return;
+			
 			if((!_addProgressBarSprit) && (this.stage.stageWidth != 0))
 			{
 				addProgressBarSprit();

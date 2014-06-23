@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:SkinnableTitleContainer
+		 skinClass="custom.skin.SkinTitleContainer"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="custom.components.*" fontWeight="bold">
+	<fx:Script>
+		<![CDATA[						
+			import app.model.vo.EngineTempVO;
+			import app.model.vo.EngineVO;
+			
+			[Bindable]private var engineTemp:EngineTempVO;			
+			[Bindable]private var maxTemp:Number;
+			[Bindable]private var aveTemp:Number;
+			[Bindable]private var minTemp:Number;
+			
+			private var _engine:EngineVO
+
+			public function get engine():EngineVO
+			{
+				return _engine;
+			}
+
+			public function set engine(value:EngineVO):void
+			{
+				_engine = value;
+				
+				engineTemp = engine.lastTemp;
+				maxTemp = engine.maxTemp?engine.maxTemp:0;
+				minTemp = engine.minTemp?engine.minTemp:0;
+				
+				aveTemp = engine.aveTemp?engine.aveTemp:0;
+				aveTemp = Math.round(aveTemp * 10) / 10;
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+		
+	<components:layout>
+		<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center" gap="20"/>
+	</components:layout>
+	
+	<s:Group width="195" height="210">
+		<components:EnginTempWatch temp="{engineTemp.temp}"/>
+		<s:Label text="{df.format(engineTemp.date)}" bottom="0"/>
+	</s:Group>
+	
+	<s:VGroup width="100" horizontalAlign="justify" height="100%">
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="最高"/>
+			<s:TextInput editable="false" text="{maxTemp} ℃" width="100%" textAlign="center"/>
+		</s:HGroup>
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="平均"/>
+			<s:TextInput editable="false" text="{aveTemp} ℃" width="100%" textAlign="center"/>
+		</s:HGroup>
+		<s:HGroup height="100%" verticalAlign="middle">
+			<s:Label text="最低"/>
+			<s:TextInput editable="false" text="{minTemp} ℃" width="100%" textAlign="center"/>
+		</s:HGroup>
+	</s:VGroup>
+</components:SkinnableTitleContainer>

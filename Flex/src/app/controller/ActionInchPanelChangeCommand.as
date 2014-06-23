@@ -8,11 +8,9 @@ package app.controller
 	import app.view.ContentInchManageMediator;
 	import app.view.ContentInchRealtimeMediator;
 	
-	import org.puremvc.as3.interfaces.IAsyncCommand;
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.AsyncCommand;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.interfaces.IAsyncCommand;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.AsyncCommand;
 	
 	public class ActionInchPanelChangeCommand extends AsyncCommand implements IAsyncCommand
 	{

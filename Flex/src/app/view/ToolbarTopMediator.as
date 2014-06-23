@@ -5,14 +5,16 @@ package app.view
 	import flash.utils.setTimeout;
 	
 	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.dict.RopewayDict;
-	import app.model.vo.ConfigVO;
+	import app.model.AppConfigProxy;
+	import app.model.AppParamProxy;
+	import app.model.RopewayProxy;
+	import app.model.vo.AppConfigVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.ToolbarTop;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class ToolbarTopMediator extends Mediator implements IMediator
 	{
@@ -29,14 +31,20 @@ package app.view
 			toolbarTop.addEventListener(ToolbarTop.ENGINETEMP,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.INCH,onMenu);
 			toolbarTop.addEventListener(ToolbarTop.WIND,onMenu);
-			
-			toolbarTop.colRopeway = RopewayDict.list;
-			toolbarTop.selRopeway = toolbarTop.colRopeway[0];
 		}
 		
 		protected function get toolbarTop():ToolbarTop
 		{
 			return viewComponent as ToolbarTop;
+		}
+		
+		override public function onRegister():void
+		{
+			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
+			toolbarTop.colRopeway = ropewayProxy.list;
+			
+			var appParaProxy:AppParamProxy = facade.retrieveProxy(AppParamProxy.NAME) as AppParamProxy;
+			toolbarTop.selRopeway = appParaProxy.appParam.selRopeway;
 		}
 		
 		private function onStation(event:Event):void

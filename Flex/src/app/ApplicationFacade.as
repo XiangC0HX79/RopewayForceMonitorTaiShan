@@ -14,15 +14,21 @@ package app
 	import app.controller.NotifyMenuMainForceCommand;
 	import app.controller.NotifyMenuMainInchCommand;
 	import app.controller.NotifyMenuMainOverviewCommand;
+	import app.controller.NotifyPipeSendForceCommand;
 	import app.controller.NotifyRopewayChangeCommand;
 	import app.controller.NotifySocketEngineTempCommand;
+	import app.controller.NotifySocketForceUploadCommand;
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingTempCommand;
 	import app.controller.StartupCommand;
 	
-	import org.puremvc.as3.interfaces.IFacade;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.facade.Facade;
+	import org.puremvc.as3.multicore.interfaces.IFacade;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.facade.Facade;
+	import org.puremvc.as3.multicore.utilities.flex.config.model.ConfigProxy;
+	import org.puremvc.as3.multicore.utilities.loadup.controller.LoadupResourceFailedCommand;
+	import org.puremvc.as3.multicore.utilities.loadup.controller.LoadupResourceLoadedCommand;
+	import org.puremvc.as3.multicore.utilities.loadup.model.LoadupMonitorProxy;
 	
 	public class ApplicationFacade extends Facade implements IFacade
 	{
@@ -122,7 +128,7 @@ package app
 		/**
 		 * 程序初始化完成
 		 **/
-		public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
+		//public static const NOTIFY_INIT_APP_COMPLETE:String 		= "InitAppComplete";
 				
 		/**
 		 * 抱索力实时信息
@@ -173,15 +179,16 @@ package app
 		 **/
 		//public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
 		
-		
-		public static const ACTION_UPDATE_INCH:String 					= "ActionUpdateInch";		
-		public static const ACTION_UPDATE_INCH_HISTORY:String 			= "ActionUpdateInchHistory";	
+		public static const ACTION_UPDATE_INCH:String 					= "ActionUpdateInch";			
 		
 		public static const ACTION_UPDATE_SURROUDING_TEMP_FST:String 	= "ActionUpdateSurroudingTempFst";		
 		public static const ACTION_UPDATE_SURROUDING_TEMP_SND:String 	= "ActionUpdateSurroudingTempSnd";	
 		
-		public static const ACTION_UPDATE_ENGINE_TEMP_FST:String 	= "ActionUpdateEngineTempFst";		
-		public static const ACTION_UPDATE_ENGINE_TEMP_SND:String 	= "ActionUpdateEngineTempSnd";
+		public static const ACTION_UPDATE_ENGINE_FST:String 			= "ActionUpdateEngineFst";		
+		public static const ACTION_UPDATE_ENGINE_SND:String 			= "ActionUpdateEngineSnd";
+		
+		public static const ACTION_UPDATE_FORCE_FST:String 				= "ActionUpdateForceFst";		
+		public static const ACTION_UPDATE_FORCE_SND:String 				= "ActionUpdateForceSnd";
 		
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
@@ -194,8 +201,28 @@ package app
 		
 		/**
 		 * 主菜单-抱索力
-		 **/
+		 **/		
+		public static const NOTIFY_CONFIG_LOADED:String 			= "SocketConfigLoaded";
+		
+		public static const NOTIFY_CONFIG_FAILED:String 			= "SocketConfigFailed";
+		
+		public static const NOTIFY_SOCKET_FORCE_LOADED:String 		= "SocketForceLoaded";
+		
+		public static const NOTIFY_SOCKET_FORCE_FAILED:String 		= "SocketForceFailed";
+		
+		public static const NOTIFY_SOCKET_LOADED:String 			= "SocketLoaded";
+		
+		public static const NOTIFY_SOCKET_FAILED:String 			= "SocketFailed";
+		
+		public static const NOTIFY_SOCKET_FORCE_INIT:String 		= "SocketForceInit";
+		
+		public static const NOTIFY_SOCKET_FORCE_UPLOAD:String 		= "SocketForceUpload";
+		
 		public static const NOTIFY_MENU_MAIN_FORCE:String 			= "MenuMainForce";
+		
+		public static const NOTIFY_MAIN_FORCE_INIT:String 			= "MainForceInit";
+		
+		public static const NOTIFY_PIPE_SEND_FORCE:String			="PipeSendForce";
 		
 		/**
 		 * 主菜单-动力室电机温度
@@ -293,18 +320,23 @@ package app
 		public static const NOTIFY_ROPEWAY_BASEINFO_EDIT:String 	= "RopewayBaseInfoEdit";
 			
 		
-		/**
-		 * Singleton ApplicationFacade Factory Method
-		 */
-		public static function getInstance() : ApplicationFacade 
+		public function ApplicationFacade(key:String)
 		{
-			if ( instance == null ) instance = new ApplicationFacade( );
-			return instance as ApplicationFacade;
+			super(key);
 		}
 		
 		/**
-		* Start the application
-		*/
+		 * Singleton ApplicationFacade Factory Method
+		 */
+		public static function getInstance(key:String) : ApplicationFacade 
+		{
+			if ( instanceMap[ key ] == null ) instanceMap[ key ] = new ApplicationFacade( key);
+			return instanceMap[ key ] as ApplicationFacade;
+		}
+		
+		/**
+		 * Start the application
+		 */
 		public function startup(app:Object):void 
 		{
 			sendNotification( STARTUP, app );	
@@ -321,7 +353,15 @@ package app
 			
 			registerCommand( NOTIFY_INIT_APP, NotifyInitAppCommand);
 			
-			registerCommand( NOTIFY_INIT_APP_COMPLETE, NotifyInitAppCompleteCommand);
+			registerCommand( NOTIFY_CONFIG_LOADED, LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_SOCKET_FORCE_LOADED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_SOCKET_LOADED , LoadupResourceLoadedCommand);
+			
+			registerCommand( NOTIFY_CONFIG_FAILED, LoadupResourceFailedCommand);
+			registerCommand( NOTIFY_SOCKET_FORCE_FAILED, LoadupResourceFailedCommand);
+			registerCommand( NOTIFY_SOCKET_FAILED, LoadupResourceFailedCommand);
+			
+			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyInitAppCompleteCommand);
 			
 			registerCommand( NOTIFY_SOCKET_INCH , NotifySocketInchCommand);
 			
@@ -354,6 +394,10 @@ package app
 			
 			//抱索力
 			registerCommand( NOTIFY_MENU_MAIN_FORCE , NotifyMenuMainForceCommand);
+			
+			registerCommand( NOTIFY_PIPE_SEND_FORCE , NotifyPipeSendForceCommand);
+			
+			registerCommand( NOTIFY_SOCKET_FORCE_UPLOAD , NotifySocketForceUploadCommand);
 		}
 	}
 }

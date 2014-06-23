@@ -1,39 +1,46 @@
 package app.controller
 {
 	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
+	import app.model.AppConfigProxy;
+	import app.model.AppParamProxy;
 	import app.model.InchProxy;
-	import app.model.dict.RopewayDict;
+	import app.model.vo.InchVO;
+	import app.model.vo.RopewayVO;
 	
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.interfaces.ICommand;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
 	
 	public class ActionUpdateInchCommand extends SimpleCommand implements ICommand
 	{
 		override public function execute(note:INotification):void
 		{
-			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;		
+			var appParamProxy:AppParamProxy = facade.retrieveProxy(AppParamProxy.NAME) as AppParamProxy;	
+			
+			var inchProxy:InchProxy =  facade.retrieveProxy(app.model.InchProxy.NAME) as app.model.InchProxy;		
 			
 			switch(note.getName())
 			{
 				case ApplicationFacade.NOTIFY_SOCKET_INCH:
-					var rw:RopewayDict = note.getBody()[0];
-					if(rw == configProxy.config.ropeway)
-						updateInchHistory(configProxy.config.ropeway)
+					var rw:RopewayVO = RopewayVO(note.getBody()[0]);
+					if(rw.fullName == appParamProxy.appParam.selRopeway.fullName)
+					{
+						var inch:InchVO = inchProxy.retrieveInch(rw);
+						sendNotification(ApplicationFacade.ACTION_UPDATE_INCH,inch);			
+					}
 					break;
 				
 				default:
-					updateInchHistory(configProxy.config.ropeway)
+					for each(inch in inchProxy.list)
+					{
+						if(inch.ropeway.fullName != appParamProxy.appParam.selRopeway.fullName)
+							continue;
+						
+						sendNotification(ApplicationFacade.ACTION_UPDATE_INCH,inch);							
+					}
 					break;
 			}
 			
-		}
-		
-		private function updateInchHistory(rw:RopewayDict):void
-		{
-			var inchProxy:InchProxy =  facade.retrieveProxy(app.model.InchProxy.NAME) as app.model.InchProxy;				
-			sendNotification(ApplicationFacade.ACTION_UPDATE_INCH_HISTORY,inchProxy.dict[rw]);			
 		}
 	}
 }

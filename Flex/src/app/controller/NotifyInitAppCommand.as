@@ -1,82 +1,55 @@
 package app.controller
-{
-	import flash.events.Event;
-	import flash.utils.Dictionary;
+{	
+	import app.model.AppConfigProxy;
+	import app.model.SocketForceProxy;
+	import app.model.SocketProxy;
 	
-	import mx.collections.ArrayCollection;
-	import mx.rpc.AsyncResponder;
-	import mx.rpc.AsyncToken;
-	import mx.rpc.events.FaultEvent;
-	
-	import spark.components.Application;
-	
-	import app.ApplicationFacade;
-	import app.model.ConfigProxy;
-	import app.model.EngineTempProxy;
-	import app.model.InchProxy;
-	import app.model.dict.RopewayDict;
-	import app.model.dict.RopewayStationDict;
-	import app.model.vo.EngineVO;
-	
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.interfaces.ICommand;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
+	import org.puremvc.as3.multicore.utilities.loadup.model.LoadupMonitorProxy;
+	import org.puremvc.as3.multicore.utilities.loadup.model.LoadupResourceProxy;
+	import org.puremvc.as3.multicore.utilities.loadup.model.RetryParameters;
+	import org.puremvc.as3.multicore.utilities.loadup.model.RetryPolicy;
 	
 	public class NotifyInitAppCommand extends SimpleCommand implements ICommand
 	{
-		private static const INITCOUNT:Number = 1;
+		//private static const INITCOUNT:Number = 1;
 		
-		private static var _init:Number;
-				
+		//private static var _init:Number;
+						
+		private var monitor :LoadupMonitorProxy;
+		
 		override public function execute(note:INotification):void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"初始化数据...");
+			facade.registerProxy( new LoadupMonitorProxy() );
+			this.monitor = facade.retrieveProxy( LoadupMonitorProxy.NAME ) as LoadupMonitorProxy;
+			this.monitor.defaultRetryPolicy = new RetryPolicy(new RetryParameters) ;
 			
-			_init = 0;
+			var appConfigPx :ILoadupProxy = new AppConfigProxy("appconfig.xml");
+			var socketForcePx :ILoadupProxy = new SocketForceProxy;
+			var socketPx :ILoadupProxy = new SocketProxy;
 			
-			var application:Application = note.getBody() as Application;
+			facade.registerProxy( appConfigPx );
+			facade.registerProxy( socketForcePx );
+			facade.registerProxy( socketPx );
+			
+			var rAppConfigPx :LoadupResourceProxy = makeAndRegisterLoadupResource( AppConfigProxy.SRNAME, appConfigPx );
+			var rSocketForcePx :LoadupResourceProxy = makeAndRegisterLoadupResource( SocketForceProxy.SRNAME, socketForcePx );
+			var rSocketPx :LoadupResourceProxy = makeAndRegisterLoadupResource( SocketProxy.SRNAME, socketPx );
 						
-			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;			
-			configProxy.InitConfig(onLocaleConfigResult);
+			rSocketPx.requires = [rAppConfigPx];
+			
+			monitor.loadResources();			
 		}
 		
-		private function appInit():void
+		private function makeAndRegisterLoadupResource( proxyName :String, appResourceProxy :ILoadupProxy ):LoadupResourceProxy 
 		{
-			if(++_init == INITCOUNT)
-			{											
-				sendNotification(ApplicationFacade.NOTIFY_INIT_APP_COMPLETE);
-				
-				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
-			}
-		}
-		
-		private function onFault(error:FaultEvent, token:Object = null):void
-		{
-			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,error.fault.faultDetail);
-		}
-		
-		private function onLocaleConfigResult(event:Event):void
-		{								
-			var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-			sendNotification(ApplicationFacade.NOTIFY_INIT_CONFIG_COMPLETE,configProxy.config);
-			
-			//初始化动力室
-			var engineTempProxy:EngineTempProxy = facade.retrieveProxy(EngineTempProxy.NAME) as EngineTempProxy;
-			engineTempProxy.Init();
-			
-			//初始化张紧小尺
-			//var inchProxy:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;
-			//inchProxy.Init();
-			
-			//初始化吊箱
-			//var carriageProxy:CarriageProxy = facade.retrieveProxy(CarriageProxy.NAME) as CarriageProxy;
-			//carriageProxy.Init().addResponder(new AsyncResponder(onCarriageInit,onFault));
-			
-			//初始化报警列表
-			//var ropewayAlarmDealProxy:ForceRealtimeDetectionAlarmProxy = facade.retrieveProxy(ForceRealtimeDetectionAlarmProxy.NAME) as ForceRealtimeDetectionAlarmProxy;
-			//ropewayAlarmDealProxy.Init().addResponder(new AsyncResponder(onForceAlarmInit,onFault));
-						
-			appInit();
+			var r :LoadupResourceProxy = new LoadupResourceProxy( proxyName, appResourceProxy );
+			facade.registerProxy( r );
+			monitor.addResource( r );
+			return r;
 		}
 	}
 }

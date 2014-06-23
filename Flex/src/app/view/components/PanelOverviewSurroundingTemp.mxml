@@ -2,7 +2,7 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 height="170" minWidth="250" width="100%" skinClass="custom.skin.SkinPanel">
+		 height="170" width="300" skinClass="custom.skin.SkinPanel">
 	
 	<fx:Script>
 		<![CDATA[
@@ -102,13 +102,14 @@
 							  fontWeight="bold">
 			<s:Label text="驱动站"/>		
 			
-			<s:HGroup id="fstContent" color="0x1b5aa2" fontSize="28" 
-					  horizontalCenter="0" verticalCenter="10"
-					  horizontalAlign="center">	
-				<s:VGroup width="64" horizontalAlign="center">
+			<s:HGroup id="fstContent" color="0x1b5aa2" fontSize="28" gap="0" 
+					  horizontalCenter="0" verticalCenter="10">	
+				
+				<s:VGroup width="40" horizontalAlign="center">
 					<s:Label text="{_fstTemp.temp}"/>	
 					<s:Label text="{_fstTemp.humi}"/>				
 				</s:VGroup>
+				
 				<s:VGroup>
 					<s:Label text="℃"/>	
 					<s:Label text="%"/>				
@@ -124,9 +125,9 @@
 			<s:Label text="回转站"/>		
 			
 			<s:HGroup id="sndContent" color="0x1b5aa2" fontSize="28"
-					  horizontalCenter="0" verticalCenter="10"
-					  horizontalAlign="center">	
-				<s:VGroup width="64" horizontalAlign="center">
+					  horizontalCenter="0" verticalCenter="10">	
+				
+				<s:VGroup width="40" horizontalAlign="center">
 					<s:Label text="{_sndTemp.temp}"/>	
 					<s:Label text="{_sndTemp.humi}"/>				
 				</s:VGroup>

@@ -12,13 +12,42 @@
 			
 			import app.model.vo.InchVO;
 			import app.model.vo.InchValueVO;
+						
+			private const MAX_VALUE:Number = 1000;
+			private const MIN_VALUE:Number = 0;
+			private const IMG_WIDTH:Number = 851;
+			private const IMG_MAX:Number = 826;
+			private const IMG_MIN:Number = 5;
 			
-			[Bindable]public var inchHistory:InchVO;
+			[Bindable]private var inchValue:Number;
 			
-			[Bindable]private var _inch:InchValueVO;
-			public function set inch(value:InchValueVO):void
+			[Bindable]private var aveDay:Number;			
+			[Bindable]private var aveMon:Number;			
+			[Bindable]private var aveThreeMon:Number;
+			
+			[Bindable]private var periodAveDay:Number;
+			[Bindable]private var periodAveMon:Number;
+			[Bindable]private var periodAveThreeMon:Number;
+			
+			private var _inch:InchVO;
+			
+			public function get inch():InchVO
+			{
+				return _inch;
+			}
+			public function set inch(value:InchVO):void
 			{
 				_inch = value;
+				
+				inchValue = _inch.lastValue?_inch.lastValue.value:0;
+				
+				aveDay = Math.round(_inch.aveDay * 10) / 10;
+				aveMon = _inch.aveMon;
+				aveThreeMon = _inch.aveThreeMon;
+								
+				periodAveDay = _inch.periodAveDay;
+				periodAveMon = _inch.periodAveMon;
+				periodAveThreeMon = _inch.periodThreeMon;
 				
 				drawNiddle();
 			}
@@ -28,17 +57,9 @@
 				flash.utils.setTimeout(drawNiddle,200);
 			}
 			
-			private const MAX_VALUE:Number = 1000;
-			private const MIN_VALUE:Number = 0;
-			private const IMG_WIDTH:Number = 851;
-			private const IMG_MAX:Number = 826;
-			private const IMG_MIN:Number = 5;
-			
 			private function drawNiddle():void
-			{
-				if(!_inch)return;				
-				
-				var value:Number = _inch.value;
+			{	
+				var value:Number = inchValue;
 				if(value > MAX_VALUE)value = MAX_VALUE;
 				if(value < MIN_VALUE)value = MIN_VALUE;
 				
@@ -63,7 +84,7 @@
 	</s:HGroup>
 	
 	<s:VGroup id="niddle" y="35" horizontalAlign="center" gap="0" width="40">
-		<s:Label text="{_inch.value}M"/>
+		<s:Label text="{inchValue}M"/>
 		<s:Image source="assets/image/inch_niddle.png"/>		
 	</s:VGroup>
 	
@@ -78,8 +99,8 @@
 		</s:VGroup>
 				
 		<s:VGroup>
-			<s:Label text="{inchHistory.aveDay.toFixed(2)}"/>
-			<s:Label text="{inchHistory.periodAveDay}"/>			
+			<s:Label text="{aveDay}"/>
+			<s:Label text="{periodAveDay}"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
@@ -90,8 +111,8 @@
 		</s:VGroup>
 		
 		<s:VGroup>
-			<s:Label text="{inchHistory.aveMon}"/>
-			<s:Label text="{inchHistory.periodAveMon}"/>			
+			<s:Label text="{aveMon}"/>
+			<s:Label text="{periodAveMon}"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
@@ -102,8 +123,8 @@
 		</s:VGroup>
 		
 		<s:VGroup>
-			<s:Label text="{inchHistory.aveThreeMon}"/>
-			<s:Label text="{inchHistory.periodThreeMon}"/>			
+			<s:Label text="{aveThreeMon}"/>
+			<s:Label text="{periodAveThreeMon}"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>

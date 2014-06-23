@@ -3,8 +3,8 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   creationComplete="application_creationCompleteHandler(event)"
-			   preloader="forceCustom.components.AppDownloadProgressBar"
 			   xmlns:components="forceMonitor.view.components.*" 
+			   implements="org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeAware" 
 			   skinClass="forceCustom.skin.SkinApplication"
 			   width="100%" height="100%" fontSize="14" pageTitle="泰山抱索力实时监测系统">
 		
@@ -23,9 +23,19 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
+			import mx.managers.HistoryManager;
+			import mx.managers.PopUpManager;
 			import mx.utils.UIDUtil;
 			
 			import forceMonitor.ForceMonitorFacade;
+			
+			import org.puremvc.as3.multicore.utilities.pipes.interfaces.IPipeFitting;
+			import org.puremvc.as3.multicore.utilities.pipes.plumbing.JunctionMediator;
+			
+			private var _dragManager:DragManager;
+			private var _historyManager:HistoryManager;
+			private var _popupManager:PopUpManager;
 			
 			[Embed(source="assets/image/title_back.png", scaleGridTop="0", scaleGridBottom="94", scaleGridLeft="0", scaleGridRight="120")]
 			[Bindable]public var titleBack:Class;
@@ -52,6 +62,15 @@
 				facade.startup(this);
 			}
 			
+			public function acceptInputPipe(name:String, pipe:IPipeFitting):void
+			{
+				facade.sendNotification( JunctionMediator.ACCEPT_INPUT_PIPE, pipe, name );		
+			}
+			
+			public function acceptOutputPipe(name:String, pipe:IPipeFitting):void
+			{
+				facade.sendNotification( JunctionMediator.ACCEPT_OUTPUT_PIPE, pipe, name );	
+			}
 		]]>
 	</fx:Script>
 	

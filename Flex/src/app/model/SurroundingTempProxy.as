@@ -1,14 +1,14 @@
 package app.model
 {
-	import flash.utils.Dictionary;
+	import mx.collections.ArrayCollection;
 	
-	import app.model.dict.RopewayStationDict;
+	import app.model.vo.RopewayStationVO;
 	import app.model.vo.SurroundingTempVO;
 	
 	import custom.other.CustomUtil;
 	
-	import org.puremvc.as3.interfaces.IProxy;
-	import org.puremvc.as3.patterns.proxy.Proxy;
+	import org.puremvc.as3.multicore.interfaces.IProxy;
+	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	
 	public class SurroundingTempProxy extends Proxy implements IProxy
 	{
@@ -16,23 +16,39 @@ package app.model
 		
 		public function SurroundingTempProxy()
 		{
-			super(NAME, new Dictionary);
-			
-			for each(var rs:RopewayStationDict in RopewayStationDict.dict)
+			super(NAME, new ArrayCollection);
+		}
+		
+		public function get list():ArrayCollection
+		{
+			return data as ArrayCollection;
+		}
+		
+		override public function onRegister():void
+		{
+			var rsProxy:RopewayStationProxy = facade.retrieveProxy(RopewayStationProxy.NAME) as RopewayStationProxy;
+			for each(var rs:RopewayStationVO in rsProxy.list)
 			{
-				dict[rs] = new SurroundingTempVO;
+				var st:SurroundingTempVO = new SurroundingTempVO;
+				st.ropewayStation = rs;
+				list.addItem(st);
 			}
 		}
 		
-		public function get dict():Dictionary
+		public function retrieveSurroundingTemp(rs:RopewayStationVO):SurroundingTempVO
 		{
-			return data as Dictionary;
+			for each(var item:SurroundingTempVO in list)
+			{
+				if(item.ropewayStation.fullName == rs.fullName)
+					return item;
+			}
+			
+			return null;
 		}
 		
-		public function Update(rs:RopewayStationDict,st:SurroundingTempVO):void
+		public function Update(st:SurroundingTempVO):void
 		{			
-			var dest:SurroundingTempVO = dict[rs] as SurroundingTempVO;
-			CustomUtil.CopyProperties(st,dest);	
+			CustomUtil.CopyProperties(st,retrieveSurroundingTemp(st.ropewayStation));	
 		}
 	}
 }

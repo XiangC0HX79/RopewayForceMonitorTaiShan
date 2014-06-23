@@ -1,8 +1,6 @@
 package app.controller
 {
-	import org.puremvc.as3.interfaces.ICommand;
-	import org.puremvc.as3.patterns.command.AsyncMacroCommand;
-	import org.puremvc.as3.patterns.command.MacroCommand;
+	import org.puremvc.as3.multicore.patterns.command.AsyncMacroCommand;
 	
 	public class NotifyMenuMainEngineCommand extends AsyncMacroCommand
 	{		
@@ -11,6 +9,8 @@ package app.controller
 			addSubCommand(ActionMainPanelChangeCommand);
 			
 			addSubCommand(ActionEnginePanelChangeCommand);
+			
+			addSubCommand(ActionUpdateEngineCommand);
 		}
 		
 	}

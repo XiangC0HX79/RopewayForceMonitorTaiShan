@@ -25,18 +25,20 @@
 			
 			public function set temp(value:Number):void
 			{
-				_temp = value;
-				
-				var t:Number = _temp;
+				var t:Number = value;
 				if(t > MAX_TEMP)t = MAX_TEMP;
 				else if(t < MIN_TEMP)t = MIN_TEMP;
 								
-				var ag:Number = ((t - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE);
+				var agFrom:Number = ((_temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE);
+				var agTo:Number = ((t - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE);
 				
 				rotate.transformX = 96;
 				rotate.transformY = 2;
-				rotate.angleTo = ag;
+				rotate.angleFrom = agFrom;
+				rotate.angleTo = agTo;
 				rotate.play([niddle1]);
+				
+				_temp = value;
 			}
 		]]>
 	</fx:Script>

@@ -74,7 +74,7 @@ package forceMonitor.view
 			
 			_errorCount ++;
 			
-			trace("ErrorCount:" + _errorCount);
+			//trace("ErrorCount:" + _errorCount);
 		}
 		
 		private function onConnect( event:Event ):void 
@@ -124,7 +124,7 @@ package forceMonitor.view
 		{			
 			var d:String = socketData.readMultiByte(socketData.length,"gb2312");
 			
-			trace(d);
+			//trace(d);
 			
 			//var reg:RegExp = /&{2}.*?@{2}/g;
 			//var colS:Array = d.match(reg);
@@ -156,7 +156,7 @@ package forceMonitor.view
 					rf.fromRopeStation = a[7];
 					
 					if(!rf.ropewayTime.time)return;
-					
+								
 					var eletric:Boolean = (a[6] == "0");
 					
 					var rw:RopewayVO = _ropewayProxy.GetRopewayByForce(rf);			
@@ -168,6 +168,7 @@ package forceMonitor.view
 						{					
 							_ropewayProxy.PushRopewayForce(rw,rf);
 							
+							sendNotification(ForceMonitorFacade.NOTIFY_PIPE_SEND_FORCE,rw);
 							if(rw.ropewayStation == _config.station)
 								sendNotification(ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 						}
@@ -197,6 +198,7 @@ package forceMonitor.view
 			
 			//_ropewayProxy.PushRopewayForce(rw,rf);
 			
+			sendNotification(ForceMonitorFacade.NOTIFY_PIPE_SEND_FORCE,rw);
 			if(rw.ropewayStation == _config.station)
 				sendNotification(ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 		}
@@ -210,6 +212,7 @@ package forceMonitor.view
 				rw.ropewayRFIDEletric = event.token.eletric;
 				//_ropewayProxy.PushRopewayForce(rw,rf);
 				
+				sendNotification(ForceMonitorFacade.NOTIFY_PIPE_SEND_FORCE,rw);
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
 			}
@@ -271,7 +274,9 @@ package forceMonitor.view
 				
 				ForceMonitorFacade.NOTIFY_INIT_APP_COMPLETE,
 				
-				ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_SET
+				ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_SET,
+				
+				ForceMonitorFacade.NOTIFY_UNLOAD_APPE
 			];
 		}
 		
@@ -289,6 +294,10 @@ package forceMonitor.view
 				
 				case ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_SET:
 					sendSocketData("RFID");
+					break;
+				
+				case ForceMonitorFacade.NOTIFY_UNLOAD_APPE:
+					socket.close();
 					break;
 			}
 		}

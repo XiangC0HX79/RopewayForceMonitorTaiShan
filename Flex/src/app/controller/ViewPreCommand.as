@@ -1,49 +1,25 @@
 package app.controller
 {	
-	import spark.components.Application;
-	
 	import app.view.AlertMediator;
 	import app.view.ApplicationMediator;
-	import app.view.ContentEngineTempRealtimeDetectionMediator;
-	import app.view.ContentForceAnalysisMediator;
-	import app.view.ContentForceManageMediator;
-	import app.view.ContentForceRealtimeDetectionMediator;
-	import app.view.ContentForceTodayOverviewMediator;
+	import app.view.ContentEngineAnalysisMediator;
+	import app.view.ContentEngineManageMediator;
+	import app.view.ContentEngineRealtimeMediator;
 	import app.view.ContentInchAnalysisMediator;
 	import app.view.ContentInchManageMediator;
 	import app.view.ContentInchRealtimeMediator;
+	import app.view.InfoJunctionMediator;
 	import app.view.LoadingBarMediator;
-	import app.view.MainPanelEngineTempMediator;
-	import app.view.MainPanelForceMediator;
+	import app.view.MainPanelEngineMediator;
 	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
-	import app.view.PanelForceAnalysisAlarmMediator;
-	import app.view.PanelForceAnalysisForceAverageMediator;
-	import app.view.PanelForceAnalysisForceMediator;
-	import app.view.PanelForceAnalysisOpenCountMediator;
-	import app.view.PanelForceAnalysisOpenCountTotalMediator;
-	import app.view.PanelForceManagerAdjustMediator;
-	import app.view.PanelForceManagerBaseInfoMediator;
-	import app.view.PanelInchRealtimeAlarmMediator;
-	import app.view.PanelInchRealtimeChartMediator;
-	import app.view.PanelInchRealtimeTempMediator;
-	import app.view.PanelInchRealtimeValueMediator;
-	import app.view.PanelOverviewInchMediator;
-	import app.view.PanelOverviewSurroundingTempMediator;
-	import app.view.SocketMediator;
 	import app.view.SyncTimerMediator;
-	import app.view.TitleWindowAlarmDealMediator;
-	import app.view.TitleWindowBaseInfoMediator;
 	import app.view.ToolbarTopMediator;
-	import app.view.components.ContentForceAnalysis;
-	import app.view.components.ContentForceManage;
-	import app.view.components.ContentForceRealtimeDetection;
-	import app.view.components.ContentForceTodayOverview;
 	import app.view.components.MainPanelForceSWF;
 	
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
 	
 	public class ViewPreCommand extends SimpleCommand
 	{
@@ -51,9 +27,11 @@ package app.controller
 		{
 			var application:TanShanInfoMonitor = note.getBody() as TanShanInfoMonitor;
 			
+			facade.registerMediator(new InfoJunctionMediator);
+			
 			facade.registerMediator(new AlertMediator);
 			
-			facade.registerMediator(new SocketMediator);
+			//facade.registerMediator(new SocketMediator);
 			
 			facade.registerMediator(new SyncTimerMediator);			
 			
@@ -70,9 +48,13 @@ package app.controller
 			facade.registerMediator(new MainPanelForceSWFMediator(new MainPanelForceSWF));
 			
 			//动力室
-			facade.registerMediator(new MainPanelEngineTempMediator);
+			facade.registerMediator(new MainPanelEngineMediator);
 			
-			facade.registerMediator(new ContentEngineTempRealtimeDetectionMediator);
+			facade.registerMediator(new ContentEngineRealtimeMediator);
+			
+			facade.registerMediator(new ContentEngineAnalysisMediator);
+			
+			facade.registerMediator(new ContentEngineManageMediator);
 			
 			//张紧小尺
 			facade.registerMediator(new MainPanelInchMediator);

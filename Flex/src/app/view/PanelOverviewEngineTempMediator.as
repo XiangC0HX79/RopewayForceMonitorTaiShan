@@ -2,12 +2,13 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.vo.EngineTempVO;
+	import app.model.vo.EngineVO;
 	import app.model.vo.SurroundingTempVO;
 	import app.view.components.PanelOverviewEngineTemp;
 	
-	import org.puremvc.as3.interfaces.IMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.puremvc.as3.multicore.interfaces.IMediator;
+	import org.puremvc.as3.multicore.interfaces.INotification;
+	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
 	public class PanelOverviewEngineTempMediator extends Mediator implements IMediator
 	{
@@ -26,9 +27,9 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_ENGINE_TEMP_FST,
+				ApplicationFacade.ACTION_UPDATE_ENGINE_FST,
 				
-				ApplicationFacade.ACTION_UPDATE_ENGINE_TEMP_SND
+				ApplicationFacade.ACTION_UPDATE_ENGINE_SND
 			];
 		}
 		
@@ -36,12 +37,12 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_TEMP_FST:
-					panelOverviewEngineTemp.fstTemp = notification.getBody() as EngineTempVO;
+				case ApplicationFacade.ACTION_UPDATE_ENGINE_FST:
+					panelOverviewEngineTemp.fstTemp = (notification.getBody() as EngineVO).lastTemp;
 					break;
 				
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_TEMP_SND:
-					panelOverviewEngineTemp.sndTemp = notification.getBody() as EngineTempVO;
+				case ApplicationFacade.ACTION_UPDATE_ENGINE_SND:
+					panelOverviewEngineTemp.sndTemp = (notification.getBody() as EngineVO).lastTemp;
 					break;
 			}
 		}		
