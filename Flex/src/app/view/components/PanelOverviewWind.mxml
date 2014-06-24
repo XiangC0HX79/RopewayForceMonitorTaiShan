@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  skinClass="custom.skin.SkinPanel">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+			
+			protected function content_resizeHandler(event:ResizeEvent):void
+			{
+				var nw:int = Math.floor(mainContent.width /  ItemOverviewWind.WIDTH);
+				var width:Number = mainContent.width / nw;
+				
+				for(var i:int = 0;i<mainContent.numElements;i++)
+				{
+					var iw:int = i % nw;
+					var ih:int = Math.floor(i / nw);
+					
+					var item:ItemOverviewWind = ItemOverviewWind(mainContent.getElementAt(i));
+					item.x = iw * width;
+					item.y = ih * ItemOverviewWind.HEIGHT;
+					item.width = width - ItemOverviewWind.GAP;
+					item.height = ItemOverviewWind.HEIGHT - ItemOverviewWind.GAP;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+		
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="风速风向" fontWeight="bold"/>
+	</s:HGroup>
+	
+	<s:Scroller left="5" right="5" top="30" bottom="5">		
+		<s:Group id="mainContent" resize="content_resizeHandler(event)">
+		</s:Group>
+	</s:Scroller>
+</s:SkinnableContainer>

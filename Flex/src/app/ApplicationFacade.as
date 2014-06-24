@@ -20,6 +20,7 @@ package app
 	import app.controller.NotifySocketForceUploadCommand;
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingTempCommand;
+	import app.controller.NotifySocketWindCommand;
 	import app.controller.StartupCommand;
 	
 	import org.puremvc.as3.multicore.interfaces.IFacade;
@@ -155,6 +156,8 @@ package app
 		 **/
 		public static const NOTIFY_SOCKET_INCH:String 				= "SocketInch";
 		
+		public static const NOTIFY_SOCKET_WIND:String 				= "SocketWind";
+		
 		public static const NOTIFY_SOCKET_SURROUDING_TEMP:String 	= "SocketSurroudingTemp";
 				
 		/**
@@ -190,6 +193,9 @@ package app
 		public static const ACTION_UPDATE_FORCE_FST:String 				= "ActionUpdateForceFst";		
 		public static const ACTION_UPDATE_FORCE_SND:String 				= "ActionUpdateForceSnd";
 		
+		public static const ACTION_UPDATE_WIND:String 					= "ActionUpdateWind";	
+		public static const ACTION_REFRESH_WIND:String 					= "ActionRefreshWind";	
+		
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
 		public static const ACTION_ENGINE_PANEL_CHANGE:String 			= "ActionEnginePanelChange";
@@ -213,6 +219,24 @@ package app
 		public static const NOTIFY_SOCKET_LOADED:String 			= "SocketLoaded";
 		
 		public static const NOTIFY_SOCKET_FAILED:String 			= "SocketFailed";
+		
+		public static const NOTIFY_SURROUNDING_LOADED:String 		= "SurroundingLoaded";
+		
+		public static const NOTIFY_SURROUNDING_FAILED:String 		= "SurroundingFailed";
+		
+		public static const NOTIFY_ENGINE_LOADED:String 			= "EngineLoaded";
+		
+		public static const NOTIFY_ENGINE_FAILED:String 			= "EngineFailed";
+		
+		public static const NOTIFY_INCH_LOADED:String 				= "InchLoaded";
+		
+		public static const NOTIFY_INCH_FAILED:String 				= "InchFailed";
+		
+		public static const NOTIFY_WIND_LOADED:String 				= "WindLoaded";
+		
+		public static const NOTIFY_WIND_FAILED:String 				= "WindFailed";
+		
+		
 		
 		public static const NOTIFY_SOCKET_FORCE_INIT:String 		= "SocketForceInit";
 		
@@ -356,10 +380,18 @@ package app
 			registerCommand( NOTIFY_CONFIG_LOADED, LoadupResourceLoadedCommand);
 			registerCommand( NOTIFY_SOCKET_FORCE_LOADED , LoadupResourceLoadedCommand);
 			registerCommand( NOTIFY_SOCKET_LOADED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_SURROUNDING_LOADED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_ENGINE_LOADED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_INCH_LOADED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_WIND_LOADED , LoadupResourceLoadedCommand);
 			
 			registerCommand( NOTIFY_CONFIG_FAILED, LoadupResourceFailedCommand);
 			registerCommand( NOTIFY_SOCKET_FORCE_FAILED, LoadupResourceFailedCommand);
 			registerCommand( NOTIFY_SOCKET_FAILED, LoadupResourceFailedCommand);
+			registerCommand( NOTIFY_SURROUNDING_FAILED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_ENGINE_FAILED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_INCH_FAILED , LoadupResourceLoadedCommand);
+			registerCommand( NOTIFY_WIND_FAILED , LoadupResourceLoadedCommand);
 			
 			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyInitAppCompleteCommand);
 			
@@ -368,6 +400,8 @@ package app
 			registerCommand( NOTIFY_SOCKET_ENGINE_TEMP , NotifySocketEngineTempCommand);
 							 
 			registerCommand( NOTIFY_SOCKET_SURROUDING_TEMP , NotifySocketSurroundingTempCommand);
+			
+			registerCommand( NOTIFY_SOCKET_WIND , NotifySocketWindCommand);
 			
 			registerCommand( NOTIFY_ROPEWAY_CHANGE , NotifyRopewayChangeCommand);
 						

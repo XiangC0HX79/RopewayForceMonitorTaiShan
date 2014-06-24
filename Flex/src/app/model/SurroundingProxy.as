@@ -2,19 +2,21 @@ package app.model
 {
 	import mx.collections.ArrayCollection;
 	
+	import app.ApplicationFacade;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.SurroundingTempVO;
 	
 	import custom.other.CustomUtil;
 	
-	import org.puremvc.as3.multicore.interfaces.IProxy;
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
+	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
-	public class SurroundingTempProxy extends Proxy implements IProxy
+	public class SurroundingProxy extends Proxy implements ILoadupProxy
 	{
-		public static const NAME:String = "SurroundingTempProxy";
+		public static const NAME:String = "SurroundingProxy";
+		public static const SRNAME:String = "SurroundingProxySR";
 		
-		public function SurroundingTempProxy()
+		public function SurroundingProxy()
 		{
 			super(NAME, new ArrayCollection);
 		}
@@ -24,8 +26,10 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		override public function onRegister():void
+		public function load():void
 		{
+			list.removeAll();
+			
 			var rsProxy:RopewayStationProxy = facade.retrieveProxy(RopewayStationProxy.NAME) as RopewayStationProxy;
 			for each(var rs:RopewayStationVO in rsProxy.list)
 			{
@@ -33,6 +37,8 @@ package app.model
 				st.ropewayStation = rs;
 				list.addItem(st);
 			}
+			
+			sendNotification(ApplicationFacade.NOTIFY_SURROUNDING_LOADED,NAME);
 		}
 		
 		public function retrieveSurroundingTemp(rs:RopewayStationVO):SurroundingTempVO

@@ -10,11 +10,13 @@ package app.model
 	
 	import app.ApplicationFacade;
 	import app.model.vo.AppConfigVO;
+	import app.model.vo.BracketVO;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.InchValueVO;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.RopewayVO;
 	import app.model.vo.SurroundingTempVO;
+	import app.model.vo.WindValueVO;
 	
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	import org.puremvc.as3.multicore.utilities.flex.config.model.ConfigProxy;
@@ -38,18 +40,21 @@ package app.model
 			super(NAME);
 		}
 		
-		override public function onRegister():void
+		public function load():void
 		{			
+			if(_socket)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_SOCKET_LOADED,NAME);
+				return;
+			}
+			
 			_socket = new Socket;
 			_socket.addEventListener(Event.CONNECT,onConnect);				
 			_socket.addEventListener(ProgressEvent.SOCKET_DATA,onSocketData);  			
 			_socket.addEventListener(Event.CLOSE,onConnectError);		
 			_socket.addEventListener(IOErrorEvent.IO_ERROR,onConnectError);			
 			_socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onConnectError);
-		}
-				
-		public function load():void
-		{			
+			
 			var appConfigProxy:AppConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as AppConfigProxy;
 			_serverIp = AppConfigVO(appConfigProxy.configVO).socketIp;
 			_serverPort = Number(AppConfigVO(appConfigProxy.configVO).socketPort);
@@ -160,7 +165,18 @@ package app.model
 						inch.value = Number(a[6]);
 						
 						sendNotification(ApplicationFacade.NOTIFY_SOCKET_INCH,[rw,inch]);
-						break;						
+						break;		
+					
+					case "FS":
+						var wind:WindValueVO = new WindValueVO;
+						wind.date = dt;
+						wind.speed = Number(a[5]);
+						wind.dir = Number(a[6]);
+						
+						var bracketId:Number = Number(a[4]);
+						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_WIND,[new BracketVO(bracketId,rw),wind]);
+						break;					
 					
 					case "AL":
 						/*	var rs:RopewayStationVO = new RopewayStationVO(a[1]);

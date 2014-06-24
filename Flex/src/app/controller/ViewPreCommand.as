@@ -14,7 +14,6 @@ package app.controller
 	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
-	import app.view.SyncTimerMediator;
 	import app.view.ToolbarTopMediator;
 	import app.view.components.MainPanelForceSWF;
 	
@@ -30,11 +29,7 @@ package app.controller
 			facade.registerMediator(new InfoJunctionMediator);
 			
 			facade.registerMediator(new AlertMediator);
-			
-			//facade.registerMediator(new SocketMediator);
-			
-			facade.registerMediator(new SyncTimerMediator);			
-			
+						
 			facade.registerMediator(new ApplicationMediator(application));
 			
 			facade.registerMediator(new LoadingBarMediator(application.mainLoading));

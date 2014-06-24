@@ -39,14 +39,15 @@
 			}
 
 			public function set engine(value:EngineVO):void
-			{				
-				chartTitle = (value.pos == EngineVO.FIRST)?"温度1":"温度2";
+			{						
+				if(value)
+					chartTitle = (value.pos == EngineVO.FIRST)?"温度1":"温度2";
 				
 				if(!this.initialized)
 				{
 					_engine = value;	
 					return;
-				}
+				}				
 					
 				if(!value || !value.history || (value.history.length == 0))
 				{

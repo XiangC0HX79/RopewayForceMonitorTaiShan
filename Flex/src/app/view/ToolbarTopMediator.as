@@ -73,6 +73,7 @@ package app.view
 					break;
 				
 				case ToolbarTop.WIND:
+					sendNotification(ApplicationFacade.NOTIFY_INIT_APP);
 					break;
 			}
 		}

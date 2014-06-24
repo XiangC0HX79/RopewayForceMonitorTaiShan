@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="400" height="300" skinClass="custom.skin.SkinPanelContent" 
+		 creationComplete="skinnablecontainer_creationCompleteHandler(event)" fontWeight="bold">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import app.model.vo.WindVO;
+			
+			import custom.skin.SkinPanelContent;
+			
+			public static const GAP:Number = 5;
+			public static const WIDTH:Number = 240;
+			public static const HEIGHT:Number = 280;
+			
+			[Bindable]private var bracketName:String;
+			[Bindable]private var windSpeed:Number;
+			
+			private var _wind:WindVO;
+
+			public function get wind():WindVO
+			{
+				return _wind;
+			}
+
+			public function set wind(value:WindVO):void
+			{						
+				_wind = value;
+				
+				bracketName = _wind.bracket.fullName;
+				windSpeed = _wind.lastValue.speed;
+				
+				if(this.initialized)
+				{
+					rotate.transformX = 100;
+					rotate.transformY = 3;
+					rotate.angleTo = _wind.lastValue.dir;
+					rotate.play([niddle1]);
+				}
+			}
+
+			protected function skinnablecontainer_creationCompleteHandler(event:FlexEvent):void
+			{
+				rotate.transformX = 100;
+				rotate.transformY = 3;
+				rotate.angleTo = _wind.lastValue.dir;
+				rotate.play([niddle1]);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Rotate id="rotate"/>
+	</fx:Declarations>
+	
+	<s:Label text="{bracketName}"/>
+	
+	<s:Group y="10">
+		<s:Image source="assets/image/wind_back.png"/>
+		
+		<s:Image id="niddle1" source="assets/image/niddle.png" y="115" x="22" width="100" height="6"/>
+		
+		<s:Label  color="0x1b5aa2" fontSize="28" 
+				  text="{windSpeed} m/s" verticalCenter="0" horizontalCenter="0"/>		
+	</s:Group>
+</s:SkinnableContainer>

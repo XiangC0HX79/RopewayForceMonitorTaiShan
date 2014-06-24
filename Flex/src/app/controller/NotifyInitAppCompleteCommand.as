@@ -24,6 +24,8 @@ package app.controller
 			addSubCommand(ActionUpdateSurroundingCommand);
 			
 			addSubCommand(ActionUpdateInchCommand);
+			
+			addSubCommand(ActionRefreshWindCommand);
 		}
 	}
 }

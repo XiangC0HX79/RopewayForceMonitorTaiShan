@@ -37,6 +37,7 @@ package app.view
 			facade.registerMediator(new PanelOverviewEngineTempMediator(mainPanelOverview.panelEngine));
 			facade.registerMediator(new PanelOverviewInchMediator(mainPanelOverview.panelInch));
 			facade.registerMediator(new PanelOverviewForceMediator(mainPanelOverview.panelForce));
+			facade.registerMediator(new PanelOverviewWindMediator(mainPanelOverview.panelWind));
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void
@@ -45,6 +46,7 @@ package app.view
 			facade.removeMediator(PanelOverviewInchMediator.NAME);
 			facade.removeMediator(PanelOverviewEngineTempMediator.NAME);
 			facade.removeMediator(PanelOverviewForceMediator.NAME);
+			facade.removeMediator(PanelOverviewWindMediator.NAME);
 		}
 		
 		override public function listNotificationInterests():Array

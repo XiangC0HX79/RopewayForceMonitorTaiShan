@@ -16,9 +16,11 @@
 	</s:HGroup>
 	
 	<s:HGroup>
-		<components:PanelOverviewSurroundingTemp id="panelTemp"/>
+		<components:PanelOverviewSurrounding id="panelTemp"/>
 		<components:PanelOverviewForce id="panelForce"/>
-		<components:PanelOverviewEngineTemp id="panelEngine"/>
+		<components:PanelOverviewEngine id="panelEngine"/>
 		<components:PanelOverviewInch id="panelInch"/>
 	</s:HGroup>
+	
+	<components:PanelOverviewWind id="panelWind" height="100%"/>
 </s:SkinnableContainer>

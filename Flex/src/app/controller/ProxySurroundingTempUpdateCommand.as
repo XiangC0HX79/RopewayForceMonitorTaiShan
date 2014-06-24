@@ -1,7 +1,7 @@
 package app.controller
 {
 	import app.ApplicationFacade;
-	import app.model.SurroundingTempProxy;
+	import app.model.SurroundingProxy;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.SurroundingTempVO;
 	
@@ -18,7 +18,7 @@ package app.controller
 			switch(notification.getName())
 			{				
 				case ApplicationFacade.NOTIFY_SOCKET_SURROUDING_TEMP:		
-					var surroundingTempProxy:SurroundingTempProxy = facade.retrieveProxy(SurroundingTempProxy.NAME) as SurroundingTempProxy;	
+					var surroundingTempProxy:SurroundingProxy = facade.retrieveProxy(SurroundingProxy.NAME) as SurroundingProxy;	
 					surroundingTempProxy.Update(SurroundingTempVO(notification.getBody()));
 					break;
 			}

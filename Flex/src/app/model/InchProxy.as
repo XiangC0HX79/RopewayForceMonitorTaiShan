@@ -2,15 +2,18 @@ package app.model
 {
 	import mx.collections.ArrayCollection;
 	
+	import app.ApplicationFacade;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
 	import app.model.vo.RopewayVO;
 	
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
+	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
-	public class InchProxy extends Proxy
+	public class InchProxy extends Proxy implements ILoadupProxy
 	{
 		public static const NAME:String = "InchProxy";
+		public static const SRNAME:String = "InchProxySR";
 		
 		public function InchProxy()
 		{
@@ -22,8 +25,10 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		override public function onRegister():void
+		public function load():void
 		{
+			list.removeAll();
+			
 			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			for each(var rw:RopewayVO in ropewayProxy.list)
 			{
@@ -31,6 +36,8 @@ package app.model
 				inch.ropeway = rw;
 				list.addItem(inch);
 			}
+			
+			sendNotification(ApplicationFacade.NOTIFY_INCH_LOADED,NAME);
 		}
 				
 		public function retrieveInch(rw:RopewayVO):InchVO

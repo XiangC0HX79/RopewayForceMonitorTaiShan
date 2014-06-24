@@ -3,7 +3,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.vo.InchValueVO;
 	import app.model.vo.SurroundingTempVO;
-	import app.view.components.PanelOverviewSurroundingTemp;
+	import app.view.components.PanelOverviewSurrounding;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -18,9 +18,9 @@ package app.view
 			super(NAME, viewComponent);
 		}
 		
-		protected function get panelOverviewSurroundingTemp():PanelOverviewSurroundingTemp
+		protected function get panelOverviewSurroundingTemp():PanelOverviewSurrounding
 		{
-			return viewComponent as PanelOverviewSurroundingTemp;
+			return viewComponent as PanelOverviewSurrounding;
 		}
 		
 		override public function listNotificationInterests():Array

@@ -4,7 +4,7 @@ package app.controller
 	import app.model.AppConfigProxy;
 	import app.model.InchProxy;
 	import app.model.InchProxy;
-	import app.model.SurroundingTempProxy;
+	import app.model.SurroundingProxy;
 	import app.model.vo.RopewayVO;
 	import app.model.vo.RopewayStationVO;
 	
@@ -26,6 +26,8 @@ package app.controller
 			addSubCommand(ActionUpdateEngineCommand);
 			
 			addSubCommand(ActionUpdateForceCommand);
+			
+			addSubCommand(ActionRefreshWindCommand);
 		}
 	}
 }

@@ -4,7 +4,7 @@ package app.view
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
 	import app.model.vo.SurroundingTempVO;
-	import app.view.components.PanelOverviewEngineTemp;
+	import app.view.components.PanelOverviewEngine;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -19,9 +19,9 @@ package app.view
 			super(NAME, viewComponent);
 		}
 		
-		protected function get panelOverviewEngineTemp():PanelOverviewEngineTemp
+		protected function get panelOverviewEngineTemp():PanelOverviewEngine
 		{
-			return viewComponent as PanelOverviewEngineTemp;
+			return viewComponent as PanelOverviewEngine;
 		}
 		
 		override public function listNotificationInterests():Array

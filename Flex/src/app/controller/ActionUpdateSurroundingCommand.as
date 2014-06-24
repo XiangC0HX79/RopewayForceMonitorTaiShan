@@ -3,7 +3,7 @@ package app.controller
 	import app.ApplicationFacade;
 	import app.model.AppConfigProxy;
 	import app.model.AppParamProxy;
-	import app.model.SurroundingTempProxy;
+	import app.model.SurroundingProxy;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.RopewayVO;
 	import app.model.vo.SurroundingTempVO;
@@ -18,7 +18,7 @@ package app.controller
 		{			
 			var appParamProxy:AppParamProxy = facade.retrieveProxy(AppParamProxy.NAME) as AppParamProxy;	
 			
-			var surroundingTempProxy:SurroundingTempProxy = facade.retrieveProxy(SurroundingTempProxy.NAME) as SurroundingTempProxy;		
+			var surroundingTempProxy:SurroundingProxy = facade.retrieveProxy(SurroundingProxy.NAME) as SurroundingProxy;		
 			
 			switch(notification.getName())
 			{				

@@ -26,6 +26,12 @@ package app.model
 				
 		public function load():void
 		{
+			if(_loader)		
+			{
+				sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE_LOADED,NAME);
+				return;
+			}
+			
 			_loader = new SWFLoader;
 			_loader.autoLoad = false;
 			_loader.addEventListener(Event.COMPLETE,onSWFLoader);

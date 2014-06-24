@@ -1,19 +1,19 @@
 package app.model
 {
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayCollection;
 	
+	import app.ApplicationFacade;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
 	import app.model.vo.RopewayVO;
 	
-	import org.puremvc.as3.multicore.interfaces.IProxy;
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
+	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
-	public class EngineProxy extends Proxy implements IProxy
+	public class EngineProxy extends Proxy implements ILoadupProxy
 	{
 		public static const NAME:String = "EngineProxy";
+		public static const SRNAME:String = "EngineProxySR";
 		
 		public function EngineProxy()
 		{
@@ -25,8 +25,10 @@ package app.model
 			return data as ArrayCollection;
 		}
 		
-		override public function onRegister():void
+		public function load():void
 		{
+			list.removeAll();
+			
 			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
 			for each(var rw:RopewayVO in ropewayProxy.list)
 			{				
@@ -40,6 +42,8 @@ package app.model
 				e.pos = EngineVO.SECOND;
 				list.addItem(e);
 			}
+			
+			sendNotification(ApplicationFacade.NOTIFY_ENGINE_LOADED,NAME);
 		}
 						
 		public function retreiveEngine(rw:RopewayVO,pos:int):EngineVO
