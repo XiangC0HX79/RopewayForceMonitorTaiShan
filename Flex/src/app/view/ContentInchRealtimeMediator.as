@@ -30,7 +30,7 @@ package app.view
 		{
 			facade.registerMediator(new PanelInchRealtimeTempMediator(contentInchRealtime.panelTemp));
 			facade.registerMediator(new PanelInchRealtimeValueMediator(contentInchRealtime.panelValue));
-			facade.registerMediator(new PanelInchRealtimeAlarmMediator(contentInchRealtime.panelAlarm));
+			//facade.registerMediator(new PanelInchRealtimeAlarmMediator(contentInchRealtime.panelAlarm));
 			facade.registerMediator(new PanelInchRealtimeChartMediator(contentInchRealtime.panelChart));
 		}
 		
@@ -38,7 +38,7 @@ package app.view
 		{
 			facade.removeMediator(PanelInchRealtimeTempMediator.NAME);
 			facade.removeMediator(PanelInchRealtimeValueMediator.NAME);
-			facade.removeMediator(PanelInchRealtimeAlarmMediator.NAME);
+			//facade.removeMediator(PanelInchRealtimeAlarmMediator.NAME);
 			facade.removeMediator(PanelInchRealtimeChartMediator.NAME);
 		}
 	}

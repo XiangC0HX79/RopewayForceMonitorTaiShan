@@ -17,7 +17,7 @@
 	<s:HGroup>
 		<components:PanelInchRealtimeTemp id="panelTemp"/>
 		<components:PanelInchRealtimeValue id="panelValue"/>
-		<components:PanelInchRealtimeAlarm id="panelAlarm"/>		
+		<!--<components:PanelInchRealtimeAlarm id="panelAlarm"/>	-->	
 	</s:HGroup>
 	
 	<components:PanelInchRealtimeChart id="panelChart"/>

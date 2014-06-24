@@ -6,19 +6,20 @@
 		 resize="container_resizeHandler(event)" fontWeight="bold">
 	<fx:Script>
 		<![CDATA[
+			import app.model.vo.InchVO;
+			import app.model.vo.InchValueVO;
+			
 			import flash.utils.setTimeout;
 			
 			import mx.events.ResizeEvent;
-			
-			import app.model.vo.InchVO;
-			import app.model.vo.InchValueVO;
 						
-			private const MAX_VALUE:Number = 1000;
+			private const MAX_VALUE:Number = 10;
 			private const MIN_VALUE:Number = 0;
-			private const IMG_WIDTH:Number = 851;
-			private const IMG_MAX:Number = 826;
-			private const IMG_MIN:Number = 5;
+			private const IMG_WIDTH:Number = 892;
+			private const IMG_MAX:Number = 840;
+			private const IMG_MIN:Number = 18;
 			
+			[Bindable]private var inchDate:Date;
 			[Bindable]private var inchValue:Number;
 			
 			[Bindable]private var aveDay:Number;			
@@ -40,8 +41,9 @@
 				_inch = value;
 				
 				inchValue = _inch.lastValue?_inch.lastValue.value:0;
+				inchDate = _inch.lastValue?_inch.lastValue.date:new Date;
 				
-				aveDay = Math.round(_inch.aveDay * 10) / 10;
+				aveDay = Math.round(_inch.aveDay * 100) / 100;
 				aveMon = _inch.aveMon;
 				aveThreeMon = _inch.aveThreeMon;
 								
@@ -67,7 +69,7 @@
 				grad *= img.width / IMG_WIDTH;
 				grad -= niddle.width / 2;
 				
-				m.xTo = grad;
+				m.xTo = grad + img.x;
 				m.end();
 				m.play([niddle]);
 			}
@@ -77,42 +79,48 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Move id="m"/>
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
-		<s:Label text="张紧小尺"/>
+		<s:Label text="张紧小尺 - {df.format(inchDate)}"/>		
 	</s:HGroup>
-	
+			
 	<s:VGroup id="niddle" y="35" horizontalAlign="center" gap="0" width="40">
-		<s:Label text="{inchValue}M"/>
+		<s:Label text="{inchValue}M" fontSize="38" color="0x1b5aa2"/>
 		<s:Image source="assets/image/inch_niddle.png"/>		
 	</s:VGroup>
 	
-	<s:Image id="img" left="0" right="0" y="75" height="50" source="assets/image/back_inch.png" scaleMode="stretch"/>
+	<s:Image id="img" left="20" right="20" y="100" height="45" source="assets/image/inch_back_01.png" scaleMode="stretch"/>
 	
-	<s:HGroup width="100%" y="125">
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" fontSize="24"
+						  left="20" right="20" top="160" bottom="10">	
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" gap="20"/>
+		</s:layout>
+		
 		<s:Spacer width="100%"/>
 		
-		<s:VGroup>
+		<s:VGroup gap="10">
 			<s:Label text="今天平均"/>
 			<s:Label text="同期平均"/>			
 		</s:VGroup>
 				
-		<s:VGroup>
-			<s:Label text="{aveDay}"/>
-			<s:Label text="{periodAveDay}"/>			
+		<s:VGroup gap="10" color="0x1b5aa2">
+			<s:Label text="{aveDay} M"/>
+			<s:Label text="{periodAveDay} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
 				
-		<s:VGroup>
+		<s:VGroup gap="10">
 			<s:Label text="本月平均"/>
 			<s:Label text="同期月平均"/>			
 		</s:VGroup>
 		
-		<s:VGroup>
-			<s:Label text="{aveMon}"/>
-			<s:Label text="{periodAveMon}"/>			
+		<s:VGroup gap="10" color="0x1b5aa2">
+			<s:Label text="{aveMon} M"/>
+			<s:Label text="{periodAveMon} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
@@ -122,11 +130,11 @@
 			<s:Label text="同期三月平均"/>			
 		</s:VGroup>
 		
-		<s:VGroup>
-			<s:Label text="{aveThreeMon}"/>
-			<s:Label text="{periodAveThreeMon}"/>			
+		<s:VGroup color="0x1b5aa2">
+			<s:Label text="{aveThreeMon} M"/>
+			<s:Label text="{periodAveThreeMon} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
-	</s:HGroup>
+	</s:SkinnableContainer>
 </s:SkinnableContainer>

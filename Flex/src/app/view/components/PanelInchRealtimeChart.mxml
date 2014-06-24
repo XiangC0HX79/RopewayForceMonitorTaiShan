@@ -451,7 +451,7 @@
 				 verticalAlign="middle"/> 	
 		<s:Label right="15" id="lbMin" text="最低温度&#xd;{_inch.minValue} ℃" textAlign="center"
 				 verticalAlign="middle"/> 	
-		<s:Label right="15" id="lbAve" text="平均值&#xd;{Math.round(_inch.aveDay * 10) / 10} ℃" textAlign="center"
+		<s:Label right="15" id="lbAve" text="平均值&#xd;{Math.round(_inch.aveDay * 10) / 10} M" textAlign="center"
 				 verticalAlign="middle"/> 
 	</s:Group>
 	

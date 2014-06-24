@@ -11,11 +11,11 @@
 			
 			import app.model.vo.InchValueVO;
 			
-			private const MAX_VALUE:Number = 1000;
+			private const MAX_VALUE:Number = 10;
 			private const MIN_VALUE:Number = 0;
-			private const IMG_WIDTH:Number = 851;
-			private const IMG_MAX:Number = 826;
-			private const IMG_MIN:Number = 5;
+			private const IMG_WIDTH:Number = 310;
+			private const IMG_MAX:Number = 296;
+			private const IMG_MIN:Number = 7;
 			
 			[Bindable]private var _inch:InchValueVO;
 			public function set inch(value:InchValueVO):void
@@ -32,7 +32,7 @@
 					grad *= img.width / IMG_WIDTH;
 					grad -= niddle.width / 2;
 					
-					m.xTo = grad;
+					m.xTo = grad + img.x;
 					m.end();
 					m.play([niddle]);
 					
@@ -89,7 +89,7 @@
 			<s:Image source="assets/image/inch_niddle.png"/>		
 		</s:VGroup>
 		
-		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/back_inch.png" scaleMode="stretch"/>
+		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/inch_back_02.png" scaleMode="stretch"/>
 		<!--<s:HGroup id="content" color="0x1b5aa2" fontSize="28" 
 				  horizontalCenter="0" verticalCenter="0"
 				  horizontalAlign="center">	
