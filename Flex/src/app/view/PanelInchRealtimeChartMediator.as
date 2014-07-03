@@ -5,6 +5,7 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.PanelInchRealtimeChart;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -25,15 +26,10 @@ package app.view
 			return viewComponent as PanelInchRealtimeChart;
 		}
 		
-		override public function onRemove():void
-		{
-			panelInchChart.inch = null;
-		}
-		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_INCH
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -41,8 +37,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_INCH:
-					panelInchChart.inch = notification.getBody() as InchVO;
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelInchChart.inch = RopewayVO(notification.getBody()).inch;
 					break;
 			}
 		}		

@@ -16,12 +16,18 @@ package app
 	import app.controller.NotifyMenuMainOverviewCommand;
 	import app.controller.NotifyPipeSendForceCommand;
 	import app.controller.NotifyRopewayChangeCommand;
-	import app.controller.NotifySocketEngineTempCommand;
+	import app.controller.NotifySocketEngineCommand;
 	import app.controller.NotifySocketForceUploadCommand;
 	import app.controller.NotifySocketInchCommand;
-	import app.controller.NotifySocketSurroundingTempCommand;
+	import app.controller.NotifySocketSurroundingCommand;
 	import app.controller.NotifySocketWindCommand;
 	import app.controller.StartupCommand;
+	import app.model.AppConfigProxy;
+	import app.model.AppParamProxy;
+	import app.model.EngineProxy;
+	import app.model.InchProxy;
+	import app.model.RopewayProxy;
+	import app.model.RopewayStationProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.IFacade;
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -139,7 +145,7 @@ package app
 		/**
 		 * 动力室温度
 		 **/
-		public static const NOTIFY_SOCKET_ENGINE_TEMP:String 		= "SocketEngineTemp";
+		public static const NOTIFY_SOCKET_ENGINE:String 			= "SocketEngine";
 		
 		/**
 		 * 张紧小尺
@@ -158,7 +164,7 @@ package app
 		
 		public static const NOTIFY_SOCKET_WIND:String 				= "SocketWind";
 		
-		public static const NOTIFY_SOCKET_SURROUDING_TEMP:String 	= "SocketSurroudingTemp";
+		public static const NOTIFY_SOCKET_SURROUDING:String 	= "SocketSurroudingTemp";
 				
 		/**
 		 * 报警实时信息
@@ -182,19 +188,17 @@ package app
 		 **/
 		//public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
 		
-		public static const ACTION_UPDATE_INCH:String 					= "ActionUpdateInch";			
+		public static const ACTION_UPDATE_ROPEWAY_LIST:String 			= "ActionUpdateRopewayList";	
 		
-		public static const ACTION_UPDATE_SURROUDING_TEMP_FST:String 	= "ActionUpdateSurroudingTempFst";		
-		public static const ACTION_UPDATE_SURROUDING_TEMP_SND:String 	= "ActionUpdateSurroudingTempSnd";	
+		public static const ACTION_UPDATE_APP_PARAM:String 				= "ActionUpdateAppParam";		
 		
-		public static const ACTION_UPDATE_ENGINE_FST:String 			= "ActionUpdateEngineFst";		
-		public static const ACTION_UPDATE_ENGINE_SND:String 			= "ActionUpdateEngineSnd";
+		public static const ACTION_UPDATE_ROPEWAY:String 				= "ActionUpdateRopeway";		
 		
 		public static const ACTION_UPDATE_FORCE_FST:String 				= "ActionUpdateForceFst";		
 		public static const ACTION_UPDATE_FORCE_SND:String 				= "ActionUpdateForceSnd";
 		
-		public static const ACTION_UPDATE_WIND:String 					= "ActionUpdateWind";	
-		public static const ACTION_REFRESH_WIND:String 					= "ActionRefreshWind";	
+		//public static const ACTION_UPDATE_WIND:String 					= "ActionUpdateWind";	
+		//public static const ACTION_REFRESH_WIND:String 					= "ActionRefreshWind";	
 		
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
@@ -208,9 +212,9 @@ package app
 		/**
 		 * 主菜单-抱索力
 		 **/		
-		public static const NOTIFY_CONFIG_LOADED:String 			= "SocketConfigLoaded";
+		//public static const NOTIFY_CONFIG_LOADED:String 			= "SocketConfigLoaded";
 		
-		public static const NOTIFY_CONFIG_FAILED:String 			= "SocketConfigFailed";
+		//public static const NOTIFY_CONFIG_FAILED:String 			= "SocketConfigFailed";
 		
 		public static const NOTIFY_SOCKET_FORCE_LOADED:String 		= "SocketForceLoaded";
 		
@@ -220,21 +224,9 @@ package app
 		
 		public static const NOTIFY_SOCKET_FAILED:String 			= "SocketFailed";
 		
-		public static const NOTIFY_SURROUNDING_LOADED:String 		= "SurroundingLoaded";
+		//public static const NOTIFY_WIND_LOADED:String 				= "WindLoaded";
 		
-		public static const NOTIFY_SURROUNDING_FAILED:String 		= "SurroundingFailed";
-		
-		public static const NOTIFY_ENGINE_LOADED:String 			= "EngineLoaded";
-		
-		public static const NOTIFY_ENGINE_FAILED:String 			= "EngineFailed";
-		
-		public static const NOTIFY_INCH_LOADED:String 				= "InchLoaded";
-		
-		public static const NOTIFY_INCH_FAILED:String 				= "InchFailed";
-		
-		public static const NOTIFY_WIND_LOADED:String 				= "WindLoaded";
-		
-		public static const NOTIFY_WIND_FAILED:String 				= "WindFailed";
+		//public static const NOTIFY_WIND_FAILED:String 				= "WindFailed";
 		
 		
 		
@@ -251,7 +243,13 @@ package app
 		/**
 		 * 主菜单-动力室电机温度
 		 **/
-		public static const NOTIFY_MENU_MAIN_ENGINE_TEMP:String 	= "MenuMainEngineTemp";
+		public static const NOTIFY_MENU_MAIN_ENGINE:String 			= "MenuMainEngine";
+		
+		public static const NOTIFY_MENU_ENGINE_REALTIME:String 		= "MenuEngineRealtime";
+		
+		public static const NOTIFY_MENU_ENGINE_ANALYSIS:String 		= "MenuEngineAnalysis";
+		
+		public static const NOTIFY_MENU_ENGINE_MANAGER:String 		= "MenuEngineManager";
 		
 		/**
 		 * 主菜单-张紧小尺
@@ -270,6 +268,12 @@ package app
 		 **/
 		public static const NOTIFY_MENU_MAIN_WIND:String 			= "MenuMainWind";
 		
+		public static const NOTIFY_MENU_WIND_REALTIME:String 		= "MenuWindRealtime";
+		
+		public static const NOTIFY_MENU_WIND_ANALYSIS:String 		= "MenuWindAnalysis";
+		
+		public static const NOTIFY_MENU_WIND_MANAGER:String 		= "MenuWindManager";
+		
 		/**
 		 * 菜单-实时检测
 		 **/
@@ -278,9 +282,6 @@ package app
 		/**
 		 * 菜单-实时检测
 		 **/
-		public static const NOTIFY_MENU_ENGINE_REALTIME:String 		= "MenuEngineRealtime";
-		public static const NOTIFY_MENU_ENGINE_ANALYSIS:String 		= "MenuEngineAnalysis";
-		public static const NOTIFY_MENU_ENGINE_MANAGER:String 		= "MenuEngineManager";
 		
 		/**
 		 * 菜单-今日概览
@@ -377,29 +378,32 @@ package app
 			
 			registerCommand( NOTIFY_INIT_APP, NotifyInitAppCommand);
 			
-			registerCommand( NOTIFY_CONFIG_LOADED, LoadupResourceLoadedCommand);
 			registerCommand( NOTIFY_SOCKET_FORCE_LOADED , LoadupResourceLoadedCommand);
 			registerCommand( NOTIFY_SOCKET_LOADED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_SURROUNDING_LOADED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_ENGINE_LOADED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_INCH_LOADED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_WIND_LOADED , LoadupResourceLoadedCommand);
 			
-			registerCommand( NOTIFY_CONFIG_FAILED, LoadupResourceFailedCommand);
+			registerCommand( RopewayProxy.LOADED, LoadupResourceLoadedCommand);
+			registerCommand( RopewayProxy.FAILED, LoadupResourceFailedCommand);
+			registerCommand( RopewayStationProxy.LOADED, LoadupResourceLoadedCommand);
+			registerCommand( RopewayStationProxy.FAILED, LoadupResourceFailedCommand);
+			registerCommand( AppParamProxy.LOADED, LoadupResourceLoadedCommand);
+			registerCommand( AppParamProxy.FAILED, LoadupResourceFailedCommand);
+			registerCommand( EngineProxy.LOADED , LoadupResourceLoadedCommand);
+			registerCommand( EngineProxy.FAILED , LoadupResourceLoadedCommand);
+			registerCommand( InchProxy.LOADED , LoadupResourceLoadedCommand);
+			registerCommand( InchProxy.FAILED , LoadupResourceLoadedCommand);
+			registerCommand( AppConfigProxy.LOADED , LoadupResourceLoadedCommand);
+			registerCommand( AppConfigProxy.FAILED , LoadupResourceLoadedCommand);
+			
 			registerCommand( NOTIFY_SOCKET_FORCE_FAILED, LoadupResourceFailedCommand);
 			registerCommand( NOTIFY_SOCKET_FAILED, LoadupResourceFailedCommand);
-			registerCommand( NOTIFY_SURROUNDING_FAILED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_ENGINE_FAILED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_INCH_FAILED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_WIND_FAILED , LoadupResourceLoadedCommand);
 			
-			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyInitAppCompleteCommand);
+			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyMenuMainOverviewCommand);
 			
 			registerCommand( NOTIFY_SOCKET_INCH , NotifySocketInchCommand);
 			
-			registerCommand( NOTIFY_SOCKET_ENGINE_TEMP , NotifySocketEngineTempCommand);
+			registerCommand( NOTIFY_SOCKET_ENGINE , NotifySocketEngineCommand);
 							 
-			registerCommand( NOTIFY_SOCKET_SURROUDING_TEMP , NotifySocketSurroundingTempCommand);
+			registerCommand( NOTIFY_SOCKET_SURROUDING , NotifySocketSurroundingCommand);
 			
 			registerCommand( NOTIFY_SOCKET_WIND , NotifySocketWindCommand);
 			
@@ -418,7 +422,7 @@ package app
 			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);				
 						
 			//动力室
-			registerCommand( NOTIFY_MENU_MAIN_ENGINE_TEMP , NotifyMenuMainEngineCommand);
+			registerCommand( NOTIFY_MENU_MAIN_ENGINE , NotifyMenuMainEngineCommand);
 			
 			registerCommand( NOTIFY_MENU_ENGINE_REALTIME , NotifyMenuEngineRealtimeCommand);
 			

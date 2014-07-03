@@ -17,7 +17,7 @@
 	
 	<s:HGroup>
 		<components:PanelOverviewSurrounding id="panelTemp"/>
-		<components:PanelOverviewForce id="panelForce"/>
+		<!--<components:PanelOverviewForce id="panelForce"/>-->
 		<components:PanelOverviewEngine id="panelEngine"/>
 		<components:PanelOverviewInch id="panelInch"/>
 	</s:HGroup>

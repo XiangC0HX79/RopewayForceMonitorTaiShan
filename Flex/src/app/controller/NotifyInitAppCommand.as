@@ -1,11 +1,13 @@
 package app.controller
 {	
 	import app.model.AppConfigProxy;
+	import app.model.AppParamProxy;
 	import app.model.EngineProxy;
 	import app.model.InchProxy;
+	import app.model.RopewayProxy;
+	import app.model.RopewayStationProxy;
 	import app.model.SocketForceProxy;
 	import app.model.SocketProxy;
-	import app.model.SurroundingProxy;
 	import app.model.WindProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.ICommand;
@@ -33,28 +35,27 @@ package app.controller
 			this.monitor.defaultRetryPolicy = new RetryPolicy(new RetryParameters) ;
 			
 			var appConfigPx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(ConfigProxy.NAME));
+			var rwPx:ILoadupProxy = ILoadupProxy(facade.retrieveProxy(RopewayProxy.NAME));		
+			var rsPx:ILoadupProxy = ILoadupProxy(facade.retrieveProxy(RopewayStationProxy.NAME));		
+			var appParamPx:ILoadupProxy = ILoadupProxy(facade.retrieveProxy(AppParamProxy.NAME));				
 			var socketForcePx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(SocketForceProxy.NAME));
 			var socketPx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(SocketProxy.NAME));
-			var surroundingPx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(SurroundingProxy.NAME));
 			var enginePx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(EngineProxy.NAME));
 			var inchPx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(InchProxy.NAME));
-			var windPx :ILoadupProxy = ILoadupProxy(facade.retrieveProxy(WindProxy.NAME));
-			
-		/*	facade.registerProxy( appConfigPx );
-			facade.registerProxy( socketForcePx );
-			facade.registerProxy( socketPx );			
-			facade.registerProxy( surroundingPx );
-			facade.registerProxy( enginePx );
-			facade.registerProxy( inchPx );*/
-			
+						
 			var rAppConfigPx :LoadupResourceProxy = makeAndRegisterLoadupResource( AppConfigProxy.SRNAME, appConfigPx );
+			var rRwPx:LoadupResourceProxy = makeAndRegisterLoadupResource( RopewayProxy.SRNAME, rwPx );
+			var rRsPx:LoadupResourceProxy = makeAndRegisterLoadupResource( RopewayStationProxy.SRNAME, rsPx );
+			var rAppParamPx:LoadupResourceProxy = makeAndRegisterLoadupResource( AppParamProxy.SRNAME, appParamPx );
 			var rSocketForcePx :LoadupResourceProxy = makeAndRegisterLoadupResource( SocketForceProxy.SRNAME, socketForcePx );
 			var rSocketPx :LoadupResourceProxy = makeAndRegisterLoadupResource( SocketProxy.SRNAME, socketPx );
-			var rSurroundingPx :LoadupResourceProxy = makeAndRegisterLoadupResource( SurroundingProxy.SRNAME, surroundingPx );
 			var rEnginePx :LoadupResourceProxy = makeAndRegisterLoadupResource( EngineProxy.SRNAME, enginePx );
 			var rInchPx :LoadupResourceProxy = makeAndRegisterLoadupResource( InchProxy.SRNAME, inchPx );
-			var rWindPx :LoadupResourceProxy = makeAndRegisterLoadupResource( WindProxy.SRNAME, windPx );
 						
+			rRsPx.requires = [rRwPx];
+			rAppParamPx.requires = [rRwPx];
+			rEnginePx.requires = [rRwPx];
+			
 			rSocketPx.requires = [rAppConfigPx];
 			
 			monitor.loadResources();			

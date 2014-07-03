@@ -1,45 +1,110 @@
 package app.model.vo
 {
-	import flash.utils.Dictionary;
+	import flash.errors.IllegalOperationError;
 	
-	import mx.collections.ArrayCollection;
-
+	import app.model.vo.InternalVO;
+	
+	use namespace InternalVO;
+		
 	[Bindable]
 	public class RopewayStationVO
 	{
-		public static const FIRST:String = "驱动站";
-		
+		public static const FIRST:String = "驱动站";		
 		public static const SECOND:String = "回转站";
 		
-		public var ropeway:RopewayVO;
-				
-		public var station:String;
-		
-		public var alarmForce:Number = 50;
-		
-		public var fullName:String;
-		
-		public function RopewayStationVO(value:String)
+		public static function newNull():RopewayStationVO
 		{
-			this.fullName = value;
-			
-			if(value.indexOf(FIRST) >= 0)
-			{
-				this.station = FIRST;
-				
-				var shortName:String = value.substr(0,value.indexOf(FIRST));	
-				
-				this.ropeway = new RopewayVO(shortName + "索道");
-				
-			}
-			else if(value.indexOf(SECOND) >= 0)
-			{
-				this.station = SECOND;
-				
-				shortName = value.substr(0,value.indexOf(SECOND));	
-				
-				this.ropeway = new RopewayVO(shortName + "索道");				
-			}
+			return new NullRopewayStation;
 		}
+		
+		/*private static var _instance:Dictionary = new Dictionary;
+		
+		public static function loadRopewayStation(listRw:ArrayCollection):Array
+		{
+			for each(var rw:RopewayVO in listRw)
+			{
+				new RopewayStationFstVO(rw).store();
+				new RopewayStationSndVO(rw).store();				
+			}
+			
+			var result:Array = [];
+			for each(var rs:RopewayStationVO in _instance)
+			{
+				result.push(rs);
+			}
+			return result;
+		}*/
+		
+		InternalVO static function getNamed(name:String):RopewayStationVO
+		{
+			var shortName:String = name.substr(0,3);
+			var stationName:String = name.substr(3,3);
+			
+			var rw:RopewayVO = RopewayVO.getNamed(shortName + RopewayVO.SUFFIX_NAME);
+			
+			if(stationName == FIRST)
+				return rw.stationFst;
+			else if(stationName == SECOND)
+				return rw.stationSnd;
+			else
+				return newNull();
+		}
+		
+		private var _ropeway:RopewayVO;
+
+		public function get ropeway():RopewayVO
+		{
+			return _ropeway;
+		}
+
+		public function set ropeway(value:RopewayVO):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+				
+		//private var _station:String;
+
+		public function get station():String
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		public function set station(value:String):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+				
+		private var _fullName:String;
+
+		public function get fullName():String
+		{
+			return ropeway.shortName + station;
+		}
+
+		public function set fullName(value:String):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+				
+		public var surrounding:SurroundingVO;
+		
+		/**
+		 * 
+		 * 构造函数
+		 * 
+		 */		
+		public function RopewayStationVO(rw:RopewayVO)
+		{
+			_ropeway = rw;
+			
+			surrounding = new SurroundingVO;
+		}
+		
+		/*private function store():void
+		{
+			_instance[fullName] = this;
+		}*/
 	}
 }

@@ -21,9 +21,6 @@ package app.view
 		public function MainPanelOverviewMediator()
 		{
 			super(NAME, new MainPanelOverview);
-			
-			mainPanelOverview.addEventListener(FlexEvent.ADD,onMediatorAdd);
-			mainPanelOverview.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
 		}
 		
 		protected function get mainPanelOverview():MainPanelOverview
@@ -31,21 +28,27 @@ package app.view
 			return viewComponent as MainPanelOverview;
 		}
 		
+		override public function onRegister():void
+		{						
+			mainPanelOverview.addEventListener(FlexEvent.ADD,onMediatorAdd);
+			mainPanelOverview.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
+		}
+		
 		private function onMediatorAdd(event:FlexEvent):void
-		{
-			facade.registerMediator(new PanelOverviewSurroundingTempMediator(mainPanelOverview.panelTemp));
-			facade.registerMediator(new PanelOverviewEngineTempMediator(mainPanelOverview.panelEngine));
+		{			
+			facade.registerMediator(new PanelOverviewSurroundingMediator(mainPanelOverview.panelTemp));
+			facade.registerMediator(new PanelOverviewEngineMediator(mainPanelOverview.panelEngine));
 			facade.registerMediator(new PanelOverviewInchMediator(mainPanelOverview.panelInch));
-			facade.registerMediator(new PanelOverviewForceMediator(mainPanelOverview.panelForce));
+			/*facade.registerMediator(new PanelOverviewForceMediator(mainPanelOverview.panelForce));*/
 			facade.registerMediator(new PanelOverviewWindMediator(mainPanelOverview.panelWind));
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void
 		{			
-			facade.removeMediator(PanelOverviewSurroundingTempMediator.NAME);
+			facade.removeMediator(PanelOverviewSurroundingMediator.NAME);
+			facade.removeMediator(PanelOverviewEngineMediator.NAME);
 			facade.removeMediator(PanelOverviewInchMediator.NAME);
-			facade.removeMediator(PanelOverviewEngineTempMediator.NAME);
-			facade.removeMediator(PanelOverviewForceMediator.NAME);
+			/*facade.removeMediator(PanelOverviewForceMediator.NAME);*/
 			facade.removeMediator(PanelOverviewWindMediator.NAME);
 		}
 		

@@ -6,9 +6,9 @@
 					  fontWeight="bold">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.InchValueVO;
+			import app.model.vo.RopewayStationVO;
 			
-			[Bindable]public var inch:InchValueVO;
+			[Bindable]public var rs:RopewayStationVO;
 		]]>
 	</fx:Script>
 	
@@ -24,8 +24,8 @@
 			  horizontalAlign="center" verticalAlign="middle" fontSize="38">	
 		<s:Image source="@Embed('assets/image/panel_temp.png')"/>
 		<s:VGroup width="64" horizontalAlign="center">
-			<s:Label text="{inch.temp}"/>	
-			<s:Label text="{inch.humi}"/>				
+			<s:Label text="{rs.surrounding.temp}"/>	
+			<s:Label text="{rs.surrounding.humi}"/>				
 		</s:VGroup>
 		<s:VGroup horizontalAlign="center">
 			<s:Label text="℃"/>	

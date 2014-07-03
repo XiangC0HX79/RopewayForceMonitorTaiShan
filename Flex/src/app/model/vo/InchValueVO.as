@@ -5,11 +5,7 @@ package app.model.vo
 	{
 		public var alarm:int;
 		
-		public var date:Date;
-		
-		public var temp:Number = 0;
-		
-		public var humi:Number = 0;
+		public var date:Date = new Date;
 		
 		public var value:Number = 0;
 		

@@ -1,6 +1,7 @@
 package app.model.vo
 {
-
+    use namespace InternalVO;
+	
 	[Bindable]
 	public class ForceVO
 	{
@@ -25,7 +26,7 @@ package app.model.vo
 			if(o)
 			{
 				this.carriageId = o.ropewayCarId;
-				this.ropewayStation = new RopewayStationVO(o.ropewayStation);
+				this.ropewayStation = RopewayStationVO.getNamed(o.ropewayStation);
 				this.value = o.deteValue;
 				this.unit = o.valueUnit;
 				this.alarm = o.alarm;

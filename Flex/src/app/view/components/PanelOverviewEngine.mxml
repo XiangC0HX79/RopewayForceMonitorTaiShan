@@ -2,14 +2,16 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
-					  height="170" minWidth="250" width="100%" skinClass="custom.skin.SkinPanel" xmlns:components="custom.components.*">
+					  height="170" minWidth="250" width="100%" 
+					  skinClass="custom.skin.SkinPanel" xmlns:components="custom.components.*">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.EngineTempVO;
+			import app.model.vo.EngineFstVO;
+			import app.model.vo.EngineSndVO;
 			
-			[Bindable]public var fstTemp:EngineTempVO
+			[Bindable]public var engineFst:EngineFstVO;
 			
-			[Bindable]public var sndTemp:EngineTempVO;
+			[Bindable]public var engineSnd:EngineSndVO;
 		]]>
 	</fx:Script>
 	
@@ -27,18 +29,18 @@
 						  fontWeight="bold">			
 			<s:Label text="温度1"/>
 			
-			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{fstTemp.temp}"/>
+			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{engineFst.lastTemp.temp}"/>
 			
-			<s:Label text="{df.format(fstTemp.date)}" right="0" bottom="0"/>
+			<s:Label right="0" bottom="0" text="{df.format(engineFst.lastTemp.date)}"/>
 		</s:SkinnableContainer>		
 		
 		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
 							  fontWeight="bold">			
 			<s:Label text="温度2"/>
 			
-			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{sndTemp.temp}"/>
+			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{engineSnd.lastTemp.temp}"/>
 			
-			<s:Label text="{df.format(sndTemp.date)}" right="0" bottom="0"/>
+			<s:Label right="0" bottom="0" text="{df.format(engineSnd.lastTemp.date)}"/>
 		</s:SkinnableContainer>
 	</s:HGroup>
 </s:SkinnableContainer>

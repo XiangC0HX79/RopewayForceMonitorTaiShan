@@ -1,30 +1,29 @@
 package app.controller
 {
-	import mx.collections.ArrayCollection;
-	
-	import app.ApplicationFacade;
-	import app.model.AppConfigProxy;
 	import app.model.InchProxy;
-	import app.model.InchProxy;
-	import app.model.vo.RopewayVO;
-	import app.model.vo.InchVO;
-	import app.model.vo.InchValueVO;
 	
-	import custom.other.CustomUtil;
-	
-	import org.puremvc.as3.multicore.interfaces.ICommand;
 	import org.puremvc.as3.multicore.interfaces.INotification;
-	import org.puremvc.as3.multicore.patterns.command.MacroCommand;
 	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
-	import org.puremvc.as3.multicore.patterns.observer.Notification;
 	
-	public class NotifySocketInchCommand extends MacroCommand implements ICommand
-	{
-		override protected function initializeMacroCommand():void
+	public class NotifySocketInchCommand extends SimpleCommand
+	{		
+		/**
+		 * 
+		 * &&ZJ|datetime|索道|索道站|温度值|湿度值|测量值|@@
+		 * 
+		 */			
+		
+		override public function execute(notification:INotification):void
 		{
-			addSubCommand(ProxyInchAddItemCommand);
-						
-			addSubCommand(ActionUpdateInchCommand);
+			var array:Array =  notification.getBody() as Array;
+			
+			var inchPx:InchProxy = facade.retrieveProxy(InchProxy.NAME) as InchProxy;
+			inchPx.AddInch(
+				array[2]
+				,new Date(Date.parse(String(array[1]).replace(/-/g,"/")))
+				,array[6]
+				);
 		}
+		
 	}
 }

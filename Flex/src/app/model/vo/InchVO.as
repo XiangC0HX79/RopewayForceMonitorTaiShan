@@ -1,16 +1,53 @@
 package app.model.vo
 {
-	import mx.collections.ArrayCollection;
+	import flash.errors.IllegalOperationError;
 	
+	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
+	import mx.events.PropertyChangeEventKind;
+	import mx.utils.ObjectProxy;
+	
+	use namespace InternalVO;
 
 	[Bindable]
-	public class InchVO
+	public class InchVO extends ObjectProxy
 	{
-		private var totalDay:Number = 0; 
+		private var _ropeway:RopewayVO;
+
+		public function get ropeway():RopewayVO
+		{
+			return _ropeway;
+		}
+
+		public function set ropeway(value:RopewayVO):void
+		{
+			_ropeway = value;
+		}
+
+		InternalVO static function getName(rwName:String):InchVO
+		{
+			return RopewayVO.getNamed(rwName).inch;
+		}
 		
-		public var ropeway:RopewayVO;
-		
-		public var aveDay:Number = 0;
+		private var _aveDay:Number = 0;
+
+		public function get aveDay():Number
+		{
+			if(his.source.length == 0)
+				return 0;
+			
+			var total:Number = 0;
+			for each(var et:InchValueVO in his)
+				total += et.value;
+			
+			return Math.round(total / his.length * 100) / 100;
+		}
+
+		public function set aveDay(value:Number):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
 		public var aveMon:Number = 0;
 		public var aveThreeMon:Number = 0;
 		
@@ -18,52 +55,83 @@ package app.model.vo
 		public var periodAveMon:Number = 0;
 		public var periodThreeMon:Number = 0;
 		
-		public var maxValue:Number;
-		
-		public var minValue:Number;
-		
-		public var his:ArrayCollection = new ArrayCollection;
-				
-		public var firstValue:InchValueVO;
-		
-		public var lastValue:InchValueVO;
-		
-		public function InchVO()
+		private var _maxValue:Number;
+
+		public function get maxValue():Number
 		{
+			if(his.source.length == 0)
+				return 0;
+			
+			var array:Array = [];
+			array = array.concat(his.source);
+			array.sortOn("value",Array.NUMERIC);
+			return InchValueVO(array[array.length - 1]).value;
+		}
+
+		public function set maxValue(value:Number):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		
+		private var _minValue:Number;
+
+		public function get minValue():Number
+		{
+			if(his.source.length == 0)
+				return 0;
+			
+			var array:Array = [];
+			array = array.concat(his.source);
+			array.sortOn("value",Array.NUMERIC);
+			return InchValueVO(array[0]).value;
+		}
+
+		public function set minValue(value:Number):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
 		}
 		
-		public function UnshiftInch(inch:InchValueVO):void
-		{			
-			his.source.unshift(inch);
+		private var _firstValue:InchValueVO;
+
+		public function get firstValue():InchValueVO
+		{
+			return (his.length > 0)?his[0]:null;
+		}
+
+		public function set firstValue(value:InchValueVO):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		
+		public function get lastValue():InchValueVO
+		{
+			return (his.length > 0)?his[his.length - 1]:new InchValueVO;
+		}
+
+		public function set lastValue(value:InchValueVO):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+		
+		public var his:ArrayCollection;
+				
+		public function InchVO(rw:RopewayVO)
+		{
+			_ropeway = rw;
 			
-			firstValue = inch;
-			
-			if(his.length == 1)
-				lastValue = inch;
-			
-			totalDay += inch.value;
-			aveDay = totalDay / his.length;
-			
-			maxValue = maxValue?Math.max(maxValue,inch.value):inch.value;
-			
-			minValue = minValue?Math.min(minValue,inch.value):inch.value;
+			his = new ArrayCollection;
 		}
 		
 		public function PushInch(inch:InchValueVO):void
 		{			
 			his.source.push(inch);
 			
-			if(his.length == 1)
-				firstValue = inch;
-			
-			lastValue = inch;
-			
-			totalDay += inch.value;
-			aveDay = totalDay / his.length;
-			
-			maxValue = maxValue?Math.max(maxValue,inch.value):inch.value;
-			
-			minValue = minValue?Math.min(minValue,inch.value):inch.value;
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"lastValue",null,lastValue));
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"aveDay",null,aveDay));
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"minValue",null,minValue));
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"maxValue",null,maxValue));
 		}
 	}
 }

@@ -5,24 +5,98 @@
 					  skinClass="custom.skin.SkinPanel">
 	<fx:Script>
 		<![CDATA[
+			import flash.utils.setTimeout;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
 			import mx.events.ResizeEvent;
 			
+			import app.model.vo.BracketVO;
+			import app.model.vo.RopewayVO;
+			
+			private var _watcher:ChangeWatcher;
+			
+			public function set ropeway(value:RopewayVO):void
+			{
+				if(_watcher)
+					_watcher.unwatch();
+				
+				_watcher = BindingUtils.bindSetter(setterBracket,value,"listBracket");
+			}
+			
+			private function setterBracket(listBracket:ArrayCollection):void
+			{				
+				//mainContent.removeAllElements();
+				
+				for each(var bracket:BracketVO in listBracket)
+				{				
+					insertBracket(bracket);
+				}
+				
+				_resizeExecuting = true;
+				
+				onResize();
+			}
+			
+			private function insertBracket(bracket:BracketVO):void
+			{
+				for(var i:int = 0;i< mainContent.numElements;i++)
+				{
+					var element:ItemOverviewWind = ItemOverviewWind(mainContent.getElementAt(i));
+					
+					if(element.bracket.bracketId == bracket.bracketId)
+					{
+						return;
+					}
+					
+					if(element.bracket.bracketId > bracket.bracketId)
+					{
+						mainContent.addElementAt(newItemOverviewWind(bracket),i);
+						return;
+					}			
+				}
+				
+				mainContent.addElement(newItemOverviewWind(bracket));
+			}
+			
+			private function newItemOverviewWind(bracket:BracketVO):ItemOverviewWind
+			{				
+				var iow:ItemOverviewWind = new ItemOverviewWind;
+				iow.bracket = bracket;				
+				return iow;
+			}
+			
+			private var _resizeExecuting:Boolean = false;
+						
 			protected function content_resizeHandler(event:ResizeEvent):void
 			{
-				var nw:int = Math.floor(mainContent.width /  ItemOverviewWind.WIDTH);
-				var width:Number = mainContent.width / nw;
+				_resizeExecuting = true;
 				
-				for(var i:int = 0;i<mainContent.numElements;i++)
+				flash.utils.setTimeout(onResize,200);
+			}
+				
+			private function onResize():void
+			{
+				if(_resizeExecuting)
 				{
-					var iw:int = i % nw;
-					var ih:int = Math.floor(i / nw);
+					var nw:int = Math.floor(mainContent.width /  ItemOverviewWind.WIDTH);
+					var width:Number = mainContent.width / nw;
 					
-					var item:ItemOverviewWind = ItemOverviewWind(mainContent.getElementAt(i));
-					item.x = iw * width;
-					item.y = ih * ItemOverviewWind.HEIGHT;
-					item.width = width - ItemOverviewWind.GAP;
-					item.height = ItemOverviewWind.HEIGHT - ItemOverviewWind.GAP;
+					for(var i:int = 0;i<mainContent.numElements;i++)
+					{
+						var iw:int = i % nw;
+						var ih:int = Math.floor(i / nw);
+						
+						var item:ItemOverviewWind = ItemOverviewWind(mainContent.getElementAt(i));
+						item.x = iw * width;
+						item.y = ih * ItemOverviewWind.HEIGHT;
+						item.width = width - ItemOverviewWind.GAP;
+						item.height = ItemOverviewWind.HEIGHT - ItemOverviewWind.GAP;
+					}
 				}
+				
+				_resizeExecuting = false;
 			}
 			
 		]]>

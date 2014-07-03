@@ -1,16 +1,35 @@
 package app.model.vo
 {
+	import flash.errors.IllegalOperationError;
+	
+	import mx.events.PropertyChangeEvent;
+	import mx.events.PropertyChangeEventKind;
+
+	use namespace InternalVO;
+	
 	[Bindable]
 	public class BracketVO
 	{
+		public static function newNull():BracketVO
+		{
+			return new NullBracketVO;
+		}
+		
+		InternalVO static function getName(rwName:String,id:int):BracketVO
+		{
+			return RopewayVO.getNamed(rwName).getBracket(id);
+		}
+		
 		public var bracketId:int;
 		
 		public var ropeway:RopewayVO;
 		
-		private var _fullName:String;
-
+		public var wind:WindVO;
+		
 		public function get fullName():String
 		{			
+			var _fullName:String;
+			
 			if(ropeway.shortName == "中天门")
 			{										
 				switch(bracketId)
@@ -61,7 +80,7 @@ package app.model.vo
 
 		public function set fullName(value:String):void
 		{
-			_fullName = value;
+			throw(new IllegalOperationError("调用抽象方法"));
 		}
 		
 		public function BracketVO(id:Number,rw:RopewayVO)
@@ -69,6 +88,8 @@ package app.model.vo
 			bracketId = id;
 			
 			ropeway = rw;
+			
+			wind = new WindVO;
 		}
 	}
 }

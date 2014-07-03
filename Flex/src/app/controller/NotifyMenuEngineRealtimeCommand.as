@@ -6,9 +6,9 @@ package app.controller
 	{		
 		override protected function initializeAsyncMacroCommand():void
 		{
-			addSubCommand(ActionEnginePanelChangeCommand);
+			addSubCommand(ActionEnginePanelShowRealtimeCommand);
 			
-			addSubCommand(ActionUpdateEngineCommand);
+			addSubCommand(ActionUpdateRopewayCommand);
 		}
 		
 	}

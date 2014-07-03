@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 skinClass="custom.skin.SkinPanelContent" fontWeight="bold" 
+		 creationComplete="skinnablecontainer_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.graphics.ImageSnapshot;
+			
+			import app.model.vo.SurroundingVO;
+			
+			import custom.skin.SkinPanelContent;
+			
+			[Bindable]public var title:String;
+								
+			private var _surrounding:SurroundingVO;			
+			[Bindable]
+			public function get surrounding():SurroundingVO
+			{
+				return _surrounding;
+			}
+			
+			public function set surrounding(value:SurroundingVO):void
+			{				
+				if(this.initialized)
+				{
+					playAnima();
+				}
+				
+				_surrounding = value;
+			}
+						
+			private function playAnima():void
+			{						
+				imageAnimate.source = getImgSource(mainContent);				
+				anima.play();
+			}
+			
+			private function getImgSource(content:UIComponent):Bitmap
+			{										
+				if((content.width == 0)
+					|| (content.height == 0))
+					return null;
+				
+				var pt:Point = content.contentToGlobal(new Point(0,0));
+				
+				var clipRect:Rectangle = new Rectangle(pt.x,pt.y,content.width,content.height);
+				
+				var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
+				
+				if(!bd.rect.containsRect(clipRect))
+					return null;
+				
+				var ba:ByteArray = bd.getPixels(clipRect);
+				ba.position = 0;
+				
+				var fillRect:Rectangle = new Rectangle(0,0,clipRect.width,clipRect.height);
+				
+				var newBd:BitmapData = new BitmapData(clipRect.width, clipRect.height);  			
+				newBd.setPixels(fillRect,ba);		
+				
+				return new Bitmap(newBd);
+			}
+			
+			protected function skinnablecontainer_creationCompleteHandler(event:FlexEvent):void
+			{
+				playAnima();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Scale id="anima" target="{imageAnimate}" scaleXFrom="1" scaleXTo="0" scaleYFrom="1" scaleYTo="0"/>
+	</fx:Declarations>
+	
+	<s:Label text="{title}"/>		
+	
+	<s:HGroup id="mainContent" color="0x1b5aa2" fontSize="28" gap="0" 
+			  horizontalCenter="0" verticalCenter="10">	
+		
+		<s:VGroup width="40" horizontalAlign="center">
+			<s:Label id="lblTemp" text="{surrounding.temp}"/>	
+			<s:Label id="lblHumi" text="{surrounding.humi}"/>				
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:Label text="℃"/>	
+			<s:Label text="%"/>				
+		</s:VGroup>
+	</s:HGroup>
+	
+	<s:Image id="imageAnimate" horizontalCenter="0" verticalCenter="10"/>
+</s:SkinnableContainer>

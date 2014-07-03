@@ -1,15 +1,11 @@
 package app.view
 {
 	import flash.events.Event;
-	import flash.utils.setInterval;
-	import flash.utils.setTimeout;
+	
+	import mx.collections.ArrayCollection;
 	
 	import app.ApplicationFacade;
-	import app.model.AppConfigProxy;
-	import app.model.AppParamProxy;
-	import app.model.RopewayProxy;
-	import app.model.vo.AppConfigVO;
-	import app.model.vo.RopewayVO;
+	import app.model.vo.AppParamVO;
 	import app.view.components.ToolbarTop;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -19,18 +15,10 @@ package app.view
 	public class ToolbarTopMediator extends Mediator implements IMediator
 	{
 		public static const NAME:String = "ToolbarTopMediator";
-		
+				
 		public function ToolbarTopMediator(viewComponent:Object=null)
 		{
-			super(NAME, viewComponent);
-			
-			toolbarTop.addEventListener(ToolbarTop.STATION,onStation);
-			
-			toolbarTop.addEventListener(ToolbarTop.OVERVIEW,onMenu);
-			toolbarTop.addEventListener(ToolbarTop.FORCE,onMenu);
-			toolbarTop.addEventListener(ToolbarTop.ENGINETEMP,onMenu);
-			toolbarTop.addEventListener(ToolbarTop.INCH,onMenu);
-			toolbarTop.addEventListener(ToolbarTop.WIND,onMenu);
+			super(NAME, viewComponent);			
 		}
 		
 		protected function get toolbarTop():ToolbarTop
@@ -39,41 +27,71 @@ package app.view
 		}
 		
 		override public function onRegister():void
-		{
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			toolbarTop.colRopeway = ropewayProxy.list;
+		{			
+			toolbarTop.addEventListener(ToolbarTop.STATION,onStation);
 			
-			var appParaProxy:AppParamProxy = facade.retrieveProxy(AppParamProxy.NAME) as AppParamProxy;
-			toolbarTop.selRopeway = appParaProxy.appParam.selRopeway;
+			toolbarTop.addEventListener(ToolbarTop.OVERVIEW,onMenuOverview);
+			toolbarTop.addEventListener(ToolbarTop.FORCE,onMenuForce);
+			toolbarTop.addEventListener(ToolbarTop.ENGINE,onMenuEngine);
+			toolbarTop.addEventListener(ToolbarTop.INCH,onMenuInch);
+			toolbarTop.addEventListener(ToolbarTop.WIND,onMenuWind);
+			
+			toolbarTop.addEventListener(ToolbarTop.REINIT,onMenuInit);
 		}
 		
 		private function onStation(event:Event):void
 		{
-			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_CHANGE,toolbarTop.selRopeway);
+			sendNotification(ApplicationFacade.NOTIFY_ROPEWAY_CHANGE);
 		}
 		
-		private function onMenu(event:Event):void
+		private function onMenuOverview(event:Event):void
 		{
-			switch(event.type)
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW);				
+		}
+		
+		private function onMenuForce(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_FORCE);				
+		}
+		
+		private function onMenuEngine(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE);				
+		}
+		
+		private function onMenuInch(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_INCH);				
+		}
+		
+		private function onMenuWind(event:Event):void
+		{			
+			sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_WIND);		
+		}
+		
+		private function onMenuInit(event:Event):void
+		{			
+			sendNotification(ApplicationFacade.NOTIFY_INIT_APP);	
+		}
+		
+		override public function listNotificationInterests():Array
+		{
+			return [
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY_LIST,
+				ApplicationFacade.ACTION_UPDATE_APP_PARAM
+			];
+		}
+		
+		override public function handleNotification(notification:INotification):void
+		{
+			switch(notification.getName())
 			{
-				case ToolbarTop.OVERVIEW:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_OVERVIEW);
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY_LIST:
+					toolbarTop.colRopeway = notification.getBody() as ArrayCollection;					
 					break;
 				
-				case ToolbarTop.FORCE:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_FORCE);
-					break;
-				
-				case ToolbarTop.ENGINETEMP:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_ENGINE_TEMP);
-					break;
-				
-				case ToolbarTop.INCH:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_MAIN_INCH);
-					break;
-				
-				case ToolbarTop.WIND:
-					sendNotification(ApplicationFacade.NOTIFY_INIT_APP);
+				case ApplicationFacade.ACTION_UPDATE_APP_PARAM:
+					toolbarTop.appParam = AppParamVO(notification.getBody());
 					break;
 			}
 		}

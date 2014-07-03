@@ -10,7 +10,7 @@ package app.controller
 	{				
 		override protected function initializeAsyncMacroCommand():void
 		{
-			addSubCommand(ActionMainPanelChangeCommand);
+			//addSubCommand(ActionMainPanelChangeCommand);
 		}
 		
 	}

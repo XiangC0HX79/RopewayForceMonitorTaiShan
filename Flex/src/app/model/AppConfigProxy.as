@@ -12,6 +12,9 @@ package app.model
 		//public static const NAME:String = "AppConfigProxy";
 		public static const SRNAME:String = "AppConfigProxySR";
 		
+		public static const LOADED:String = "AppConfigProxy/Loaded";
+		public static const FAILED:String = "AppConfigProxy/Failed";
+				
 		public function AppConfigProxy(configURL:String)
 		{
 			super(configURL);
@@ -26,14 +29,16 @@ package app.model
 		{
 			super.fault(event);
 			
-			sendNotification(ApplicationFacade.NOTIFY_CONFIG_FAILED,ConfigProxy.NAME);
+			sendNotification(FAILED,ConfigProxy.NAME);
 		}
 		
 		override public function result(event:Object):void
 		{
 			super.result(event);
 			
-			sendNotification(ApplicationFacade.NOTIFY_CONFIG_LOADED,ConfigProxy.NAME);
+			WebServiceProxy.factoryCreate(AppConfigVO(configVO).webserviceInfo);
+			
+			sendNotification(LOADED,ConfigProxy.NAME);
 		}
 				
 		public function load():void

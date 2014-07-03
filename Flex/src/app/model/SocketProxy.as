@@ -15,7 +15,7 @@ package app.model
 	import app.model.vo.InchValueVO;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.RopewayVO;
-	import app.model.vo.SurroundingTempVO;
+	import app.model.vo.SurroundingVO;
 	import app.model.vo.WindValueVO;
 	
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
@@ -105,31 +105,40 @@ package app.model
 			bytesArray= new ByteArray;
 		}  
 		
+		private function getDataArray(socketData:ByteArray):Array
+		{			
+			//var d:String = ;
+			
+			//trace(d);
+			
+			var reg:RegExp = /&{2}.*?@{2}/g;
+			
+			return socketData.readMultiByte(socketData.length,"gb2312").match(reg);
+		}
+		
 		private function decodeSocketData(socketData:ByteArray):void
 		{			
-			var d:String = socketData.readMultiByte(socketData.length,"gb2312");
+			/*var d:String = socketData.readMultiByte(socketData.length,"gb2312");
 			
 			trace(d);
 			
 			var reg:RegExp = /&{2}.*?@{2}/g;
-			var colS:Array = d.match(reg);
-			
-			//var colS:Array = d.split("@");
-			
-			for each(var s:String in colS)
+			var colS:Array = d.match(reg);*/
+						
+			for each(var s:String in getDataArray(socketData))
 			{				
-				var content:String = s.substr(2,s.length - 4);
+				//var content:String = ;
 				
-				if(content == "")
-					continue;
+				//if(content == "")
+				//	continue;
 				
-				var a:Array = content.split('|');
+				var a:Array = s.substr(2,s.length - 4).split('|');
 				
 				var sd:String = String(a[1]).replace(/-/g,"/");
 				var dt:Date = new Date(Date.parse(sd));
 				
-				var rw:RopewayVO = new RopewayVO(a[2]);
-				var rs:RopewayStationVO = new RopewayStationVO(a[3]);
+				//var rw:RopewayVO = RopewayVO.getNamed(a[2]);
+				//var rs:RopewayStationVO = RopewayStationVO.getNamed(a[3]);
 				
 				switch(a[0])
 				{	
@@ -137,45 +146,20 @@ package app.model
 					//	decodeRopewayForce(a.slice(1));
 					//	break;
 					
-					case "ET":
-						var st:SurroundingTempVO = new SurroundingTempVO;
-						st.ropewayStation = rs;
-						st.date = dt;
-						st.temp = Number(a[4]);
-						st.humi = Number(a[5]);
-						
-						sendNotification(ApplicationFacade.NOTIFY_SOCKET_SURROUDING_TEMP,st);
+					case "ET":						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_SURROUDING,a);
 						break;
 					
-					case "TE":
-						var et:EngineTempVO = new EngineTempVO;
-						et.date = dt;
-						et.temp = Number(a[5]);
-						
-						var pos:int = int(a[4]);
-						
-						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE_TEMP,[rw,pos,et]);
+					case "TE":						
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_ENGINE,a);
 						break;
 					
 					case "ZJ":
-						var inch:InchValueVO = new InchValueVO;
-						inch.date = dt;
-						inch.temp = Number(a[4]);
-						inch.humi = Number(a[5]);
-						inch.value = Number(a[6]);
-						
-						sendNotification(ApplicationFacade.NOTIFY_SOCKET_INCH,[rw,inch]);
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_INCH,a);
 						break;		
 					
 					case "FS":
-						var wind:WindValueVO = new WindValueVO;
-						wind.date = dt;
-						wind.speed = Number(a[5]);
-						wind.dir = Number(a[6]);
-						
-						var bracketId:Number = Number(a[4]);
-						
-						sendNotification(ApplicationFacade.NOTIFY_SOCKET_WIND,[new BracketVO(bracketId,rw),wind]);
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_WIND,a);
 						break;					
 					
 					case "AL":

@@ -3,18 +3,19 @@ package app.view
 	import app.ApplicationFacade;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
-	import app.model.vo.SurroundingTempVO;
+	import app.model.vo.RopewayVO;
+	import app.model.vo.SurroundingVO;
 	import app.view.components.PanelOverviewEngine;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
-	public class PanelOverviewEngineTempMediator extends Mediator implements IMediator
+	public class PanelOverviewEngineMediator extends Mediator implements IMediator
 	{
-		public static const NAME:String = "PanelOverviewEngineTempMediator";
+		public static const NAME:String = "PanelOverviewEngineMediator";
 		
-		public function PanelOverviewEngineTempMediator(viewComponent:Object=null)
+		public function PanelOverviewEngineMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 		}
@@ -27,9 +28,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_ENGINE_FST,
-				
-				ApplicationFacade.ACTION_UPDATE_ENGINE_SND
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -37,12 +36,9 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_FST:
-					panelOverviewEngineTemp.fstTemp = (notification.getBody() as EngineVO).lastTemp;
-					break;
-				
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_SND:
-					panelOverviewEngineTemp.sndTemp = (notification.getBody() as EngineVO).lastTemp;
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelOverviewEngineTemp.engineFst = RopewayVO(notification.getBody()).engineFst;
+					panelOverviewEngineTemp.engineSnd = RopewayVO(notification.getBody()).engineSnd;
 					break;
 			}
 		}		

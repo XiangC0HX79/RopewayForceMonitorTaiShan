@@ -2,6 +2,7 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.vo.EngineVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.PanelEngineRealtimeChart;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -22,15 +23,10 @@ package app.view
 			return viewComponent as PanelEngineRealtimeChart;
 		}
 		
-		override public function onRemove():void
-		{
-			panelEngineRealtimeChart.engine = null;
-		}
-		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_ENGINE_SND
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -38,8 +34,8 @@ package app.view
 		{	
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_SND:
-					panelEngineRealtimeChart.engine = notification.getBody() as EngineVO;	
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelEngineRealtimeChart.engine = RopewayVO(notification.getBody()).engineSnd;	
 					break;
 			}
 		}		

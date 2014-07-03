@@ -2,36 +2,24 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 skinClass="custom.skin.SkinPanel" height="100%" width="100%" 
-		 resize="container_resizeHandler(event)" fontWeight="bold">
+		 skinClass="custom.skin.SkinPanel" height="100%" width="100%" fontWeight="bold">
 	<fx:Script>
 		<![CDATA[
-			import app.model.vo.InchVO;
-			import app.model.vo.InchValueVO;
-			
 			import flash.utils.setTimeout;
 			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
 			import mx.events.ResizeEvent;
-						
-			private const MAX_VALUE:Number = 10;
-			private const MIN_VALUE:Number = 0;
-			private const IMG_WIDTH:Number = 892;
-			private const IMG_MAX:Number = 840;
-			private const IMG_MIN:Number = 18;
 			
-			[Bindable]private var inchDate:Date;
-			[Bindable]private var inchValue:Number;
+			import app.model.vo.InchVO;
+									
+			private var _watcher:ChangeWatcher;
 			
-			[Bindable]private var aveDay:Number;			
-			[Bindable]private var aveMon:Number;			
-			[Bindable]private var aveThreeMon:Number;
-			
-			[Bindable]private var periodAveDay:Number;
-			[Bindable]private var periodAveMon:Number;
-			[Bindable]private var periodAveThreeMon:Number;
+			[Bindable]private var _niddleX:Number;
 			
 			private var _inch:InchVO;
 			
+			[Bindable]
 			public function get inch():InchVO
 			{
 				return _inch;
@@ -40,58 +28,74 @@
 			{
 				_inch = value;
 				
-				inchValue = _inch.lastValue?_inch.lastValue.value:0;
-				inchDate = _inch.lastValue?_inch.lastValue.date:new Date;
+				if(_watcher)
+					_watcher.unwatch();
 				
-				aveDay = Math.round(_inch.aveDay * 100) / 100;
-				aveMon = _inch.aveMon;
-				aveThreeMon = _inch.aveThreeMon;
-								
-				periodAveDay = _inch.periodAveDay;
-				periodAveMon = _inch.periodAveMon;
-				periodAveThreeMon = _inch.periodThreeMon;
-				
-				drawNiddle();
+				BindingUtils.bindSetter(setterNiddle,_inch,"lastValue");
 			}
 			
-			protected function container_resizeHandler(event:ResizeEvent):void
-			{
-				flash.utils.setTimeout(drawNiddle,200);
+			private function setterNiddle(obj:Object):void
+			{				
+				_niddleX = getNiddlePos(inch.lastValue.value);
 			}
-			
-			private function drawNiddle():void
-			{	
-				var value:Number = inchValue;
-				if(value > MAX_VALUE)value = MAX_VALUE;
-				if(value < MIN_VALUE)value = MIN_VALUE;
+											
+			private function getNiddlePos(value:Number):Number
+			{				
+				const MAX_VALUE:Number = 10;
+				const MIN_VALUE:Number = 0;
+				const IMG_WIDTH:Number = 892;
+				const IMG_MAX:Number = 840;
+				const IMG_MIN:Number = 18;
 				
-				var grad:Number = (value - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
+				var v:Number = value;
+				if(v > MAX_VALUE)v = MAX_VALUE;
+				if(v < MIN_VALUE)v = MIN_VALUE;
+				
+				var grad:Number = (v - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
 				grad *= img.width / IMG_WIDTH;
 				grad -= niddle.width / 2;
 				
-				m.xTo = grad + img.x;
-				m.end();
-				m.play([niddle]);
+				return grad + img.x;
+			}	
+			
+			private var _resizeExecuting:Boolean = false;
+			
+			protected function img_resizeHandler(event:ResizeEvent):void
+			{				
+				_resizeExecuting = true;
+				
+				flash.utils.setTimeout(onResize,200);
+			}
+			
+			private function onResize():void
+			{
+				if(_resizeExecuting)
+				{
+					_niddleX = getNiddlePos(inch.lastValue.value);
+				}
+				
+				_resizeExecuting = false;
 			}
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Move id="m"/>
+		<mx:Move id="m"/>
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
-		<s:Label text="张紧小尺 - {df.format(inchDate)}"/>		
+		<s:Label text="张紧小尺 - {df.format(inch.lastValue.date)}"/>		
 	</s:HGroup>
 			
-	<s:VGroup id="niddle" y="35" horizontalAlign="center" gap="0" width="40">
-		<s:Label text="{inchValue}M" fontSize="38" color="0x1b5aa2"/>
+	<s:VGroup id="niddle" y="35" horizontalAlign="center" gap="0" width="40" moveEffect="{m}" x="{_niddleX}">
+		<s:Label text="{inch.lastValue.value}M" fontSize="38" color="0x1b5aa2"/>
 		<s:Image source="assets/image/inch_niddle.png"/>		
 	</s:VGroup>
 	
-	<s:Image id="img" left="20" right="20" y="100" height="45" source="assets/image/inch_back_01.png" scaleMode="stretch"/>
+	<s:Image id="img" left="20" right="20" y="100" height="45" source="assets/image/inch_back_01.png" 
+			 scaleMode="stretch" resize="img_resizeHandler(event)"/>
 	
 	<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" fontSize="24"
 						  left="20" right="20" top="160" bottom="10">	
@@ -107,8 +111,8 @@
 		</s:VGroup>
 				
 		<s:VGroup gap="10" color="0x1b5aa2">
-			<s:Label text="{aveDay} M"/>
-			<s:Label text="{periodAveDay} M"/>			
+			<s:Label text="{inch.aveDay} M"/>
+			<s:Label text="{inch.periodAveDay} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
@@ -119,8 +123,8 @@
 		</s:VGroup>
 		
 		<s:VGroup gap="10" color="0x1b5aa2">
-			<s:Label text="{aveMon} M"/>
-			<s:Label text="{periodAveMon} M"/>			
+			<s:Label text="{inch.aveMon} M"/>
+			<s:Label text="{inch.periodAveMon} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>
@@ -131,8 +135,8 @@
 		</s:VGroup>
 		
 		<s:VGroup color="0x1b5aa2">
-			<s:Label text="{aveThreeMon} M"/>
-			<s:Label text="{periodAveThreeMon} M"/>			
+			<s:Label text="{inch.aveThreeMon} M"/>
+			<s:Label text="{inch.periodThreeMon} M"/>			
 		</s:VGroup>
 		
 		<s:Spacer width="100%"/>

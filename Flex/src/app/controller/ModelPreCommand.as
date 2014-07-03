@@ -13,7 +13,6 @@ package app.controller
 	import app.model.RopewayStationProxy;
 	import app.model.SocketForceProxy;
 	import app.model.SocketProxy;
-	import app.model.SurroundingProxy;
 	import app.model.SyncTimerProxy;
 	import app.model.WindProxy;
 	import app.model.vo.RopewayStationVO;
@@ -25,12 +24,12 @@ package app.controller
 	public class ModelPreCommand extends SimpleCommand
 	{
 		override public function execute(note:INotification):void
-		{			
-			facade.registerProxy(new AppParamProxy);
-			
+		{				
 			facade.registerProxy(new RopewayProxy);
 			
 			facade.registerProxy(new RopewayStationProxy);
+			
+			facade.registerProxy(new AppParamProxy);
 			
 			facade.registerProxy(new SyncTimerProxy);
 			
@@ -45,7 +44,7 @@ package app.controller
 			
 			facade.registerProxy(new InchProxy);
 			
-			facade.registerProxy(new SurroundingProxy);
+			//facade.registerProxy(new SurroundingProxy);
 			
 			facade.registerProxy(new ForceProxy);
 			

@@ -7,33 +7,9 @@
 		 xmlns:components="custom.components.*" fontWeight="bold">
 	<fx:Script>
 		<![CDATA[						
-			import app.model.vo.EngineTempVO;
 			import app.model.vo.EngineVO;
 			
-			[Bindable]private var engineTemp:EngineTempVO;			
-			[Bindable]private var maxTemp:Number;
-			[Bindable]private var aveTemp:Number;
-			[Bindable]private var minTemp:Number;
-			
-			private var _engine:EngineVO
-
-			public function get engine():EngineVO
-			{
-				return _engine;
-			}
-
-			public function set engine(value:EngineVO):void
-			{
-				_engine = value;
-				
-				engineTemp = engine.lastTemp;
-				maxTemp = engine.maxTemp?engine.maxTemp:0;
-				minTemp = engine.minTemp?engine.minTemp:0;
-				
-				aveTemp = engine.aveTemp?engine.aveTemp:0;
-				aveTemp = Math.round(aveTemp * 10) / 10;
-			}
-
+			[Bindable]public var engine:EngineVO;
 		]]>
 	</fx:Script>
 	
@@ -47,22 +23,25 @@
 	</components:layout>
 	
 	<s:Group width="195" height="210">
-		<components:EnginTempWatch temp="{engineTemp.temp}"/>
-		<s:Label text="{df.format(engineTemp.date)}" bottom="0"/>
+		<components:EnginTempWatch temp="{engine.lastTemp.temp}"/>
+		<s:Label bottom="0" text="{df.format(engine.lastTemp.date)}"/>
 	</s:Group>
 	
 	<s:VGroup width="100" horizontalAlign="justify" height="100%">
 		<s:HGroup height="100%" verticalAlign="middle">
 			<s:Label text="最高"/>
-			<s:TextInput editable="false" text="{maxTemp} ℃" width="100%" textAlign="center"/>
+			<s:TextInput editable="false" text="{engine.maxTemp}"
+						 width="100%" textAlign="center"/>
 		</s:HGroup>
 		<s:HGroup height="100%" verticalAlign="middle">
 			<s:Label text="平均"/>
-			<s:TextInput editable="false" text="{aveTemp} ℃" width="100%" textAlign="center"/>
+			<s:TextInput editable="false" text="{engine.aveTemp}"
+						 width="100%" textAlign="center"/>
 		</s:HGroup>
 		<s:HGroup height="100%" verticalAlign="middle">
 			<s:Label text="最低"/>
-			<s:TextInput editable="false" text="{minTemp} ℃" width="100%" textAlign="center"/>
+			<s:TextInput editable="false" text="{engine.minTemp}"
+						 width="100%" textAlign="center"/>
 		</s:HGroup>
 	</s:VGroup>
 </components:SkinnableTitleContainer>

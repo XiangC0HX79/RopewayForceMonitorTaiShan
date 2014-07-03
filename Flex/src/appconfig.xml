@@ -21,10 +21,12 @@
 	<dev:appName>MyApp [ Development ]</dev:appName>
 	<dev:socketIp>127.0.0.1</dev:socketIp>
 	<dev:socketPort>4321</dev:socketPort>
+	<dev:webserviceInfo>http://localhost:28775/FlexWebServiceInfo.asmx?wsdl</dev:webserviceInfo>
 
 	<!-- PRODUCTION ENVIRONMENT-->
 	<prod:appVersion>1.0</prod:appVersion>
 	<prod:appName>MyApp</prod:appName>
 	<prod:socketIp>127.0.0.1</prod:socketIp>
 	<prod:socketPort>4321</prod:socketPort>
+	<prod:webserviceInfo>http://localhost:28775/FlexWebServiceInfo.asmx?wsdl</prod:webserviceInfo>
 </config:Config>

@@ -25,14 +25,14 @@ package app.model
 		
 		override public function onRegister():void
 		{
-			var rsProxy:RopewayStationProxy = facade.retrieveProxy(RopewayStationProxy.NAME) as RopewayStationProxy;
+			/*var rsProxy:RopewayStationProxy = facade.retrieveProxy(RopewayStationProxy.NAME) as RopewayStationProxy;
 			
 			for each(var rs:RopewayStationVO in rsProxy.list)
 			{
 				var force:ForceVO = new ForceVO;
 				force.ropewayStation = rs;
 				list.addItem(force);
-			}
+			}*/
 		}
 		
 		public function Update(force:ForceVO):void

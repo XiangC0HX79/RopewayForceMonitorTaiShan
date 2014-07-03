@@ -2,59 +2,41 @@ package app.model
 {
 	import mx.collections.ArrayCollection;
 	
-	import app.ApplicationFacade;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
+	import app.model.vo.InternalVO;
 	import app.model.vo.RopewayVO;
 	
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
+	
+	use namespace InternalVO;
 	
 	public class InchProxy extends Proxy implements ILoadupProxy
 	{
 		public static const NAME:String = "InchProxy";
 		public static const SRNAME:String = "InchProxySR";
 		
+		public static const LOADED:String = "InchProxy/Loaded";
+		public static const FAILED:String = "InchProxy/Failed";
+		
 		public function InchProxy()
 		{
 			super(NAME, new ArrayCollection);
 		}
 		
-		public function get list():ArrayCollection
-		{
-			return data as ArrayCollection;
-		}
-		
 		public function load():void
-		{
-			list.removeAll();
-			
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			for each(var rw:RopewayVO in ropewayProxy.list)
-			{
-				var inch:InchVO = new InchVO;
-				inch.ropeway = rw;
-				list.addItem(inch);
-			}
-			
-			sendNotification(ApplicationFacade.NOTIFY_INCH_LOADED,NAME);
-		}
-				
-		public function retrieveInch(rw:RopewayVO):InchVO
-		{
-			for each(var item:InchVO in list)
-			{
-				if(item.ropeway.fullName == rw.fullName)
-					return item;
-			}
-			
-			return null;
+		{			
+			sendNotification(LOADED,NAME);
 		}
 		
-		public function AddInch(rw:RopewayVO,inchValue:InchValueVO):void
+		public function AddInch(rwName:String,date:Date,value:Number):void
 		{			
-			var inch:InchVO = retrieveInch(rw);
-			inch.PushInch(inchValue);
+			var inchValue:InchValueVO = new InchValueVO;
+			inchValue.date = date;
+			inchValue.value = Number(value.toFixed(2));
+			
+			InchVO.getName(rwName).PushInch(inchValue);
 		}
 	}
 }

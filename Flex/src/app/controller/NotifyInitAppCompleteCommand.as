@@ -19,13 +19,15 @@ package app.controller
 	{  
 		override protected function initializeAsyncMacroCommand():void
 		{
-			addSubCommand(ActionMainPanelChangeCommand);
-						
+			addSubCommand(ActionMainPanelShowOverviewCommand);
+			
 			addSubCommand(ActionUpdateSurroundingCommand);
+						
+			//addSubCommand(ActionUpdateSurroundingCommand);
 			
-			addSubCommand(ActionUpdateInchCommand);
+			//addSubCommand(ActionUpdateInchCommand);
 			
-			addSubCommand(ActionRefreshWindCommand);
+			//addSubCommand(ActionRefreshWindCommand);
 		}
 	}
 }

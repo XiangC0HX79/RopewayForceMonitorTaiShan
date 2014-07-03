@@ -6,7 +6,6 @@ package app.view
 	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
-	import app.controller.ActionEnginePanelChangeCommand;
 	import app.view.components.MainPanelEngineTemp;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -31,9 +30,9 @@ package app.view
 		{
 			mainPanelEngineTemp.addEventListener(FlexEvent.REMOVE,onUiRemove);
 			
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.REALTIME_DETECTION,onMenu);
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.ANALYSIS,onMenu);
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.MANAGE,onMenu);
+			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.REALTIME_DETECTION,onMenuRealtime);
+			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.ANALYSIS,onMenuAnalysis);
+			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.MANAGE,onMenuManager);
 		}
 		
 		private function onUiRemove(event:Event):void
@@ -41,24 +40,19 @@ package app.view
 			mainPanelEngineTemp.mainContent.removeAllElements();			
 		}
 		
-		private function onMenu(event:Event):void
+		private function onMenuRealtime(event:Event):void
 		{
-			mainPanelEngineTemp.btnSelected = event.type;
-			
-			switch(event.type)
-			{
-				case MainPanelEngineTemp.REALTIME_DETECTION:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_REALTIME);
-					break;
-				
-				case MainPanelEngineTemp.ANALYSIS:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_ANALYSIS);
-					break;
-				
-				case MainPanelEngineTemp.MANAGE:
-					sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_MANAGER);
-					break;
-			}
+			sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_REALTIME);
+		}
+		
+		private function onMenuAnalysis(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_ANALYSIS);
+		}
+		
+		private function onMenuManager(event:Event):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MENU_ENGINE_MANAGER);
 		}
 		
 		private function changeContent(v:IVisualElement):void

@@ -1,6 +1,8 @@
 package app.view
 {	
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
 	import app.model.InchProxy;
@@ -23,8 +25,8 @@ package app.view
 			return viewComponent as TanShanInfoMonitor;
 		}
 		
-		private function changeContent(v:IVisualElement):void
-		{
+		private function changeContent(v:UIComponent):void
+		{			
 			application.mainContent.removeAllElements();
 			application.mainContent.addElement(v);
 		}
@@ -41,7 +43,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.ACTION_MAIN_PANEL_CHANGE:
-					changeContent(notification.getBody() as IVisualElement);
+					changeContent(UIComponent(notification.getBody()));
 					break;
 			}
 		}		

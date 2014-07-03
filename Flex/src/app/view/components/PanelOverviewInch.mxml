@@ -6,74 +6,83 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.core.FlexGlobals;
-			import mx.graphics.ImageSnapshot;
+			import flash.utils.setTimeout;
 			
-			import app.model.vo.InchValueVO;
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.events.ResizeEvent;
 			
-			private const MAX_VALUE:Number = 10;
-			private const MIN_VALUE:Number = 0;
-			private const IMG_WIDTH:Number = 310;
-			private const IMG_MAX:Number = 296;
-			private const IMG_MIN:Number = 7;
+			import app.model.vo.InchVO;
 			
-			[Bindable]private var _inch:InchValueVO;
-			public function set inch(value:InchValueVO):void
+			private var _watcher:ChangeWatcher;
+			
+			[Bindable]private var _niddleX:Number;
+			
+			private var _inch:InchVO;
+			
+			[Bindable]
+			public function get inch():InchVO
+			{
+				return _inch;
+			}
+			public function set inch(value:InchVO):void
 			{
 				_inch = value;
 				
-				if(_inch && initialized)
-				{
-					var v:Number = _inch.value;
-					if(v > MAX_VALUE)v = MAX_VALUE;
-					if(v < MIN_VALUE)v = MIN_VALUE;
-					
-					var grad:Number = (v - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
-					grad *= img.width / IMG_WIDTH;
-					grad -= niddle.width / 2;
-					
-					m.xTo = grad + img.x;
-					m.end();
-					m.play([niddle]);
-					
-					/*var pt:Point = content.contentToGlobal(new Point(0,0));
-					
-					var clipRect:Rectangle = new Rectangle(pt.x,pt.y,content.width,content.height);
-					var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
-					
-					if(!bd.rect.containsRect(clipRect))
-						return;
-					
-					var ba:ByteArray = bd.getPixels(clipRect);
-					ba.position = 0;
-					
-					var fillRect:Rectangle = new Rectangle(0,0,clipRect.width,clipRect.height);
-					var newBd:BitmapData=new BitmapData(clipRect.width, clipRect.height);  			
-					newBd.setPixels(fillRect,ba);
-					
-					imageAnimate.source = new Bitmap(newBd);
-					imageAnimate.visible = true;
-					
-					anima.widthFrom = content.width;
-					anima.widthTo = 0;
-					anima.heightFrom = content.height;
-					anima.heightTo = 0;
-					anima.play([imageAnimate]);*/
-				}
+				if(_watcher)
+					_watcher.unwatch();
+				
+				BindingUtils.bindSetter(setterNiddle,_inch,"lastValue");
 			}
+			
+			private function setterNiddle(obj:Object):void
+			{				
+				_niddleX = getNiddlePos(inch.lastValue.value);
+			}
+			
+			private function getNiddlePos(value:Number):Number
+			{				
+				const MAX_VALUE:Number = 10;
+				const MIN_VALUE:Number = 0;
+				const IMG_WIDTH:Number = 310;
+				const IMG_MAX:Number = 296;
+				const IMG_MIN:Number = 8;
+				
+				var v:Number = value;
+				if(v > MAX_VALUE)v = MAX_VALUE;
+				if(v < MIN_VALUE)v = MIN_VALUE;
+				
+				var grad:Number = (v - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (IMG_MAX - IMG_MIN) + IMG_MIN;				
+				grad *= img.width / IMG_WIDTH;
+				grad -= niddle.width / 2;
+				
+				return grad + img.x;
+			}
+			
+			private var _resizeExecuting:Boolean = false;
+			
+			protected function img_resizeHandler(event:ResizeEvent):void
+			{				
+				_resizeExecuting = true;
+				
+				flash.utils.setTimeout(onResize,200);
+			}
+			
+			private function onResize():void
+			{
+				if(_resizeExecuting)
+				{
+					_niddleX = getNiddlePos(inch.lastValue.value);
+				}
+				
+				_resizeExecuting = false;
+			}			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Move id="m"/>
-		<!--<s:Resize id="anima">
-			<s:effectEnd>
-				<![CDATA[				
-				imageAnimate.visible = false;
-				]]>
-			</s:effectEnd>			
-		</s:Resize>-->
+		<mx:Move id="m"/>
 		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 	</fx:Declarations>
 	
@@ -84,22 +93,14 @@
 	<s:SkinnableContainer left="5" right="5" top="30" bottom="5"
 						  skinClass="custom.skin.SkinPanelContent"
 						  fontWeight="bold">
-		<s:VGroup id="niddle" horizontalAlign="center" gap="0" width="40">
-			<s:Label text="{_inch.value}M" color="0x1b5aa2" fontSize="28" />
+		<s:VGroup id="niddle" horizontalAlign="center" gap="0" width="40" moveEffect="{m}" x="{_niddleX}">
+			<s:Label text="{inch.lastValue.value}M" color="0x1b5aa2" fontSize="28" />
 			<s:Image source="assets/image/inch_niddle.png"/>		
 		</s:VGroup>
 		
-		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/inch_back_02.png" scaleMode="stretch"/>
-		<!--<s:HGroup id="content" color="0x1b5aa2" fontSize="28" 
-				  horizontalCenter="0" verticalCenter="0"
-				  horizontalAlign="center">	
-			<s:Label text="{_inch.value}" width="64"/>		
-			<s:Label text="M"/>	
-		</s:HGroup>
+		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/inch_back_02.png" 
+				 scaleMode="stretch" resize="img_resizeHandler(event)"/>
 		
-		<s:Image id="imageAnimate" horizontalCenter="0" verticalCenter="0"
-				 visible="false"/>-->
-		
-		<s:Label text="{df.format(_inch.date)}" right="0" bottom="0"/>
+		<s:Label text="{df.format(inch.lastValue.date)}" right="0" bottom="0"/>
 	</s:SkinnableContainer>
 </s:SkinnableContainer>

@@ -16,6 +16,9 @@
 		<![CDATA[
 			import flash.utils.setTimeout;
 			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.events.ResizeEvent;
 			
@@ -23,75 +26,43 @@
 			
 			import app.model.vo.EngineTempVO;
 			import app.model.vo.EngineVO;
+						
+			[Bindable]private var _chartTitle:String;
+						
+			private var _watcher:ChangeWatcher;
 			
-			public static const ONE_MIN:Number = 60 * 1000;
-			public static const TEN_MIN:Number = 10 * 60 * 1000;
-			public static const HALF_HOUR:Number = 30 * 60 * 1000;
-			public static const ONE_HOUR:Number = 60 * 60 * 1000;
-			
-			[Bindable]private var chartTitle:String;
-			
-			[Bindable]private var _engine:EngineVO;
+			private var _engine:EngineVO;
 			
 			public function get engine():EngineVO
 			{
 				return _engine;
 			}
-
+			
 			public function set engine(value:EngineVO):void
 			{						
-				if(value)
-					chartTitle = (value.pos == EngineVO.FIRST)?"温度1":"温度2";
+				_engine = value;
 				
-				if(!this.initialized)
+				_chartTitle = (value.pos == EngineVO.FIRST)?"温度1":"温度2";
+								
+				if(this.initialized)				
+					RefreshChart(_engine.history,"date","temp","alarm");
+				
+				if(_watcher)
 				{
-					_engine = value;	
-					return;
-				}				
-					
-				if(!value || !value.history || (value.history.length == 0))
-				{
-					_engine = value;					
-					
-					clearChart();
+					_watcher.unwatch();
 				}
-				else
-				{
-					if((_engine == value) && (value.history.length > 1))
-					{						
-						reCalcuXY();
-						
-						ContinueChart();
-					}
-					else
-					{
-						_engine = value;
-						
-						reCalcuXY();
-						
-						RefreshChart();			
-					}
-				}		
+				
+				_watcher = BindingUtils.bindSetter(tempSetter,value,"lastTemp");
 			}
 			
-			private function clearChart():void
-			{			
-				groupPoint.removeAllElements();
-				groupLine.removeAllElements();
-				
-				lineMax.visible = false;
-				lineMin.visible = false;
-				lineAve.visible = false;
-				lbMax.visible = false;
-				lbMin.visible = false;
-				lbAve.visible = false;
+			private function tempSetter(obj:Object):void
+			{	
+				if(this.initialized)	
+					ContinueChart(engine.history,"date","temp","alarm");				
 			}
 			
-			private function reCalcuY():void
-			{							
-				var max:Number = _engine.maxTemp;
-				var min:Number = _engine.minTemp;
-				
+			private function calcuChartY(min:Number,max:Number):void
+			{											
 				var df:Number = max - min;
 				var ave:Number = (max + min) / 2;
 				
@@ -126,12 +97,17 @@
 				verticalAxis.maximum = min + 5 * interval;
 			}
 			
-			private function reCalcuX():void
+			private function calcuChartX(minDate:Date,maxDate:Date):void
 			{							
-				var min:Number = _engine.firstTemp.date.time;
+				const ONE_MIN:Number = 60 * 1000;
+				const TEN_MIN:Number = 10 * 60 * 1000;
+				const HALF_HOUR:Number = 30 * 60 * 1000;
+				const ONE_HOUR:Number = 60 * 60 * 1000;
+				
+				var min:Number = minDate.time;
 				min = Math.floor(min / ONE_MIN) * ONE_MIN;
 				
-				var max:Number = _engine.lastTemp.date.time;	
+				var max:Number = maxDate.time;	
 				max = Math.floor(max / ONE_MIN) * ONE_MIN + ONE_MIN;		
 				
 				var df:Number = max - min;
@@ -167,7 +143,18 @@
 			}
 			
 			private function drawYesterday():void
-			{
+			{				
+				if(engine.history.length == 0)
+				{
+					lineMax.visible = false;
+					lineMin.visible = false;
+					lineAve.visible = false;
+					lbMax.visible = false;
+					lbMin.visible = false;
+					lbAve.visible = false;
+					return;
+				}
+				
 				//昨天数值
 				lineMax.visible = true;
 				lineMin.visible = true;
@@ -178,7 +165,7 @@
 				
 				var moves:Array = new Array;
 				
-				var pt:Point = dataCanvas.dataToLocal(0,_engine.maxTemp);				
+				var pt:Point = dataCanvas.dataToLocal(0,engine.maxTemp);				
 				var move:Move = new Move(lineMax);
 				move.yTo = pt.y;
 				moves.push(move);
@@ -187,7 +174,7 @@
 				move.yTo = pt.y - 30;
 				moves.push(move);
 				
-				pt = dataCanvas.dataToLocal(0,_engine.aveTemp);
+				pt = dataCanvas.dataToLocal(0,engine.aveTemp);
 				move = new Move(lineAve);
 				move.yTo = pt.y;
 				moves.push(move);
@@ -196,7 +183,7 @@
 				move.yTo = pt.y - 30;
 				moves.push(move);
 				
-				pt = dataCanvas.dataToLocal(0,_engine.minTemp);
+				pt = dataCanvas.dataToLocal(0,engine.minTemp);
 				move = new Move(lineMin);
 				move.yTo = pt.y;
 				moves.push(move);
@@ -208,22 +195,24 @@
 				parallel.end();
 				parallel.children = moves;
 				parallel.play();
+				
+				lbMax.text = "最高温度\n" + engine.maxTemp + " ℃";				
+				lbAve.text = "平均温度\n" + engine.aveTemp + " ℃";				
+				lbMin.text = "最低温度\n" + engine.minTemp + " ℃";
 			}
 			
-			private function reCalcuXY():void
+			private function CalcuChartXY(minY:Number,maxY:Number,minDate:Date,maxDate:Date):void
 			{			
-				reCalcuY();
+				calcuChartY(minY,maxY);
 				
-				reCalcuX();
+				calcuChartX(minDate,maxDate);
 				
 				drawYesterday();
 			}
-			
-			public function RefreshChart():void
+						
+			public function RefreshChart(dataProvider:ArrayCollection,xField:String,yField:String,alarmField:String):void
 			{					
-				//添加折线\点
-				var len:int = groupPoint.numElements;
-				for(var i:int = 0;i<len;i++)
+				for(var i:int = 0;i< groupPoint.numElements;i++)
 				{
 					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;
 					img.removeEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
@@ -233,25 +222,42 @@
 				groupPoint.removeAllElements();
 				groupLine.removeAllElements();
 				
-				var animates:Array = new Array;								
-				for(i = 0;i<_engine.history.length;i++)
+				if(dataProvider.length == 0)
 				{
-					var sForce:EngineTempVO = _engine.history[i];
+					return;
+				}
+				
+				var array:Array = [];
+				array = array.concat(dataProvider.source);
+				array.sortOn(yField,Array.NUMERIC);
+				
+				CalcuChartXY(
+					array[0][yField]
+					,array[array.length - 1][yField]
+					,dataProvider[0][xField]
+					,dataProvider[dataProvider.length - 1][xField]
+				);
+											
+				//添加折线\点								
+				var animates:Array = [];								
+				for(i = 0;i<dataProvider.length;i++)
+				{
+					var sData:* = dataProvider[i];
 					
 					img = new ChartImage;					
 					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
 					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
-					img.SetValue(dataCanvas,sForce,sForce.date,sForce.temp,sForce.alarm);					
+					img.SetValue(dataCanvas,sData,sData[xField],sData[yField],sData[alarmField]);					
 					groupPoint.addElement(img);		
 					
 					animates.push(img.scale);
 					
-					if(i < _engine.history.length - 1)
+					if(i < dataProvider.length - 1)
 					{						
 						var line:ChartLine = new ChartLine;
 						
-						var eForce:EngineTempVO = _engine.history[i+1];
-						line.SetValue(dataCanvas,sForce.date,sForce.temp,eForce.date,eForce.temp);
+						var eData:* = dataProvider[i+1];
+						line.SetValue(dataCanvas,sData[xField],sData[yField],eData[xField],eData[yField]);
 						
 						groupLine.addElement(line);
 						
@@ -265,10 +271,31 @@
 				sequence.play();				
 			}		
 			
-			public function ContinueChart():void
-			{		
-				var animates:Array = new Array;							
-				for(var i:Number = 0;i<groupPoint.numElements;i++)
+			private function newChartImage(data:*,xValue:Date,yValue:Number,alarm:int):ChartImage
+			{
+				var img:ChartImage = new ChartImage;					
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				img.SetValue(dataCanvas,data,xValue,yValue,alarm);	
+				
+				groupPoint.addElement(img);		
+				
+				return img;
+			}
+			
+			private function newChartLine(xValue1:Date,yValue1:Number,xValue2:Date,yValue2:Number):ChartLine
+			{
+				var line:ChartLine = new ChartLine;
+				line.SetValue(dataCanvas,xValue1,yValue1,xValue2,yValue2);
+				groupLine.addElement(line);			
+				
+				return line;
+			}
+			
+			private function drawOldChart():Parallel
+			{	
+				var animates:Array = [];
+				for(var i:Number = 0;i < groupPoint.numElements;i++)
 				{
 					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;	
 					img.SetValue(dataCanvas);
@@ -282,33 +309,73 @@
 					}
 				}	
 				
-				var sForce:EngineTempVO = _engine.history[_engine.history.length - 2];
-				var eForce:EngineTempVO = _engine.history[_engine.history.length - 1];
+				var parallel:Parallel = new Parallel;
+				parallel.children = animates;
 				
-				var p:Parallel = new Parallel;
-				p.children = animates;
+				return parallel;
+			}
+			
+			public function ContinueChart(dataProvider:ArrayCollection,xField:String,yField:String,alarmField:String):void
+			{		
+				var sIndex:int = groupPoint.numElements;
 				
-				animates = new Array;
-				animates.push(p);
+				if((dataProvider.length == 0)
+					||(dataProvider.length == sIndex))
+					return;
 								
-				line = new ChartLine;
-				line.SetValue(dataCanvas,sForce.date,sForce.temp,eForce.date,eForce.temp);
-				groupLine.addElement(line);			
+				var array:Array = [];
+				array = array.concat(dataProvider.source);
+				array.sortOn(yField,Array.NUMERIC);
 				
-				line.animate.duration = 500;
-				animates.push(line.animate);	
+				CalcuChartXY(
+					array[0][yField]
+					,array[array.length - 1][yField]
+					,dataProvider[0][xField]
+					,dataProvider[dataProvider.length - 1][xField]
+				);
 				
-				img = new ChartImage;		
-				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
-				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
-				img.SetValue(dataCanvas,eForce,eForce.date,eForce.temp,eForce.alarm);
-				groupPoint.addElement(img);		
+				var animates:Array = [];		
 				
-				animates.push(img.scale);
+				if(sIndex == 0)
+				{
+					animates.push(
+						newChartImage(
+							dataProvider[0]
+							,dataProvider[0][xField]
+							,dataProvider[0][yField]
+							,dataProvider[0][alarmField]).scale
+						);	
+					
+					sIndex ++;
+				}				
+				else
+				{
+					animates.push(drawOldChart());
+				}
 				
+				for(var i:int = sIndex;i<dataProvider.length;i++)
+				{						
+					animates.push(
+						newChartLine(
+						dataProvider[i - 1][xField]
+						,dataProvider[i - 1][yField]
+						,dataProvider[i][xField]
+						,dataProvider[i][yField]
+						).animate
+						);
+					
+					animates.push(
+						newChartImage(
+							dataProvider[i]
+							,dataProvider[i][xField]
+							,dataProvider[i][yField]
+							,dataProvider[i][alarmField]).scale
+					);	
+				}
+			
 				sequence.end();
 				sequence.children = animates;
-				sequence.duration = 3000 / animates.length;
+				sequence.duration = (animates.length == 1)?1000:(3000/animates.length);
 				sequence.play();
 			}
 			
@@ -386,20 +453,28 @@
 				chartTip.visible = false;
 			}
 			
+			
+			private var _resizeExecuting:Boolean = false;
+			
 			protected function dataCanvas_resizeHandler(event:ResizeEvent):void
 			{				
+				_resizeExecuting = true;
+				
 				flash.utils.setTimeout(onResize,200);
-			}			
+			}
 			
 			private function onResize():void
 			{
-				if(_engine && _engine.history && (_engine.history.length > 0))
+				if(_resizeExecuting)
 				{
-					reCalcuXY();			
-					
-					RefreshChart();		
+					if(engine && engine.history && (engine.history.length > 0))
+					{
+						RefreshChart(engine.history,"date","temp","alarm");		
+					}
 				}
-			}
+				
+				_resizeExecuting = false;
+			}	
 			
 			protected function dataCanvas_updateCompleteHandler(event:FlexEvent):void
 			{
@@ -441,11 +516,11 @@
 			</s:fill>
 		</s:Rect>
 		
-		<s:Label right="15" id="lbMax" text="最高温度&#xd;{_engine.maxTemp} ℃" textAlign="center"
+		<s:Label right="15" id="lbMax" textAlign="center"
 				 verticalAlign="middle"/> 	
-		<s:Label right="15" id="lbMin" text="最低温度&#xd;{_engine.minTemp} ℃" textAlign="center"
+		<s:Label right="15" id="lbMin" textAlign="center"
 				 verticalAlign="middle"/> 	
-		<s:Label right="15" id="lbAve" text="平均温度&#xd;{Math.round(_engine.aveTemp * 10) / 10} ℃" textAlign="center"
+		<s:Label right="15" id="lbAve" textAlign="center"
 				 verticalAlign="middle"/> 
 	</s:Group>
 	
@@ -510,12 +585,10 @@
 		<s:Group id="groupLabel" width="100%" height="100%">
 			<components:ChartTipEngine id="chartTip" visible="false"/>
 		</s:Group>
-		
-		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>
 	</s:Group>
 	
 	<s:Label left="10" top="20" text="温度（℃）"/>
 	<s:Label right="15" bottom="40" text="时间"/>
 	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
-			 text="{chartTitle} - 实时监测曲线"/>
+			 text="{_chartTitle} - 实时监测曲线"/>
 </s:Group>

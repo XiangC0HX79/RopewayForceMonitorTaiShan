@@ -19,6 +19,9 @@
 		<![CDATA[
 			import flash.utils.setTimeout;
 			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.events.ResizeEvent;
 			
@@ -26,14 +29,12 @@
 			
 			import app.model.vo.InchVO;
 			import app.model.vo.InchValueVO;
+						
+			private var _watcher:ChangeWatcher;
 			
-			public static const ONE_MIN:Number = 60 * 1000;
-			public static const TEN_MIN:Number = 10 * 60 * 1000;
-			public static const HALF_HOUR:Number = 30 * 60 * 1000;
-			public static const ONE_HOUR:Number = 60 * 60 * 1000;
+			private var _inch:InchVO;
 			
-			[Bindable]private var _inch:InchVO;
-			
+			[Bindable]
 			public function get inch():InchVO
 			{
 				return _inch;
@@ -41,63 +42,28 @@
 			
 			public function set inch(value:InchVO):void
 			{							
-				if(!this.initialized)
+				_inch = value;
+				
+				if(this.initialized)				
+					RefreshChart(_inch.his,"date","value","alarm");
+				
+				if(_watcher)
 				{
-					lineMax.visible = false;
-					lineMin.visible = false;
-					lineAve.visible = false;
-					lbMax.visible = false;
-					lbMin.visible = false;
-					lbAve.visible = false;				
-					
-					_inch = value;		
-					return;
+					_watcher.unwatch();
 				}
 				
-				if(!value || !value.his || (value.his.length == 0))
-				{
-					_inch = value;					
-					
-					clearChart();
-				}
-				else
-				{
-					if((_inch == value) && (value.his.length > 1))
-					{						
-						reCalcuXY();
-						
-						ContinueChart();
-					}
-					else
-					{
-						_inch = value;
-						
-						reCalcuXY();
-						
-						RefreshChart();			
-					}
-				}		
+				_watcher = BindingUtils.bindSetter(tempSetter,value,"lastValue");
 			}
 			
-			private function clearChart():void
-			{			
-				groupPoint.removeAllElements();
-				groupLine.removeAllElements();
-				
-				lineMax.visible = false;
-				lineMin.visible = false;
-				lineAve.visible = false;
-				lbMax.visible = false;
-				lbMin.visible = false;
-				lbAve.visible = false;
+			private function tempSetter(obj:Object):void
+			{	
+				if(this.initialized)	
+					ContinueChart(inch.his,"date","value","alarm");				
 			}
 			
-			private function reCalcuY():void
-			{							
-				var max:Number = _inch.maxValue;
-				var min:Number = _inch.minValue;
-				
-				var df:Number = max - min;
+			private function calcuChartY(min:Number,max:Number):void
+			{											
+				/*var df:Number = max - min;
 				var ave:Number = (max + min) / 2;
 				
 				if(df < 4 * 10)
@@ -128,15 +94,23 @@
 				
 				verticalAxis.interval = interval;
 				verticalAxis.minimum = min;
-				verticalAxis.maximum = min + 5 * interval;
+				verticalAxis.maximum = min + 5 * interval;*/
+				
+				verticalAxis.minimum = 0;
+				verticalAxis.maximum = 10;
 			}
 			
-			private function reCalcuX():void
+			private function calcuChartX(minDate:Date,maxDate:Date):void
 			{							
-				var min:Number = _inch.firstValue.date.time;
+				const ONE_MIN:Number = 60 * 1000;
+				const TEN_MIN:Number = 10 * 60 * 1000;
+				const HALF_HOUR:Number = 30 * 60 * 1000;
+				const ONE_HOUR:Number = 60 * 60 * 1000;
+				
+				var min:Number = minDate.time;
 				min = Math.floor(min / ONE_MIN) * ONE_MIN;
 				
-				var max:Number = _inch.lastValue.date.time;	
+				var max:Number = maxDate.time;	
 				max = Math.floor(max / ONE_MIN) * ONE_MIN + ONE_MIN;		
 				
 				var df:Number = max - min;
@@ -172,28 +146,22 @@
 			}
 			
 			private function drawYesterday():void
-			{
+			{				
+				if(inch.his.length == 0)
+				{
+					lineAve.visible = false;
+					lbAve.visible = false;
+					return;
+				}
+				
 				//昨天数值
-				//lineMax.visible = true;
-				//lineMin.visible = true;
 				lineAve.visible = true;
-				//lbMax.visible = true;
-				//lbMin.visible = true;
 				lbAve.visible = true;
 				
-				var moves:Array = new Array;
+				var moves:Array = new Array;		
 				
-				var pt:Point = dataCanvas.dataToLocal(0,_inch.maxValue);				
-				var move:Move = new Move(lineMax);
-				move.yTo = pt.y;
-				moves.push(move);
-				
-				move = new Move(lbMax);
-				move.yTo = pt.y - 30;
-				moves.push(move);
-				
-				pt = dataCanvas.dataToLocal(0,_inch.aveDay);
-				move = new Move(lineAve);
+				var pt:Point  = dataCanvas.dataToLocal(0,inch.aveDay);
+				var move:Move = new Move(lineAve);
 				move.yTo = pt.y;
 				moves.push(move);
 				
@@ -201,34 +169,25 @@
 				move.yTo = pt.y - 30;
 				moves.push(move);
 				
-				pt = dataCanvas.dataToLocal(0,_inch.minValue);
-				move = new Move(lineMin);
-				move.yTo = pt.y;
-				moves.push(move);
-				
-				move = new Move(lbMin);
-				move.yTo = pt.y - 30;
-				moves.push(move);
-				
 				parallel.end();
 				parallel.children = moves;
 				parallel.play();
+					
+				lbAve.text = "平均长度\n" + inch.aveDay + " M";	
 			}
 			
-			private function reCalcuXY():void
+			private function CalcuChartXY(minY:Number,maxY:Number,minDate:Date,maxDate:Date):void
 			{			
-				reCalcuY();
+				calcuChartY(minY,maxY);
 				
-				reCalcuX();
+				calcuChartX(minDate,maxDate);
 				
 				drawYesterday();
 			}
 			
-			public function RefreshChart():void
+			public function RefreshChart(dataProvider:ArrayCollection,xField:String,yField:String,alarmField:String):void
 			{					
-				//添加折线\点
-				var len:int = groupPoint.numElements;
-				for(var i:int = 0;i<len;i++)
+				for(var i:int = 0;i< groupPoint.numElements;i++)
 				{
 					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;
 					img.removeEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);
@@ -238,25 +197,42 @@
 				groupPoint.removeAllElements();
 				groupLine.removeAllElements();
 				
-				var animates:Array = new Array;								
-				for(i = 0;i<_inch.his.length;i++)
+				if(dataProvider.length == 0)
 				{
-					var sForce:InchValueVO = _inch.his[i];
+					return;
+				}
+				
+				var array:Array = [];
+				array = array.concat(dataProvider.source);
+				array.sortOn(yField,Array.NUMERIC);
+				
+				CalcuChartXY(
+					array[0][yField]
+					,array[array.length - 1][yField]
+					,dataProvider[0][xField]
+					,dataProvider[dataProvider.length - 1][xField]
+				);
+				
+				//添加折线\点								
+				var animates:Array = [];								
+				for(i = 0;i<dataProvider.length;i++)
+				{
+					var sData:* = dataProvider[i];
 					
 					img = new ChartImage;					
 					img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
 					img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
-					img.SetValue(dataCanvas,sForce,sForce.date,sForce.value,sForce.alarm);					
+					img.SetValue(dataCanvas,sData,sData[xField],sData[yField],sData[alarmField]);					
 					groupPoint.addElement(img);		
 					
 					animates.push(img.scale);
 					
-					if(i < _inch.his.length - 1)
+					if(i < dataProvider.length - 1)
 					{						
 						var line:ChartLine = new ChartLine;
 						
-						var eForce:InchValueVO = _inch.his[i+1];
-						line.SetValue(dataCanvas,sForce.date,sForce.value,eForce.date,eForce.value);
+						var eData:* = dataProvider[i+1];
+						line.SetValue(dataCanvas,sData[xField],sData[yField],eData[xField],eData[yField]);
 						
 						groupLine.addElement(line);
 						
@@ -270,10 +246,31 @@
 				sequence.play();				
 			}		
 			
-			public function ContinueChart():void
-			{		
-				var animates:Array = new Array;							
-				for(var i:Number = 0;i<groupPoint.numElements;i++)
+			private function newChartImage(data:*,xValue:Date,yValue:Number,alarm:int):ChartImage
+			{
+				var img:ChartImage = new ChartImage;					
+				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
+				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
+				img.SetValue(dataCanvas,data,xValue,yValue,alarm);	
+				
+				groupPoint.addElement(img);		
+				
+				return img;
+			}
+			
+			private function newChartLine(xValue1:Date,yValue1:Number,xValue2:Date,yValue2:Number):ChartLine
+			{
+				var line:ChartLine = new ChartLine;
+				line.SetValue(dataCanvas,xValue1,yValue1,xValue2,yValue2);
+				groupLine.addElement(line);			
+				
+				return line;
+			}
+			
+			private function drawOldChart():Parallel
+			{	
+				var animates:Array = [];
+				for(var i:Number = 0;i < groupPoint.numElements;i++)
 				{
 					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;	
 					img.SetValue(dataCanvas);
@@ -287,58 +284,98 @@
 					}
 				}	
 				
-				var sForce:InchValueVO = _inch.his[_inch.his.length - 2];
-				var eForce:InchValueVO = _inch.his[_inch.his.length - 1];
+				var parallel:Parallel = new Parallel;
+				parallel.children = animates;
 				
-				var p:Parallel = new Parallel;
-				p.children = animates;
+				return parallel;
+			}
+			
+			public function ContinueChart(dataProvider:ArrayCollection,xField:String,yField:String,alarmField:String):void
+			{		
+				var sIndex:int = groupPoint.numElements;
 				
-				animates = new Array;
-				animates.push(p);
+				if((dataProvider.length == 0)
+					||(dataProvider.length == sIndex))
+					return;
 				
-				line = new ChartLine;
-				line.SetValue(dataCanvas,sForce.date,sForce.value,eForce.date,eForce.value);
-				groupLine.addElement(line);			
+				var array:Array = [];
+				array = array.concat(dataProvider.source);
+				array.sortOn(yField,Array.NUMERIC);
 				
-				line.animate.duration = 500;
-				animates.push(line.animate);	
+				CalcuChartXY(
+					array[0][yField]
+					,array[array.length - 1][yField]
+					,dataProvider[0][xField]
+					,dataProvider[dataProvider.length - 1][xField]
+				);
 				
-				img = new ChartImage;		
-				img.addEventListener(MouseEvent.MOUSE_OVER,onImageMouseOver);		
-				img.addEventListener(MouseEvent.MOUSE_OUT,onImageMouseOut);
-				img.SetValue(dataCanvas,eForce,eForce.date,eForce.value,eForce.alarm);
-				groupPoint.addElement(img);		
+				var animates:Array = [];		
 				
-				animates.push(img.scale);
+				if(sIndex == 0)
+				{
+					animates.push(
+						newChartImage(
+							dataProvider[0]
+							,dataProvider[0][xField]
+							,dataProvider[0][yField]
+							,dataProvider[0][alarmField]).scale
+					);	
+					
+					sIndex ++;
+				}				
+				else
+				{
+					animates.push(drawOldChart());
+				}
+				
+				for(var i:int = sIndex;i<dataProvider.length;i++)
+				{						
+					animates.push(
+						newChartLine(
+							dataProvider[i - 1][xField]
+							,dataProvider[i - 1][yField]
+							,dataProvider[i][xField]
+							,dataProvider[i][yField]
+						).animate
+					);
+					
+					animates.push(
+						newChartImage(
+							dataProvider[i]
+							,dataProvider[i][xField]
+							,dataProvider[i][yField]
+							,dataProvider[i][alarmField]).scale
+					);	
+				}
 				
 				sequence.end();
 				sequence.children = animates;
-				sequence.duration = 3000 / animates.length;
+				sequence.duration = (animates.length == 1)?1000:(3000/animates.length);
 				sequence.play();
 			}
 			
 			/*public function MoveChart():void
 			{				
-				var animates:Array = new Array;
-				for(var i:Number = 0;i<groupPoint.numElements;i++)
-				{
-					var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;						
-					img.SetValue(dataCanvas);	
-					animates.push(img.mv);
-					
-					if(i < groupLine.numElements)
-					{
-						var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
-						line.SetValue(dataCanvas);
-						animates.push(line.animate);
-					}
-				}	
-				
-				sequence.end();
-				
-				var p:Parallel = new Parallel;
-				p.children = animates;
-				p.play();
+			var animates:Array = new Array;
+			for(var i:Number = 0;i<groupPoint.numElements;i++)
+			{
+			var img:ChartImage = groupPoint.getElementAt(i) as ChartImage;						
+			img.SetValue(dataCanvas);	
+			animates.push(img.mv);
+			
+			if(i < groupLine.numElements)
+			{
+			var line:ChartLine = groupLine.getElementAt(i) as ChartLine;
+			line.SetValue(dataCanvas);
+			animates.push(line.animate);
+			}
+			}	
+			
+			sequence.end();
+			
+			var p:Parallel = new Parallel;
+			p.children = animates;
+			p.play();
 			}*/
 			
 			private function onImageMouseOver(event:MouseEvent):void
@@ -346,10 +383,10 @@
 				var off:Number = 10;
 				
 				var img:ChartImage = event.currentTarget as ChartImage;		
-				var et:InchValueVO = img.data as InchValueVO;		
-				chartTip.data = et;
+				var inchValue:InchValueVO = img.data as InchValueVO;		
+				chartTip.data = inchValue;
 				
-				var pt:Point = dataCanvas.dataToLocal(et.date,et.value);
+				var pt:Point = dataCanvas.dataToLocal(inchValue.date,inchValue.value);
 				var prect:Rectangle = new Rectangle(0,0,groupLabel.width,groupLabel.height);
 				
 				chartTip.validateNow();
@@ -391,20 +428,28 @@
 				chartTip.visible = false;
 			}
 			
+			
+			private var _resizeExecuting:Boolean = false;
+			
 			protected function dataCanvas_resizeHandler(event:ResizeEvent):void
 			{				
+				_resizeExecuting = true;
+				
 				flash.utils.setTimeout(onResize,200);
-			}			
+			}
 			
 			private function onResize():void
 			{
-				if(_inch && _inch.his && (_inch.his.length > 0))
+				if(_resizeExecuting)
 				{
-					reCalcuXY();			
-					
-					RefreshChart();
+					if(inch && inch.his && (inch.his.length > 0))
+					{
+						RefreshChart(inch.his,"date","value","alarm");		
+					}
 				}
-			}
+				
+				_resizeExecuting = false;
+			}	
 			
 			protected function dataCanvas_updateCompleteHandler(event:FlexEvent):void
 			{
@@ -431,27 +476,13 @@
 	</s:Rect>	
 	
 	<s:Group id="labelChart">
-		<s:Rect id="lineMax" height="1" left="10" right="10" visible="false">
-			<s:fill>
-				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
-			</s:fill>
-		</s:Rect>
 		<s:Rect id="lineAve" height="1" left="10" right="10" visible="false">
 			<s:fill>
 				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
 			</s:fill>
 		</s:Rect>
-		<s:Rect id="lineMin" height="1" left="10" right="10" visible="false">
-			<s:fill>
-				<s:BitmapFill source="@Embed('assets/image/yes_stroke.png')" fillMode="repeat"/>
-			</s:fill>
-		</s:Rect>
 		
-		<s:Label right="15" id="lbMax" text="最高温度&#xd;{_inch.maxValue} ℃" textAlign="center"
-				 verticalAlign="middle"/> 	
-		<s:Label right="15" id="lbMin" text="最低温度&#xd;{_inch.minValue} ℃" textAlign="center"
-				 verticalAlign="middle"/> 	
-		<s:Label right="15" id="lbAve" text="平均值&#xd;{Math.round(_inch.aveDay * 10) / 10} M" textAlign="center"
+		<s:Label right="15" id="lbAve" textAlign="center"
 				 verticalAlign="middle"/> 
 	</s:Group>
 	

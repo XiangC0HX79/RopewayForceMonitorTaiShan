@@ -7,7 +7,7 @@ package app.model.vo
 		
 		public var date:Date;
 		
-		public var temp:Number;
+		public var temp:Number = 0;
 		
 		public var alarm:int = 0;
 		

@@ -1,19 +1,12 @@
 package app.controller
-{
-	import app.ApplicationFacade;
-	import app.model.InchProxy;
-	import app.view.ContentInchRealtimeMediator;
+{	
+	import org.puremvc.as3.multicore.patterns.command.AsyncMacroCommand;
 	
-	import org.puremvc.as3.multicore.interfaces.ICommand;
-	import org.puremvc.as3.multicore.interfaces.INotification;
-	import org.puremvc.as3.multicore.patterns.command.MacroCommand;
-	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
-	
-	public class NotifyMenuInchAnalysisCommand extends MacroCommand implements ICommand
+	public class NotifyMenuInchAnalysisCommand extends AsyncMacroCommand
 	{
-		override protected function initializeMacroCommand():void
+		override protected function initializeAsyncMacroCommand():void
 		{
-			addSubCommand(ActionInchPanelChangeCommand);
+			addSubCommand(ActionInchPanelShowAnalysisCommand);
 		}
 	}
 }

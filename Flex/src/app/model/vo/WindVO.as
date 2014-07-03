@@ -1,59 +1,50 @@
 package app.model.vo
 {
+	import flash.errors.IllegalOperationError;
+	
 	import mx.collections.ArrayCollection;
-	import mx.utils.UIDUtil;
+	import mx.events.PropertyChangeEvent;
+	import mx.events.PropertyChangeEventKind;
+	import mx.utils.ObjectProxy;
 
 	[Bindable]
-	public class WindVO
+	public class WindVO extends ObjectProxy
 	{
-		public function get uid():String
-		{
-			return UIDUtil.getUID(this);
-		}
-		
-		public var bracket:BracketVO;
+		//public var bracket:BracketVO;
 				
-		public var history:ArrayCollection = new ArrayCollection;
+		public var history:ArrayCollection;
 		
-		public var maxValue:Number;
+		//public var maxValue:Number;
 		
-		public var minValue:Number;
+		//public var minValue:Number;
 		
-		public var firstValue:WindValueVO;
+		//public var firstValue:WindValueVO;
 		
-		public var lastValue:WindValueVO;
-		
-		public function WindVO(bracket:BracketVO)
+		public function get lastValue():WindValueVO
 		{
-			this.bracket = bracket;
+			return (history && (history.length > 0))?history[history.length - 1]:new WindValueVO;
+		}
+
+		public function set lastValue(value:WindValueVO):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		
+		public function WindVO()
+		{
 		}
 		
-		public function UnshiftInch(et:WindValueVO):void
+		public function UnshiftWind(wv:WindValueVO):void
 		{			
-			history.source.unshift(et);
-			
-			firstValue = et;
-			
-			if(history.length == 1)
-				lastValue = et;
-			
-			maxValue = maxValue?Math.max(maxValue,et.speed):et.speed;
-			
-			minValue = minValue?Math.min(minValue,et.speed):et.speed;
+			history.source.unshift(wv);
 		}
 		
-		public function PushInch(et:WindValueVO):void
+		public function PushWind(wv:WindValueVO):void
 		{			
-			history.source.push(et);
+			history.source.push(wv);
 			
-			if(history.length == 1)
-				firstValue = et;
-			
-			lastValue = et;
-			
-			maxValue = maxValue?Math.max(maxValue,et.speed):et.speed;
-			
-			minValue = minValue?Math.min(minValue,et.speed):et.speed;
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"lastValue",null,lastValue,this));
 		}
 	}
 }

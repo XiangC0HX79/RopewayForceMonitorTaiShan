@@ -13,10 +13,11 @@ package app.model.vo
 			if ( !super.isValid() ) return false;
 			
 			// make sure all fields are populated
-			return ( appName 			!= null &&
+			return ( appName 	!= null &&
 				appVersion 		!= null &&
 				socketIp 		!= null &&
-				socketPort 	!= null
+				socketPort 		!= null && 
+				webserviceInfo 	!= null
 			);
 		}
 		
@@ -44,6 +45,11 @@ package app.model.vo
 		public function get socketPort():String
 		{
 			return config.nsDeploy::socketPort;
+		}
+		
+		public function get webserviceInfo():String
+		{
+			return config.nsDeploy::webserviceInfo;
 		}
 	}
 }

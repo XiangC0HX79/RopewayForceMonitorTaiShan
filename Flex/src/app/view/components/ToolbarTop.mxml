@@ -4,25 +4,29 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
 	<fx:Script>
 		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayCollection;
 			
 			import spark.components.RadioButton;
 			import spark.events.RendererExistenceEvent;
 			
-			import app.model.vo.AppConfigVO;
+			import app.model.vo.AppParamVO;
+			import app.model.vo.RopewayVO;
 			
 			public static const STATION:String = "Station";
 			
-			public static const OVERVIEW:String = "Overview";
-			public static const FORCE:String = "Force";
-			public static const ENGINETEMP:String = "EngineTemp";
-			public static const INCH:String = "Inch";
-			public static const WIND:String = "Wind";
-			
-			[Bindable]public var selRopeway:*;
+			public static const OVERVIEW:String 	= "监测概览";
+			public static const FORCE:String 		= "抱索力";
+			public static const ENGINE:String 		= "动力室电机温度";
+			public static const INCH:String 		= "张紧小尺";
+			public static const WIND:String 		= "风速风向";
+			public static const REINIT:String 		= "重新启动";
+						
+			[Bindable]public var appParam:AppParamVO;
 			
 			[Bindable]public var colRopeway:ArrayCollection;
-			
+									
 			protected function groupStation_rendererAddHandler(event:RendererExistenceEvent):void
 			{
 				var rb:RadioButton = (event.renderer as Object).radioButton as RadioButton;				
@@ -33,7 +37,7 @@
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:RadioButtonGroup id="radioGroupStation" selectedValue="@{selRopeway}" change="dispatchEvent(new Event(STATION))"/>
+		<s:RadioButtonGroup id="radioGroupStation" selectedValue="@{appParam.selRopeway}" change="dispatchEvent(new Event(STATION))"/>
 	</fx:Declarations>
 	
 	<s:layout>
@@ -56,9 +60,10 @@
 	
 	<s:Spacer width="100%"/>
 	
-	<s:Button label="监测概览" buttonDown="dispatchEvent(new Event(OVERVIEW))"/>
-	<s:Button label="抱索力" buttonDown="dispatchEvent(new Event(FORCE))"/>
-	<s:Button label="动力室电机温度" buttonDown="dispatchEvent(new Event(ENGINETEMP))"/>
-	<s:Button label="张紧小尺" buttonDown="dispatchEvent(new Event(INCH))"/>
-	<s:Button label="风速风向" buttonDown="dispatchEvent(new Event(WIND))"/>
+	<s:Button label="{OVERVIEW}" buttonDown="dispatchEvent(new Event(OVERVIEW))"/>
+	<s:Button label="{FORCE}" buttonDown="dispatchEvent(new Event(FORCE))"/>
+	<s:Button label="{ENGINE}" buttonDown="dispatchEvent(new Event(ENGINE))"/>
+	<s:Button label="{INCH}" buttonDown="dispatchEvent(new Event(INCH))"/>
+	<s:Button label="{WIND}" buttonDown="dispatchEvent(new Event(WIND))"/>
+	<s:Button label="{REINIT}" buttonDown="dispatchEvent(new Event(REINIT))"/>
 </s:Group>

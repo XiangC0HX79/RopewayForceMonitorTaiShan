@@ -5,64 +5,48 @@ package app.model
 	import app.ApplicationFacade;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
+	import app.model.vo.InternalVO;
 	import app.model.vo.RopewayVO;
 	
 	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
+	
+	use namespace InternalVO;
 	
 	public class EngineProxy extends Proxy implements ILoadupProxy
 	{
 		public static const NAME:String = "EngineProxy";
 		public static const SRNAME:String = "EngineProxySR";
 		
+		public static const LOADED:String = "EngineProxy/Loaded";
+		public static const FAILED:String = "EngineProxy/Failed";
+		
 		public function EngineProxy()
 		{
-			super(NAME, new ArrayCollection);
+			super(NAME,new Array);
 		}
 		
 		public function get list():ArrayCollection
-		{
-			return data as ArrayCollection;
-		}
-		
-		public function load():void
-		{
-			list.removeAll();
-			
-			var ropewayProxy:RopewayProxy = facade.retrieveProxy(RopewayProxy.NAME) as RopewayProxy;
-			for each(var rw:RopewayVO in ropewayProxy.list)
-			{				
-				var e:EngineVO = new EngineVO;
-				e.ropeway = rw;
-				e.pos = EngineVO.FIRST;
-				list.addItem(e);
-				
-				e = new EngineVO;
-				e.ropeway = rw;
-				e.pos = EngineVO.SECOND;
-				list.addItem(e);
-			}
-			
-			sendNotification(ApplicationFacade.NOTIFY_ENGINE_LOADED,NAME);
+		{			
+			return new ArrayCollection(data as Array);
 		}
 						
-		public function retreiveEngine(rw:RopewayVO,pos:int):EngineVO
+		public function load():void
 		{			
-			for each(var e:EngineVO in list)
-			{
-				if((rw.fullName == e.ropeway.fullName) && (pos == e.pos))
-				{
-					return e;
-				}
-			}			
+			/*setData(EngineVO.loadEngine(
+				RopewayProxy(facade.retrieveProxy(RopewayProxy.NAME)).list
+			));*/
 			
-			return null;
+			sendNotification(LOADED,NAME);
 		}
-		
-		public function AddItem(rw:RopewayVO,pos:int,et:EngineTempVO):void
-		{			
-			var engine:EngineVO = retreiveEngine(rw,pos);
-			engine.PushInch(et);
+								
+		public function AddItem(rwName:String,date:Date,pos:int,temp:Number):void
+		{						
+			var et:EngineTempVO = new EngineTempVO;
+			et.date = date;
+			et.temp = temp;
+			
+			EngineVO.getNamed(rwName,pos).PushItem(et);
 		}
 	}
 }

@@ -2,95 +2,21 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 height="170" width="300" skinClass="custom.skin.SkinPanel">
+		 height="170" width="300" skinClass="custom.skin.SkinPanel" xmlns:components="app.view.components.*">
 	
 	<fx:Script>
-		<![CDATA[
-			import mx.core.FlexGlobals;
-			import mx.graphics.ImageSnapshot;
+		<![CDATA[			
+			import app.model.vo.RopewayStationFstVO;
+			import app.model.vo.RopewayStationSndVO;
 			
-			import app.model.vo.SurroundingTempVO;
+			[Bindable]public var stationFst:RopewayStationFstVO;
 			
-			[Bindable]private var _fstTemp:SurroundingTempVO;
-			public function set fstTemp(value:SurroundingTempVO):void
-			{
-				_fstTemp = value;
-				
-				if(this.initialized)
-				{
-					var pt:Point = fstContent.contentToGlobal(new Point(0,0));
-					
-					var clipRect:Rectangle = new Rectangle(pt.x,pt.y,fstContent.width,fstContent.height);
-					
-					var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
-					
-					if(!bd.rect.containsRect(clipRect))
-						return;
-					
-					var ba:ByteArray = bd.getPixels(clipRect);
-					ba.position = 0;
-					
-					var fillRect:Rectangle = new Rectangle(0,0,clipRect.width,clipRect.height);
-					var newBd:BitmapData=new BitmapData(clipRect.width, clipRect.height);  			
-					newBd.setPixels(fillRect,ba);
-					
-					fstImageAnimate.source = new Bitmap(newBd);
-					fstImageAnimate.visible = true;
-					
-					anima.widthFrom = fstContent.width;
-					anima.widthTo = 0;
-					anima.heightFrom = fstContent.height;
-					anima.heightTo = 0;
-					anima.play([fstImageAnimate]);
-				}
-			}
-			
-			[Bindable]private var _sndTemp:SurroundingTempVO;
-			public function set sndTemp(value:SurroundingTempVO):void
-			{
-				_sndTemp = value;
-				
-				if(this.initialized)
-				{
-					var pt:Point = sndContent.contentToGlobal(new Point(0,0));
-					
-					var clipRect:Rectangle = new Rectangle(pt.x,pt.y,sndContent.width,sndContent.height);
-					
-					var bd:BitmapData = ImageSnapshot.captureBitmapData(FlexGlobals.topLevelApplication as IBitmapDrawable,null,null,null,clipRect);
-					
-					if(!bd.rect.containsRect(clipRect))
-						return;
-					
-					var ba:ByteArray = bd.getPixels(clipRect);
-					ba.position = 0;
-					
-					var fillRect:Rectangle = new Rectangle(0,0,clipRect.width,clipRect.height);
-					var newBd:BitmapData=new BitmapData(clipRect.width, clipRect.height);  			
-					newBd.setPixels(fillRect,ba);
-					
-					sndImageAnimate.source = new Bitmap(newBd);
-					sndImageAnimate.visible = true;
-					
-					anima.widthFrom = sndContent.width;
-					anima.widthTo = 0;
-					anima.heightFrom = sndContent.height;
-					anima.heightTo = 0;
-					anima.play([sndImageAnimate]);
-				}
-			}
+			[Bindable]public var stationSnd:RopewayStationSndVO;
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->	
-		<s:Resize id="anima">
-			<s:effectEnd>
-				<![CDATA[				
-				fstImageAnimate.visible = false;
-				sndImageAnimate.visible = false;
-				]]>
-			</s:effectEnd>			
-		</s:Resize>
 	</fx:Declarations>
 			
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
@@ -98,47 +24,7 @@
 	</s:HGroup>
 	
 	<s:HGroup left="5" right="5" top="30" bottom="5" verticalAlign="contentJustify">		
-		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
-							  fontWeight="bold">
-			<s:Label text="驱动站"/>		
-			
-			<s:HGroup id="fstContent" color="0x1b5aa2" fontSize="28" gap="0" 
-					  horizontalCenter="0" verticalCenter="10">	
-				
-				<s:VGroup width="40" horizontalAlign="center">
-					<s:Label text="{_fstTemp.temp}"/>	
-					<s:Label text="{_fstTemp.humi}"/>				
-				</s:VGroup>
-				
-				<s:VGroup>
-					<s:Label text="℃"/>	
-					<s:Label text="%"/>				
-				</s:VGroup>
-			</s:HGroup>
-			
-			<s:Image id="fstImageAnimate" horizontalCenter="0" verticalCenter="10"
-					 visible="false"/>
-		</s:SkinnableContainer>
-				
-		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
-							  fontWeight="bold">
-			<s:Label text="回转站"/>		
-			
-			<s:HGroup id="sndContent" color="0x1b5aa2" fontSize="28"
-					  horizontalCenter="0" verticalCenter="10">	
-				
-				<s:VGroup width="40" horizontalAlign="center">
-					<s:Label text="{_sndTemp.temp}"/>	
-					<s:Label text="{_sndTemp.humi}"/>				
-				</s:VGroup>
-				<s:VGroup>
-					<s:Label text="℃"/>	
-					<s:Label text="%"/>				
-				</s:VGroup>
-			</s:HGroup>
-			
-			<s:Image id="sndImageAnimate" horizontalCenter="0" verticalCenter="10"
-					 visible="false"/>
-		</s:SkinnableContainer>
+		<components:ItemOverviewSurrounding width="100%" title="驱动站" surrounding="{stationFst.surrounding}"/>	
+		<components:ItemOverviewSurrounding width="100%" title="回转站" surrounding="{stationSnd.surrounding}"/>
 	</s:HGroup>
 </s:SkinnableContainer>

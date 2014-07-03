@@ -1,9 +1,9 @@
 package app.view
 {
 	import app.ApplicationFacade;
-	import app.model.vo.RopewayVO;
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.PanelOverviewInch;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -27,7 +27,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_INCH
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -35,8 +35,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_INCH:
-					panelOverviewInch.inch = (notification.getBody() as InchVO).lastValue;
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelOverviewInch.inch = (notification.getBody() as RopewayVO).inch;
 					break;
 			}
 		}		

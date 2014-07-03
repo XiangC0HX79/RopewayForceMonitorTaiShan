@@ -6,7 +6,7 @@ package app.controller
 	{		
 		override protected function initializeAsyncMacroCommand():void
 		{
-			addSubCommand(ActionEnginePanelChangeCommand);
+			addSubCommand(ActionEnginePanelShowAnalysisCommand);
 		}
 		
 	}

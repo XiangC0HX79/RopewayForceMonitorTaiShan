@@ -29,7 +29,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_ENGINE_SND
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -37,8 +37,8 @@ package app.view
 		{	
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_ENGINE_SND:
-					panelEngineTempRealtime.engine = notification.getBody() as EngineVO;	
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelEngineTempRealtime.engine = RopewayVO(notification.getBody()).engineSnd;	
 					break;
 			}
 		}		

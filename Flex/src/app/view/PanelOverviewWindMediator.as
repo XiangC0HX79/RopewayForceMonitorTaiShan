@@ -5,6 +5,7 @@ package app.view
 	import mx.events.ResizeEvent;
 	
 	import app.ApplicationFacade;
+	import app.model.vo.RopewayVO;
 	import app.model.vo.WindVO;
 	import app.view.components.ItemOverviewWind;
 	import app.view.components.PanelOverviewWind;
@@ -26,7 +27,7 @@ package app.view
 			return viewComponent as PanelOverviewWind;
 		}
 		
-		private function updateWind(wind:WindVO):void
+		/*private function updateWind(wind:WindVO):void
 		{
 			var index:int = 0;
 			
@@ -73,14 +74,12 @@ package app.view
 			}
 			
 			panelOverviewWind.mainContent.dispatchEvent(new ResizeEvent(ResizeEvent.RESIZE));
-		}
+		}*/
 		
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_WIND,
-				
-				ApplicationFacade.ACTION_REFRESH_WIND
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 				];
 		}
 		
@@ -88,12 +87,8 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_WIND:
-					updateWind(WindVO(notification.getBody()));
-					break;
-				
-				case ApplicationFacade.ACTION_REFRESH_WIND:
-					refreshWind(notification.getBody() as Array);
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelOverviewWind.ropeway = RopewayVO(notification.getBody());
 					break;
 			}
 		}
