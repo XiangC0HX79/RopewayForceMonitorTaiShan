@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  
+		 xmlns:components="custom.components.*"
+		 skinClass="custom.skin.SkinPanel"
+		 width="400" height="300" fontWeight="bold">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.BracketVO;
+			
+			import custom.skin.SkinPanel;
+			
+			
+			public static const GAP:Number = 5;
+			public static const WIDTH:Number = 240;
+			public static const HEIGHT:Number = 400;
+			
+			[Bindable]
+			public var bracket:BracketVO;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="{bracket.fullName}"/>		
+	</s:HGroup>
+	
+	<s:VGroup left="0" right="0" top="35" bottom="0" horizontalAlign="center">		
+		<components:WindWatch windValue="{bracket.wind.lastValue}"/>
+		
+		<s:HGroup gap="-1">
+			<s:TextInput width="85" editable="false" text="最小 {bracket.wind.minValue} m/s" textAlign="center"/>
+			<s:TextInput width="85" editable="false" text="最大 {bracket.wind.maxValue} m/s" textAlign="center"/>		
+		</s:HGroup>
+		
+		<mx:LineChart width="100%" height="100%"/>
+	</s:VGroup>
+</s:SkinnableContainer>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="app.view.components.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import custom.components.ItemWindRealtime;
+			import custom.components.ItemWindRealtimeMaxWindAndAlarm;
+			import flash.utils.setTimeout;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.events.ResizeEvent;
+			
+			import app.model.vo.BracketVO;
+			import app.model.vo.RopewayVO;
+						
+			private var _watcher:ChangeWatcher;
+			
+			public function set ropeway(value:RopewayVO):void
+			{
+				mainContent.removeAllElements();
+				
+				insertMaxWindAndAlarm(value);
+				
+				if(_watcher)
+					_watcher.unwatch();
+				
+				_watcher = BindingUtils.bindSetter(setterBracket,value,"listBracket");
+			}
+			
+			private function setterBracket(listBracket:ArrayCollection):void
+			{				
+				for each(var bracket:BracketVO in listBracket)				
+				{				
+					insertBracket(bracket);
+				}
+				
+				_resizeExecuting = true;
+				
+				onResize();
+			}
+			
+			private function insertMaxWindAndAlarm(ropeway:RopewayVO):void
+			{
+				var item:ItemWindRealtimeMaxWindAndAlarm = new ItemWindRealtimeMaxWindAndAlarm;
+				item.ropeway = ropeway;
+				mainContent.addElement(item);
+			}
+			
+			private function insertBracket(bracket:BracketVO):void
+			{
+				for(var i:int = 1;i< mainContent.numElements;i++)
+				{
+					var element:ItemWindRealtime = ItemWindRealtime(mainContent.getElementAt(i));
+					
+					if(element.bracket.bracketId == bracket.bracketId)
+					{
+						return;
+					}
+					
+					if(element.bracket.bracketId > bracket.bracketId)
+					{
+						mainContent.addElementAt(newItemOverviewWind(bracket),i);
+						return;
+					}			
+				}
+				
+				mainContent.addElement(newItemOverviewWind(bracket));
+			}
+			
+			private function newItemOverviewWind(bracket:BracketVO):ItemWindRealtime
+			{				
+				var iow:ItemWindRealtime = new ItemWindRealtime;
+				iow.bracket = bracket;				
+				return iow;
+			}
+			
+			private var _resizeExecuting:Boolean = false;
+			
+			protected function content_resizeHandler(event:ResizeEvent):void
+			{
+				_resizeExecuting = true;
+				
+				flash.utils.setTimeout(onResize,200);
+			}
+			
+			private function onResize():void
+			{
+				if(_resizeExecuting)
+				{
+					var nw:int = Math.floor(mainContent.width /  ItemWindRealtime.WIDTH);
+					var width:Number = mainContent.width / nw;
+					
+					for(var i:int = 0;i<mainContent.numElements;i++)
+					{
+						var iw:int = i % nw;
+						var ih:int = Math.floor(i / nw);
+						
+						var item:IVisualElement = mainContent.getElementAt(i);
+						item.x = iw * width;
+						item.y = ih * ItemWindRealtime.HEIGHT;
+						item.width = width - ItemWindRealtime.GAP;
+						item.height = ItemWindRealtime.HEIGHT - ItemWindRealtime.GAP;
+					}
+				}
+				
+				_resizeExecuting = false;
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="justify"/>
+	</s:layout>
+	
+	<s:HGroup verticalAlign="middle" height="31" paddingLeft="15" gap="30" color="white">		
+		<s:Label text="实时监测"/>
+	</s:HGroup>
+	
+	<s:Scroller height="100%">		
+		<s:Group id="mainContent" resize="content_resizeHandler(event)">					
+		</s:Group>
+	</s:Scroller>
+</s:Group>

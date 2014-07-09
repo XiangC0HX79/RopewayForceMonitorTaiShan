@@ -16,6 +16,9 @@ package app.model
 	{
 		public static const NAME:String = "SocketForceProxy";
 		public static const SRNAME:String = "SocketForceProxySR";
+				
+		public static const LOADED:String = "SocketForceProxy/Loaded";
+		public static const FAILED:String = "SocketForceProxy/Failed";
 		
 		private var _loader:SWFLoader;
 		
@@ -28,7 +31,7 @@ package app.model
 		{
 			if(_loader)		
 			{
-				sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE_LOADED,NAME);
+				sendNotification(LOADED,NAME);
 				return;
 			}
 			
@@ -54,7 +57,7 @@ package app.model
 			
 			sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE_INIT,moduleForce);			
 			
-			sendNotification(ApplicationFacade.NOTIFY_SOCKET_FORCE_LOADED,NAME);		
+			sendNotification(LOADED,NAME);		
 		}
 		
 		public function unloadAndStop():void

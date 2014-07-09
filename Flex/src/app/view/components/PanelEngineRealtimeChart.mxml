@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="app.view.components.*"
-		 resize="dataCanvas_resizeHandler(event)">
+		 resize="dataCanvas_resizeHandler(event)" xmlns:components1="custom.components.*">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
@@ -14,6 +14,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import custom.components.ChartImage;
+			import custom.components.ChartLine;
 			import flash.utils.setTimeout;
 			
 			import mx.binding.utils.BindingUtils;
@@ -583,7 +585,7 @@
 		</s:Group>
 		
 		<s:Group id="groupLabel" width="100%" height="100%">
-			<components:ChartTipEngine id="chartTip" visible="false"/>
+			<components1:ChartTipEngine id="chartTip" visible="false"/>
 		</s:Group>
 	</s:Group>
 	

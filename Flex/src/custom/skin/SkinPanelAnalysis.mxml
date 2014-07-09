@@ -55,7 +55,7 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:BitmapFill source="@Embed('assets/image/part_tbg.png')" fillMode="scale"/>
 			</s:fill>
 		</s:Rect>
-		<s:Label id="lbTitle" fontWeight="bold" verticalCenter="0" horizontalCenter="0"/>
+		<s:Label id="skinTitle" fontWeight="bold" verticalCenter="0" horizontalCenter="0"/>
 	</s:Group>
 	
 	<s:Rect left="0" right="0" top="24" bottom="0">

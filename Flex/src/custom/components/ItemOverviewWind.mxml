@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="400" height="300" skinClass="custom.skin.SkinPanelContent"
+		 fontWeight="bold" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.BracketVO;
+			
+			import custom.skin.SkinPanelContent;
+			
+			public static const GAP:Number = 5;
+			public static const WIDTH:Number = 240;
+			public static const HEIGHT:Number = 280;
+									
+			[Bindable]
+			public var bracket:BracketVO;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Label text="{bracket.fullName}"/>
+	
+	<components:WindWatch windValue="{bracket.wind.lastValue}" y="10" horizontalCenter="0"/>
+</s:SkinnableContainer>

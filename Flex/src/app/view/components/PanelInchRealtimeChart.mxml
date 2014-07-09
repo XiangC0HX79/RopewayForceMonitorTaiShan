@@ -5,7 +5,7 @@
 					  xmlns:components="app.view.components.*"
 					  width="100%" height="100%" 
 					  resize="dataCanvas_resizeHandler(event)"
-					  fontSize="12">	
+					  fontSize="12" xmlns:components1="custom.components.*">	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
@@ -17,6 +17,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import custom.components.ChartImage;
+			import custom.components.ChartLine;
 			import flash.utils.setTimeout;
 			
 			import mx.binding.utils.BindingUtils;
@@ -545,7 +547,7 @@
 		</s:Group>
 		
 		<s:Group id="groupLabel" width="100%" height="100%">
-			<components:ChartTipInch id="chartTip" visible="false"/>
+			<components1:ChartTipInch id="chartTip" visible="false"/>
 		</s:Group>
 		
 		<s:Image id="imageAnimate" width="100%" height="100%" visible="false" includeInLayout="false"/>

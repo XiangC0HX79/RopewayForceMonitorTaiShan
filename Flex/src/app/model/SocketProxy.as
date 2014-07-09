@@ -27,6 +27,9 @@ package app.model
 		public static const NAME:String = "SocketProxy";
 		public static const SRNAME:String = "SocketProxySR";
 		
+		public static const LOADED:String = "SocketProxy/Loaded";
+		public static const FAILED:String = "SocketProxy/Failed";
+		
 		private var _errorCount:Number = 0;
 		
 		private var _socket:Socket;
@@ -44,7 +47,7 @@ package app.model
 		{			
 			if(_socket)
 			{
-				sendNotification(ApplicationFacade.NOTIFY_SOCKET_LOADED,NAME);
+				sendNotification(LOADED,NAME);
 				return;
 			}
 			
@@ -72,14 +75,14 @@ package app.model
 		{  													
 			_errorCount = 0;	
 			
-			sendNotification(ApplicationFacade.NOTIFY_SOCKET_LOADED,NAME);
+			sendNotification(LOADED,NAME);
 		}  
 		
 		private function onConnectError(event:Event):void 
 		{  			
 			if(_errorCount > 5)
 			{
-				sendNotification(ApplicationFacade.NOTIFY_SOCKET_FAILED,NAME);
+				sendNotification(FAILED,NAME);
 				
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！按F5刷新页面开始重连服务器。\n\"错误原因:" + event.type + "\"");
 			}

@@ -1,5 +1,7 @@
 package app.controller
 {
+	import com.adobe.utils.DateUtil;
+	
 	import app.model.WindProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -17,11 +19,11 @@ package app.controller
 			var array:Array =  notification.getBody() as Array;
 			
 			var windProxy:WindProxy = facade.retrieveProxy(WindProxy.NAME) as WindProxy;
-			
+						
 			windProxy.AddItem(
 				array[2]
 				,int(array[4])
-				,new Date(Date.parse(String(array[1]).replace(/-/g,"/")))
+				,DateUtil.parseW3CDTF(String(array[1]).replace(/\s/g,"T") + "+08:00")
 				,Number(array[5])
 				,Number(array[6])
 			);

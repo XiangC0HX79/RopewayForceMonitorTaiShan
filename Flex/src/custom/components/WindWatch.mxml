@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="236" height="231" 
+		 creationComplete="skinnablecontainer_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import app.model.vo.WindValueVO;
+			
+			private var _wind:WindValueVO;
+
+			[Bindable]
+			public function get windValue():WindValueVO
+			{
+				return _wind;
+			}
+
+			public function set windValue(value:WindValueVO):void
+			{
+				if(this.initialized)
+					playAnima(value.dir,_wind.dir);
+				
+				_wind = value;
+			}
+						
+			protected function skinnablecontainer_creationCompleteHandler(event:FlexEvent):void
+			{
+				playAnima(windValue.dir);
+			}
+			
+			private function playAnima(newAngle:Number,oldAngle:Number = NaN):void
+			{				
+				rotate.transformX = 100;
+				rotate.transformY = 3;
+				if(!isNaN(oldAngle))rotate.angleFrom = oldAngle;
+				rotate.angleTo = newAngle;
+				rotate.play([niddle1]);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Rotate id="rotate"/>
+	</fx:Declarations>
+	
+	<s:Image source="assets/image/wind_back.png"/>
+	
+	<s:Image id="niddle1" source="assets/image/niddle.png" y="115" x="22" width="100" height="6"/>
+	
+	<s:Label  color="0x1b5aa2" fontSize="28" 
+			  text="{windValue.speed} m/s" verticalCenter="0" horizontalCenter="0"/>		
+</s:Group>

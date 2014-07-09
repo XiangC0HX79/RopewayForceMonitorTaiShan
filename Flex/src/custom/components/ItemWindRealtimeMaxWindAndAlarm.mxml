@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 skinClass="custom.skin.SkinPanel" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.RopewayVO;
+			
+			private var _ropeway:RopewayVO;
+
+			[Bindable]
+			public function get ropeway():RopewayVO
+			{
+				return _ropeway;
+			}
+
+			public function set ropeway(value:RopewayVO):void
+			{
+				_ropeway = value;
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="当前最大风速"/>		
+	</s:HGroup>
+	
+	<s:VGroup left="20" right="20" y="45" height="115" color="0x1b5aa2"
+			  fontSize="38" horizontalAlign="center">	
+		<s:Label text="{ropeway.maxBracket.fullName}"/>	
+		<s:Label text="风速 {ropeway.maxBracket.wind.lastValue.speed} m/s"/>		
+	</s:VGroup>
+	
+	<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" 
+						  left="20" right="20" top="160" bottom="10"
+						  fontWeight="bold">
+		<s:Label text="报警信息" y="-5"/>	
+		
+		<s:List id="listAlarm" left="0" right="0" top="10" bottom="0"
+				skinClass="custom.skin.SkinListAlarm"
+				fontSize="14" color="red"/>
+	</s:SkinnableContainer>		
+</s:SkinnableContainer>

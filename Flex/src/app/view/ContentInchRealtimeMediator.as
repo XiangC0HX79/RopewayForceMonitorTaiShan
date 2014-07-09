@@ -16,15 +16,18 @@ package app.view
 		public function ContentInchRealtimeMediator()
 		{
 			super(NAME, new ContentInchRealtime);
-				
-			contentInchRealtime.addEventListener(FlexEvent.ADD,onMediatorAdd);
-			contentInchRealtime.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
 		}
 		
 		protected function get contentInchRealtime():ContentInchRealtime
 		{
 			return viewComponent as ContentInchRealtime;
 		}
+		
+		override public function onRegister():void
+		{			
+			contentInchRealtime.addEventListener(FlexEvent.ADD,onMediatorAdd);
+			contentInchRealtime.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
+		}		
 		
 		private function onMediatorAdd(event:FlexEvent):void
 		{

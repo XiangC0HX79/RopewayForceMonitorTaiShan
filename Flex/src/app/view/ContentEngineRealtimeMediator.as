@@ -4,8 +4,8 @@ package app.view
 	
 	import app.ApplicationFacade;
 	import app.model.EngineProxy;
-	import app.model.vo.RopewayVO;
 	import app.model.vo.EngineVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.ContentEngineRealtime;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -19,15 +19,19 @@ package app.view
 		public function ContentEngineRealtimeMediator()
 		{ 
 			super(NAME, new ContentEngineRealtime);
-			
-			contentEngineTempRealtimeDetection.addEventListener(FlexEvent.ADD,onMediatorAdd);
-			contentEngineTempRealtimeDetection.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
 		}
 		
 		protected function get contentEngineTempRealtimeDetection():ContentEngineRealtime
 		{
 			return viewComponent as ContentEngineRealtime;
 		}
+		
+		override public function onRegister():void
+		{			
+			contentEngineTempRealtimeDetection.addEventListener(FlexEvent.ADD,onMediatorAdd);
+			contentEngineTempRealtimeDetection.addEventListener(FlexEvent.REMOVE,onMediatorRemove);
+		}
+		
 		
 		private function onMediatorAdd(event:FlexEvent):void
 		{

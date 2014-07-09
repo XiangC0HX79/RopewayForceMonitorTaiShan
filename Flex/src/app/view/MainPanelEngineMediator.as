@@ -30,7 +30,7 @@ package app.view
 		{
 			mainPanelEngineTemp.addEventListener(FlexEvent.REMOVE,onUiRemove);
 			
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.REALTIME_DETECTION,onMenuRealtime);
+			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.REALTIME,onMenuRealtime);
 			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.ANALYSIS,onMenuAnalysis);
 			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.MANAGE,onMenuManager);
 		}

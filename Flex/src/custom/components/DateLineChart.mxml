@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:LineChart xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.CategoryAxis;
+			
+			import custom.itemRenderer.ItemRendererLineChartAlarm;
+			
+			[Bindable]public var minimum:Number;
+			
+			[Bindable]public var maximun:Number;
+			
+			[Bindable]public var yField:String;
+			
+			private function labelHorizontalAxis(categoryValue:Object, previousCategoryValue:Object, axis:CategoryAxis, categoryItem:Object):String 
+			{ 				
+				var s:Array = dateF.format(categoryValue).split(" ");
+				return s[0]+ "\n" + s[1];
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+		
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>		
+	</fx:Declarations>
+	
+	<mx:seriesFilters>
+		<fx:Array/>
+	</mx:seriesFilters>
+	
+	<mx:backgroundElements>
+		<fx:Array>						
+			<components:GridLineAnalyse gridDirection="both"
+										 horizontalStroke="{gridStroke}"
+										 verticalStroke="{gridStroke}">
+				<components:verticalFill>
+					<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+				</components:verticalFill>
+			</components:GridLineAnalyse>
+		</fx:Array>
+	</mx:backgroundElements>
+	
+	<mx:verticalAxis>
+		<mx:LinearAxis id="verticalAxis" baseAtZero="false" maximum="{maximun}" minimum="{minimum}"/>
+	</mx:verticalAxis>
+	
+	<mx:horizontalAxis>
+		<mx:CategoryAxis id="horizontalAxis" categoryField="date"
+						 ticksBetweenLabels="false" 
+						 labelFunction="labelHorizontalAxis" />
+	</mx:horizontalAxis>
+	
+	<mx:verticalAxisRenderers>					
+		<mx:AxisRenderer axis="{verticalAxis}" 
+						 axisStroke="{tickStroke}" 
+						 tickStroke="{tickStroke}"
+						 minorTickPlacement="none"/>
+	</mx:verticalAxisRenderers>
+	
+	<mx:horizontalAxisRenderers>			
+		<mx:AxisRenderer axis="{horizontalAxis}"
+						 textAlign="center"
+						 axisStroke="{tickStroke}" 
+						 tickStroke="{tickStroke}"/>					
+	</mx:horizontalAxisRenderers>
+	
+	<mx:series>
+		<mx:LineSeries yField="{yField}" lineStroke="{lStroke}"
+					   itemRenderer="{new ClassFactory(ItemRendererLineChartAlarm)}">
+		</mx:LineSeries>
+	</mx:series>
+</mx:LineChart>		

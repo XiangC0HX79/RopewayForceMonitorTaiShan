@@ -1,7 +1,5 @@
 package custom.itemRenderer
 {
-	import app.model.vo.ForceVO;
-	
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
@@ -11,7 +9,10 @@ package custom.itemRenderer
 	import mx.graphics.SolidColor;
 	import mx.skins.ProgrammaticSkin;
 	
-	public class ItemRendererLineChartForce extends ProgrammaticSkin
+	import app.model.vo.ForceVO;
+	import app.model.vo.IAlarmValue;
+	
+	public class ItemRendererLineChartAlarm extends ProgrammaticSkin
 		implements IDataRenderer
 	{		
 		//--------------------------------------------------------------------------
@@ -39,7 +40,7 @@ package custom.itemRenderer
 		 *  @playerversion AIR 1.1
 		 *  @productversion Flex 3
 		 */
-		public function ItemRendererLineChartForce() 
+		public function ItemRendererLineChartAlarm() 
 		{
 			super();
 		}
@@ -143,7 +144,9 @@ package custom.itemRenderer
 					break;
 			}*/
 												
-			if((_data.item is ForceVO) && (_data.item.alarm > 0))
+			var alarmValue:IAlarmValue = _data.item as IAlarmValue;
+			
+			if(alarmValue && (alarmValue.alarm > 0))
 				fill = new SolidColor(0xFF0000);
 			else
 				fill = new SolidColor(0x02C462);

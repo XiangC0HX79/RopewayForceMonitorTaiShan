@@ -88,7 +88,7 @@ package forceMonitor.view
 		{  			
 			if(_errorCount > 5)
 			{
-				sendNotification(ForceMonitorFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！按F5刷新页面开始重连服务器。\n\"错误原因:" + event.type + "\"");
+				//sendNotification(ForceMonitorFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！按F5刷新页面开始重连服务器。\n\"错误原因:" + event.type + "\"");
 								
 				sendNotification(ForceMonitorFacade.NOTIFY_MAIN_LOADING_HIDE);
 			}
@@ -297,7 +297,8 @@ package forceMonitor.view
 					break;
 				
 				case ForceMonitorFacade.NOTIFY_UNLOAD_APPE:
-					socket.close();
+					if(socket.connected)
+						socket.close();
 					break;
 			}
 		}

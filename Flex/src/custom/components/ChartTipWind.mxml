@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 implements="mx.core.IDataRenderer" 
+		 maxWidth="200" maxHeight="70">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.WindValueVO;
+			
+			private var _windValue:WindValueVO;
+			
+			[Bindable]
+			public function get data():Object
+			{
+				return _windValue;
+			}
+			
+			public function set data(value:Object):void
+			{
+				_windValue = WindValueVO(value.item);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
+	</fx:Declarations>
+		
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="alarm"/>
+	</s:states>
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:fill>
+			<s:SolidColor color="white"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Rect radiusX="5" radiusY="5" left="2" right="2" top="2" bottom="2">
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="2"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">		
+		<s:HGroup>
+			<s:Label text="时　　间："/>
+			<s:Label text="{df.format(data.date)}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="风　　速："/>
+			<s:Label text="{data.speed}"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="风　　速："/>
+			<s:Label text="{data.dir}"/>
+		</s:HGroup>
+		<s:HGroup includeIn="alarm">
+			<s:Label text="报　　警："/>
+			<s:Label text=""/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Group>

@@ -8,14 +8,20 @@ package app.controller
 	import app.view.ContentInchAnalysisMediator;
 	import app.view.ContentInchManageMediator;
 	import app.view.ContentInchRealtimeMediator;
+	import app.view.ContentWindAnalysisMediator;
+	import app.view.ContentWindManagerMediator;
+	import app.view.ContentWindRealtimeMediator;
 	import app.view.InfoJunctionMediator;
 	import app.view.LoadingBarMediator;
 	import app.view.MainPanelEngineMediator;
 	import app.view.MainPanelForceSWFMediator;
 	import app.view.MainPanelInchMediator;
 	import app.view.MainPanelOverviewMediator;
+	import app.view.MainPanelWindMediator;
+	import app.view.PanelWindAnalysisValueMediator;
 	import app.view.ToolbarTopMediator;
 	import app.view.components.MainPanelForceSWF;
+	import app.view.components.PanelWindAnalysisValue;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
@@ -59,6 +65,15 @@ package app.controller
 			facade.registerMediator(new ContentInchAnalysisMediator);
 			
 			facade.registerMediator(new ContentInchManageMediator);
+			
+			//风速风向
+			facade.registerMediator(new MainPanelWindMediator);
+			
+			facade.registerMediator(new ContentWindRealtimeMediator);
+			
+			facade.registerMediator(new ContentWindAnalysisMediator);
+						
+			facade.registerMediator(new ContentWindManagerMediator);
 		}
 	}
 }

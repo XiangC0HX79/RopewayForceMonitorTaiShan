@@ -1,5 +1,12 @@
 package app.model
 {
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.net.FileReference;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
+	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
@@ -67,10 +74,40 @@ package app.model
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
 		}	
 		
-		/*private function onResultNoBusy(event:ResultEvent,listener:Function):void
-		{				
-			if(listener != null)
-				listener(event);	
-		}		*/
+		public function export(name:String,fileName:String,urlVar:URLVariables):void
+		{
+			var baseUrl:String = _webService.wsdl;
+			var url:String = encodeURI(baseUrl.substr(0,baseUrl.lastIndexOf("/") + 1) + name + ".aspx");
+						
+			var downloadURL:URLRequest = new URLRequest(encodeURI(url));				
+			downloadURL.method = URLRequestMethod.POST;
+			downloadURL.contentType = "text/plain";	
+			downloadURL.data = urlVar;
+			
+			var fileRef:FileReference = new FileReference;
+			fileRef.addEventListener(Event.SELECT,onFileSelect);				
+			fileRef.addEventListener(Event.COMPLETE,onDownloadFile);
+			fileRef.addEventListener(IOErrorEvent.IO_ERROR,onIOError);			
+			fileRef.download(downloadURL,fileName);	
+		}
+		
+		private function onFileSelect(event:Event):void
+		{						
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在下载《" + event.currentTarget.name + "》...");				
+		}
+		
+		private function onDownloadFile(event:Event):void 
+		{							
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);	
+			
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_INFO,"《" + event.currentTarget.name + "》下载成功。");	
+		}		
+		
+		private function onIOError(event:IOErrorEvent):void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
+			
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.text);
+		}	
 	}
 }

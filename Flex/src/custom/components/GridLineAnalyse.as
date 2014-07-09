@@ -1,7 +1,5 @@
 package custom.components
 {
-	import app.model.vo.ForceVO;
-	
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
@@ -18,6 +16,9 @@ package custom.components
 	import mx.graphics.IStroke;
 	import mx.graphics.Stroke;
 	import mx.styles.CSSStyleDeclaration;
+	
+	import app.model.vo.ForceVO;
+	import app.model.vo.IDateValue;
 	
 	use namespace mx_internal;
 	
@@ -64,9 +65,9 @@ package custom.components
 			var alternate:Boolean = true;
 			for(var i:int = 0;i<len;i++)
 			{
-				var pre:ForceVO = (i > 0)?chart.dataProvider[i-1]:null;
-				var rf:ForceVO = chart.dataProvider[i];
-				if(pre && (pre.ropewayTime.toDateString() != rf.ropewayTime.toDateString()))
+				var pre:IDateValue = (i > 0)?chart.dataProvider[i-1]:null;
+				var rf:IDateValue = chart.dataProvider[i];
+				if(pre && (pre.date.toDateString() != rf.date.toDateString()))
 				{
 					alternate = !alternate;
 				}

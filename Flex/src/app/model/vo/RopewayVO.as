@@ -3,6 +3,7 @@ package app.model.vo
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.collections.ArrayCollection;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.PropertyChangeEventKind;
@@ -111,7 +112,8 @@ package app.model.vo
 			var array:Array = [];
 			for each(var bracket:BracketVO in _instanceBracket)
 			{
-				array.push(bracket);
+				if(bracket.wind.hasHistory)
+					array.push(bracket);
 			}
 			array.sortOn("bracketId",Array.NUMERIC);
 			
@@ -119,6 +121,43 @@ package app.model.vo
 		}
 
 		public function set listBracket(value:ArrayCollection):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		public function get colAllBracket():ArrayCollection
+		{
+			var array:Array = [];
+			array.push(BracketVO.newAll(this));
+			for each(var bracket:BracketVO in _instanceBracket)
+			{
+				array.push(bracket);
+			}
+			array.sortOn("bracketId",Array.NUMERIC);
+			
+			return new ArrayCollection(array);
+		}
+
+		public function set colAllBracket(value:ArrayCollection):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+
+		
+		private var _maxBracket:BracketVO;
+
+		public function get maxBracket():BracketVO
+		{
+			var result:BracketVO = BracketVO.newNull();
+			for each(var bracket:BracketVO in _instanceBracket)
+			{
+				if(bracket.wind.lastValue.speed > result.wind.lastValue.speed)
+					result = bracket;
+			}
+			return result;
+		}
+
+		public function set maxBracket(value:BracketVO):void
 		{
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
@@ -145,7 +184,7 @@ package app.model.vo
 			
 			inch = new InchVO(this);
 			
-			_instanceBracket = new Dictionary;
+			_instanceBracket = BracketVO.facatoryCreateInstance(this);
 		}
 		
 		private function store():void
@@ -155,14 +194,20 @@ package app.model.vo
 		
 		public function getBracket(bracketId:int):BracketVO
 		{			
-			if(!_instanceBracket[bracketId])
+			/*if(!_instanceBracket[bracketId])
 			{
-				_instanceBracket[bracketId] = new BracketVO(bracketId,this);		
+				var bracket:BracketVO = new BracketVO(bracketId,this);
 				
-				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"listBracket",null,listBracket,this));
-			}
-			
-			return _instanceBracket[bracketId];
+				_instanceBracket[bracketId] = bracket;
+				
+				BindingUtils.bindSetter(setterWindLastValue,bracket.wind,"lastValue");
+				
+				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"listBracket",null,listBracket,this));		
+			}*/
+			if(_instanceBracket[bracketId])
+				return _instanceBracket[bracketId];
+			else 
+				return BracketVO.newNull();
 		}
 	}
 }

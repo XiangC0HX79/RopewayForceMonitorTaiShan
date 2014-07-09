@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="app.view.components.*" width="100%" height="100%">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import custom.skin.SkinButtonAnalysis;
-			import custom.skin.SkinButtonManager;
-			import custom.skin.SkinButtonRealtimeDetection;
-			import custom.skin.SkinMainContent;
+			public static const REALTIME:String 			= "Realtime";
+			public static const ANALYSIS:String 			= "Analysis";
+			public static const MANAGE:String 				= "Manager";
 			
-			public static const REALTIME_DETECTION:String 	= "0";
-			public static const ANALYSIS:String 			= "1";
-			public static const MANAGE:String 				= "2";
-			
-			public function set btnSelected(value:String):void
-			{				
+			protected function button_buttonDownHandler(event:FlexEvent,type:String):void
+			{
 				for(var i:Number = 0;i < buttonBar.numElements;i++)
 				{
-					var btn:Button = buttonBar.getElementAt(i) as Button;
-					if(btn)
-					{
-						btn.enabled = (i != int(value));
-					}
+					Button(buttonBar.getElementAt(i)).enabled = true;
 				}
+				
+				Button(event.currentTarget).enabled = false;
+				
+				dispatchEvent(new Event(type));
 			}
+			
 		]]>
 	</fx:Script>
 	
@@ -35,12 +32,12 @@
 	
 	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
 			  horizontalAlign="center">	
-		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true"
-				  buttonDown="dispatchEvent(new Event(REALTIME_DETECTION))"/>
+		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  enabled="false" width="117" height="148" buttonMode="true" 
+				  buttonDown="button_buttonDownHandler(event,REALTIME)"/>
 		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
-				  buttonDown="dispatchEvent(new Event(ANALYSIS))"/>
+				  buttonDown="button_buttonDownHandler(event,ANALYSIS)"/>
 		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
-				  buttonDown="dispatchEvent(new Event(MANAGE))"/>
+				  buttonDown="button_buttonDownHandler(event,MANAGE)"/>
 	</s:VGroup>
 	
 	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 

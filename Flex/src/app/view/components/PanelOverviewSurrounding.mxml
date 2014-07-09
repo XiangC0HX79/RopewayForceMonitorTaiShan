@@ -2,7 +2,7 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 height="170" width="300" skinClass="custom.skin.SkinPanel" xmlns:components="app.view.components.*">
+		 height="170" width="300" skinClass="custom.skin.SkinPanel" xmlns:components="app.view.components.*" xmlns:components1="custom.components.*">
 	
 	<fx:Script>
 		<![CDATA[			
@@ -24,7 +24,7 @@
 	</s:HGroup>
 	
 	<s:HGroup left="5" right="5" top="30" bottom="5" verticalAlign="contentJustify">		
-		<components:ItemOverviewSurrounding width="100%" title="驱动站" surrounding="{stationFst.surrounding}"/>	
-		<components:ItemOverviewSurrounding width="100%" title="回转站" surrounding="{stationSnd.surrounding}"/>
+		<components1:ItemOverviewSurrounding width="100%" title="驱动站" surrounding="{stationFst.surrounding}"/>	
+		<components1:ItemOverviewSurrounding width="100%" title="回转站" surrounding="{stationSnd.surrounding}"/>
 	</s:HGroup>
 </s:SkinnableContainer>

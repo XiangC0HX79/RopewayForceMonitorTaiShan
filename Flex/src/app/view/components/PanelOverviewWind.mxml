@@ -5,6 +5,7 @@
 					  skinClass="custom.skin.SkinPanel">
 	<fx:Script>
 		<![CDATA[
+			import custom.components.ItemOverviewWind;
 			import flash.utils.setTimeout;
 			
 			import mx.binding.utils.BindingUtils;
@@ -19,6 +20,8 @@
 			
 			public function set ropeway(value:RopewayVO):void
 			{
+				mainContent.removeAllElements();
+				
 				if(_watcher)
 					_watcher.unwatch();
 				
@@ -27,9 +30,8 @@
 			
 			private function setterBracket(listBracket:ArrayCollection):void
 			{				
-				//mainContent.removeAllElements();
-				
 				for each(var bracket:BracketVO in listBracket)
+				
 				{				
 					insertBracket(bracket);
 				}

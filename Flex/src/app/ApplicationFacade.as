@@ -1,9 +1,6 @@
 package app
-{
-	import spark.components.Application;
-	
+{	
 	import app.controller.NotifyInitAppCommand;
-	import app.controller.NotifyInitAppCompleteCommand;
 	import app.controller.NotifyMenuEngineAnalysisCommand;
 	import app.controller.NotifyMenuEngineManagerCommand;
 	import app.controller.NotifyMenuEngineRealtimeCommand;
@@ -14,6 +11,10 @@ package app
 	import app.controller.NotifyMenuMainForceCommand;
 	import app.controller.NotifyMenuMainInchCommand;
 	import app.controller.NotifyMenuMainOverviewCommand;
+	import app.controller.NotifyMenuMainWindCommand;
+	import app.controller.NotifyMenuWindAnalysisCommand;
+	import app.controller.NotifyMenuWindManagerCommand;
+	import app.controller.NotifyMenuWindRealtimeCommand;
 	import app.controller.NotifyPipeSendForceCommand;
 	import app.controller.NotifyRopewayChangeCommand;
 	import app.controller.NotifySocketEngineCommand;
@@ -21,6 +22,9 @@ package app
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingCommand;
 	import app.controller.NotifySocketWindCommand;
+	import app.controller.NotifyWindValueChartCommand;
+	import app.controller.NotifyWindValueExportCommand;
+	import app.controller.NotifyWindValuePageChangeCommand;
 	import app.controller.StartupCommand;
 	import app.model.AppConfigProxy;
 	import app.model.AppParamProxy;
@@ -28,11 +32,11 @@ package app
 	import app.model.InchProxy;
 	import app.model.RopewayProxy;
 	import app.model.RopewayStationProxy;
+	import app.model.SocketForceProxy;
+	import app.model.SocketProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.IFacade;
-	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.facade.Facade;
-	import org.puremvc.as3.multicore.utilities.flex.config.model.ConfigProxy;
 	import org.puremvc.as3.multicore.utilities.loadup.controller.LoadupResourceFailedCommand;
 	import org.puremvc.as3.multicore.utilities.loadup.controller.LoadupResourceLoadedCommand;
 	import org.puremvc.as3.multicore.utilities.loadup.model.LoadupMonitorProxy;
@@ -188,21 +192,18 @@ package app
 		 **/
 		//public static const NOTIFY_MAIN_MANAGER_CHANGE:String 		= "MainGroupMangerChange";
 		
-		public static const ACTION_UPDATE_ROPEWAY_LIST:String 			= "ActionUpdateRopewayList";	
-		
+		public static const ACTION_UPDATE_ROPEWAY_LIST:String 			= "ActionUpdateRopewayList";			
 		public static const ACTION_UPDATE_APP_PARAM:String 				= "ActionUpdateAppParam";		
 		
 		public static const ACTION_UPDATE_ROPEWAY:String 				= "ActionUpdateRopeway";		
 		
 		public static const ACTION_UPDATE_FORCE_FST:String 				= "ActionUpdateForceFst";		
 		public static const ACTION_UPDATE_FORCE_SND:String 				= "ActionUpdateForceSnd";
-		
-		//public static const ACTION_UPDATE_WIND:String 					= "ActionUpdateWind";	
-		//public static const ACTION_REFRESH_WIND:String 					= "ActionRefreshWind";	
-		
+				
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
 		public static const ACTION_ENGINE_PANEL_CHANGE:String 			= "ActionEnginePanelChange";
+		public static const ACTION_WIND_PANEL_CHANGE:String 			= "ActionWindPanelChange";
 		
 		/**
 		 * 主菜单-监测概览
@@ -216,20 +217,18 @@ package app
 		
 		//public static const NOTIFY_CONFIG_FAILED:String 			= "SocketConfigFailed";
 		
-		public static const NOTIFY_SOCKET_FORCE_LOADED:String 		= "SocketForceLoaded";
+		//public static const NOTIFY_SOCKET_FORCE_LOADED:String 		= "SocketForceLoaded";
 		
-		public static const NOTIFY_SOCKET_FORCE_FAILED:String 		= "SocketForceFailed";
+		//public static const NOTIFY_SOCKET_FORCE_FAILED:String 		= "SocketForceFailed";
 		
-		public static const NOTIFY_SOCKET_LOADED:String 			= "SocketLoaded";
+		//public static const NOTIFY_SOCKET_LOADED:String 			= "SocketLoaded";
 		
-		public static const NOTIFY_SOCKET_FAILED:String 			= "SocketFailed";
+		//public static const NOTIFY_SOCKET_FAILED:String 			= "SocketFailed";
 		
 		//public static const NOTIFY_WIND_LOADED:String 				= "WindLoaded";
 		
 		//public static const NOTIFY_WIND_FAILED:String 				= "WindFailed";
-		
-		
-		
+				
 		public static const NOTIFY_SOCKET_FORCE_INIT:String 		= "SocketForceInit";
 		
 		public static const NOTIFY_SOCKET_FORCE_UPLOAD:String 		= "SocketForceUpload";
@@ -273,6 +272,12 @@ package app
 		public static const NOTIFY_MENU_WIND_ANALYSIS:String 		= "MenuWindAnalysis";
 		
 		public static const NOTIFY_MENU_WIND_MANAGER:String 		= "MenuWindManager";
+		
+		public static const NOTIFY_WIND_VALUE_PAGE_CHANGE:String 	= "WindValuePageChange";
+		
+		public static const NOTIFY_WIND_VALUE_EXPORT:String 		= "WindValueExport";
+		
+		public static const NOTIFY_WIND_VALUE_CHART:String 			= "WindValueChart";
 		
 		/**
 		 * 菜单-实时检测
@@ -377,10 +382,7 @@ package app
 			registerCommand( STARTUP, StartupCommand );	
 			
 			registerCommand( NOTIFY_INIT_APP, NotifyInitAppCommand);
-			
-			registerCommand( NOTIFY_SOCKET_FORCE_LOADED , LoadupResourceLoadedCommand);
-			registerCommand( NOTIFY_SOCKET_LOADED , LoadupResourceLoadedCommand);
-			
+						
 			registerCommand( RopewayProxy.LOADED, LoadupResourceLoadedCommand);
 			registerCommand( RopewayProxy.FAILED, LoadupResourceFailedCommand);
 			registerCommand( RopewayStationProxy.LOADED, LoadupResourceLoadedCommand);
@@ -392,10 +394,11 @@ package app
 			registerCommand( InchProxy.LOADED , LoadupResourceLoadedCommand);
 			registerCommand( InchProxy.FAILED , LoadupResourceLoadedCommand);
 			registerCommand( AppConfigProxy.LOADED , LoadupResourceLoadedCommand);
-			registerCommand( AppConfigProxy.FAILED , LoadupResourceLoadedCommand);
-			
-			registerCommand( NOTIFY_SOCKET_FORCE_FAILED, LoadupResourceFailedCommand);
-			registerCommand( NOTIFY_SOCKET_FAILED, LoadupResourceFailedCommand);
+			registerCommand( AppConfigProxy.FAILED , LoadupResourceLoadedCommand);			
+			registerCommand( SocketForceProxy.LOADED , LoadupResourceLoadedCommand);
+			registerCommand( SocketForceProxy.FAILED , LoadupResourceFailedCommand);
+			registerCommand( SocketProxy.LOADED , LoadupResourceLoadedCommand);
+			registerCommand( SocketProxy.FAILED , LoadupResourceFailedCommand);
 			
 			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyMenuMainOverviewCommand);
 			
@@ -407,6 +410,7 @@ package app
 			
 			registerCommand( NOTIFY_SOCKET_WIND , NotifySocketWindCommand);
 			
+			//切换索道
 			registerCommand( NOTIFY_ROPEWAY_CHANGE , NotifyRopewayChangeCommand);
 						
 			//概览
@@ -436,6 +440,21 @@ package app
 			registerCommand( NOTIFY_PIPE_SEND_FORCE , NotifyPipeSendForceCommand);
 			
 			registerCommand( NOTIFY_SOCKET_FORCE_UPLOAD , NotifySocketForceUploadCommand);
+			
+			//风速风向
+			registerCommand( NOTIFY_MENU_MAIN_WIND , NotifyMenuMainWindCommand);
+			
+			registerCommand( NOTIFY_MENU_WIND_REALTIME , NotifyMenuWindRealtimeCommand);
+			
+			registerCommand( NOTIFY_MENU_WIND_ANALYSIS , NotifyMenuWindAnalysisCommand);
+			
+			registerCommand( NOTIFY_MENU_WIND_MANAGER , NotifyMenuWindManagerCommand);
+			
+			registerCommand( NOTIFY_WIND_VALUE_PAGE_CHANGE , NotifyWindValuePageChangeCommand);
+			
+			registerCommand( NOTIFY_WIND_VALUE_EXPORT , NotifyWindValueExportCommand);
+			
+			registerCommand( NOTIFY_WIND_VALUE_CHART , NotifyWindValueChartCommand);
 		}
 	}
 }

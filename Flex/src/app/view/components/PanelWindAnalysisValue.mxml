@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import app.model.vo.BracketVO;
+			import app.model.vo.WindValueVO;
+			
+			import custom.event.GridNavigatorEvent;
+			
+			public static const PAGESIZE:int = 20;
+			
+			public static var SELECT_ONT:String = "SelectOne";	
+			public static var EXPORT:String = "Export";	
+			public static var CHART:String = "Chart";	
+			
+			[Bindable]public var colBracket:IList;
+			
+			private var _chartSize:int;
+			
+			[Bindable]private var _colChartDataPro:IList;
+			
+			private var _colChart:IList;
+
+			[Bindable]
+			public function get colChart():IList
+			{
+				return _colChart;
+			}
+
+			public function set colChart(value:IList):void
+			{
+				_colChart = value;
+				
+				var vAxisMax:Number = 0;	
+				var vAxisMin:Number = 1000;					
+				for each(var item:WindValueVO in _colChart)
+				{
+					vAxisMax = Math.max(vAxisMax,item.speed);
+					vAxisMin = Math.min(vAxisMin,item.speed);
+				}			
+				
+				vAxisMax = (Math.floor(vAxisMax / 5) + 1) * 5;
+				vAxisMin = (Math.ceil(vAxisMin / 5) - 1) * 5;
+				
+				lineChart.maximun = vAxisMax;
+				lineChart.minimum = vAxisMin;
+				
+				var arr:Array = [];
+				
+				_chartSize = int(this.width / 30);
+				
+				if(_chartSize < _colChart.length)
+				{
+					chartSlider.visible = true;
+					chartSlider.minimum = 0;
+					chartSlider.maximum = _colChart.length - _chartSize;
+					
+					for(var i:int = 0;i<_chartSize;i++)
+					{
+						arr.push(_colChart[i]);
+					}
+				}
+				else
+				{
+					chartSlider.visible = false;		
+					
+					for each(item in _colChart)
+					{
+						arr.push(item);
+					}			
+				}
+				
+				_colChartDataPro = new ArrayCollection(arr);
+			}
+
+			
+			private var _totalCount:int;
+
+			[Bindable]
+			public function get totalCount():int
+			{
+				return _totalCount;
+			}
+
+			public function set totalCount(value:int):void
+			{
+				_totalCount = value;
+				
+				pageCount = Math.ceil(_totalCount / PAGESIZE);
+			}
+
+			
+			[Bindable]private var pageCount:int;
+			
+			[Bindable]public var colGrid:IList;
+			
+			public function get sTime():Date
+			{				
+				return new Date(dateTimeS.selectedDate.time + timeS.time);
+			}
+			
+			public function get eTime():Date
+			{				
+				if(timeE.time != 0)					
+					return new Date(dateTimeE.selectedDate.time +  timeE.time);
+				else	
+					return new Date(dateTimeE.selectedDate.fullYear,dateTimeE.selectedDate.month,dateTimeE.selectedDate.date + 1);
+			}
+			
+			protected function btnBar_changingHandler(event:IndexChangeEvent):void
+			{
+				if((listBracket.selectedIndex == 0) && (event.newIndex == 0))
+				{
+					event.preventDefault();
+					
+					dispatchEvent(new Event(SELECT_ONT));
+				}
+				else
+				{	
+					query(event.newIndex);		
+				}
+			}
+						
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = 1;
+				dateTimeS.selectedDate = new Date;
+				dateTimeE.selectedDate = new Date;
+				timeS.formatTime = "";
+				timeE.formatTime = "";
+				listBracket.selectedIndex = 0;
+			}
+									
+			protected function buttonQuery_buttonDownHandler(event:FlexEvent):void
+			{
+				query(btnBar.selectedIndex);
+			}
+			
+			private function query(index:int):void
+			{				
+				if(index == 0)
+				{										
+					dispatchEvent(new Event(CHART));					
+				}
+				else if(index == 1)
+				{										
+					gridNavigator.pageIndex = 1;
+					
+					dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,1));					
+				}
+			}
+			
+			protected function gridnavigator1_PageChangeHandler(event:GridNavigatorEvent):void
+			{	
+				dispatchEvent(event.clone());	
+			}			
+			
+			protected function chartSlider_changeHandler(event:Event):void
+			{
+				var arr:Array = [];
+				
+				for(var i:int = chartSlider.value;i<chartSlider.value + _chartSize;i++)
+				{
+					arr.push(colChart[i]);
+				}
+				
+				_colChartDataPro = new ArrayCollection(arr);
+			}
+			
+			protected function listBracket_changeHandler(event:IndexChangeEvent):void
+			{
+				if(listBracket.selectedIndex == 0)
+					btnBar.selectedIndex = 1;
+				
+				query(btnBar.selectedIndex);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+		<s:SolidColorStroke id="gapStroke" color="#63c3d6" weight="2"/>		
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">			
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="280" title="统计时间">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="开始时间："/>			
+				<mx:DateField id="dateTimeS" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}"/>	
+				<components:TimeField id="timeS" width="100%" height="21"/>
+			</s:HGroup>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="结束时间："/>		
+				<mx:DateField id="dateTimeE" width="110" formatString="YYYY-MM-DD" selectedDate="{new Date}" />			
+				<components:TimeField id="timeE" width="100%" height="21"/>
+			</s:HGroup>
+		</components:SkinnableTitleContainer>	
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="220" title="统计条件">
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="支架编号："/>
+				<s:DropDownList id="listBracket" requireSelection="true" dataProvider="{colBracket}" labelField="fullName"
+								width="100%" change="listBracket_changeHandler(event)"/>
+			</s:HGroup>	
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="buttonQuery_buttonDownHandler(event)" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+	
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
+		<s:NavigatorContent>	
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:Group height="100%" width="100%">
+				<s:Label id="lbTitle" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+						 text="{BracketVO(listBracket.selectedItem).fullName}历史风速风向"/>						
+				<s:Label left="10" top="20" text="抱索力（KG）"/>
+				<s:Label right="15" bottom="40" text="时间"/>
+				
+				<components:DateLineChart id="lineChart" yField="speed"
+										  showDataTips="true" dataTipRenderer="custom.components.ChartTipWind" 
+										  left="20" right="40" bottom="20" top="40" dataProvider="{_colChartDataPro}"/>
+			</s:Group>
+			
+			<s:HSlider width="100%" id="chartSlider" change="chartSlider_changeHandler(event)" showDataTip="false"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Line stroke="{gapStroke}" width="100%"/>
+				<s:Label text="历史风向风速（{totalCount}）" fontWeight="bold"/>
+				<s:Line stroke="{gapStroke}" width="100%"/>
+			</s:HGroup>
+			
+			<s:DataGrid width="100%" height="100%" dataProvider="{colGrid}"
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid"
+						alternatingRowColors="[#FFFFFF,#CFEDF7]" 
+						verticalScrollPolicy="off">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="支架编号" dataField="bracket.fullName" width="100"/>
+						<s:GridColumn headerText="时间" dataField="date" width="200" formatter="{dateF}"/>			
+						<s:GridColumn headerText="风速" dataField="speed" width="100"/>	
+						<s:GridColumn headerText="风向" dataField="dir" width="100"/>
+						<s:GridColumn headerText="所属索道" dataField="bracket.ropeway.fullName"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+			
+			<components:GridNavigator id="gridNavigator" pageCount="{pageCount}" 
+									  PageChange="gridnavigator1_PageChangeHandler(event)"/>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</s:NavigatorContent>

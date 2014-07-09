@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.DateUtil;
+			
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+						
+			public static var CHART:String = "Chart";			
+			public static var TABLE:String = "Table";	
+			public static var EXPORT:String = "Export";	
+			
+			[Bindable]public var colBracket:IList;
+			
+			protected function btnBar_changingHandler(event:IndexChangeEvent):void
+			{
+				/*if((!selectOne) && (event.newIndex == 0))
+				{
+					event.preventDefault();
+					
+					dispatchEvent(new Event(SELECT_ONE));
+				}
+				else if(event.newIndex == 0)
+				{					
+					if(colRopeway[0] == RopewayVO.ALL)
+						colRopeway.removeItemAt(0);
+					
+					dispatchEvent(new Event(CHART));					
+				}
+				else if(event.newIndex == 1)
+				{					
+					if(colRopeway[0] != RopewayVO.ALL)
+						colRopeway.addItemAt(RopewayVO.ALL,0);
+					
+					dispatchEvent(new Event(TABLE));					
+				}*/
+			}
+						
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				/*btnBar.selectedIndex = 1;
+				rbgStation.selectedValue = colStations[0];
+				dateTimeS.selectedDate = new Date;
+				dateTimeE.selectedDate = new Date;
+				timeS.formatTime = "";
+				timeE.formatTime = "";
+				listCarId.selectedIndex = 0;
+				listRopewayId.selectedIndex = 0;
+				numTempMin.text = "";
+				numTempMax.text = "";
+				colRopewayHis.source = [];*/
+			}
+			
+			protected function comboTime_changeHandler(event:IndexChangeEvent):void
+			{
+				/*if(comboTime.selectedIndex == 0)
+				{
+					dateF.dateTimePattern = "yyyy-MM-dd";
+					hAxis.dataUnits = "days";
+				}
+				else
+				{
+					dateF.dateTimePattern = "yyyy-MM";
+					hAxis.dataUnits = "months";
+				}*/
+			}
+			
+			protected function buttonQuery_buttonDownHandler(event:FlexEvent):void
+			{
+				if(btnBar.selectedIndex == 0)
+				{										
+					dispatchEvent(new Event(CHART));					
+				}
+				else if(btnBar.selectedIndex == 1)
+				{										
+					dispatchEvent(new Event(TABLE));					
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="200" title="统计时间">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="类　　型："/>
+				<s:DropDownList id="comboTime" requireSelection="true" 
+								change="comboTime_changeHandler(event)"
+								width="100%" height="21">
+					<s:ArrayCollection>
+						<fx:String>按天</fx:String>
+						<fx:String>按月</fx:String>
+					</s:ArrayCollection>
+				</s:DropDownList>				
+			</s:HGroup>			
+			
+			<mx:ViewStack width="100%" height="100%" creationPolicy="all"
+						  selectedIndex="{comboTime.selectedIndex}">				
+				<s:NavigatorContent width="100%">
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="开始日期："/>
+						<mx:DateField id="dateDayS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
+					</s:HGroup>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="结束日期："/>
+						<mx:DateField id="dateDayE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
+					</s:HGroup>
+				</s:NavigatorContent>
+				<s:NavigatorContent width="100%">
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="开始月份："/>
+						<mx:DateField id="dateMonthS" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
+					</s:HGroup>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="结束月份："/>
+						<mx:DateField id="dateMonthE" width="100%" formatString="YYYY-MM-DD" selectedDate="{DateUtil.addDateTime('d',-1,new Date)}" height="21"/>
+					</s:HGroup>
+				</s:NavigatorContent>
+			</mx:ViewStack>
+		</components:SkinnableTitleContainer>	
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="220" title="统计条件">
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Label text="支架编号："/>
+				<s:DropDownList id="listBracket" requireSelection="true" dataProvider="{colBracket}" labelField="ropewayCarId"
+								width="100%"/>
+			</s:HGroup>	
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="buttonQuery_buttonDownHandler(event)" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+</s:NavigatorContent>

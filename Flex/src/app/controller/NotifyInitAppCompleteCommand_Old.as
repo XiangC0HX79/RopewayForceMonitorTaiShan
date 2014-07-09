@@ -15,7 +15,7 @@ package app.controller
 	import org.puremvc.as3.multicore.patterns.command.MacroCommand;
 	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
 	
-	public class NotifyInitAppCompleteCommand extends AsyncMacroCommand
+	public class NotifyInitAppCompleteCommand_Old extends AsyncMacroCommand
 	{  
 		override protected function initializeAsyncMacroCommand():void
 		{
