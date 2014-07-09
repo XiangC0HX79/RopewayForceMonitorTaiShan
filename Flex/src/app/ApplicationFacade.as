@@ -22,6 +22,7 @@ package app
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingCommand;
 	import app.controller.NotifySocketWindCommand;
+	import app.controller.NotifyWindAverageQueryCommand;
 	import app.controller.NotifyWindValueChartCommand;
 	import app.controller.NotifyWindValueExportCommand;
 	import app.controller.NotifyWindValuePageChangeCommand;
@@ -279,6 +280,8 @@ package app
 		
 		public static const NOTIFY_WIND_VALUE_CHART:String 			= "WindValueChart";
 		
+		public static const NOTIFY_WIND_AVERAGE_QUERY:String 		= "WindAverageQuery";
+		
 		/**
 		 * 菜单-实时检测
 		 **/
@@ -455,6 +458,8 @@ package app
 			registerCommand( NOTIFY_WIND_VALUE_EXPORT , NotifyWindValueExportCommand);
 			
 			registerCommand( NOTIFY_WIND_VALUE_CHART , NotifyWindValueChartCommand);
+			
+			registerCommand( NOTIFY_WIND_AVERAGE_QUERY , NotifyWindAverageQueryCommand);
 		}
 	}
 }

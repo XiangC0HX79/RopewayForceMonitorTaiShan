@@ -1,5 +1,7 @@
 package custom.components
 {
+	import com.adobe.utils.DateUtil;
+	
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
@@ -24,6 +26,8 @@ package custom.components
 	
 	public class GridLineAnalyse extends GridLines
 	{
+		private const ONE_DAY:int = 24 * 60 * 60 *1000;
+		
 		public function GridLineAnalyse()
 		{
 			super();
@@ -62,20 +66,16 @@ package custom.components
 			var colAlternateFill:Array = [];
 			
 			len = chart.dataProvider.length;
-			var alternate:Boolean = true;
+			
 			for(var i:int = 0;i<len;i++)
 			{
-				var pre:IDateValue = (i > 0)?chart.dataProvider[i-1]:null;
-				var rf:IDateValue = chart.dataProvider[i];
-				if(pre && (pre.date.toDateString() != rf.date.toDateString()))
-				{
-					alternate = !alternate;
-				}
+				//var pre:IDateValue = (i > 0)?chart.dataProvider[i-1]:null;
+				var dateValue:IDateValue = chart.dataProvider[i];				
 				
-				if(alternate)
+				if((Math.floor(dateValue.date.time / ONE_DAY) % 2) == 0)
 					colAlternateFill.push(i);
 				else
-					colFill.push(i);
+					colFill.push(i);					
 			}
 			
 			var g:Graphics = graphics;

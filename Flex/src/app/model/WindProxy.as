@@ -85,6 +85,11 @@ package app.model
 			return send("T_JC_WindSpeedHisBLL_GetModelList",bracket.ropeway.fullName,bracket.bracketId,sTime,eTime);
 		}
 		
+		public function WindValueGetDayAvgStatList(bracket:BracketVO,sTime:Date,eTime:Date):AsyncToken
+		{
+			return send("T_JC_WindSpeedHisBLL_GetDayAvgStatList",bracket.ropeway.fullName,bracket.bracketId,sTime,eTime);
+		}
+		
 		public function WindValueExport(bracket:BracketVO,sTime:Date,eTime:Date):void
 		{			
 			var df:DateTimeFormatter = new DateTimeFormatter("zh_CN");
