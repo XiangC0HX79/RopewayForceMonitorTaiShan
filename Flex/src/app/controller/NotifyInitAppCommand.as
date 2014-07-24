@@ -8,7 +8,7 @@ package app.controller
 	import app.model.RopewayStationProxy;
 	import app.model.SocketForceProxy;
 	import app.model.SocketProxy;
-	import app.model.WindProxy;
+	import app.model.BracketProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.ICommand;
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -54,7 +54,8 @@ package app.controller
 						
 			rRsPx.requires = [rRwPx];
 			rAppParamPx.requires = [rRwPx];
-			rEnginePx.requires = [rRwPx];
+			rInchPx.requires = [rAppConfigPx,rRwPx];
+			rEnginePx.requires = [rAppConfigPx,rRwPx];
 			
 			rSocketPx.requires = [rAppConfigPx];
 			

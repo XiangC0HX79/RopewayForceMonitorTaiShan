@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:components="app.view.components.*" width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+						
+			public static const REALTIME:String 			= "Realtime";
+			public static const ANALYSIS:String 			= "Analysis";
+			public static const MANAGE:String 				= "Manager";
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
+			  horizontalAlign="center">	
+		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection" width="117" height="148" buttonMode="true" 
+				  buttonDown="dispatchEvent(new Event(REALTIME));"/>
+		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
+				  buttonDown="dispatchEvent(new Event(ANALYSIS));"/>
+		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
+				  buttonDown="dispatchEvent(new Event(MANAGE));"/>
+	</s:VGroup>
+	
+	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 
+						  skinClass="custom.skin.SkinMainContent">		
+	</s:SkinnableContainer>
+</s:Group>

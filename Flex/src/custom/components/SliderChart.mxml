@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			
+			import custom.itemRenderer.ItemRendererLineChartAlarm;
+					
+			public static const DATE_CHANGE:String = "DateChange";
+			
+			[Bindable]
+			public var chartTitle:String;
+			
+			[Bindable]
+			public var colChart:IList;
+			
+			[Bindable]
+			public var yField:String;
+			
+			private var _minTime:Date;
+
+			[Bindable]
+			public function get minTime():Date
+			{
+				return _minTime;
+			}
+
+			public function set minTime(value:Date):void
+			{
+				_minTime = value;
+				
+				chartSlider.minimum = _minTime.time;
+			}
+			
+			private var _maxTime:Date;
+
+			[Bindable]
+			public function get maxTime():Date
+			{
+				return _maxTime;
+			}
+
+			public function set maxTime(value:Date):void
+			{
+				_maxTime = value;
+				
+				chartSlider.maximum = _maxTime.time;
+			}
+
+			[Bindable]
+			public var dataTipRenderer:Class;
+			
+			[Bindable]
+			public var minimum:Number;
+			
+			[Bindable]
+			public var maximun:Number;
+			
+			[Bindable]
+			public function get sliderDate():Date
+			{
+				return new Date(chartSlider.value);
+			}
+
+			public function set sliderDate(value:Date):void
+			{
+				chartSlider.value = value.time;
+				
+				updateDataTip();
+			}
+
+			
+			private function labelHorizontalAxis(categoryValue:Object, previousCategoryValue:Object, axis:CategoryAxis, categoryItem:Object):String 
+			{ 				
+				var s:Array = dateF.format(categoryValue).split(" ");
+				return s[0]+ "\n" + s[1];
+			}
+			
+			protected function chartSlider_changeHandler(event:Event):void
+			{				
+				updateDataTip();
+				
+				dispatchEvent(new Event(DATE_CHANGE));
+			}
+			
+			private function updateDataTip():void
+			{
+				lblDatatip.text = dateF.format(new Date(chartSlider.value));
+				gpDatatip.x = gpDatatip.parent.globalToLocal(chartSlider.thumb.localToGlobal(new Point(0,0))).x - gpDatatip.width / 2;				
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[Event(name="DateChange", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+		
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>		
+	</fx:Declarations>
+	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+		</s:stroke>
+	</s:Rect>	
+	
+	<s:Label id="lbTitle" y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+			 text="{chartTitle}"/>						
+	<s:Label left="10" top="20" text="抱索力（KG）"/>
+	<s:Label right="15" bottom="70" text="时间"/>
+	
+	<mx:LineChart id="lineChart"
+				  showDataTips="true" dataTipRenderer="{dataTipRenderer}" 
+				  left="20" right="40" bottom="50" top="40" dataProvider="{colChart}">
+			<mx:seriesFilters>
+				<fx:Array/>
+			</mx:seriesFilters>
+			
+			<mx:backgroundElements>
+				<fx:Array>						
+					<components:GridLineAnalyse gridDirection="both"
+												horizontalStroke="{gridStroke}"
+												verticalStroke="{gridStroke}">
+						<components:verticalFill>
+							<mx:SolidColor color="0xCCCCCC" alpha=".4"/>											
+						</components:verticalFill>
+					</components:GridLineAnalyse>
+				</fx:Array>
+			</mx:backgroundElements>
+			
+			<mx:verticalAxis>
+				<mx:LinearAxis id="verticalAxis" baseAtZero="false" maximum="{maximun}" minimum="{minimum}"/>
+			</mx:verticalAxis>
+			
+			<mx:horizontalAxis>
+				<mx:CategoryAxis id="horizontalAxis" categoryField="date"
+								 ticksBetweenLabels="false" 
+								 labelFunction="labelHorizontalAxis" />
+			</mx:horizontalAxis>
+			
+			<mx:verticalAxisRenderers>					
+				<mx:AxisRenderer axis="{verticalAxis}" 
+								 axisStroke="{tickStroke}" 
+								 tickStroke="{tickStroke}"
+								 minorTickPlacement="none"/>
+			</mx:verticalAxisRenderers>
+			
+			<mx:horizontalAxisRenderers>			
+				<mx:AxisRenderer axis="{horizontalAxis}"
+								 textAlign="center"
+								 axisStroke="{tickStroke}" 
+								 tickStroke="{tickStroke}"/>					
+			</mx:horizontalAxisRenderers>
+			
+			<mx:series>
+				<mx:LineSeries yField="{yField}" lineStroke="{lStroke}"
+							   itemRenderer="{new ClassFactory(ItemRendererLineChartAlarm)}">
+				</mx:LineSeries>
+			</mx:series>
+	</mx:LineChart>		
+
+	
+	<s:Group bottom="25" id="gpDatatip">
+		<s:Rect top="0" left="0" right="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="0x000000" alpha=".9"/>
+			</s:fill>
+			<s:filters>
+				<s:DropShadowFilter angle="90" color="0x999999" distance="3"/>
+			</s:filters>
+		</s:Rect>
+		<s:Label id="lblDatatip"
+				 horizontalCenter="0" verticalCenter="1"
+				 left="5" right="5" top="5" bottom="5"
+				 textAlign="center" verticalAlign="middle"
+				 fontWeight="normal" color="white" fontSize="11">
+		</s:Label>
+	</s:Group>
+	
+	<s:HSlider width="100%" id="chartSlider" change="chartSlider_changeHandler(event)" showDataTip="false" 
+			   bottom="10" left="60" right="60"/>
+</s:Group>

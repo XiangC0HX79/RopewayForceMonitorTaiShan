@@ -5,26 +5,13 @@ package app.model.vo
 	import mx.collections.ArrayCollection;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.PropertyChangeEventKind;
-	import mx.utils.ObjectProxy;
 	
 	use namespace InternalVO;
 
 	[Bindable]
-	public class InchVO extends ObjectProxy
+	public class InchVO extends DeviceVO
 	{
-		private var _ropeway:RopewayVO;
-
-		public function get ropeway():RopewayVO
-		{
-			return _ropeway;
-		}
-
-		public function set ropeway(value:RopewayVO):void
-		{
-			_ropeway = value;
-		}
-
-		InternalVO static function getName(rwName:String):InchVO
+		InternalVO static function getNamed(rwName:String):InchVO
 		{
 			return RopewayVO.getNamed(rwName).inch;
 		}
@@ -119,12 +106,12 @@ package app.model.vo
 				
 		public function InchVO(rw:RopewayVO)
 		{
-			_ropeway = rw;
+			super(rw);
 			
 			his = new ArrayCollection;
 		}
 		
-		public function PushInch(inch:InchValueVO):void
+		public function PushItem(inch:InchValueVO):void
 		{			
 			his.source.push(inch);
 			

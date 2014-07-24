@@ -36,11 +36,26 @@
             
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
+        	var ropeway = "";
+        	
+	        var url = document.location.search;
+			var arr = url.split('&');
+			for(var i=0;i<arr.length;i++)
+			{
+				var ar = arr[i].split('=');
+				if((ar[0] == "?dep") || (ar[0] == "dep"))
+				{
+				   ropeway = ar[1];
+				}
+			}
+			
             // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
             var swfVersionStr = "${version_major}.${version_minor}.${version_revision}";
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
+            flashvars.ropeway = ropeway;            
+            
             var params = {};
             params.quality = "high";
             params.bgcolor = "${bgcolor}";

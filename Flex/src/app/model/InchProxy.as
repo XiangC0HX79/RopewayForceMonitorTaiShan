@@ -1,18 +1,22 @@
 package app.model
 {
+	import com.adobe.serialization.json.JSON;
+	
 	import mx.collections.ArrayCollection;
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
 	import app.model.vo.InternalVO;
-	import app.model.vo.RopewayVO;
 	
-	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
 	use namespace InternalVO;
 	
-	public class InchProxy extends Proxy implements ILoadupProxy
+	public class InchProxy extends  WebServiceProxy implements ILoadupProxy
 	{
 		public static const NAME:String = "InchProxy";
 		public static const SRNAME:String = "InchProxySR";
@@ -27,6 +31,53 @@ package app.model
 		
 		public function load():void
 		{			
+			var token:AsyncToken = sendNoBusy("T_JC_ZJXC_Load");
+			token.addResponder(new AsyncResponder(onLoad,onFault));
+		}		
+		
+		private function onFault(event:FaultEvent,t:Object = null):void
+		{
+			sendNotification(FAILED,NAME);			
+		}
+		
+		private function onLoad(event:ResultEvent,t:Object = null):void
+		{
+			var jd:* = JSON.decode(String(event.result));
+			
+			for each(var item:* in jd.MonthAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).aveMon = item.AveValue;
+			}
+			
+			for each(item in jd.ThrMonthAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).aveThreeMon = item.AveValue;
+			}
+			
+			for each(item in jd.LastDayAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).periodAveDay = item.AveValue;
+			}
+			
+			for each(item in jd.LastMonthAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).periodAveMon = item.AveValue;
+			}
+			
+			for each(item in jd.LastThrMonthAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).periodThreeMon = item.AveValue;
+			}
+			
+			for each(item in jd.History)
+			{
+				var inchValue:InchValueVO = new InchValueVO;
+				inchValue.date = new Date(Date.parse(item.DeteDate));
+				inchValue.value = item.DeteValue;
+				
+				InchVO.getNamed(item.FromRopeWay).PushItem(inchValue);
+			}
+			
 			sendNotification(LOADED,NAME);
 		}
 		
@@ -36,7 +87,7 @@ package app.model
 			inchValue.date = date;
 			inchValue.value = Number(value.toFixed(2));
 			
-			InchVO.getName(rwName).PushInch(inchValue);
+			InchVO.getNamed(rwName).PushItem(inchValue);
 		}
 	}
 }

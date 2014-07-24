@@ -23,7 +23,7 @@
 	</components:layout>
 	
 	<s:Group width="195" height="210">
-		<components:EnginTempWatch temp="{engine.lastTemp.temp}"/>
+		<components:EnginWatch engineValue="{engine.lastTemp}"/>
 		<s:Label bottom="0" text="{df.format(engine.lastTemp.date)}"/>
 	</s:Group>
 	

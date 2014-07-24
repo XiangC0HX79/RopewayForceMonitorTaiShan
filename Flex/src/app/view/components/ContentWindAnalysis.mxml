@@ -32,7 +32,7 @@
 	
 	<mx:ViewStack creationPolicy="all" height="100%" id="vs">
 		<components:PanelWindAnalysisValue id="analysisValue"/>
-		<components:PanelWindAnalysisValueAve id="analysisValueAve"/>
+		<components:PanelWindAnalysisAverage id="analysisValueAve"/>
 		<components:PanelWindAnalysisAlarm id="analysisAlarm"/>
 	</mx:ViewStack>
 </s:Group>

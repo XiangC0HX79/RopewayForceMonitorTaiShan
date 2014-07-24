@@ -4,6 +4,11 @@ package app.controller
 	
 	import mx.collections.ArrayCollection;
 	
+	import spark.components.Application;
+	
+	import app.model.AnalysisBracketProxy;
+	import app.model.AnalysisEngineProxy;
+	import app.model.AnalysisInchProxy;
 	import app.model.AppConfigProxy;
 	import app.model.AppParamProxy;
 	import app.model.EngineProxy;
@@ -14,7 +19,7 @@ package app.controller
 	import app.model.SocketForceProxy;
 	import app.model.SocketProxy;
 	import app.model.SyncTimerProxy;
-	import app.model.WindProxy;
+	import app.model.BracketProxy;
 	import app.model.vo.RopewayStationVO;
 	import app.model.vo.RopewayVO;
 	
@@ -25,7 +30,9 @@ package app.controller
 	{
 		override public function execute(note:INotification):void
 		{				
-			facade.registerProxy(new RopewayProxy);
+			var application:Application = note.getBody() as Application;
+			
+			facade.registerProxy(new RopewayProxy(application.parameters.ropeway));
 			
 			facade.registerProxy(new RopewayStationProxy);
 			
@@ -33,7 +40,6 @@ package app.controller
 			
 			facade.registerProxy(new SyncTimerProxy);
 			
-			//ILoadupProxy
 			facade.registerProxy(new AppConfigProxy("appconfig.xml"));
 			
 			facade.registerProxy(new SocketForceProxy);
@@ -43,12 +49,16 @@ package app.controller
 			facade.registerProxy(new EngineProxy);
 			
 			facade.registerProxy(new InchProxy);
-			
-			//facade.registerProxy(new SurroundingProxy);
-			
+						
 			facade.registerProxy(new ForceProxy);
 			
-			facade.registerProxy(new WindProxy);
+			facade.registerProxy(new BracketProxy);
+			
+			facade.registerProxy(new AnalysisInchProxy);
+			
+			facade.registerProxy(new AnalysisEngineProxy);
+			
+			facade.registerProxy(new AnalysisBracketProxy);
 		}
 	}
 }

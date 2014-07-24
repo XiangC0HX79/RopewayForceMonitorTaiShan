@@ -30,14 +30,14 @@ package app.view
 		private function onMediatorAdd(event:FlexEvent):void
 		{			
 			facade.registerMediator(new PanelWindAnalysisValueMediator(contentWindAnalysis.analysisValue));
-			facade.registerMediator(new PanelWindAnalysisValueAveMediator(contentWindAnalysis.analysisValueAve));
+			facade.registerMediator(new PanelWindAnalysisAverageMediator(contentWindAnalysis.analysisValueAve));
 			facade.registerMediator(new PanelWindAnalysisAlarmMediator(contentWindAnalysis.analysisAlarm));
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void
 		{			
 			facade.removeMediator(PanelWindAnalysisValueMediator.NAME);
-			facade.removeMediator(PanelWindAnalysisValueAveMediator.NAME);
+			facade.removeMediator(PanelWindAnalysisAverageMediator.NAME);
 			facade.removeMediator(PanelWindAnalysisAlarmMediator.NAME);
 		}
 	}

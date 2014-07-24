@@ -38,6 +38,8 @@
 			private function setterNiddle(obj:Object):void
 			{				
 				_niddleX = getNiddlePos(inch.lastValue.value);
+								
+				rMask.visible = inch.lastValue.alarm > 0;
 			}
 			
 			private function getNiddlePos(value:Number):Number
@@ -102,5 +104,11 @@
 				 scaleMode="stretch" resize="img_resizeHandler(event)"/>
 		
 		<s:Label text="{df.format(inch.lastValue.date)}" right="0" bottom="0"/>
+				
+		<s:Rect left="5" right="5" bottom="5" top="5" id="rMask" visible="false">
+			<s:fill>
+				<s:SolidColor color="red" alpha="0.2"/>
+			</s:fill>
+		</s:Rect>
 	</s:SkinnableContainer>
 </s:SkinnableContainer>

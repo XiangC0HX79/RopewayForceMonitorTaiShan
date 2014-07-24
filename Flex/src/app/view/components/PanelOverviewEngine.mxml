@@ -29,7 +29,7 @@
 						  fontWeight="bold">			
 			<s:Label text="温度1"/>
 			
-			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{engineFst.lastTemp.temp}"/>
+			<components:EnginWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" engineValue="{engineFst.lastTemp}"/>
 			
 			<s:Label right="0" bottom="0" text="{df.format(engineFst.lastTemp.date)}"/>
 		</s:SkinnableContainer>		
@@ -38,7 +38,7 @@
 							  fontWeight="bold">			
 			<s:Label text="温度2"/>
 			
-			<components:EnginTempWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" temp="{engineSnd.lastTemp.temp}"/>
+			<components:EnginWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" engineValue="{engineSnd.lastTemp}"/>
 			
 			<s:Label right="0" bottom="0" text="{df.format(engineSnd.lastTemp.date)}"/>
 		</s:SkinnableContainer>

@@ -5,39 +5,15 @@ package app.model.vo
 	import mx.collections.ArrayCollection;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.PropertyChangeEventKind;
-	import mx.utils.ObjectProxy;
 	
 	use namespace InternalVO;
 	
 	[Bindable]
-	public class EngineVO extends ObjectProxy
+	public class EngineVO extends DeviceVO
 	{
 		public static const FIRST:int = 0;
 		public static const SECOND:int = 1;
-		
-		/*private static var _instance:Dictionary = new Dictionary;
-				
-		public static function loadEngine(listRw:ArrayCollection):Array
-		{
-			for each(var rw:RopewayVO in listRw)
-			{
-				new EngineVO(rw,EngineVO.FIRST).store();
-				new EngineVO(rw,EngineVO.SECOND).store();
-			}
-			
-			var result:Array = [];
-			for each(var engine:EngineVO in _instance)
-			{
-				result.push(engine);
-			}
-			return result;			
-		}
-		
-		InternalVO static function getHashCode(rwName:String,p:int):String
-		{
-			return rwName + p;
-		}*/
-				
+						
 		InternalVO static function getNamed(rwName:String,p:int):EngineVO
 		{
 			var rw:RopewayVO = RopewayVO.getNamed(rwName);
@@ -49,17 +25,15 @@ package app.model.vo
 			else
 				throw(new IllegalOperationError("调用抽象方法"));
 		}
-		
-		private var _ropeway:RopewayVO;
-
-		public function get ropeway():RopewayVO
+				
+		override public function get deviceId():int
 		{
-			return _ropeway;
+			return pos;
 		}
-
-		public function set ropeway(value:RopewayVO):void
+		
+		override public function set deviceId(value:int):void
 		{
-			throw(new IllegalOperationError("调用抽象方法"));
+			//_deviceId = value;
 		}
 		
 		public function get pos():int
@@ -68,6 +42,16 @@ package app.model.vo
 		}
 
 		public function set pos(value:int):void
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+				
+		public function get fullName():String
+		{
+			throw(new IllegalOperationError("调用抽象方法"));
+		}
+		
+		public function set fullName(value:String):void
 		{
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
@@ -82,7 +66,6 @@ package app.model.vo
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
 
-		//public var lastTemp:EngineTempVO;
 		public function get lastTemp():EngineTempVO
 		{
 			return (history.length > 0)?history[history.length - 1]:new EngineTempVO;
@@ -142,28 +125,14 @@ package app.model.vo
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
 		
-		//public var date:Date;
-		
 		public var history:ArrayCollection;
 		
 		public function EngineVO(rw:RopewayVO)
 		{
-			_ropeway = rw;
+			super(rw);
 			
 			history = new ArrayCollection;
-			
-			//lastTemp = new EngineTempVO;
 		}
-		
-		/*public function store():void
-		{
-			_instance[getHashCode(ropeway.fullName,pos)] = this;
-		}
-		
-		public function UnshiftItem(et:EngineTempVO):void
-		{			
-			history.source.unshift(et);
-		}*/
 		
 		public function PushItem(et:EngineTempVO):void
 		{			

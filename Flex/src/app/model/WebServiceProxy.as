@@ -41,36 +41,38 @@ package app.model
 			var operation:Operation = _webService.getOperation(name) as Operation;
 			operation.arguments = args;
 			operation.addEventListener(FaultEvent.FAULT,onFault);
+			operation.addEventListener(ResultEvent.RESULT,onResult);
 			operation.resultFormat = "object";
-			
-			var token:AsyncToken = operation.send();
-			token.addResponder(new AsyncResponder(onResult,function (event:FaultEvent,t:Object):void{}));
-			
-			return token;
+			return operation.send();
 		}
 		
-		private function onResult(event:ResultEvent,t:Object):void
-		{							
+		private function onResult(event:ResultEvent):void
+		{						
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);			
 		}		
-		
-		protected function sendNoBusy(name:String,...args):AsyncToken
-		{									
-			var operation:Operation = _webService.getOperation(name) as Operation;
-			operation.arguments = args;
-			operation.addEventListener(FaultEvent.FAULT,onFault);
-			operation.resultFormat = "object";
-			
-			var token:AsyncToken = operation.send();
-			//token.addResponder(new AsyncResponder(onResultNoBusy,function (event:FaultEvent,t:Object):void{},listener));
-			
-			return token;
-		}
-		
+				
 		private function onFault(event:FaultEvent):void
 		{	
 			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);
 			
+			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
+		}	
+		
+		protected function sendNoBusy(name:String,...args):AsyncToken
+		{									
+			var operation:Operation = _webService.getOperation(name) as Operation;
+			
+			operation.arguments = args;
+			operation.addEventListener(FaultEvent.FAULT,onFaultNoBusy);
+			operation.resultFormat = "object";
+			
+			var token:AsyncToken = operation.send();
+			
+			return token;
+		}
+		
+		private function onFaultNoBusy(event:FaultEvent):void
+		{				
 			sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,event.fault.faultString + "\n" + event.fault.faultDetail);
 		}	
 		

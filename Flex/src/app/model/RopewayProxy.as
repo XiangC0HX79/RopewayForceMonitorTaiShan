@@ -19,9 +19,11 @@ package app.model
 		public static const LOADED:String = "RopewayProxy/Loaded";
 		public static const FAILED:String = "RopewayProxy/Failed";
 				
-		public function RopewayProxy()
+		public function RopewayProxy(rwId:String)
 		{
 			super(NAME,new Array);
+			
+			RopewayVO.rwId = rwId;
 		}
 		
 		public function get list():ArrayCollection

@@ -6,6 +6,8 @@
 		 maxWidth="200" maxHeight="70">
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import app.model.vo.WindValueVO;
 			
 			private var _windValue:WindValueVO;
@@ -19,8 +21,7 @@
 			public function set data(value:Object):void
 			{
 				_windValue = WindValueVO(value.item);
-			}
-			
+			}		
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -55,7 +56,7 @@
 			<s:Label text="{data.speed}"/>
 		</s:HGroup>
 		<s:HGroup>
-			<s:Label text="风　　速："/>
+			<s:Label text="风　　向："/>
 			<s:Label text="{data.dir}"/>
 		</s:HGroup>
 		<s:HGroup includeIn="alarm">

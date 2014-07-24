@@ -5,12 +5,12 @@ package app.view
 	import mx.collections.ArrayCollection;
 	
 	import app.ApplicationFacade;
-	import app.model.notify.NotifyWindAnalysisValueVO;
-	import app.model.vo.BracketVO;
+	import app.controller.notify.AnalysisNotify;
+	import app.controller.notify.AnalysisValueChartNotify;
+	import app.controller.notify.AnalysisValueTableNotify;
+	import app.model.vo.DeviceVO;
 	import app.model.vo.RopewayVO;
 	import app.view.components.PanelWindAnalysisValue;
-	
-	import custom.event.GridNavigatorEvent;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
@@ -33,9 +33,9 @@ package app.view
 		{
 			panelWindAnalysisValue.addEventListener(PanelWindAnalysisValue.SELECT_ONT,onSelectOne);
 			
-			panelWindAnalysisValue.addEventListener(GridNavigatorEvent.PAGE_CHANGE,onPageChange);
+			panelWindAnalysisValue.addEventListener(PanelWindAnalysisValue.TABLE,onTablePageChange);
+			panelWindAnalysisValue.addEventListener(PanelWindAnalysisValue.CHART,onChartDateChange);
 			
-			panelWindAnalysisValue.addEventListener(PanelWindAnalysisValue.CHART,onChart);
 			panelWindAnalysisValue.addEventListener(PanelWindAnalysisValue.EXPORT,onExport);
 		}
 		
@@ -43,9 +43,9 @@ package app.view
 		{
 			panelWindAnalysisValue.removeEventListener(PanelWindAnalysisValue.SELECT_ONT,onSelectOne);
 			
-			panelWindAnalysisValue.removeEventListener(GridNavigatorEvent.PAGE_CHANGE,onPageChange);
+			panelWindAnalysisValue.removeEventListener(PanelWindAnalysisValue.TABLE,onTablePageChange);
+			panelWindAnalysisValue.removeEventListener(PanelWindAnalysisValue.CHART,onChartDateChange);
 			
-			panelWindAnalysisValue.removeEventListener(PanelWindAnalysisValue.CHART,onChart);
 			panelWindAnalysisValue.removeEventListener(PanelWindAnalysisValue.EXPORT,onExport);
 		}
 		
@@ -73,43 +73,49 @@ package app.view
 		
 		private function onExport(event:Event):void
 		{
-			var notify:NotifyWindAnalysisValueVO = new NotifyWindAnalysisValueVO;
-			notify.bracket = BracketVO(panelWindAnalysisValue.listBracket.selectedItem);
+			var notify:AnalysisNotify = new AnalysisNotify;
+			notify.device = DeviceVO(panelWindAnalysisValue.listBracket.selectedItem);
 			notify.sTime = panelWindAnalysisValue.sTime;
 			notify.eTime = panelWindAnalysisValue.eTime;
 			
-			sendNotification(ApplicationFacade.NOTIFY_WIND_VALUE_EXPORT,notify);			
+			sendNotification(ApplicationFacade.NOTIFY_VALUE_EXPORT,notify);			
 		}
 		
-		private function onChart(event:Event):void
+		private function onChartDateChange(event:Event):void
 		{			
-			var notify:NotifyWindAnalysisValueVO = new NotifyWindAnalysisValueVO;
-			notify.bracket = BracketVO(panelWindAnalysisValue.listBracket.selectedItem);
+			var notify:AnalysisValueChartNotify = new AnalysisValueChartNotify;
+			notify.device = DeviceVO(panelWindAnalysisValue.listBracket.selectedItem);
 			notify.sTime = panelWindAnalysisValue.sTime;
 			notify.eTime = panelWindAnalysisValue.eTime;
+			notify.mTime = panelWindAnalysisValue.mTime;
+			notify.chartSize = panelWindAnalysisValue.chartSize;
 			
 			notify.ResultHandle = chartResultHandle;
 			
-			sendNotification(ApplicationFacade.NOTIFY_WIND_VALUE_CHART,notify);
+			sendNotification(ApplicationFacade.NOTIFY_VALUE_CHART,notify);
 		}
 		
-		private function chartResultHandle(colChart:ArrayCollection):void
+		private function chartResultHandle(colChart:ArrayCollection,minTime:Date,maxTime:Date,minSpeed:Number,maxSpeed:Number):void
 		{
 			panelWindAnalysisValue.colChart = colChart;
+			panelWindAnalysisValue.chartMaxSpeed = maxSpeed;
+			panelWindAnalysisValue.chartMaxTime = maxTime;
+			panelWindAnalysisValue.chartMinSpeed = minSpeed;
+			panelWindAnalysisValue.chartMinTime = minTime;
 		}
 		
-		private function onPageChange(event:GridNavigatorEvent):void
+		private function onTablePageChange(event:Event):void
 		{
-			var notify:NotifyWindAnalysisValueVO = new NotifyWindAnalysisValueVO;
-			notify.bracket = BracketVO(panelWindAnalysisValue.listBracket.selectedItem);
+			var notify:AnalysisValueTableNotify = new AnalysisValueTableNotify;
+			notify.device = DeviceVO(panelWindAnalysisValue.listBracket.selectedItem);
 			notify.sTime = panelWindAnalysisValue.sTime;
 			notify.eTime = panelWindAnalysisValue.eTime;
-			notify.pageIndex = event.pageIndex;
+			notify.pageIndex = panelWindAnalysisValue.pageIndex;
 			notify.pageSize = PanelWindAnalysisValue.PAGESIZE;
 			
 			notify.ResultHandle = pageChangeResultHandle;
 			
-			sendNotification(ApplicationFacade.NOTIFY_WIND_VALUE_PAGE_CHANGE,notify);
+			sendNotification(ApplicationFacade.NOTIFY_VALUE_TABLE,notify);
 		}		
 		
 		private function pageChangeResultHandle(totalCount:int,colGrid:ArrayCollection):void

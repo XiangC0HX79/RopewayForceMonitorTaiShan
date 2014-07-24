@@ -1,13 +1,7 @@
 package app.view
-{
-	import flash.events.Event;
-	
-	import mx.events.ResizeEvent;
-	
+{	
 	import app.ApplicationFacade;
 	import app.model.vo.RopewayVO;
-	import app.model.vo.WindVO;
-	import custom.components.ItemOverviewWind;
 	import app.view.components.PanelOverviewWind;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;

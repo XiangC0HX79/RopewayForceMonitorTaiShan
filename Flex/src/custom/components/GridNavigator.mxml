@@ -5,14 +5,14 @@
 		 verticalAlign="middle">
 	
 	<fx:Metadata>
-		[Event(name="PageChange",type="custom.event.GridNavigatorEvent")]		
+		[Event(name="PageChange", type="flash.events.Event")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
-			
-			import custom.event.GridNavigatorEvent;
+						
+			public static const PAGE_CHANGE:String = "PageChange";
 			
 			[Bindable]public var pageIndex:Number = 1;		
 			
@@ -25,7 +25,7 @@
 				
 				pageIndex = 1;
 				
-				dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,pageIndex));
+				dispatchEvent(new Event(PAGE_CHANGE));
 			}
 			
 			protected function prePage_buttonDownHandler(event:FlexEvent):void
@@ -38,7 +38,7 @@
 				
 				pageIndex--;
 				
-				dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,pageIndex));
+				dispatchEvent(new Event(PAGE_CHANGE));
 				
 			}
 			
@@ -52,7 +52,7 @@
 				
 				pageIndex++;
 				
-				dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,pageIndex));
+				dispatchEvent(new Event(PAGE_CHANGE));
 			}
 			
 			protected function lastPage_buttonDownHandler(event:FlexEvent):void
@@ -62,7 +62,7 @@
 				
 				pageIndex = pageCount;
 				
-				dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,pageIndex));
+				dispatchEvent(new Event(PAGE_CHANGE));
 			}
 			
 			protected function buttonGo_buttonDownHandler(event:FlexEvent):void
@@ -75,7 +75,7 @@
 				
 				pageIndex = numPageIndex.value;
 				
-				dispatchEvent(new GridNavigatorEvent(GridNavigatorEvent.PAGE_CHANGE,pageIndex));
+				dispatchEvent(new Event(PAGE_CHANGE));
 			}
 		]]>
 	</fx:Script>

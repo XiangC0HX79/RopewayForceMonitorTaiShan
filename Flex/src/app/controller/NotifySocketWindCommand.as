@@ -2,7 +2,7 @@ package app.controller
 {
 	import com.adobe.utils.DateUtil;
 	
-	import app.model.WindProxy;
+	import app.model.BracketProxy;
 	
 	import org.puremvc.as3.multicore.interfaces.INotification;
 	import org.puremvc.as3.multicore.patterns.command.SimpleCommand;
@@ -18,7 +18,7 @@ package app.controller
 		{		
 			var array:Array =  notification.getBody() as Array;
 			
-			var windProxy:WindProxy = facade.retrieveProxy(WindProxy.NAME) as WindProxy;
+			var windProxy:BracketProxy = facade.retrieveProxy(BracketProxy.NAME) as BracketProxy;
 						
 			windProxy.AddItem(
 				array[2]

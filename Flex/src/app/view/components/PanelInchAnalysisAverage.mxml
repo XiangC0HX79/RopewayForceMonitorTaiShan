@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[			
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import app.model.vo.InchVO;
+									
+			public static var QUERY_DAY:String = "QueryDay";	
+			public static var QUERY_MONTH:String = "QueryMonth";	
+			
+			public static var EXPORT_DAY:String = "ExportDay";	
+			public static var EXPORT_MONTH:String = "ExportMonth";	
+			
+			[Bindable]public var inch:InchVO;		
+						
+			[Bindable]public var colInchValue:IList;
+						
+			public function get sTime():Date
+			{						
+				return conditionTime.sTime;
+			}
+			
+			public function get eTime():Date
+			{		
+				return conditionTime.eTime;
+			}
+									
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = 1;
+			}
+									
+			private function query():void
+			{				
+				if(conditionTime.type == AnalysisConditionDayOrMonth.DAY)
+				{
+					dispatchEvent(new Event(QUERY_DAY));
+				}
+				else
+				{
+					dispatchEvent(new Event(QUERY_MONTH));
+				}
+			}
+			
+			private function export():void
+			{			
+				if(conditionTime.type == AnalysisConditionDayOrMonth.DAY)
+				{
+					dispatchEvent(new Event(EXPORT_DAY));
+				}
+				else
+				{
+					dispatchEvent(new Event(EXPORT_MONTH));
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->	
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">		
+		<components:AnalysisConditionDayOrMonth id="conditionTime" TypeChange="query()"/>
+				
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="query()" selectedIndex="1">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="query();" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="export();"/>			
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+		
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" width="100%" height="100%" creationPolicy="all">
+		<s:NavigatorContent>			
+			<components:AnalysisChart left="0" right="0" top="0" bottom="0" id="chart"
+									  colChart="{colInchValue}" chartTitle="平均张紧小尺数值"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<components:PageGridHead title="平均数值（{colInchValue.length}）" width="100%"/>
+			
+			<s:DataGrid width="100%" height="100%" dataProvider="{colInchValue}"
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid"
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="时间" dataField="date" width="200"/>		
+						<s:GridColumn headerText="最小长度" dataField="minValue" width="100"/>			
+						<s:GridColumn headerText="平均长度" dataField="aveValue" width="100"/>			
+						<s:GridColumn headerText="最大长度" dataField="maxValue" width="100"/>		
+						<s:GridColumn headerText="所属索道" dataField="ropewayName"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</s:NavigatorContent>

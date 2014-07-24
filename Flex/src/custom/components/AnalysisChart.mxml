@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.HitData;
+			import mx.charts.chartClasses.IAxis;
+			import mx.charts.series.items.LineSeriesItem;
+			import mx.collections.IList;
+			
+			import custom.itemRenderer.ItemRendererLineChartAve;
+			import custom.itemRenderer.ItemRendererLineChartValue;
+						
+			[Bindable]
+			public var chartTitle:String;
+			
+			[Bindable]
+			public var colChart:IList;			
+			
+			/*private var _dateTimePattern:String = "yyyy-MM-dd";
+
+			[Bindable]
+			public function get dateTimePattern():String
+			{
+				return _dateTimePattern;
+			}
+
+			public function set dateTimePattern(value:String):void
+			{
+				_dateTimePattern = value;
+				
+				if(_dateTimePattern == "yyyy-MM-dd")
+					dataUnits = "days";
+				else
+					dataUnits = "months"; 
+			}*/
+
+			
+			[Bindable]
+			public var dataUnits:String = "days";
+			
+			private function dataTipFunction(hitData:HitData):String
+			{
+				var element:LineSeries =  hitData.element as LineSeries;
+				var item:LineSeriesItem = hitData.chartItem as LineSeriesItem;
+				var r:String = "时间：" + item.xValue;
+				
+				if(element.yField == "maxValue")
+					return r + "\n" + "最大值：" + item.yValue;
+				else if(element.yField == "aveValue")
+					return r + "\n" + "平均值：" + item.yValue;
+				else if(element.yField == "minValue")
+					return r + "\n" + "最小值：" + item.yValue;
+				else 
+					return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->				
+		<s:SolidColorStroke id="tickStroke" color="0xC2C2C2" weight="2"/>
+		<s:SolidColorStroke id="gridStroke" color="gray" alpha="0.3" weight="1"/>
+		<s:SolidColorStroke id="lStroke" color="0xE48701" weight="1"/>	
+		<s:SolidColorStroke id="aStroke" color="red" weight="1"/>		
+		
+		<mx:WipeRight id="wipeShow" duration="1000"/>		
+	</fx:Declarations>
+	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="#63c3d6"/>
+		</s:stroke>
+	</s:Rect>	
+	
+	<mx:LineChart width="100%" height="100%" showDataTips="true" dataTipFunction="dataTipFunction"
+				  left="20" right="40" bottom="20" top="40" dataProvider="{colChart}">
+		<mx:backgroundElements>
+			<fx:Array>						
+				<mx:GridLines gridDirection="both" 
+							  horizontalStroke="{gridStroke}"
+							  verticalStroke="{gridStroke}"/>
+			</fx:Array>
+		</mx:backgroundElements>
+		
+		<mx:horizontalAxis>
+			<mx:CategoryAxis id="hAxis" categoryField="date"/>							 			
+		</mx:horizontalAxis>
+		
+		<mx:verticalAxis>
+			<mx:LinearAxis id="verticalAxis" baseAtZero="false"/>
+		</mx:verticalAxis>
+		
+		<mx:verticalAxisRenderers>					
+			<mx:AxisRenderer axis="{verticalAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>
+		</mx:verticalAxisRenderers>
+		
+		<mx:horizontalAxisRenderers>			
+			<mx:AxisRenderer axis="{hAxis}" 
+							 axisStroke="{tickStroke}" tickStroke="{tickStroke}" 
+							 minorTickPlacement="none"/>					
+		</mx:horizontalAxisRenderers>
+		
+		<mx:series>
+			<mx:LineSeries yField="aveValue"
+						   itemRenderer="{new ClassFactory(ItemRendererLineChartValue)}" 
+						   lineStroke="{lStroke}" showDataEffect="{wipeShow}"/>
+			<mx:LineSeries yField="minValue"
+						   itemRenderer="{new ClassFactory(ItemRendererLineChartAve)}" 
+						   lineStroke="{aStroke}" showDataEffect="{wipeShow}"/>
+			<mx:LineSeries yField="maxValue"
+						   itemRenderer="{new ClassFactory(ItemRendererLineChartAve)}" 
+						   lineStroke="{aStroke}" showDataEffect="{wipeShow}"/>
+		</mx:series>
+	</mx:LineChart>
+	
+	<s:Label left="10" top="20" text="抱索力（KG）"/>
+	<s:Label right="15" bottom="40" text="时间"/>
+	<s:Label y="10" fontSize="24" fontWeight="bold" horizontalCenter="0" color="0x1b5aa2"
+			 text="{chartTitle}"/>
+</s:Group>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import app.model.vo.EngineVO;
+			import app.model.vo.InchVO;
+									
+			public static const PAGESIZE:int = 20;
+			
+			public static var EXPORT:String = "Export";				
+			public static var TABLE:String = "Table";	
+			public static var CHART:String = "Chart";	
+			
+			[Bindable]public var inch:InchVO;			
+						
+			[Bindable]public var colChart:IList;
+			
+			[Bindable]public var chartMinTime:Date;
+			
+			[Bindable]public var chartMaxTime:Date;
+			
+			[Bindable]public var chartMinSpeed:Number;
+			
+			[Bindable]public var chartMaxSpeed:Number;
+			
+			public function get chartSize():int
+			{
+				return Math.floor(viewContent.width / 30);
+			}
+						
+			public function get mTime():Date
+			{
+				return sliderChart.sliderDate;
+			}
+			
+			public function get pageIndex():int
+			{
+				return gridNavigator.pageIndex;
+			}
+			
+			public function get sTime():Date
+			{				
+				return conditionTime.sTime;
+			}
+			
+			public function get eTime():Date
+			{				
+				return conditionTime.eTime;
+			}
+			
+			[Bindable]private var pageCount:int;
+			
+			private var _totalCount:int;
+
+			[Bindable]
+			public function get totalCount():int
+			{
+				return _totalCount;
+			}
+
+			public function set totalCount(value:int):void
+			{
+				_totalCount = value;
+				
+				pageCount = Math.ceil(_totalCount / PAGESIZE);
+			}
+			
+			[Bindable]public var colGrid:IList;
+						
+			protected function btnBar_changingHandler(event:IndexChangeEvent):void
+			{
+				query(event.newIndex);		
+			}
+						
+			protected function btnReset_buttonDownHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = 1;
+				conditionTime.sTime = new Date;
+				conditionTime.eTime = new Date;	
+			}
+									
+			protected function buttonQuery_buttonDownHandler(event:FlexEvent):void
+			{
+				query(btnBar.selectedIndex);
+			}
+			
+			private function query(index:int):void
+			{				
+				if(index == 0)
+				{								
+					sliderChart.sliderDate = sTime;
+						
+					dispatchEvent(new Event(CHART));
+				}
+				else if(index == 1)
+				{										
+					gridNavigator.pageIndex = 1;
+					
+					dispatchEvent(new Event(TABLE));					
+				}
+			}				
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+		<s:DateTimeFormatter id="dateF" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:HGroup id="panelHead" height="120">				
+		<components:AnalysisConditionTime id="conditionTime"/>
+				
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="90" title="视图">
+			<s:ButtonBar width="100%" id="btnBar" skinClass="custom.skin.SkinButtonBarAnalysis"
+						 changing="btnBar_changingHandler(event)" selectedIndex="1">
+				<s:ArrayCollection>
+					<fx:String>图形</fx:String>
+					<fx:String>表格</fx:String>
+				</s:ArrayCollection>
+			</s:ButtonBar>
+		</components:SkinnableTitleContainer>		
+		
+		<components:SkinnableTitleContainer skinClass="custom.skin.SkinPanelAnalysis" height="100%" width="120" title="操作">
+			<s:Button label="统计" icon="@Embed('assets/image/btn_find.jpg')" 
+					  buttonDown="buttonQuery_buttonDownHandler(event)" width="100%"/>
+			<s:Button label="重置" icon="@Embed('assets/image/btn_back.jpg')" 
+					  width="100%" buttonDown="btnReset_buttonDownHandler(event)"/>		
+			<s:Button label="导出" icon="@Embed('assets/image/btn_export.png')" 
+					  width="100%" buttonDown="dispatchEvent(new Event(EXPORT))"/>			
+		</components:SkinnableTitleContainer>	
+	</s:HGroup>
+	
+	<mx:ViewStack selectedIndex="{btnBar.selectedIndex}" id="viewContent" width="100%" height="100%" creationPolicy="all">
+		<s:NavigatorContent>	
+			<components:SliderChart id="sliderChart" left="0" right="0" top="0" bottom="0" colChart="{colChart}" 
+									yField="value" dataTipRenderer="custom.components.ChartTipInch"
+									chartTitle="历史张紧小尺数值"
+									maxTime="{chartMaxTime}" minTime="{chartMinTime}" maximun="{chartMaxSpeed}" minimum="{chartMinSpeed}"
+									DateChange="dispatchEvent(new Event(CHART));"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			
+			<components:PageGridHead title="历史动力室温度（{totalCount}）" width="100%"/>
+			
+			<s:DataGrid width="100%" height="100%" dataProvider="{colGrid}"
+						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid"
+						alternatingRowColors="[#FFFFFF,#CFEDF7]">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="时间" dataField="date" width="200" formatter="{dateF}"/>			
+						<s:GridColumn headerText="长度" dataField="value" width="100"/>	
+						<s:GridColumn headerText="所属索道" dataField="ropeway.fullName"/>
+					</s:ArrayList>				
+				</s:columns>
+			</s:DataGrid>
+			
+			<components:GridNavigator id="gridNavigator" pageCount="{pageCount}" 
+									  PageChange="dispatchEvent(new Event(TABLE));"/>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</s:NavigatorContent>

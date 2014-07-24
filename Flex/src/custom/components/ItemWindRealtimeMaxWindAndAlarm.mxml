@@ -32,7 +32,7 @@
 	<s:VGroup left="20" right="20" y="45" height="115" color="0x1b5aa2"
 			  fontSize="38" horizontalAlign="center">	
 		<s:Label text="{ropeway.maxBracket.fullName}"/>	
-		<s:Label text="风速 {ropeway.maxBracket.wind.lastValue.speed} m/s"/>		
+		<s:Label text="风速 {ropeway.maxBracket.lastValue.speed} m/s"/>		
 	</s:VGroup>
 	
 	<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" 

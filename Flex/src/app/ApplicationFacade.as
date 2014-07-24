@@ -1,5 +1,8 @@
 package app
 {	
+	import app.controller.NotifyAverageQueryDayCommand;
+	import app.controller.NotifyAverageQueryMonthCommand;
+	import app.controller.NotifyAverageExportMonthCommand;
 	import app.controller.NotifyInitAppCommand;
 	import app.controller.NotifyMenuEngineAnalysisCommand;
 	import app.controller.NotifyMenuEngineManagerCommand;
@@ -22,10 +25,10 @@ package app
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketSurroundingCommand;
 	import app.controller.NotifySocketWindCommand;
-	import app.controller.NotifyWindAverageQueryCommand;
-	import app.controller.NotifyWindValueChartCommand;
-	import app.controller.NotifyWindValueExportCommand;
-	import app.controller.NotifyWindValuePageChangeCommand;
+	import app.controller.NotifyValueChartCommand;
+	import app.controller.NotifyValueExportCommand;
+	import app.controller.NotifyValueTableCommand;
+	import app.controller.NotifyAverageExportDayCommand;
 	import app.controller.StartupCommand;
 	import app.model.AppConfigProxy;
 	import app.model.AppParamProxy;
@@ -243,45 +246,38 @@ package app
 		/**
 		 * 主菜单-动力室电机温度
 		 **/
-		public static const NOTIFY_MENU_MAIN_ENGINE:String 			= "MenuMainEngine";
-		
-		public static const NOTIFY_MENU_ENGINE_REALTIME:String 		= "MenuEngineRealtime";
-		
-		public static const NOTIFY_MENU_ENGINE_ANALYSIS:String 		= "MenuEngineAnalysis";
-		
+		public static const NOTIFY_MENU_MAIN_ENGINE:String 			= "MenuMainEngine";		
+		public static const NOTIFY_MENU_ENGINE_REALTIME:String 		= "MenuEngineRealtime";		
+		public static const NOTIFY_MENU_ENGINE_ANALYSIS:String 		= "MenuEngineAnalysis";		
 		public static const NOTIFY_MENU_ENGINE_MANAGER:String 		= "MenuEngineManager";
 		
 		/**
 		 * 主菜单-张紧小尺
 		 **/
-		public static const NOTIFY_MENU_MAIN_INCH:String 			= "MenuMainInch";
-		
-		public static const NOTIFY_MENU_INCH_REALTIME:String 		= "MenuInchRealtime";
-				
-		public static const NOTIFY_MENU_INCH_ANALYSIS:String 		= "MenuInchAnalysis";
-		
+		public static const NOTIFY_MENU_MAIN_INCH:String 			= "MenuMainInch";		
+		public static const NOTIFY_MENU_INCH_REALTIME:String 		= "MenuInchRealtime";				
+		public static const NOTIFY_MENU_INCH_ANALYSIS:String 		= "MenuInchAnalysis";		
 		public static const NOTIFY_MENU_INCH_MANAGER:String 		= "MenuInchManager";
-		
-		
+				
 		/**
 		 * 主菜单-风速风向
 		 **/
-		public static const NOTIFY_MENU_MAIN_WIND:String 			= "MenuMainWind";
-		
-		public static const NOTIFY_MENU_WIND_REALTIME:String 		= "MenuWindRealtime";
-		
-		public static const NOTIFY_MENU_WIND_ANALYSIS:String 		= "MenuWindAnalysis";
-		
+		public static const NOTIFY_MENU_MAIN_WIND:String 			= "MenuMainWind";		
+		public static const NOTIFY_MENU_WIND_REALTIME:String 		= "MenuWindRealtime";		
+		public static const NOTIFY_MENU_WIND_ANALYSIS:String 		= "MenuWindAnalysis";		
 		public static const NOTIFY_MENU_WIND_MANAGER:String 		= "MenuWindManager";
-		
-		public static const NOTIFY_WIND_VALUE_PAGE_CHANGE:String 	= "WindValuePageChange";
-		
-		public static const NOTIFY_WIND_VALUE_EXPORT:String 		= "WindValueExport";
-		
-		public static const NOTIFY_WIND_VALUE_CHART:String 			= "WindValueChart";
-		
-		public static const NOTIFY_WIND_AVERAGE_QUERY:String 		= "WindAverageQuery";
-		
+				
+		/**
+		 * 统计分析
+		 **/
+		public static const NOTIFY_VALUE_TABLE:String 				= "ValueTable";		
+		public static const NOTIFY_VALUE_CHART:String 				= "ValueChart";		
+		public static const NOTIFY_VALUE_EXPORT:String 				= "ValueExport";	
+		public static const NOTIFY_AVERAGE_QUERY_DAY:String 		= "AverageQueryDay";	
+		public static const NOTIFY_AVERAGE_QUERY_MONTH:String 		= "AverageQueryMonth";	
+		public static const NOTIFY_AVERAGE_EXPORT_DAY:String 		= "AverageExportDay";	
+		public static const NOTIFY_AVERAGE_EXPORT_MONTH:String 		= "AverageExportMonth";	
+				
 		/**
 		 * 菜单-实时检测
 		 **/
@@ -393,11 +389,11 @@ package app
 			registerCommand( AppParamProxy.LOADED, LoadupResourceLoadedCommand);
 			registerCommand( AppParamProxy.FAILED, LoadupResourceFailedCommand);
 			registerCommand( EngineProxy.LOADED , LoadupResourceLoadedCommand);
-			registerCommand( EngineProxy.FAILED , LoadupResourceLoadedCommand);
+			registerCommand( EngineProxy.FAILED , LoadupResourceFailedCommand);
 			registerCommand( InchProxy.LOADED , LoadupResourceLoadedCommand);
-			registerCommand( InchProxy.FAILED , LoadupResourceLoadedCommand);
+			registerCommand( InchProxy.FAILED , LoadupResourceFailedCommand);
 			registerCommand( AppConfigProxy.LOADED , LoadupResourceLoadedCommand);
-			registerCommand( AppConfigProxy.FAILED , LoadupResourceLoadedCommand);			
+			registerCommand( AppConfigProxy.FAILED , LoadupResourceFailedCommand);			
 			registerCommand( SocketForceProxy.LOADED , LoadupResourceLoadedCommand);
 			registerCommand( SocketForceProxy.FAILED , LoadupResourceFailedCommand);
 			registerCommand( SocketProxy.LOADED , LoadupResourceLoadedCommand);
@@ -426,7 +422,7 @@ package app
 			
 			registerCommand( NOTIFY_MENU_INCH_ANALYSIS , NotifyMenuInchAnalysisCommand);	
 			
-			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);				
+			registerCommand( NOTIFY_MENU_INCH_MANAGER , NotifyMenuInchManagerCommand);	
 						
 			//动力室
 			registerCommand( NOTIFY_MENU_MAIN_ENGINE , NotifyMenuMainEngineCommand);
@@ -453,13 +449,20 @@ package app
 			
 			registerCommand( NOTIFY_MENU_WIND_MANAGER , NotifyMenuWindManagerCommand);
 			
-			registerCommand( NOTIFY_WIND_VALUE_PAGE_CHANGE , NotifyWindValuePageChangeCommand);
+			//查询统计
+			registerCommand( NOTIFY_VALUE_TABLE , NotifyValueTableCommand );	
 			
-			registerCommand( NOTIFY_WIND_VALUE_EXPORT , NotifyWindValueExportCommand);
+			registerCommand( NOTIFY_VALUE_CHART , NotifyValueChartCommand);	
 			
-			registerCommand( NOTIFY_WIND_VALUE_CHART , NotifyWindValueChartCommand);
+			registerCommand( NOTIFY_VALUE_EXPORT , NotifyValueExportCommand);
 			
-			registerCommand( NOTIFY_WIND_AVERAGE_QUERY , NotifyWindAverageQueryCommand);
+			registerCommand( NOTIFY_AVERAGE_QUERY_DAY , NotifyAverageQueryDayCommand);			
+			
+			registerCommand( NOTIFY_AVERAGE_QUERY_MONTH , NotifyAverageQueryMonthCommand);
+			
+			registerCommand( NOTIFY_AVERAGE_EXPORT_DAY , NotifyAverageExportDayCommand);
+			
+			registerCommand( NOTIFY_AVERAGE_EXPORT_MONTH , NotifyAverageExportMonthCommand);
 		}
 	}
 }

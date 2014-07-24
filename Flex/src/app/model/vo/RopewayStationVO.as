@@ -16,25 +16,7 @@ package app.model.vo
 		{
 			return new NullRopewayStation;
 		}
-		
-		/*private static var _instance:Dictionary = new Dictionary;
-		
-		public static function loadRopewayStation(listRw:ArrayCollection):Array
-		{
-			for each(var rw:RopewayVO in listRw)
-			{
-				new RopewayStationFstVO(rw).store();
-				new RopewayStationSndVO(rw).store();				
-			}
-			
-			var result:Array = [];
-			for each(var rs:RopewayStationVO in _instance)
-			{
-				result.push(rs);
-			}
-			return result;
-		}*/
-		
+				
 		InternalVO static function getNamed(name:String):RopewayStationVO
 		{
 			var shortName:String = name.substr(0,3);
@@ -61,10 +43,7 @@ package app.model.vo
 		{
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
-
-				
-		//private var _station:String;
-
+			
 		public function get station():String
 		{
 			throw(new IllegalOperationError("调用抽象方法"));

@@ -6,7 +6,7 @@ package app.view
 	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
-	import app.view.components.MainPanelEngineTemp;
+	import app.view.components.MainPanelEngine;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
 	import org.puremvc.as3.multicore.interfaces.INotification;
@@ -18,21 +18,21 @@ package app.view
 		
 		public function MainPanelEngineMediator(mediatorName:String=null, viewComponent:Object=null)
 		{
-			super(NAME, new MainPanelEngineTemp);
+			super(NAME, new MainPanelEngine);
 		}
 		
-		protected function get mainPanelEngineTemp():MainPanelEngineTemp
+		protected function get mainPanelEngineTemp():MainPanelEngine
 		{
-			return viewComponent as MainPanelEngineTemp;
+			return viewComponent as MainPanelEngine;
 		}
 		
 		override public function onRegister():void
 		{
 			mainPanelEngineTemp.addEventListener(FlexEvent.REMOVE,onUiRemove);
 			
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.REALTIME,onMenuRealtime);
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.ANALYSIS,onMenuAnalysis);
-			mainPanelEngineTemp.addEventListener(MainPanelEngineTemp.MANAGE,onMenuManager);
+			mainPanelEngineTemp.addEventListener(MainPanelEngine.REALTIME,onMenuRealtime);
+			mainPanelEngineTemp.addEventListener(MainPanelEngine.ANALYSIS,onMenuAnalysis);
+			mainPanelEngineTemp.addEventListener(MainPanelEngine.MANAGE,onMenuManager);
 		}
 		
 		private function onUiRemove(event:Event):void

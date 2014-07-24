@@ -6,7 +6,7 @@ package app.view
 	import mx.events.FlexEvent;
 	
 	import app.ApplicationFacade;
-	import app.view.components.MainPanelEngineTemp;
+	import app.view.components.MainPanelEngine;
 	import app.view.components.MainPanelWind;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -31,9 +31,9 @@ package app.view
 		{
 			mainPanelWind.addEventListener(FlexEvent.REMOVE,onUiRemove);
 			
-			mainPanelWind.addEventListener(MainPanelEngineTemp.REALTIME,onMenuRealtime);
-			mainPanelWind.addEventListener(MainPanelEngineTemp.ANALYSIS,onMenuAnalysis);
-			mainPanelWind.addEventListener(MainPanelEngineTemp.MANAGE,onMenuManager);
+			mainPanelWind.addEventListener(MainPanelEngine.REALTIME,onMenuRealtime);
+			mainPanelWind.addEventListener(MainPanelEngine.ANALYSIS,onMenuAnalysis);
+			mainPanelWind.addEventListener(MainPanelEngine.MANAGE,onMenuManager);
 		}
 		
 		private function onUiRemove(event:Event):void

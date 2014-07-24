@@ -49,7 +49,7 @@
 				var contextMenu:ContextMenu=new ContextMenu();
 				contextMenu.hideBuiltInItems(); 
 				
-				var contextMenuItem:ContextMenuItem=new ContextMenuItem("版本：1.2.1");			
+				var contextMenuItem:ContextMenuItem=new ContextMenuItem("版本：2.0.1");			
 				contextMenu.customItems.push(contextMenuItem);
 				
 				imageVer.contextMenu=contextMenu;
@@ -62,15 +62,19 @@
 	
 	<s:Image height="75" doubleClick="title_doubleClickHandler(event)" doubleClickEnabled="true"
 			 horizontalAlign="left" source="assets/image/title.png"/>
+	
 	<s:Image id="imageVer" left="490" right="0" height="75" 
 			 doubleClick="title_doubleClickHandler(event)"
 			 doubleClickEnabled="true"  
 			 scaleMode="stretch"
 			 source="{titleBack}"/>
-		
-	<components:ToolbarTop id="toolbarTop" y="75" height="20" left="0" right="0"/>
 	
-	<s:Group id="mainContent" y="95" height="100%" left="0" right="0"/>
+	<s:Image top="75" bottom="0" left="0" right="0" source="assets/image/bg_machine.jpg"
+			 scaleMode="stretch"/>
+	
+	<components:ToolbarTop id="toolbarTop" y="75" height="20" left="0" right="0"/>
+		
+	<s:Group id="mainContent" top="95" bottom="0" left="0" right="0"/>
 	
 	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
 </s:Application>

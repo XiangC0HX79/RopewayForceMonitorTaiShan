@@ -17,7 +17,10 @@ package app.model.vo
 		public static const SUFFIX_NAME:String 			="索道";
 		
 		public static const ZHONG_TIAN_MEN:String 		= "中天门索道";		
+		//public static const HOU_SHI_WU:String 			= "后石坞索道";	
 		public static const TAO_HUA_YUAN:String 		= "桃花源索道";
+		
+		InternalVO static var rwId:String;
 		
 		public static function newNull():RopewayVO
 		{
@@ -39,7 +42,10 @@ package app.model.vo
 			var result:Array = [];
 			for each(var rw:RopewayVO in _instance)
 			{
-				result.push(rw);
+				if((!rwId) || (int(rwId) == rw.id))
+				{
+					result.push(rw);
+				}
 			}
 			result.sortOn("id",Array.NUMERIC);
 			return result;			
@@ -64,7 +70,7 @@ package app.model.vo
 				case ZHONG_TIAN_MEN:
 					return 2;
 				case TAO_HUA_YUAN:
-					return 3;
+					return 4;
 				default:
 					throw(new IllegalOperationError("非法站点类型：" + fullName));					
 			}
@@ -112,7 +118,7 @@ package app.model.vo
 			var array:Array = [];
 			for each(var bracket:BracketVO in _instanceBracket)
 			{
-				if(bracket.wind.hasHistory)
+				if(bracket.hasHistory)
 					array.push(bracket);
 			}
 			array.sortOn("bracketId",Array.NUMERIC);
@@ -151,7 +157,7 @@ package app.model.vo
 			var result:BracketVO = BracketVO.newNull();
 			for each(var bracket:BracketVO in _instanceBracket)
 			{
-				if(bracket.wind.lastValue.speed > result.wind.lastValue.speed)
+				if(bracket.lastValue.speed > result.lastValue.speed)
 					result = bracket;
 			}
 			return result;

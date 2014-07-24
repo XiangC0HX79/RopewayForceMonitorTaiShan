@@ -1,19 +1,19 @@
 package app.model
 {
-	import mx.collections.ArrayCollection;
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.AsyncToken;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	
-	import app.ApplicationFacade;
 	import app.model.vo.EngineTempVO;
 	import app.model.vo.EngineVO;
 	import app.model.vo.InternalVO;
-	import app.model.vo.RopewayVO;
 	
-	import org.puremvc.as3.multicore.patterns.proxy.Proxy;
 	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
 	use namespace InternalVO;
 	
-	public class EngineProxy extends Proxy implements ILoadupProxy
+	public class EngineProxy extends WebServiceProxy implements ILoadupProxy
 	{
 		public static const NAME:String = "EngineProxy";
 		public static const SRNAME:String = "EngineProxySR";
@@ -23,23 +23,34 @@ package app.model
 		
 		public function EngineProxy()
 		{
-			super(NAME,new Array);
-		}
-		
-		public function get list():ArrayCollection
-		{			
-			return new ArrayCollection(data as Array);
+			super(NAME);
 		}
 						
 		public function load():void
 		{			
-			/*setData(EngineVO.loadEngine(
-				RopewayProxy(facade.retrieveProxy(RopewayProxy.NAME)).list
-			));*/
+			var token:AsyncToken = sendNoBusy("T_JC_Temperature_Load");
+			token.addResponder(new AsyncResponder(onLoad,onFault));
+		}		
+		
+		private function onFault(event:FaultEvent,t:Object = null):void
+		{
+			sendNotification(FAILED,NAME);			
+		}
+							
+		private function onLoad(event:ResultEvent,t:Object = null):void
+		{
+			for each(var item:* in event.result)
+			{
+				var et:EngineTempVO = new EngineTempVO;
+				et.date = item.DeteDate;
+				et.temp = item.DeteValue;
+				
+				EngineVO.getNamed(item.FromRopeWay,item.Pos).PushItem(et);
+			}
 			
 			sendNotification(LOADED,NAME);
 		}
-								
+		
 		public function AddItem(rwName:String,date:Date,pos:int,temp:Number):void
 		{						
 			var et:EngineTempVO = new EngineTempVO;

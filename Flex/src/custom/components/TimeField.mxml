@@ -5,10 +5,10 @@
 		 width="60">
 	<fx:Script>
 		<![CDATA[
+			import spark.events.TextOperationEvent;
+			
 			import flashx.textLayout.operations.CompositeOperation;
 			import flashx.textLayout.operations.InsertTextOperation;
-			
-			import spark.events.TextOperationEvent;
 			
 			protected function textHour_changeHandler(event:TextOperationEvent):void
 			{
@@ -45,63 +45,53 @@
 				if(n > 59)textMin.text = "59";
 			}
 			
-			public function get time():Number
+			private function Number2String(n:Number):String
 			{
+				var s:String = String(n);
+				return (s.length == 1)?"0" + s:s;
+			}
+			
+			[Bindable]
+			public function get time():String
+			{
+				if((!textHour.text) && (!textMin.text))
+					return "";
+					
 				var hour:Number = Number(textHour.text);
 				if(hour > 23)hour = 23;
 				
 				var min:Number = Number(textMin.text);
 				if(min > 59)min = 59;
 				
-				return (hour * 60 + min) * 60 * 1000;
+				return Number2String(hour) + ":" + Number2String(min);
 			}
 			
-			public function set formatTime(value:String):void
-			{
+			public function set time(value:String):void
+			{				
 				var s:Array = value.split(":");
 				
 				var hour:String = s[0];
 				var min:String = "";
 				if(s.length > 1)min = s[1];
-				
-				if(hour == "")
+								
+				var n:Number = Math.min(23,Number(hour));
+				if(isNaN(n) || (n == 0))
 				{
-					textHour.text = "";
+					textHour.text = ""
 				}
 				else
 				{
-					var n:Number = Number(hour);
-					if(isNaN(n))
-					{
-					}
-					else if(n > 23)
-					{
-						textHour.text = "23";
-					}
-					else
-					{
-						textHour.text = hour;
-					}
+					textHour.text = Number2String(n);
 				}
-				
-				if(min == "")
+								
+				var m:Number = Math.min(59,Number(min));
+				if(isNaN(m) || (m == 0))
 				{
-					textMin.text = "";
+					textMin.text = ""
 				}
 				else
 				{
-					n = Number(min);
-					if(isNaN(n))
-					{
-					}
-					else if(n > 59)
-					{
-						textMin.text = "59";
-					}
-					else
-					{
-						textMin.text = min;
-					}
+					textMin.text = Number2String(m);
 				}
 			}
 		]]>
