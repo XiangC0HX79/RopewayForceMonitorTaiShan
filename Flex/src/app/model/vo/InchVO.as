@@ -1,5 +1,7 @@
 package app.model.vo
 {
+	import com.adobe.utils.DateUtil;
+	
 	import flash.errors.IllegalOperationError;
 	
 	import mx.collections.ArrayCollection;
@@ -103,7 +105,7 @@ package app.model.vo
 		}
 		
 		public var his:ArrayCollection;
-				
+		
 		public function InchVO(rw:RopewayVO)
 		{
 			super(rw);
@@ -111,14 +113,17 @@ package app.model.vo
 			his = new ArrayCollection;
 		}
 		
-		public function PushItem(inch:InchValueVO):void
+		public function PushItem(inch:InchValueVO,willTriggerEvent:Boolean = true):void
 		{			
 			his.source.push(inch);
 			
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"lastValue",null,lastValue));
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"aveDay",null,aveDay));
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"minValue",null,minValue));
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"maxValue",null,maxValue));
+			if(willTriggerEvent)
+			{
+				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"lastValue",null,lastValue));
+				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"aveDay",null,aveDay));
+				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"minValue",null,minValue));
+				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"maxValue",null,maxValue));
+			}
 		}
 	}
 }

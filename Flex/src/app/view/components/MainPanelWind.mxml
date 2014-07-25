@@ -10,19 +10,6 @@
 			public static const REALTIME:String 			= "Realtime";
 			public static const ANALYSIS:String 			= "Analysis";
 			public static const MANAGE:String 				= "Manager";
-			
-			protected function button_buttonDownHandler(event:FlexEvent,type:String):void
-			{
-			/*	for(var i:Number = 0;i < buttonBar.numElements;i++)
-				{
-					Button(buttonBar.getElementAt(i)).enabled = true;
-				}
-				
-				Button(event.currentTarget).enabled = false;*/
-				
-				dispatchEvent(new Event(type));
-			}
-			
 		]]>
 	</fx:Script>
 	
@@ -30,17 +17,17 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
-	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
+	<s:VGroup id="buttonBar" width="125" gap="10" 
 			  horizontalAlign="center">	
 		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection"  width="117" height="148" buttonMode="true" 
-				  buttonDown="button_buttonDownHandler(event,REALTIME)"/>
+				  buttonDown="dispatchEvent(new Event(REALTIME))"/>
 		<s:Button skinClass="custom.skin.SkinButtonAnalysis" width="117" height="148" buttonMode="true"
-				  buttonDown="button_buttonDownHandler(event,ANALYSIS)"/>
+				  buttonDown="dispatchEvent(new Event(ANALYSIS))"/>
 		<s:Button skinClass="custom.skin.SkinButtonManager" width="117" height="148" buttonMode="true"
-				  buttonDown="button_buttonDownHandler(event,MANAGE)"/>
+				  buttonDown="dispatchEvent(new Event(MANAGE))"/>
 	</s:VGroup>
 	
-	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 
+	<s:SkinnableContainer id="mainContent" left="130" width="100%" height="100%"
 						  skinClass="custom.skin.SkinMainContent">		
 	</s:SkinnableContainer>
 </s:Group>

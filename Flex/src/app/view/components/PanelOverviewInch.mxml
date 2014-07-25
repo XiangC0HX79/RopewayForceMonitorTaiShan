@@ -2,7 +2,7 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 height="170" minWidth="180" width="100%" skinClass="custom.skin.SkinPanel">
+		 height="170" minWidth="180" width="100%" skinClass="custom.skin.SkinPanel" xmlns:components="custom.components.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -13,6 +13,7 @@
 			import mx.events.ResizeEvent;
 			
 			import app.model.vo.InchVO;
+			import app.model.vo.PressVO;
 			
 			private var _watcher:ChangeWatcher;
 			
@@ -34,6 +35,9 @@
 				
 				BindingUtils.bindSetter(setterNiddle,_inch,"lastValue");
 			}
+			
+			[Bindable]
+			public var press:PressVO;
 			
 			private function setterNiddle(obj:Object):void
 			{				
@@ -95,12 +99,14 @@
 	<s:SkinnableContainer left="5" right="5" top="30" bottom="5"
 						  skinClass="custom.skin.SkinPanelContent"
 						  fontWeight="bold">
+		<components:WatchPress scaleX="{100/150}" scaleY="{100/150}" height="150" verticalCenter="0" press="{press.lastValue}"/>
+		
 		<s:VGroup id="niddle" horizontalAlign="center" gap="0" width="40" moveEffect="{m}" x="{_niddleX}">
 			<s:Label text="{inch.lastValue.value}M" color="0x1b5aa2" fontSize="28" />
 			<s:Image source="assets/image/inch_niddle.png"/>		
 		</s:VGroup>
 		
-		<s:Image id="img" left="10" right="10" y="55" height="30" source="assets/image/inch_back_02.png" 
+		<s:Image id="img" left="100" right="10" y="55" height="30" source="assets/image/inch_back_02.png" 
 				 scaleMode="stretch" resize="img_resizeHandler(event)"/>
 		
 		<s:Label text="{df.format(inch.lastValue.date)}" right="0" bottom="0"/>

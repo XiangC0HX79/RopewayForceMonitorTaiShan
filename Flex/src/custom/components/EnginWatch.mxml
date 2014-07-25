@@ -65,7 +65,6 @@
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:DateTimeFormatter id="df" dateTimePattern="HH:mm:ss"/>
 		<s:Rotate id="rotate" transformX="96" transformY="2" target="{niddle1}"/>
 	</fx:Declarations>
 	

@@ -17,7 +17,7 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
-	<s:VGroup id="buttonBar" width="130" paddingTop="10" paddingBottom="10" gap="10" 
+	<s:VGroup id="buttonBar" width="125" gap="10" 
 			  horizontalAlign="center">	
 		<s:Button skinClass="custom.skin.SkinButtonRealtimeDetection" width="117" height="148" buttonMode="true" 
 				  buttonDown="dispatchEvent(new Event(REALTIME));"/>
@@ -27,7 +27,7 @@
 				  buttonDown="dispatchEvent(new Event(MANAGE));"/>
 	</s:VGroup>
 	
-	<s:SkinnableContainer id="mainContent" left="135" right="10" top="10" bottom="10" 
+	<s:SkinnableContainer id="mainContent" left="130" width="100%" height="100%"
 						  skinClass="custom.skin.SkinMainContent">		
 	</s:SkinnableContainer>
 </s:Group>

@@ -16,8 +16,8 @@
 	
 	<s:HGroup>
 		<components:PanelInchRealtimeTemp id="panelTemp"/>
+		<components:PanelInchRealtimePress id="panelPress"/>
 		<components:PanelInchRealtimeValue id="panelValue"/>
-		<!--<components:PanelInchRealtimeAlarm id="panelAlarm"/>	-->	
 	</s:HGroup>
 	
 	<components:PanelInchRealtimeChart id="panelChart"/>

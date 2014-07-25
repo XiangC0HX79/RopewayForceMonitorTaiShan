@@ -6,7 +6,7 @@
 			   preloader="custom.components.AppDownloadProgressBar"
 			   xmlns:components="app.view.components.*"
 			   skinClass="custom.skin.SkinApplication"
-			   width="100%" height="100%" fontSize="14" pageTitle="泰山抱索力实时监测系统">
+			   width="100%" height="100%" fontSize="14" pageTitle="泰山综合监测系统">
 		
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -72,9 +72,9 @@
 	<s:Image top="75" bottom="0" left="0" right="0" source="assets/image/bg_machine.jpg"
 			 scaleMode="stretch"/>
 	
-	<components:ToolbarTop id="toolbarTop" y="75" height="20" left="0" right="0"/>
+	<components:ToolbarTop id="toolbarTop" y="75" height="30" left="20" right="20"/>
 		
-	<s:Group id="mainContent" top="95" bottom="0" left="0" right="0"/>
+	<s:Group id="mainContent" top="105" bottom="10" left="10" right="10"/>
 	
 	<components:LoadingBar id="mainLoading" top="0" bottom="0" left="0" right="0"/>
 </s:Application>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  height="260" width="160" skinClass="custom.skin.SkinPanel" 
+					  fontWeight="bold" xmlns:components="custom.components.*">
+	<fx:Script>
+		<![CDATA[
+			import app.model.vo.PressVO;
+			
+			import custom.components.ChartTipPress;
+			import custom.itemRenderer.ItemRendererLineChartAlarm;
+			
+			[Bindable]public var press:PressVO;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
+		<s:Label text="压力"/>
+	</s:HGroup>
+	
+	<s:VGroup left="5" right="5" top="35" bottom="10"
+			  horizontalAlign="center">	
+		<components:WatchPress press="{press.lastValue}" scaleX="{120/150}" scaleY="{120/150}"/>
+				
+		<mx:LineChart width="100%" height="100%" id="lineChart"
+					  showDataTips="true" dataTipRenderer="custom.components.ChartTipPress"
+					  dataProvider="{press.lastHour}">	
+			<mx:seriesFilters>
+				<fx:Array/>
+			</mx:seriesFilters>
+			
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis id="horizontalAxis"/>
+			</mx:horizontalAxis>	
+			
+			<mx:horizontalAxisRenderers>			
+				<mx:AxisRenderer axis="{horizontalAxis}" showLabels="false" tickPlacement="none">
+					<mx:axisStroke>
+						<s:SolidColorStroke color="0xC2C2C2" weight="1"/>
+					</mx:axisStroke>
+				</mx:AxisRenderer>				
+			</mx:horizontalAxisRenderers>
+			
+			<mx:verticalAxis>
+				<mx:LinearAxis id="verticalAxis"/>
+			</mx:verticalAxis>
+			
+			<mx:verticalAxisRenderers>					
+				<mx:AxisRenderer axis="{verticalAxis}" showLabels="false" tickPlacement="none">
+					<mx:axisStroke>
+						<s:SolidColorStroke color="0xC2C2C2" weight="2"/>
+					</mx:axisStroke>
+				</mx:AxisRenderer>				
+			</mx:verticalAxisRenderers>
+			
+			<mx:series>
+				<mx:LineSeries yField="value" xField="date"
+							   itemRenderer="{new ClassFactory(ItemRendererLineChartAlarm)}">
+					<mx:lineStroke>
+						<s:SolidColorStroke color="0xE48701" weight="1"/>
+					</mx:lineStroke>
+				</mx:LineSeries>
+			</mx:series>
+		</mx:LineChart>
+	</s:VGroup>
+</s:SkinnableContainer>

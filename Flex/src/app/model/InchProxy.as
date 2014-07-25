@@ -11,6 +11,8 @@ package app.model
 	import app.model.vo.InchVO;
 	import app.model.vo.InchValueVO;
 	import app.model.vo.InternalVO;
+	import app.model.vo.PressVO;
+	import app.model.vo.PressValueVO;
 	
 	import org.puremvc.as3.multicore.utilities.loadup.interfaces.ILoadupProxy;
 	
@@ -75,9 +77,18 @@ package app.model
 				inchValue.date = new Date(Date.parse(item.DeteDate));
 				inchValue.value = item.DeteValue;
 				
-				InchVO.getNamed(item.FromRopeWay).PushItem(inchValue);
+				InchVO.getNamed(item.FromRopeWay).PushItem(inchValue,false);
 			}
+						
+			for each(item in jd.Press)
+			{
+				var pressValue:PressValueVO = new PressValueVO;
+				pressValue.date = new Date(Date.parse(item.DeteDate));
+				pressValue.value = item.DeteValue;
 			
+				PressVO.getNamed(item.FromRopeWay).PushItem(pressValue,false);
+			}
+						
 			sendNotification(LOADED,NAME);
 		}
 		
@@ -88,6 +99,15 @@ package app.model
 			inchValue.value = Number(value.toFixed(2));
 			
 			InchVO.getNamed(rwName).PushItem(inchValue);
+		}
+				
+		public function AddPress(rwName:String,date:Date,value:Number):void
+		{			
+			var pressValue:PressValueVO = new PressValueVO;
+			pressValue.date = date;
+			pressValue.value = Number(value.toFixed(2));
+			
+			PressVO.getNamed(rwName).PushItem(pressValue);
 		}
 	}
 }

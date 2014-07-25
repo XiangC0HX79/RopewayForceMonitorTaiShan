@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="150" height="150" 
+		 creationComplete="group_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import app.model.vo.PressValueVO;
+			
+			private var _press:PressValueVO;
+
+			[Bindable]
+			public function get press():PressValueVO
+			{
+				return _press;
+			}
+
+			public function set press(value:PressValueVO):void
+			{
+				if(this.initialized)
+				{
+					playAnima(value.value,_press.value);
+				}		
+				
+				_press = value;
+			}
+			
+			private function getRotateagle(value:Number):Number
+			{
+				//-X轴为0度
+				const MAX_ANGLE:Number = 240;				
+				const MIN_ANGLE:Number = -60;				
+				const MAX_VALUE:Number = 250;				
+				const MIN_VALUE:Number = 0;	
+				
+				var t:Number = value;
+				if(t > MAX_VALUE)t = MAX_VALUE;
+				else if(t < MIN_VALUE)t = MIN_VALUE;
+				
+				return ((t - MIN_VALUE) / (MAX_VALUE - MIN_VALUE) * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE);
+			}				
+			
+			private function playAnima(agTo:Number,agFrom:Number = NaN):void
+			{
+				if(!isNaN(agFrom))
+					rotate.angleFrom = getRotateagle(agFrom);
+				
+				rotate.angleTo = getRotateagle(agTo);
+				
+				rotate.play();						
+			}
+			
+			protected function group_creationCompleteHandler(event:FlexEvent):void
+			{	
+				playAnima(press.value);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Rotate id="rotate" transformX="61" transformY="8" target="{niddle1}"/>
+	</fx:Declarations>
+	
+	<s:Image source="assets/image/watch_back_press.png"/>
+	
+	<s:Image id="niddle1" source="assets/image/watch_niddle_press.png" y="68" x="14"/>
+	
+	<s:Label horizontalCenter="0" bottom="35" text="{press.value}"
+			 color="0x1b5aa2" fontSize="24"/>
+</s:Group>

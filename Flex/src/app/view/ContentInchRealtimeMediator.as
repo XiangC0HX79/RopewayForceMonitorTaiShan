@@ -32,6 +32,7 @@ package app.view
 		private function onMediatorAdd(event:FlexEvent):void
 		{
 			facade.registerMediator(new PanelInchRealtimeTempMediator(contentInchRealtime.panelTemp));
+			facade.registerMediator(new PanelInchRealtimePressMediator(contentInchRealtime.panelPress));
 			facade.registerMediator(new PanelInchRealtimeValueMediator(contentInchRealtime.panelValue));
 			facade.registerMediator(new PanelInchRealtimeChartMediator(contentInchRealtime.panelChart));
 		}
@@ -39,6 +40,7 @@ package app.view
 		private function onMediatorRemove(event:FlexEvent):void
 		{
 			facade.removeMediator(PanelInchRealtimeTempMediator.NAME);
+			facade.removeMediator(PanelInchRealtimePressMediator.NAME);
 			facade.removeMediator(PanelInchRealtimeValueMediator.NAME);
 			facade.removeMediator(PanelInchRealtimeChartMediator.NAME);
 		}

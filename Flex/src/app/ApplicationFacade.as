@@ -1,8 +1,9 @@
 package app
 {	
+	import app.controller.NotifyAverageExportDayCommand;
+	import app.controller.NotifyAverageExportMonthCommand;
 	import app.controller.NotifyAverageQueryDayCommand;
 	import app.controller.NotifyAverageQueryMonthCommand;
-	import app.controller.NotifyAverageExportMonthCommand;
 	import app.controller.NotifyInitAppCommand;
 	import app.controller.NotifyMenuEngineAnalysisCommand;
 	import app.controller.NotifyMenuEngineManagerCommand;
@@ -23,12 +24,12 @@ package app
 	import app.controller.NotifySocketEngineCommand;
 	import app.controller.NotifySocketForceUploadCommand;
 	import app.controller.NotifySocketInchCommand;
+	import app.controller.NotifySocketPressCommand;
 	import app.controller.NotifySocketSurroundingCommand;
 	import app.controller.NotifySocketWindCommand;
 	import app.controller.NotifyValueChartCommand;
 	import app.controller.NotifyValueExportCommand;
 	import app.controller.NotifyValueTableCommand;
-	import app.controller.NotifyAverageExportDayCommand;
 	import app.controller.StartupCommand;
 	import app.model.AppConfigProxy;
 	import app.model.AppParamProxy;
@@ -171,6 +172,8 @@ package app
 		public static const NOTIFY_SOCKET_INCH:String 				= "SocketInch";
 		
 		public static const NOTIFY_SOCKET_WIND:String 				= "SocketWind";
+		
+		public static const NOTIFY_SOCKET_PRESS:String 				= "SocketPress";
 		
 		public static const NOTIFY_SOCKET_SURROUDING:String 	= "SocketSurroudingTemp";
 				
@@ -402,6 +405,8 @@ package app
 			registerCommand( LoadupMonitorProxy.LOADING_COMPLETE , NotifyMenuMainOverviewCommand);
 			
 			registerCommand( NOTIFY_SOCKET_INCH , NotifySocketInchCommand);
+			
+			registerCommand( NOTIFY_SOCKET_PRESS , NotifySocketPressCommand);
 			
 			registerCommand( NOTIFY_SOCKET_ENGINE , NotifySocketEngineCommand);
 							 

@@ -163,6 +163,10 @@ package app.model
 					
 					case "FS":
 						sendNotification(ApplicationFacade.NOTIFY_SOCKET_WIND,a);
+						break;			
+					
+					case "YL":
+						sendNotification(ApplicationFacade.NOTIFY_SOCKET_PRESS,a);
 						break;					
 					
 					case "AL":

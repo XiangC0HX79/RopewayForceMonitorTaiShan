@@ -171,6 +171,8 @@ package app.model.vo
 		
 		public var inch:InchVO;
 						
+		public var press:PressVO;
+		
 		/**
 		 * 
 		 * 构造函数
@@ -190,6 +192,8 @@ package app.model.vo
 			
 			inch = new InchVO(this);
 			
+			press = new PressVO(this);
+			
 			_instanceBracket = BracketVO.facatoryCreateInstance(this);
 		}
 		
@@ -200,16 +204,6 @@ package app.model.vo
 		
 		public function getBracket(bracketId:int):BracketVO
 		{			
-			/*if(!_instanceBracket[bracketId])
-			{
-				var bracket:BracketVO = new BracketVO(bracketId,this);
-				
-				_instanceBracket[bracketId] = bracket;
-				
-				BindingUtils.bindSetter(setterWindLastValue,bracket.wind,"lastValue");
-				
-				dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"listBracket",null,listBracket,this));		
-			}*/
 			if(_instanceBracket[bracketId])
 				return _instanceBracket[bracketId];
 			else 
