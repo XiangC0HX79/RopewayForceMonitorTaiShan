@@ -69,6 +69,8 @@ package app.model.vo
 				
 		public var surrounding:SurroundingVO;
 		
+		public var force:ForceVO;
+		
 		/**
 		 * 
 		 * 构造函数
@@ -79,6 +81,8 @@ package app.model.vo
 			_ropeway = rw;
 			
 			surrounding = new SurroundingVO;
+			
+			force = new ForceVO;
 		}
 		
 		/*private function store():void

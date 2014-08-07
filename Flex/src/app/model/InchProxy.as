@@ -48,27 +48,27 @@ package app.model
 			
 			for each(var item:* in jd.MonthAve)
 			{
-				InchVO.getNamed(item.FromRopeWay).aveMon = item.AveValue;
+				InchVO.getNamed(item.FromRopeWay).aveMon = item.AveValue.toFixed(3);
 			}
 			
 			for each(item in jd.ThrMonthAve)
 			{
-				InchVO.getNamed(item.FromRopeWay).aveThreeMon = item.AveValue;
+				InchVO.getNamed(item.FromRopeWay).aveThreeMon = item.AveValue.toFixed(3);
 			}
 			
 			for each(item in jd.LastDayAve)
 			{
-				InchVO.getNamed(item.FromRopeWay).periodAveDay = item.AveValue;
+				InchVO.getNamed(item.FromRopeWay).periodAveDay = item.AveValue.toFixed(3);
 			}
 			
 			for each(item in jd.LastMonthAve)
 			{
-				InchVO.getNamed(item.FromRopeWay).periodAveMon = item.AveValue;
+				InchVO.getNamed(item.FromRopeWay).periodAveMon = item.AveValue.toFixed(3);
 			}
 			
 			for each(item in jd.LastThrMonthAve)
 			{
-				InchVO.getNamed(item.FromRopeWay).periodThreeMon = item.AveValue;
+				InchVO.getNamed(item.FromRopeWay).periodThreeMon = item.AveValue.toFixed(3);
 			}
 			
 			for each(item in jd.History)

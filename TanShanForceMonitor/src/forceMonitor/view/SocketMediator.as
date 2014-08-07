@@ -17,7 +17,7 @@ package forceMonitor.view
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectProxy;
-	
+		
 	import forceMonitor.ForceMonitorFacade;
 	import forceMonitor.model.RopewayAlarmProxy;
 	import forceMonitor.model.RopewayProxy;
@@ -205,16 +205,31 @@ package forceMonitor.view
 		
 		private function onFindRopewayByForce(event:ResultEvent,t:Object):void
 		{			
-			//var rf:RopewayForceVO = event.token.ropewayForce;
 			if(event.result)
 			{
 				var rw:RopewayVO =  event.token.ropeway as RopewayVO;
 				rw.ropewayRFIDEletric = event.token.eletric;
-				//_ropewayProxy.PushRopewayForce(rw,rf);
 				
 				sendNotification(ForceMonitorFacade.NOTIFY_PIPE_SEND_FORCE,rw);
 				if(rw.ropewayStation == _config.station)
 					sendNotification(ForceMonitorFacade.NOTIFY_ROPEWAY_INFO_REALTIME,rw);
+			}
+			else
+			{				
+				var rf:RopewayForceVO = event.token.ropewayForce as RopewayForceVO;
+				
+				var nullRw:RopewayVO = new RopewayVO(new ObjectProxy);
+				
+				nullRw.ropewayCarId = rf.ropewayCarId;
+				nullRw.ropewayStation = rf.fromRopeStation;
+				nullRw.deteValue = rf.ropewayForce;
+				nullRw.valueUnit = rf.ropewayUnit;
+				nullRw.alarm = rf.alarm;
+				nullRw.deteDate = rf.ropewayTime;
+				nullRw.switchFreqTotal = 1;
+				nullRw.switchFreq = 1;
+				
+				sendNotification(ForceMonitorFacade.NOTIFY_PIPE_SEND_FORCE,nullRw);
 			}
 		}
 		

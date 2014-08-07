@@ -38,6 +38,8 @@ package app.model
 		
 		private var _serverPort:Number;
 		
+		private var _Loaded:Boolean = false;
+		
 		public function SocketProxy()
 		{
 			super(NAME);
@@ -65,29 +67,46 @@ package app.model
 			_socket.connect(_serverIp,_serverPort);
 			
 			Security.loadPolicyFile("xmlsocket://" + _serverIp + ":" + _serverPort);
+		}
+				
+		private function connect():void
+		{
+			sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_SHOW,"正在连接服务器...");
+			
+			_socket.connect(_serverIp,_serverPort);
+			
+			Security.loadPolicyFile("xmlsocket://" + _serverIp + ":" + _serverPort);
 			
 			_errorCount ++;
 			
-			trace("ErrorCount:" + _errorCount);
+			//trace("ErrorCount:" + _errorCount);
 		}
 		
 		private function onConnect( event:Event ):void 
 		{  													
 			_errorCount = 0;	
 			
-			sendNotification(LOADED,NAME);
+			if(_Loaded)
+			{
+				sendNotification(ApplicationFacade.NOTIFY_MAIN_LOADING_HIDE);				
+			}
+			else
+			{
+				_Loaded = true;
+				sendNotification(LOADED,NAME);
+			}
 		}  
 		
 		private function onConnectError(event:Event):void 
 		{  			
 			if(_errorCount > 5)
 			{
-				sendNotification(FAILED,NAME);
+				//sendNotification(FAILED,NAME);
 				
 				sendNotification(ApplicationFacade.NOTIFY_ALERT_ERROR,"服务器连接失败，无法接收实时数据，请检查网络！按F5刷新页面开始重连服务器。\n\"错误原因:" + event.type + "\"");
 			}
 			else
-				load();
+				connect();
 		} 
 		
 		//接受数据		

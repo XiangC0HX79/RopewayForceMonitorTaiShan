@@ -9,7 +9,7 @@ package app.model.vo
 		public static function facatoryCreate(jd:*):AnalysisInchVO
 		{
 			var result:AnalysisInchVO = new AnalysisInchVO;
-			result.value = jd.DeteValue;
+			result.value = jd.DeteValue.toFixed(3);
 			result.date = new Date(Date.parse(jd.DeteDate));
 			result.ropeway = RopewayVO.getNamed(jd.FromRopeWay);
 			

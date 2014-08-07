@@ -6,16 +6,30 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
 			import mx.core.FlexGlobals;
 			import mx.graphics.ImageSnapshot;
 			
 			import app.model.vo.ForceVO;
 			
+			private var _watcherFst:ChangeWatcher;
+			
+			private var _watcheSnd:ChangeWatcher;
+			
 			[Bindable]private var _fstForce:ForceVO;
 			public function set fstForce(value:ForceVO):void
 			{
 				_fstForce = value;
+						
+				if(_watcherFst)
+					_watcherFst.unwatch();
 				
+				_watcherFst = BindingUtils.bindSetter(setterFirstForce,_fstForce,"date");
+			}
+			
+			private function setterFirstForce(date:Date):void
+			{
 				if(this.initialized)
 				{
 					var pt:Point = fstContent.contentToGlobal(new Point(0,0));
@@ -50,6 +64,14 @@
 			{
 				_sndForce = value;
 				
+				if(_watcheSnd)
+					_watcheSnd.unwatch();
+				
+				_watcheSnd = BindingUtils.bindSetter(setterSecondeForce,_sndForce,"date");
+			}
+			
+			private function setterSecondeForce(date:Date):void
+			{		
 				if(this.initialized)
 				{
 					var pt:Point = sndContent.contentToGlobal(new Point(0,0));

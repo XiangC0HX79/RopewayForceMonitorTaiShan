@@ -4,10 +4,15 @@ package app.model.vo
 	
 	[Bindable]
 	public class ForceVO
-	{
+	{		
+		InternalVO static function getNamed(rsName:String):ForceVO
+		{
+			return RopewayStationVO.getNamed(rsName).force;
+		}
+		
 		public var carriageId:String;
 		
-		public var ropewayStation:RopewayStationVO;
+		public var rsName:String;
 		
 		public var value:Number = 0;
 		
@@ -26,7 +31,7 @@ package app.model.vo
 			if(o)
 			{
 				this.carriageId = o.ropewayCarId;
-				this.ropewayStation = RopewayStationVO.getNamed(o.ropewayStation);
+				this.rsName = o.ropewayStation;
 				this.value = o.deteValue;
 				this.unit = o.valueUnit;
 				this.alarm = o.alarm;

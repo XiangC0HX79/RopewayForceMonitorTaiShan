@@ -33,7 +33,7 @@
 				if(_watcher)
 					_watcher.unwatch();
 				
-				BindingUtils.bindSetter(setterNiddle,_inch,"lastValue");
+				_watcher = BindingUtils.bindSetter(setterNiddle,_inch,"lastValue");
 			}
 			
 			[Bindable]

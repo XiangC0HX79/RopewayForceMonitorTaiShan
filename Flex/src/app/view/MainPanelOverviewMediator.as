@@ -39,7 +39,7 @@ package app.view
 			facade.registerMediator(new PanelOverviewSurroundingMediator(mainPanelOverview.panelTemp));
 			facade.registerMediator(new PanelOverviewEngineMediator(mainPanelOverview.panelEngine));
 			facade.registerMediator(new PanelOverviewInchMediator(mainPanelOverview.panelInch));
-			/*facade.registerMediator(new PanelOverviewForceMediator(mainPanelOverview.panelForce));*/
+			facade.registerMediator(new PanelOverviewForceMediator(mainPanelOverview.panelForce));
 			facade.registerMediator(new PanelOverviewWindMediator(mainPanelOverview.panelWind));
 		}
 		
@@ -48,7 +48,7 @@ package app.view
 			facade.removeMediator(PanelOverviewSurroundingMediator.NAME);
 			facade.removeMediator(PanelOverviewEngineMediator.NAME);
 			facade.removeMediator(PanelOverviewInchMediator.NAME);
-			/*facade.removeMediator(PanelOverviewForceMediator.NAME);*/
+			facade.removeMediator(PanelOverviewForceMediator.NAME);
 			facade.removeMediator(PanelOverviewWindMediator.NAME);
 		}
 		

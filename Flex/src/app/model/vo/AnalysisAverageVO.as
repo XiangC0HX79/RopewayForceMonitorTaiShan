@@ -19,9 +19,9 @@ package app.model.vo
 		{
 			super(jd.DeviceID);
 			
-			maxValue = jd.MaxValue;
-			minValue = jd.MinValue;
-			aveValue = jd.AveValue;
+			maxValue = jd.MaxValue.toFixed(3);
+			minValue = jd.MinValue.toFixed(3);
+			aveValue = jd.AveValue.toFixed(3);
 			date = jd.DeteDate;
 			deviceName = jd.DeviceName;
 			ropewayName = jd.FromRopeWay;

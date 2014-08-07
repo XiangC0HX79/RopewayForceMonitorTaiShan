@@ -19,9 +19,9 @@ package app
 	import app.controller.NotifyMenuWindAnalysisCommand;
 	import app.controller.NotifyMenuWindManagerCommand;
 	import app.controller.NotifyMenuWindRealtimeCommand;
-	import app.controller.NotifyPipeSendForceCommand;
 	import app.controller.NotifyRopewayChangeCommand;
 	import app.controller.NotifySocketEngineCommand;
+	import app.controller.NotifySocketForceCommand;
 	import app.controller.NotifySocketForceUploadCommand;
 	import app.controller.NotifySocketInchCommand;
 	import app.controller.NotifySocketPressCommand;
@@ -203,10 +203,7 @@ package app
 		public static const ACTION_UPDATE_APP_PARAM:String 				= "ActionUpdateAppParam";		
 		
 		public static const ACTION_UPDATE_ROPEWAY:String 				= "ActionUpdateRopeway";		
-		
-		public static const ACTION_UPDATE_FORCE_FST:String 				= "ActionUpdateForceFst";		
-		public static const ACTION_UPDATE_FORCE_SND:String 				= "ActionUpdateForceSnd";
-				
+						
 		public static const ACTION_MAIN_PANEL_CHANGE:String 			= "ActionMainPanelChange";
 		public static const ACTION_INCH_PANEL_CHANGE:String 			= "ActionInchPanelChange";
 		public static const ACTION_ENGINE_PANEL_CHANGE:String 			= "ActionEnginePanelChange";
@@ -441,7 +438,7 @@ package app
 			//抱索力
 			registerCommand( NOTIFY_MENU_MAIN_FORCE , NotifyMenuMainForceCommand);
 			
-			registerCommand( NOTIFY_PIPE_SEND_FORCE , NotifyPipeSendForceCommand);
+			registerCommand( NOTIFY_PIPE_SEND_FORCE , NotifySocketForceCommand);
 			
 			registerCommand( NOTIFY_SOCKET_FORCE_UPLOAD , NotifySocketForceUploadCommand);
 			

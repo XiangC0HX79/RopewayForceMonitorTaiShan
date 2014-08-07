@@ -2,6 +2,7 @@ package app.view
 {
 	import app.ApplicationFacade;
 	import app.model.vo.ForceVO;
+	import app.model.vo.RopewayVO;
 	import app.view.components.PanelOverviewForce;
 	
 	import org.puremvc.as3.multicore.interfaces.IMediator;
@@ -25,9 +26,7 @@ package app.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				ApplicationFacade.ACTION_UPDATE_FORCE_FST,
-				
-				ApplicationFacade.ACTION_UPDATE_FORCE_SND
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
 			];
 		}
 		
@@ -35,12 +34,9 @@ package app.view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.ACTION_UPDATE_FORCE_FST:
-					panelOverviewForce.fstForce = notification.getBody() as ForceVO;
-					break;
-				
-				case ApplicationFacade.ACTION_UPDATE_FORCE_SND:
-					panelOverviewForce.sndForce = notification.getBody() as ForceVO;
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					panelOverviewForce.fstForce = (notification.getBody() as RopewayVO).stationFst.force;
+					panelOverviewForce.sndForce = (notification.getBody() as RopewayVO).stationSnd.force;
 					break;
 			}
 		}		
