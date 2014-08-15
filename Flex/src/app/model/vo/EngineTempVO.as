@@ -5,12 +5,23 @@ package app.model.vo
 	[Bindable]
 	public class EngineTempVO implements IAlarmValue
 	{		
-		public static const MAX_VALUE:Number = 40;
-		public static const MIN_VALUE:Number = -10;
+		public static const MAX_VALUE:Number = 50;
+		public static const MIN_VALUE:Number = -30;
 		
 		public var date:Date;
 		
-		public var temp:Number = 0;
+		private var _temp:Number = 0;
+
+		public function get temp():Number
+		{
+			return _temp;
+		}
+
+		public function set temp(value:Number):void
+		{
+			_temp = value;
+		}
+
 		
 		public function get alarm():int
 		{

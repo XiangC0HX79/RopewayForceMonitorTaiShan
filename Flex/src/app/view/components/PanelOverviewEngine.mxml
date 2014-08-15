@@ -21,13 +21,13 @@
 	</fx:Declarations>
 	
 	<s:HGroup left="30" right="20" height="24" verticalAlign="middle" color="0x1b5aa2">
-		<s:Label text="动力室主电机温度" fontWeight="bold"/>
+		<s:Label text="{engineFst.fullName}" fontWeight="bold"/>
 	</s:HGroup>
 	
 	<s:HGroup left="5" right="5" top="30" bottom="5" verticalAlign="contentJustify">		
 		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
 						  fontWeight="bold">			
-			<s:Label text="温度1"/>
+			<s:Label text="{engineFst.deviceName}"/>
 			
 			<components:EnginWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" engineValue="{engineFst.lastTemp}"/>
 			
@@ -36,7 +36,7 @@
 		
 		<s:SkinnableContainer skinClass="custom.skin.SkinPanelContent" width="100%"
 							  fontWeight="bold">			
-			<s:Label text="温度2"/>
+			<s:Label text="{engineSnd.deviceName}"/>
 			
 			<components:EnginWatch horizontalCenter="0" verticalCenter="0" scaleX="{95/195}" scaleY="{95/195}" engineValue="{engineSnd.lastTemp}"/>
 			

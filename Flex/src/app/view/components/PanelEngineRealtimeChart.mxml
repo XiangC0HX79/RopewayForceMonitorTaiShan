@@ -44,7 +44,7 @@
 			{						
 				_engine = value;
 				
-				_chartTitle = (value.pos == EngineVO.FIRST)?"温度1":"温度2";
+				_chartTitle = value.deviceName;
 								
 				if(this.initialized)				
 					RefreshChart(_engine.history,"date","temp","alarm");
@@ -68,26 +68,38 @@
 				var df:Number = max - min;
 				var ave:Number = (max + min) / 2;
 				
-				if(df < 4 * 10)
+				if(df < 4 * 1)
 				{
-					var interval:Number = 10;
+					var interval:Number = 1;
+				}
+				else if(df < 4 * 2)
+				{
+					interval = 2;
+				}
+				else if(df < 4 * 3)
+				{
+					interval = 3;
+				}
+				else if(df < 4 * 4)
+				{
+					interval = 4;
+				}
+				else if(df < 4 * 5)
+				{
+					interval = 5;
+				}
+				else if(df < 4 * 10)
+				{
+					interval = 10;
 				}
 				else if(df < 4 * 20)
 				{
 					interval = 20;
 				}
-				else if(df < 4 * 50)
-				{
-					interval = 50;
-				}
-				else if(df < 4 * 100)
-				{
-					interval = 100;
-				}
 				else
 				{				
-					min = Math.floor(min / 200) * 200;
-					max = Math.ceil(max / 200) * 200;
+					min = Math.floor(min / 10) * 10;
+					max = Math.ceil(max / 10) * 10;
 					
 					interval = (max - min) / 5;
 				}

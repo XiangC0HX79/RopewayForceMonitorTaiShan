@@ -49,8 +49,8 @@ package app.model
 		public function updateSurrounding(rsName:String,date:Date,temp:Number,humi:Number):void
 		{
 			var sr:SurroundingVO = new SurroundingVO;			
-			sr.temp = temp;
-			sr.humi = humi;			
+			sr.temp = Math.round(temp * 10) / 10;
+			sr.humi = Math.round(humi * 10) / 10;			
 			sr.date = date;
 			
 			RopewayStationVO.getNamed(rsName).surrounding = sr;

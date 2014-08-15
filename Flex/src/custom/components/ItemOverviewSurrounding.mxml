@@ -84,7 +84,7 @@
 	<s:HGroup id="mainContent" color="0x1b5aa2" fontSize="28" gap="0" 
 			  horizontalCenter="0" verticalCenter="10">	
 		
-		<s:VGroup width="40" horizontalAlign="center">
+		<s:VGroup width="50" horizontalAlign="center">
 			<s:Label id="lblTemp" text="{surrounding.temp}"/>	
 			<s:Label id="lblHumi" text="{surrounding.humi}"/>				
 		</s:VGroup>

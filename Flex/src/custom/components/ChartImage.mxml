@@ -42,14 +42,14 @@
 			
 			protected function group_mouseOverHandler(event:MouseEvent):void
 			{
-				pt.width = 12;
-				pt.height = 12;
+				pt.width = 10;
+				pt.height = 10;
 			}
 			
 			protected function group_mouseOutHandler(event:MouseEvent):void
 			{
-				pt.width = 8;
-				pt.height = 8;
+				pt.width = 5;
+				pt.height = 5;
 			}			
 		]]>
 	</fx:Script>
@@ -60,7 +60,7 @@
 		<s:Move id="mv" target="{this}"/>
 	</fx:Declarations>
 		
-	<s:Ellipse id="pt" width="8" height="8" verticalCenter="0" horizontalCenter="0">		
+	<s:Ellipse id="pt" width="5" height="5" verticalCenter="0" horizontalCenter="0">		
 		<s:fill>
 			<s:SolidColor id="fillColor"/>
 		</s:fill>

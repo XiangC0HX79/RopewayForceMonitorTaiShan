@@ -3,7 +3,7 @@ package app.model.vo
 	[Bindable]
 	public class WindValueVO implements IDateValue,IAlarmValue
 	{
-		public static var MAX_SPEED:Number = 9;
+		public static var MAX_SPEED:Number = 15;
 		
 		public var speed:Number = 0;
 		

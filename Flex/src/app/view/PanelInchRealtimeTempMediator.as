@@ -34,7 +34,7 @@ package app.view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
-					panelInchTemp.rs = (notification.getBody() as RopewayVO).stationFst;
+					panelInchTemp.rs = (notification.getBody() as RopewayVO).stationSnd;
 					break;
 			}
 		}		

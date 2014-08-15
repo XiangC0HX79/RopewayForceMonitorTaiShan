@@ -65,5 +65,5 @@
 	<s:Button label="{ENGINE}" buttonDown="dispatchEvent(new Event(ENGINE))"/>
 	<s:Button label="{INCH}" buttonDown="dispatchEvent(new Event(INCH))"/>
 	<s:Button label="{WIND}" buttonDown="dispatchEvent(new Event(WIND))"/>
-	<s:Button label="{REINIT}" buttonDown="dispatchEvent(new Event(REINIT))"/>
+	<!--<s:Button label="{REINIT}" buttonDown="dispatchEvent(new Event(REINIT))"/>-->
 </s:Group>

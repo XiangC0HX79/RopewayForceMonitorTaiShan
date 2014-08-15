@@ -14,8 +14,8 @@
 	</s:HGroup>
 	
 	<s:HGroup height="300" verticalAlign="justify">
-		<components:PanelEngineRealtimeTemp id="panelTempFst" width="100%"  minWidth="350" title="温度1"/>
-		<components:PanelEngineRealtimeTemp id="panelTempSnd" width="100%" minWidth="350" title="温度2"/>		
+		<components:PanelEngineRealtimeTemp id="panelTempFst" width="100%"  minWidth="350"/>
+		<components:PanelEngineRealtimeTemp id="panelTempSnd" width="100%" minWidth="350"/>		
 		<components:PanelEngineRealtimeAlarm id="panelAlarm" width="100%"/>
 	</s:HGroup>
 	

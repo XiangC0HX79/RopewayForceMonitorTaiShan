@@ -32,10 +32,10 @@
 			private function getRotateagle(value:Number):Number
 			{
 				//-X轴为0度
-				const MAX_ANGLE:Number = 210;				
-				const MIN_ANGLE:Number = -30;				
-				const MAX_TEMP:Number = 50;				
-				const MIN_TEMP:Number = -30;				
+				const MAX_ANGLE:Number = 215;				
+				const MIN_ANGLE:Number = -25;				
+				const MAX_TEMP:Number = 100;				
+				const MIN_TEMP:Number = 0;				
 				const IMG_SIZE:Number = 195;
 				
 				var t:Number = value;
@@ -65,13 +65,13 @@
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Rotate id="rotate" transformX="96" transformY="2" target="{niddle1}"/>
+		<s:Rotate id="rotate" transformX="75" transformY="5" target="{niddle1}"/>
 	</fx:Declarations>
 	
-	<s:Image source="assets/image/engine_temp.png"/>
-	<s:Image id="niddle1" source="assets/image/niddle.png" y="95" x="2"/>
+	<s:Image source="assets/image/engine_temp.png" width="195" height="195" />
+	<s:Image id="niddle1" source="assets/image/niddle.png" width="80" y="95" x="22"/>
 	
-	<s:Label horizontalCenter="0" bottom="30" text="{engineValue.temp}℃"
+	<s:Label horizontalCenter="0" verticalCenter="30" text="{engineValue.temp}℃"
 			 color="0x1b5aa2" fontSize="34"/>
 	
 	<s:Ellipse left="5" right="5" bottom="5" top="5" id="rMask" visible="false">

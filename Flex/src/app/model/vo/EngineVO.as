@@ -11,9 +11,14 @@ package app.model.vo
 	[Bindable]
 	public class EngineVO extends DeviceVO
 	{
-		public static const FIRST:int = 0;
-		public static const SECOND:int = 1;
-						
+		public static const FIRST:int = 1;
+		public static const SECOND:int = 2;
+					
+		public static function newNull():EngineVO
+		{
+			return new NullEngine;
+		}
+		
 		InternalVO static function getNamed(rwName:String,p:int):EngineVO
 		{
 			var rw:RopewayVO = RopewayVO.getNamed(rwName);
@@ -23,7 +28,7 @@ package app.model.vo
 			else if(p == SECOND)
 				return rw.engineSnd;
 			else
-				throw(new IllegalOperationError("调用抽象方法"));
+				return newNull();
 		}
 				
 		override public function get deviceId():int
@@ -76,48 +81,59 @@ package app.model.vo
 			throw(new IllegalOperationError("调用抽象方法"));
 		}
 		
+		private var _maxTemp:Number;
 		public function get maxTemp():Number
 		{
-			if(history.source.length == 0)
-				return 0;
-			
-			var array:Array = [];
-			array = array.concat(history.source);
-			array.sortOn("temp",Array.NUMERIC);
-			return EngineTempVO(array[array.length - 1]).temp;
+			return _maxTemp;
+//			if(history.source.length == 0)
+//				return 0;
+//			
+//			var array:Array = [];
+//			array = array.concat(history.source);
+//			array.sortOn("temp",Array.NUMERIC);
+//			return EngineTempVO(array[array.length - 1]).temp;
 		}
 
 		public function set maxTemp(value:Number):void
 		{
-			throw(new IllegalOperationError("调用抽象方法"));
+			_maxTemp = value;
+//			throw(new IllegalOperationError("调用抽象方法"));
 		}
-
+		
+		private var _minTemp:Number;
 		public function get minTemp():Number
 		{
-			if(history.source.length == 0)
-				return 0;
-			
-			var array:Array = [];
-			array = array.concat(history.source);
-			array.sortOn("temp",Array.NUMERIC);
-			return EngineTempVO(array[0]).temp;
+			return _minTemp;
+//			if(history.source.length == 0)
+//				return 0;
+//			
+//			var array:Array = [];
+//			array = array.concat(history.source);
+//			array.sortOn("temp",Array.NUMERIC);
+//			return EngineTempVO(array[0]).temp;
 		}
 
 		public function set minTemp(value:Number):void
 		{
-			throw(new IllegalOperationError("调用抽象方法"));
+			_minTemp = value;
+//			throw(new IllegalOperationError("调用抽象方法"));
 		}
 
+		public var totalCount:Number;
+		public var totalValue:Number;
+		
 		public function get aveTemp():Number
 		{
-			if(history.source.length == 0)
-				return 0;
+			return Math.round(totalValue / totalCount * 10) / 10;
 			
-			var total:Number = 0;
-			for each(var et:EngineTempVO in history)
-				total += et.temp;
-				
-			return Math.round(total / history.length * 10) / 10;
+//			if(history.source.length == 0)
+//				return 0;
+//			
+//			var total:Number = 0;
+//			for each(var et:EngineTempVO in history)
+//				total += et.temp;
+//				
+//			return Math.round(total / history.length * 10) / 10;
 		}
 
 		public function set aveTemp(value:Number):void
@@ -138,10 +154,15 @@ package app.model.vo
 		{			
 			history.source.push(et);
 			
+			totalCount ++;
+			totalValue += et.temp;
+			maxTemp = Math.max(maxTemp,et.temp);
+			minTemp = Math.min(minTemp,et.temp);
+			
 			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"lastTemp",null,lastTemp));
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"maxTemp",null,maxTemp));
+			//dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"maxTemp",null,maxTemp));
 			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"aveTemp",null,aveTemp));
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"minTemp",null,minTemp));
+			//dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,false,false,PropertyChangeEventKind.UPDATE,"minTemp",null,minTemp));
 		}
 	}
 }

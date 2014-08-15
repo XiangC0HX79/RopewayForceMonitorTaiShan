@@ -1,5 +1,7 @@
 package app.model
 {
+	import com.adobe.serialization.json.JSON;
+	
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
@@ -39,10 +41,27 @@ package app.model
 							
 		private function onLoad(event:ResultEvent,t:Object = null):void
 		{
-			for each(var item:* in event.result)
+			var json:* = JSON.decode(event.result as String);
+			
+			for each(var device:* in json.DeviceComm)
+			{
+				var engine:EngineVO = EngineVO.getNamed(device.RopeWayName,int(device.Pos));
+				engine.deviceName = device.DeviceName;
+			}
+			
+			for each(var statis:* in json.Statis)
+			{				
+				engine = EngineVO.getNamed(statis.FromRopeWay,int(statis.Pos));
+				engine.minTemp = statis.Min;
+				engine.maxTemp = statis.Max;
+				engine.totalCount = statis.Count;
+				engine.totalValue = statis.Sum;
+			}
+			
+			for each(var item:* in json.Temperature)
 			{
 				var et:EngineTempVO = new EngineTempVO;
-				et.date = item.DeteDate;
+				et.date = new Date(Date.parse(item.DeteDate));
 				et.temp = item.DeteValue;
 				
 				EngineVO.getNamed(item.FromRopeWay,item.Pos).PushItem(et);

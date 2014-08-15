@@ -75,8 +75,17 @@
 			
 			private function labelHorizontalAxis(categoryValue:Object, previousCategoryValue:Object, axis:CategoryAxis, categoryItem:Object):String 
 			{ 				
-				var s:Array = dateF.format(categoryValue).split(" ");
-				return s[0]+ "\n" + s[1];
+				var id:int = (axis.dataProvider as IList).getItemIndex(categoryItem);
+				var len:int = (axis.dataProvider as IList).length;				
+				var interval:int = len / 10;
+								
+				if(id % interval == 0)
+				{
+					var s:Array = dateF.format(categoryValue).split(" ");
+					return s[0]+ "\n" + s[1];
+				}
+				
+				return ""
 			}
 			
 			protected function chartSlider_changeHandler(event:Event):void
@@ -119,7 +128,7 @@
 	<s:Label right="15" bottom="70" text="时间"/>
 	
 	<mx:LineChart id="lineChart"
-				  showDataTips="true" dataTipRenderer="{dataTipRenderer}" 
+				  showDataTips="true" dataTipRenderer="{dataTipRenderer}"
 				  left="20" right="40" bottom="50" top="40" dataProvider="{colChart}">
 			<mx:seriesFilters>
 				<fx:Array/>
@@ -143,19 +152,19 @@
 			
 			<mx:horizontalAxis>
 				<mx:CategoryAxis id="horizontalAxis" categoryField="date"
-								 ticksBetweenLabels="false" 
+								 ticksBetweenLabels="false"
 								 labelFunction="labelHorizontalAxis" />
 			</mx:horizontalAxis>
 			
 			<mx:verticalAxisRenderers>					
-				<mx:AxisRenderer axis="{verticalAxis}" 
+				<mx:AxisRenderer axis="{verticalAxis}"
 								 axisStroke="{tickStroke}" 
 								 tickStroke="{tickStroke}"
 								 minorTickPlacement="none"/>
 			</mx:verticalAxisRenderers>
 			
 			<mx:horizontalAxisRenderers>			
-				<mx:AxisRenderer axis="{horizontalAxis}"
+				<mx:AxisRenderer axis="{horizontalAxis}" canDropLabels="true"
 								 textAlign="center"
 								 axisStroke="{tickStroke}" 
 								 tickStroke="{tickStroke}"/>					

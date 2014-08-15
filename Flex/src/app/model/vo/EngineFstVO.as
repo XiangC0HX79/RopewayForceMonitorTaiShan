@@ -9,6 +9,11 @@ package app.model.vo
 				
 		override public function get fullName():String
 		{
+			return super.deviceName;
+		}
+		
+		override public function get deviceName():String
+		{
 			return "温度一";
 		}
 		

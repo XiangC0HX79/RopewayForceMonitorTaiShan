@@ -43,7 +43,18 @@ package app.model.vo
 			_deviceId = value;
 		}
 		
-		public var deviceName:String;
+		private var _deviceName:String;
+
+		public function get deviceName():String
+		{
+			return _deviceName;
+		}
+
+		public function set deviceName(value:String):void
+		{
+			_deviceName = value;
+		}
+
 		
 		public function DeviceVO(rw:RopewayVO)
 		{

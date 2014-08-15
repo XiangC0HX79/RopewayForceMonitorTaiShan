@@ -121,9 +121,9 @@
 	</s:layout>
 	
 	<s:HGroup id="panelHead" height="120">		
-		<components:SkinnableTitleContainer height="100%" width="90" title="温度" skinClass="custom.skin.SkinPanelAnalysis">
-			<s:RadioButton label="{ropeway.engineFst.fullName}" groupName="rbgPos" selected="true" value="{ropeway.engineFst}"/>
-			<s:RadioButton label="{ropeway.engineSnd.fullName}" groupName="rbgPos" value="{ropeway.engineSnd}"/>
+		<components:SkinnableTitleContainer height="100%" title="温度" skinClass="custom.skin.SkinPanelAnalysis">
+			<s:RadioButton label="{ropeway.engineFst.deviceName}" groupName="rbgPos" selected="true" value="{ropeway.engineFst}"/>
+			<s:RadioButton label="{ropeway.engineSnd.deviceName}" groupName="rbgPos" value="{ropeway.engineSnd}"/>
 		</components:SkinnableTitleContainer>
 		
 		<components:AnalysisConditionTime id="conditionTime"/>
@@ -168,7 +168,7 @@
 						alternatingRowColors="[#FFFFFF,#CFEDF7]">
 				<s:columns>
 					<s:ArrayList>
-						<s:GridColumn headerText="位置" dataField="engine.fullName" width="100"/>
+						<s:GridColumn headerText="位置" dataField="engine.deviceName" width="100"/>
 						<s:GridColumn headerText="时间" dataField="date" width="200" formatter="{dateF}"/>			
 						<s:GridColumn headerText="温度" dataField="temp" width="100"/>	
 						<s:GridColumn headerText="所属索道" dataField="engine.ropeway.fullName"/>

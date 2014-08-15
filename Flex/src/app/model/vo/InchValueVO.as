@@ -5,8 +5,8 @@ package app.model.vo
 	[Bindable]
 	public class InchValueVO implements IAlarmValue,IDateValue
 	{
-		public static var MAX_VALUE:Number = 8;
-		public static var MIN_VALUE:Number = 2;
+		public static var MAX_VALUE:Number = 10;
+		public static var MIN_VALUE:Number = 0;
 		
 		public function get alarm():int
 		{
@@ -26,7 +26,18 @@ package app.model.vo
 		
 		public var date:Date = new Date;
 		
-		public var value:Number = 0;
+		private var _value:Number = 0;
+
+		public function get value():Number
+		{
+			return _value;
+		}
+
+		public function set value(value:Number):void
+		{
+			_value = value;
+		}
+
 		
 		public function InchValueVO()
 		{

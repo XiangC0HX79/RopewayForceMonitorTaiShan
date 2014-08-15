@@ -25,8 +25,8 @@
 		
 		<s:Spacer width="100%"/>
 		
-		<s:RadioButton label="历史风速风向" groupName="rbgAnalysis" selected="true" value="0"/>
-		<s:RadioButton label="平均风速风向" groupName="rbgAnalysis" value="1"/>
+		<s:RadioButton label="历史动力室温度" groupName="rbgAnalysis" selected="true" value="0"/>
+		<s:RadioButton label="平均动力室温度" groupName="rbgAnalysis" value="1"/>
 		<s:RadioButton label="报警信息" groupName="rbgAnalysis" value="2"/>
 	</s:HGroup>
 	

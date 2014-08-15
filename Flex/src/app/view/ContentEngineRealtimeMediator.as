@@ -49,5 +49,23 @@ package app.view
 			facade.removeMediator(PanelEngineRealtimeChartSndMediator.NAME);
 		}
 		
+		override public function listNotificationInterests():Array
+		{
+			return [
+				ApplicationFacade.ACTION_UPDATE_ROPEWAY
+			];
+		}
+		
+		override public function handleNotification(notification:INotification):void
+		{	
+			switch(notification.getName())
+			{
+				case ApplicationFacade.ACTION_UPDATE_ROPEWAY:
+					contentEngineTempRealtimeDetection.panelTempFst.title = RopewayVO(notification.getBody()).engineFst.deviceName;	
+					contentEngineTempRealtimeDetection.panelTempSnd.title = RopewayVO(notification.getBody()).engineSnd.deviceName;	
+					break;
+			}
+		}		
+		
 	}
 }

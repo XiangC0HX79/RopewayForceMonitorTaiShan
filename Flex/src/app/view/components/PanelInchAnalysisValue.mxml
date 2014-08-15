@@ -154,7 +154,7 @@
 				<s:VerticalLayout/>
 			</s:layout>
 			
-			<components:PageGridHead title="历史动力室温度（{totalCount}）" width="100%"/>
+			<components:PageGridHead title="历史数值（{totalCount}）" width="100%"/>
 			
 			<s:DataGrid width="100%" height="100%" dataProvider="{colGrid}"
 						borderColor="#63c3d6" skinClass="custom.skin.SkinGrid"
