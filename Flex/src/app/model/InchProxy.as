@@ -46,7 +46,13 @@ package app.model
 		{
 			var jd:* = JSON.decode(String(event.result));
 			
-			for each(var item:* in jd.MonthAve)
+			for each(var item:* in jd.DayAve)
+			{
+				InchVO.getNamed(item.FromRopeWay).totalCount = item.Count;
+				InchVO.getNamed(item.FromRopeWay).totalValue = item.Sum.toFixed(3);
+			}
+			
+			for each(item in jd.MonthAve)
 			{
 				InchVO.getNamed(item.FromRopeWay).aveMon = item.AveValue.toFixed(3);
 			}

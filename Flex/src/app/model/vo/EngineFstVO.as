@@ -14,7 +14,7 @@ package app.model.vo
 		
 		override public function get deviceName():String
 		{
-			return "温度一";
+			return super.deviceName;
 		}
 		
 		public function EngineFstVO(rw:RopewayVO)

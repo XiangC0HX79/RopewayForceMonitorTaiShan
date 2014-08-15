@@ -160,7 +160,7 @@ package custom.itemRenderer
 			if (fill)
 				fill.begin(g, rcFill, null);
 			
-			g.drawEllipse(0,0,unscaledWidth, unscaledHeight);
+			g.drawEllipse(2,2,unscaledWidth - 2, unscaledHeight - 2);
 			
 			if (fill)
 				fill.end(g);

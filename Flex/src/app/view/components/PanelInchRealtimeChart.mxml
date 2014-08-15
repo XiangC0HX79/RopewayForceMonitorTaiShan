@@ -218,8 +218,8 @@
 				array.sortOn(yField,Array.NUMERIC);
 				
 				CalcuChartXY(
-					array[0][yField]
-					,array[array.length - 1][yField]
+					Math.min(array[0][yField],_inch.aveDay)
+					,Math.max(array[array.length - 1][yField],_inch.aveDay)
 					,dataProvider[0][xField]
 					,dataProvider[dataProvider.length - 1][xField]
 				);
@@ -314,8 +314,8 @@
 				array.sortOn(yField,Array.NUMERIC);
 				
 				CalcuChartXY(
-					array[0][yField]
-					,array[array.length - 1][yField]
+					Math.min(array[0][yField],_inch.aveDay)
+					,Math.max(array[array.length - 1][yField],_inch.aveDay)
 					,dataProvider[0][xField]
 					,dataProvider[dataProvider.length - 1][xField]
 				);

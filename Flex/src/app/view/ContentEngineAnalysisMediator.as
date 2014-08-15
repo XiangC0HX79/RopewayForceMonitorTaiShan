@@ -31,12 +31,14 @@ package app.view
 		{			
 			facade.registerMediator(new PanelEngineAnalysisValueMediator(contentEngineAnalysis.analysisValue));
 			facade.registerMediator(new PanelEngineAnalysisAverageMediator(contentEngineAnalysis.analysisAverage));
+			facade.registerMediator(new PanelEngineAnalysisAlarmMediator(contentEngineAnalysis.analysisAlarm));
 		}
 		
 		private function onMediatorRemove(event:FlexEvent):void
 		{			
 			facade.removeMediator(PanelEngineAnalysisValueMediator.NAME);
 			facade.removeMediator(PanelEngineAnalysisAverageMediator.NAME);
+			facade.removeMediator(PanelEngineAnalysisAlarmMediator.NAME);
 		}
 	}
 }

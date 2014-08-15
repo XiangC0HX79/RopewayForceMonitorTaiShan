@@ -33,5 +33,6 @@
 	<mx:ViewStack creationPolicy="all" height="100%" id="vs">
 		<components:PanelInchAnalysisValue id="analysisValue"/>
 		<components:PanelInchAnalysisAverage id="analysisAverage"/>
+		<components:PanelInchAnalysisAlarm id="analysisAlarm"/>
 	</mx:ViewStack>
 </s:Group>

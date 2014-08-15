@@ -1,6 +1,6 @@
 package app.view
 {
-	import app.view.components.PanelWindAnalysisValue;
+	import app.view.components.PanelWindAnalysisAlarm;
 	
 	import org.puremvc.as3.multicore.patterns.mediator.Mediator;
 	
@@ -13,9 +13,9 @@ package app.view
 			super(NAME, viewComponent);
 		}
 		
-		protected function get panelWindAnalysisValue():PanelWindAnalysisValue
+		protected function get panelWindAnalysisAlarm():PanelWindAnalysisAlarm
 		{
-			return viewComponent as PanelWindAnalysisValue;
+			return viewComponent as PanelWindAnalysisAlarm;
 		}
 	}
 }

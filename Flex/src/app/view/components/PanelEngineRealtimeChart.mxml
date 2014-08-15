@@ -241,13 +241,13 @@
 					return;
 				}
 				
-				var array:Array = [];
-				array = array.concat(dataProvider.source);
-				array.sortOn(yField,Array.NUMERIC);
+//				var array:Array = [];
+//				array = array.concat(dataProvider.source);
+//				array.sortOn(yField,Array.NUMERIC);
 				
 				CalcuChartXY(
-					array[0][yField]
-					,array[array.length - 1][yField]
+					_engine.minTemp
+					,_engine.maxTemp
 					,dataProvider[0][xField]
 					,dataProvider[dataProvider.length - 1][xField]
 				);
@@ -337,13 +337,13 @@
 					||(dataProvider.length == sIndex))
 					return;
 								
-				var array:Array = [];
-				array = array.concat(dataProvider.source);
-				array.sortOn(yField,Array.NUMERIC);
+//				var array:Array = [];
+//				array = array.concat(dataProvider.source);
+//				array.sortOn(yField,Array.NUMERIC);
 				
 				CalcuChartXY(
-					array[0][yField]
-					,array[array.length - 1][yField]
+					_engine.minTemp
+					,_engine.maxTemp
 					,dataProvider[0][xField]
 					,dataProvider[dataProvider.length - 1][xField]
 				);
